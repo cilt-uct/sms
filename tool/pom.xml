@@ -55,16 +55,20 @@
 	</properties>
 
    <dependencies>
-	<dependency>
-		<groupId>${project.groupId}</groupId>
-		<artifactId>sms_hibernate</artifactId>
-		<version>${project.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>${project.groupId}</groupId>
-		<artifactId>smpp</artifactId>
-		<version>${project.version}</version>
-	</dependency>
+    
+    <!-- Internal dependencies -->
+    <dependency>
+		<groupId>org.sakaiproject.sms</groupId>
+		<artifactId>sms-api</artifactId>
+		<version>0.1</version>
+    </dependency>
+    
+    <dependency>
+		<groupId>org.sakaiproject.sms</groupId>
+		<artifactId>sms-impl</artifactId>
+		<version>0.1</version>
+    </dependency>
+    
 	<dependency>
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
@@ -140,8 +144,8 @@
   
 	<build>
 	    <finalName>sms_ui</finalName> 
-	    <sourceDirectory>${basedir}/tool/src/java</sourceDirectory>
-	    <testSourceDirectory>${basedir}/tool/src/test</testSourceDirectory>
+	    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+	    <testSourceDirectory>${basedir}/src/test</testSourceDirectory>
 	    <plugins>
 	  		<plugin>
 	            <artifactId>maven-compiler-plugin</artifactId>
@@ -158,7 +162,7 @@
 					<classifier>${build.environment}</classifier>
 					<webResources>
 						<resource>
-							<directory>${basedir}/tool/src/webapp/</directory>
+							<directory>${basedir}/src/webapp/</directory>
 							<includes>
 								<include>**/*</include>				
 							</includes>
@@ -167,7 +171,7 @@
 	            			</excludes>
 						</resource>
 						<resource>
-	            			<directory>${basedir}/tool/src/webapp/WEB-INF/</directory>
+	            			<directory>${basedir}/src/webapp/WEB-INF/</directory>
 	            			<targetPath>WEB-INF/classes</targetPath>
 	            			<includes>
 								<include>**/log4j.properties</include>				
@@ -177,7 +181,7 @@
 					<systemProperties>
 	            		<systemProperty>
 	              			<name>log4j.configuration</name>
-	               			<value>${basedir}/tool/src/webapp/WEB-INF/log4j.properties</value>
+	               			<value>${basedir}/src/webapp/WEB-INF/log4j.properties</value>
 	            		</systemProperty>
 					</systemProperties>
 				</configuration>
@@ -188,7 +192,7 @@
 					<version>6.1.10</version>
 					<configuration>
 						<contextPath>${project.build.finalName}</contextPath>
-						<webAppSourceDirectory>${basedir}/tool/src/webapp/</webAppSourceDirectory>
+						<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
 						<webXml>
 							${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml 
 						</webXml>

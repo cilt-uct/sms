@@ -7,7 +7,7 @@
 <hibernate-mapping>
 
 	<!-- SMS Task mapping -->
-	<class name="org.sakaiproject.sms.hibernate.model.SmsTask" table="SMS_TASK">
+	<class name="org.sakaiproject.sms.model.hibernate.SmsTask" table="SMS_TASK">
 		<id name="id" type="long" column="TASK_ID">
 			<generator class="native" />
 		</id>
@@ -64,13 +64,13 @@
 			not-null="false" length="200" />
 		<set name="smsMessages" lazy="false" inverse="true" cascade="all-delete-orphan">
 			<key column="TASK_ID" not-null="true" />
-			<one-to-many class="org.sakaiproject.sms.hibernate.model.SmsMessage"
+			<one-to-many class="org.sakaiproject.sms.model.hibernate.SmsMessage"
 				not-found="ignore" />
 		</set>
 	</class>
 
 	<!-- SMS Message mapping -->
-	<class name="org.sakaiproject.sms.hibernate.model.SmsMessage"
+	<class name="org.sakaiproject.sms.model.hibernate.SmsMessage"
 		table="SMS_MESSAGE">
 		<id name="id" type="long" column="MESSAGE_ID">
 			<generator class="native" />
@@ -90,12 +90,12 @@
 		<property name="dateDelivered" type="timestamp" column="DATE_DELIVERED"
 			not-null="false" />
 		<many-to-one name="smsTask" lazy="false"
-			class="org.sakaiproject.sms.hibernate.model.SmsTask" column="TASK_ID"
+			class="org.sakaiproject.sms.model.hibernate.SmsTask" column="TASK_ID"
 			not-null="true" />
 	</class>
 
 
-	<class name="org.sakaiproject.sms.hibernate.model.SmsAccount"
+	<class name="org.sakaiproject.sms.model.hibernate.SmsAccount"
 		table="SMS_ACCOUNT">
 		<id name="id" type="long" column="ACCOUNT_ID">
 			<generator class="native" />
@@ -123,12 +123,12 @@
 		<set name="smsTransactions" lazy="false" inverse="true"
 			cascade="all-delete-orphan">
 			<key column="SMS_ACCOUNT_ID" not-null="true" />
-			<one-to-many class="org.sakaiproject.sms.hibernate.model.SmsTransaction"
+			<one-to-many class="org.sakaiproject.sms.model.hibernate.SmsTransaction"
 				not-found="ignore" />
 		</set>
 	</class>
 
-	<class name="org.sakaiproject.sms.hibernate.model.SmsTransaction"
+	<class name="org.sakaiproject.sms.model.hibernate.SmsTransaction"
 		table="SMS_TRANSACTION">
 		<id name="id" type="long" column="TRANSACTION_ID">
 			<generator class="native" />
@@ -148,11 +148,11 @@
 		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
 			not-null="true" />
 		<many-to-one name="smsAccount"
-			class="org.sakaiproject.sms.hibernate.model.SmsAccount" column="SMS_ACCOUNT_ID"
+			class="org.sakaiproject.sms.model.hibernate.SmsAccount" column="SMS_ACCOUNT_ID"
 			not-null="true" />
 	</class>
 
-	<class name="org.sakaiproject.sms.hibernate.model.SmsConfig"
+	<class name="org.sakaiproject.sms.model.hibernate.SmsConfig"
 		table="SMS_CONFIG">
 		<id name="id" type="long" column="CONFIG_ID">
 			<generator class="native" />
