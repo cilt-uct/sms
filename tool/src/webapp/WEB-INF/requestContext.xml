@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  
+  <!-- Binding  Beans -->  
+  <bean id="searchTaskList" class="org.sakaiproject.sms.hibernate.bean.SearchFilterBean"/>	
+  <bean id="searchTransactionLog" class="org.sakaiproject.sms.hibernate.bean.SearchFilterBean"/>	
+  <bean id="searchMessageLog" class="org.sakaiproject.sms.hibernate.bean.SearchFilterBean"/>	
+  <bean id="debitAccountBean" class="org.sakaiproject.sms.beans.DebitAccountBean"/>	
+  
+  <!--  Renderers -->
+  <bean id="taskListCriteriaRenderer" class="org.sakaiproject.sms.renderers.SearchCriteriaRenderer">
+	<property name="labelID" value="Mobile Number:"/>
+  	<property name="labelDropDown" value="Task Status:"/>
+  	<property name="searchBeanName" value="searchTaskList"/>
+  	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+  	<property name="ELEvaluator" ref="ELEvaluator" />
+  </bean>
+	
+  <bean id="transactionLogCriteriaRenderer" class="org.sakaiproject.sms.renderers.SearchCriteriaRenderer">
+  	<property name="labelID" value="Account Number:"/>
+  	<property name="labelDropDown" value="Type:"/>  
+  	<property name="searchBeanName" value="searchTransactionLog"/>
+  	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+  	<property name="ELEvaluator" ref="ELEvaluator" />
+  </bean>
+  
+  <bean id="messageLogCriteriaRenderer" class="org.sakaiproject.sms.renderers.SearchCriteriaRenderer">
+    <property name="labelID" value="Mobile Number:"/>
+  	<property name="labelDropDown" value="Message Status:"/>
+  	<property name="searchBeanName" value="searchMessageLog"/>
+  	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+  	<property name="ELEvaluator" ref="ELEvaluator" />
+  </bean>	
+  
+  <bean id="taskListSearchResultsRenderer" class="org.sakaiproject.sms.renderers.TaskListResultsRenderer">  
+  	 <property name="smsTaskLogic" ref="smsTaskLogic"/>
+  </bean>
+  
+  <bean id="transactionLogSearchResultsRenderer" class="org.sakaiproject.sms.renderers.TransactionLogResultsRenderer">  
+  	 <property name="smsTransactionLogic" ref="smsTransactionLogic"/> 
+  </bean>
+  
+  <bean id="messageLogSearchResultsRenderer" class="org.sakaiproject.sms.renderers.MessageLogResultsRenderer">  
+  	 <property name="smsMessageLogic" ref="smsMessageLogic"/>
+  </bean>
+
+  <!--  Producers -->
+  <bean class="org.sakaiproject.sms.producers.DebitAccountProducer">
+	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  </bean>
+
+  <bean class="org.sakaiproject.sms.producers.SmsTestProducer" >
+	<property name="accountHelper" ref="accountHelper" />
+  </bean>
+  
+  <bean class="org.sakaiproject.sms.producers.HelperProducer">
+ 	<property name="accountHelper" ref="accountHelper" />
+ 	<property name="smsTaskLocator" ref="SmsTaskLocator" />
+  </bean>
+  
+  <bean class="org.sakaiproject.sms.producers.SmsSiteConfigProducer">
+  	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  </bean>
+  
+  <bean class="org.sakaiproject.sms.producers.SmsSystemConfigProducer">
+	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  </bean>
+  											  
+  <bean class="org.sakaiproject.sms.producers.TaskListPopupProducer" >
+  	<property name="smsTaskLogic" ref="smsTaskLogic"/>
+  </bean>
+  
+  <bean class="org.sakaiproject.sms.producers.AccountProducer" >
+  	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+  	<property name="ELEvaluator" ref="ELEvaluator" />
+  	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  </bean>
+  
+  <bean class="org.sakaiproject.sms.producers.BillingAdminProducer" >
+  	<property name="smsAccountLogic" ref="SmsAccountLogic" />
+  </bean>	
+  
+  <bean id="taskListProducer" class="org.sakaiproject.sms.producers.TaskListProducer">
+  	<property name="searchCriteriaRenderer" ref="taskListCriteriaRenderer"/>  
+  	<property name="searchResultsRenderer" ref="taskListSearchResultsRenderer"/>
+  	<property name="searchFilterBean" ref="searchTaskList"/>
+  	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  </bean>
+   
+  <bean id="transactionLogProducer" class="org.sakaiproject.sms.producers.TransactionLogProducer">
+  	<property name="searchCriteriaRenderer" ref="transactionLogCriteriaRenderer"/>  
+  	<property name="searchResultsRenderer" ref="transactionLogSearchResultsRenderer"/>
+  	<property name="searchFilterBean" ref="searchTransactionLog"/>
+  	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  </bean>
+
+  <bean id="messageLogProducer" class="org.sakaiproject.sms.producers.MessageLogProducer">
+  	<property name="searchCriteriaRenderer" ref="messageLogCriteriaRenderer"/>  
+  	<property name="searchResultsRenderer" ref="messageLogSearchResultsRenderer"/>
+  	<property name="searchFilterBean" ref="searchMessageLog"/>
+  	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  </bean>
+  
+  
+  <!--  Action Beans -->  
+  <bean id="debitAccountActionBean" class="org.sakaiproject.sms.beans.DebitAccountActionBean">
+  	<property name="debitAccountBean" ref="debitAccountBean"/>
+  	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
+  	<property name="messages" ref="targettedMessageList"/>
+  </bean>
+  
+  
+  <bean id="csvExportBean" class="org.sakaiproject.sms.reporting.CsvExportBean">
+  	<property name="sakaiDateFormat" ref="sakaiDateFormat"/>
+  </bean>
+
+  <bean id="SmsTestActionBean" class="org.sakaiproject.sms.beans.SmsTestActionBean">
+  	<property name="smsSmpp" ref="org.sakaiproject.sms.api.SmsSmpp" />
+  	<property name="smsMessageLocator" ref="SmsMessageLocator" />
+  	<property name="messages" ref="targettedMessageList"/>
+  </bean>
+
+  <bean id="smsSiteConfigActionBean" class="org.sakaiproject.sms.beans.SmsSiteConfigActionBean">
+  	 <property name="smsConfigLocator" ref="SmsConfigLocator"/>
+  	 <property name="smsConfigLogic" ref="smsConfigLogic"/>
+  </bean>
+  
+  <bean id="HelperActionBean" class="org.sakaiproject.sms.beans.HelperActionBean" >
+  	<property name="smsTaskLocator" ref="SmsTaskLocator" />
+  	<property name="smsService" ref="org.sakaiproject.sms.api.SmsService" />
+  	<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
+  	<property name="messages" ref="targettedMessageList"/>
+  	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
+  </bean>
+  
+  <!-- Helpers -->
+  <bean id="accountHelper" class="org.sakaiproject.sms.util.SmsAccountHelper">
+    <property name="ELEvaluator" ref="ELEvaluator" />
+	<property name="smsAccountLogic" ref="SmsAccountLogic" />
+  </bean>
+  
+  <bean id="messageFixupHelper" class="org.sakaiproject.sms.util.MessageFixupHelper">
+  	<property name="messages" ref="targettedMessageList" />
+  </bean>
+   	
+  <!-- Locators -->
+  <bean id="SmsMessageLocator" class="org.sakaiproject.sms.otp.SmsMessageLocator" >
+  	<property name="smsMessageLogic" ref="smsMessageLogic" />
+  </bean>
+  
+  <bean id="SmsConfigLocator" class="org.sakaiproject.sms.otp.SmsConfigLocator">
+  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
+  </bean>
+  
+  <bean id="SmsSystemConfigLocator" class="org.sakaiproject.sms.otp.SmsSystemConfigLocator">
+  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
+  </bean>
+  
+   <bean id="SmsAccountLocator" class="org.sakaiproject.sms.otp.SmsAccountLocator">
+  	<property name="smsAccountLogic" ref="SmsAccountLogic"/>
+  	<property name="messages" ref="targettedMessageList" />
+  </bean>
+  
+  <bean id="SmsTaskLocator" class="org.sakaiproject.sms.otp.SmsTaskLocator">
+    	<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore"/>
+  </bean>
+  
+  <!-- Handler Hook -->
+  <bean id="reportHandlerHook" class="org.sakaiproject.sms.reporting.ReportHandlerHook">
+  	<property name="viewparams" ref="viewParameters" />
+  	<property name="response" ref="httpServletResponse" />
+  	<property name="csvExportBean" ref="csvExportBean" />
+  </bean>	
+
+  <bean id="nullableFieldDateTransit" parent="beanExploder">
+    <property name="factory">
+      <bean class="org.sakaiproject.sms.rsf.NullableFieldDateTransit"
+        init-method="init">
+        <property name="locale" ref="requestLocale" />
+        <property name="timeZone" ref="requestTimeZone"/>
+        <property name="shortformat" ref="sakaiDateFormat" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="myFieldDateInputEvolver" 
+     class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver" singleton="false">
+    <property name="JSEmitter" ref="dateSymbolJSEmitter" />
+    <property name="requestBeanGetter" ref="ELEvaluator" />
+    <property name="transitBase" value="nullableFieldDateTransit" />
+  </bean>
+  
+</beans>
