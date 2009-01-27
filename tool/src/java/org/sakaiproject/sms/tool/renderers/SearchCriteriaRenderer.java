@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.renderers;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.springframework.util.Assert;
 

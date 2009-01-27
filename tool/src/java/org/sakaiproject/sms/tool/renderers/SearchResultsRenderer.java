@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.renderers;
 
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
 
 import uk.org.ponder.rsf.components.UIContainer;

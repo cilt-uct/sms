@@ -17,8 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.reporting;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;

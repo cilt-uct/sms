@@ -17,11 +17,11 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.beans;
 
-import org.sakaiproject.sms.hibernate.model.SmsTask;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.impl.SmsTaskValidationException;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 
 import uk.org.ponder.messageutil.TargettedMessage;

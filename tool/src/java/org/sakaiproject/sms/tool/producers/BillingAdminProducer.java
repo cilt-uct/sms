@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.producers;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.logic.SmsAccountLogic;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;

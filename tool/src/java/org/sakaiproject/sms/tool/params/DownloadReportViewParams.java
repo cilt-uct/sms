@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 

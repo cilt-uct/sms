@@ -19,7 +19,7 @@
 
 package org.sakaiproject.sms.tool.renderers;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
 
 import uk.org.ponder.rsf.components.UIContainer;

@@ -18,7 +18,7 @@
 
 package org.sakaiproject.sms.tool.params;
 
-import org.sakaiproject.sms.hibernate.logic.SmsConfigLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 

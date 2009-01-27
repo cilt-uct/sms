@@ -17,8 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.util;
 
-import org.sakaiproject.sms.hibernate.logic.SmsAccountLogic;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
 
 import uk.org.ponder.beanutil.BeanGetter;
 
