@@ -23,23 +23,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
-import org.apache.log4j.Level;
-import org.sakaiproject.sms.api.SmsBilling;
-import org.sakaiproject.sms.api.SmsCore;
-import org.sakaiproject.sms.api.SmsSmpp;
-import org.sakaiproject.sms.hibernate.logic.impl.HibernateLogicFactory;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
-import org.sakaiproject.sms.hibernate.model.SmsConfig;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.DateUtil;
-import org.sakaiproject.sms.logic.smpp.impl.validate.TaskValidator;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
+import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatelog;
+import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.

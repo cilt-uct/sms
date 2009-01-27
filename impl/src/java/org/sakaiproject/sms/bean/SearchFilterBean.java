@@ -19,7 +19,7 @@ package org.sakaiproject.sms.bean;
 
 import java.util.Date;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 // TODO: Auto-generated Javadoc

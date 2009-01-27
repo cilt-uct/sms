@@ -26,14 +26,14 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sakaiproject.sms.hibernate.dao.SmsDao;
-import org.sakaiproject.sms.hibernate.logic.SmsAccountLogic;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.DuplicateUniqueFieldException;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
-import org.sakaiproject.sms.hibernate.model.SmsTransaction;
-import org.sakaiproject.sms.hibernate.model.constants.SmsPropertyConstants;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
-import org.sakaiproject.sms.hibernate.util.SmsPropertyReader;
+import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsTransaction;
+import org.sakaiproject.sms.model.hibernate.constants.SmsPropertyConstants;
+import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.SmsPropertyReader;
 
 /**
  * The data service will handle all sms Account database transactions for the

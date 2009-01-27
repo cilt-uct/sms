@@ -2,19 +2,19 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
 
-import org.apache.log4j.Level;
-import org.sakaiproject.sms.hibernate.logic.impl.HibernateLogicFactory;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
-import org.sakaiproject.sms.impl.SmsBillingImpl;
-import org.sakaiproject.sms.impl.SmsCoreImpl;
-import org.sakaiproject.sms.impl.SmsSchedulerImpl;
-import org.sakaiproject.sms.impl.SmsSmppImpl;
-import org.sakaiproject.sms.impl.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsTaskValidationException;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * SmsScheduler Junit.This class will test various scheduling related scenarios.

@@ -20,7 +20,7 @@ package org.sakaiproject.sms.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.model.BaseModel;
+import org.sakaiproject.sms.model.hibernate.BaseModel;
 
 /**
  * This class is used my the criteria search methods.

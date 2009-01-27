@@ -18,10 +18,10 @@
 
 package org.sakaiproject.sms.logic.smpp.impl;
 
-import org.sakaiproject.sms.api.SmsCore;
-import org.sakaiproject.sms.api.SmsScheduler;
-import org.sakaiproject.sms.hibernate.logic.impl.HibernateLogicFactory;
-import org.sakaiproject.sms.hibernate.model.SmsConfig;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
+import org.sakaiproject.sms.logic.smpp.SmsScheduler;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.springframework.util.Assert;
 
 public class SmsSchedulerImpl implements SmsScheduler {

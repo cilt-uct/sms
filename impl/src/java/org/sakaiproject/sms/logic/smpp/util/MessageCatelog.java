@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
 /**
  * Tool for obtaining mesages from message bundles

@@ -17,10 +17,10 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
-import org.sakaiproject.sms.smpp.util.MessageCatelog;
+import org.sakaiproject.sms.logic.smpp.util.MessageCatelog;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * Test case to test the MessageCatelog class functionality

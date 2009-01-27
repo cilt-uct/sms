@@ -2,9 +2,9 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.beans.DebitAccountBean;
+import org.sakaiproject.sms.tool.beans.DebitAccountBean;
 import org.sakaiproject.sms.tool.test.stubs.SmsAccountLogicStub;
-import org.sakaiproject.sms.validators.DebitAccountValidator;
+import org.sakaiproject.sms.tool.validators.DebitAccountValidator;
 import org.springframework.validation.BindException;
 
 public class DebitAccountValidatorTest extends TestCase{

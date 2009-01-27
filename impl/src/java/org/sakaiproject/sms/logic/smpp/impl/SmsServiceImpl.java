@@ -22,12 +22,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.api.SmsBilling;
-import org.sakaiproject.sms.api.SmsCore;
-import org.sakaiproject.sms.api.SmsService;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.logic.smpp.impl.validate.TaskValidator;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
+import org.sakaiproject.sms.logic.smpp.SmsService;
+import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * This API allows for easy implementation of SMS services in an existing or new

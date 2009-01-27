@@ -19,11 +19,9 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
-import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.sakaiproject.sms.hibernate.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * This unit test will create 2 separate but concurrent connections (sessions)

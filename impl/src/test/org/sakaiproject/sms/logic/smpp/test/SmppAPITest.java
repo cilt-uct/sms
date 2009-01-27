@@ -20,17 +20,17 @@ package org.sakaiproject.sms.logic.smpp.test;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
-import org.apache.log4j.Level;
-import org.sakaiproject.sms.hibernate.logic.impl.HibernateLogicFactory;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
-import org.sakaiproject.sms.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * Test some api function on the smpp api. For example successful connect and

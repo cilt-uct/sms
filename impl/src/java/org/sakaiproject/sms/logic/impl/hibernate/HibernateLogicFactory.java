@@ -18,12 +18,12 @@
 
 package org.sakaiproject.sms.logic.impl.hibernate;
 
-import org.sakaiproject.sms.hibernate.logic.ExternalLogic;
-import org.sakaiproject.sms.hibernate.logic.SmsAccountLogic;
-import org.sakaiproject.sms.hibernate.logic.SmsConfigLogic;
-import org.sakaiproject.sms.hibernate.logic.SmsMessageLogic;
-import org.sakaiproject.sms.hibernate.logic.SmsTaskLogic;
-import org.sakaiproject.sms.hibernate.logic.SmsTransactionLogic;
+import org.sakaiproject.sms.logic.hibernate.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 
 /**
  * Factory class that is used to get instances of the logc classes.

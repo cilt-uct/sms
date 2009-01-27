@@ -3,10 +3,10 @@ package org.sakaiproject.sms.tool.test.stubs;
 import java.util.Date;
 import java.util.Set;
 
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public class SmsBillingStub implements SmsBilling {
 

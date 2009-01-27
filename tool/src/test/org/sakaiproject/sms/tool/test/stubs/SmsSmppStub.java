@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.test.stubs;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.smpp.SmsDeliveryReport;
 
 /**

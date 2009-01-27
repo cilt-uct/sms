@@ -56,24 +56,24 @@
   
   <bean id="smsConfigGaurd" parent="writeGuardParent">
   	<property name="guardedPath" value="SmsConfigLocator.*"/>
-	<property name="guard"><bean class="org.sakaiproject.sms.validators.SmsConfigValidator" /></property>
+	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsConfigValidator" /></property>
   </bean>
   
   <bean id="smsAccountGuard" parent="writeGuardParent">
  	<property name="guardedPath" value="SmsAccountLocator.*" />
- 	<property name="guard"><bean class="org.sakaiproject.sms.validators.SmsAccountValidator" /></property>
+ 	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator" /></property>
   </bean>
  
   <bean id="smsTaskGuard" parent="writeGuardParent">
  	<property name="guardedPath" value="SmsTaskLocator.*" />
- 	<property name="guard"><bean class="org.sakaiproject.sms.validators.SmsTaskValidator" /></property>
+ 	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsTaskValidator" /></property>
   </bean> 
   
   <bean id="debitAccoutGaurd" parent="writeGuardParent">
  	<property name="guardedPath" value="debitAccountBean"/>
  	<property name="guard">
- 		<bean class="org.sakaiproject.sms.validators.DebitAccountValidator">
- 		<property name="smsAccountLogic" ref="SmsAccountLogic"/>
+ 		<bean class="org.sakaiproject.sms.tool.validators.DebitAccountValidator">
+ 			<property name="smsAccountLogic" ref="SmsAccountLogic"/>
    		</bean>
    </property>
   </bean>
@@ -82,7 +82,7 @@
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="debitAccountBean.amountToDebit" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="amountToDebit" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
@@ -92,7 +92,7 @@
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="debitAccountBean.accountId" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="accountId" />
 			<property name="numberClass" value="java.lang.Long" />
 		</bean>
@@ -103,7 +103,7 @@
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsAccountLocator.*.balance" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="balance" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
@@ -113,7 +113,7 @@
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsAccountLocator.*.overdraftLimit" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="overdraftLimit" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
@@ -123,7 +123,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.creditCost" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="creditCost" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
@@ -133,7 +133,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.schedulerInterval" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="schedulerInterval" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -143,7 +143,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.delReportTimeoutDuration" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="delReportTimeoutDuration" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -153,7 +153,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryMaxCount" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="smsRetryMaxCount" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -163,7 +163,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryScheduleInterval" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="smsRetryScheduleInterval" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -173,7 +173,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.smsTaskMaxLifeTime" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="smsTaskMaxLifeTime" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -183,7 +183,7 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsConfigLocator.*.pagingSize" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.NumberEditorFactory">
+		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="pagingSize" />
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
@@ -193,11 +193,11 @@
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsTaskLocator.*.messageBody" />
 	<property name="converter">
-		<bean class="org.sakaiproject.sms.util.MsgBodyEditorFactory" />
+		<bean class="org.sakaiproject.sms.tool.util.MsgBodyEditorFactory" />
 	</property>
  </bean>
 
- <bean id="sakaiDateFormat" class="org.sakaiproject.sms.util.SakaiDateFormat"/>
+ <bean id="sakaiDateFormat" class="org.sakaiproject.sms.tool.util.SakaiDateFormat"/>
 
   <!--
 	Override this definition from RSF-evolvers, to reflect the fact we are
@@ -211,7 +211,7 @@
   <!-- View Params for Downloadable content -->
   <bean parent="viewParamsRegistrarParent">
     <property name="viewID" value="downloadCsv" />
-    <property name="viewParamsClass" value="org.sakaiproject.sms.params.DownloadReportViewParams" />
+    <property name="viewParamsClass" value="org.sakaiproject.sms.tool.params.DownloadReportViewParams" />
   </bean>
     
   <!-- Custom request cycle for downloads --> 

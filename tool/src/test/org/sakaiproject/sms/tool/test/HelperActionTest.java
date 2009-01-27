@@ -19,10 +19,10 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.beans.ActionResults;
-import org.sakaiproject.sms.beans.HelperActionBean;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.otp.SmsTaskLocator;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.tool.beans.ActionResults;
+import org.sakaiproject.sms.tool.beans.HelperActionBean;
+import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsBillingStub;
 import org.sakaiproject.sms.tool.test.stubs.SmsCoreStub;
 import org.sakaiproject.sms.tool.test.stubs.SmsServiceStub;

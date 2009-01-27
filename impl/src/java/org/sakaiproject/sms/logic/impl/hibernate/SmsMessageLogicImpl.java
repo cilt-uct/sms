@@ -30,18 +30,17 @@ import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
-import org.sakaiproject.sms.hibernate.bean.SearchResultContainer;
-import org.sakaiproject.sms.hibernate.dao.SmsDao;
-import org.sakaiproject.sms.hibernate.logic.SmsMessageLogic;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsSearchException;
-import org.sakaiproject.sms.hibernate.model.SmsConfig;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.DateUtil;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
+import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * The data service will handle all sms Message database transactions for the

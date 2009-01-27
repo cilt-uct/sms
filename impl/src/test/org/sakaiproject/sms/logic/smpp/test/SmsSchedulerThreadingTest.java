@@ -19,11 +19,9 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
-import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.sakaiproject.sms.hibernate.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * This class will create 2 Sms schedulers.The will run together processing the

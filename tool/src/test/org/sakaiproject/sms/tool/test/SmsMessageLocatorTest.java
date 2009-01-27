@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.otp.SmsMessageLocator;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsMessageLogicStub;
 
 public class SmsMessageLocatorTest extends TestCase {

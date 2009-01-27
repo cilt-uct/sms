@@ -19,7 +19,7 @@ package org.sakaiproject.sms.logic.impl.hibernate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.hibernate.logic.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.ExternalLogic;
 
 // Sakai imports
 //import org.sakaiproject.authz.api.FunctionManager;

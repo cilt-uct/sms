@@ -19,10 +19,8 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.beans.ActionResults;
-import org.sakaiproject.sms.beans.SmsTestActionBean;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.otp.SmsMessageLocator;
+import org.sakaiproject.sms.tool.beans.SmsTestActionBean;
+import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsSmppStub;
 
 import uk.org.ponder.messageutil.TargettedMessageList;
