@@ -16,7 +16,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.logic.smpp.impl;
+package org.sakaiproject.sms.logic.smpp;
 
 import java.util.ArrayList;
 

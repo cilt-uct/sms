@@ -1,7 +1,7 @@
 package org.sakaiproject.sms.model.hibernate.factory;
 
+import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
-import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;

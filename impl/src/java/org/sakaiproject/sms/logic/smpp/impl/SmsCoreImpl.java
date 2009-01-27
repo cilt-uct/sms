@@ -25,11 +25,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
-import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
+import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatelog;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;

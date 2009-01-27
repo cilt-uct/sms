@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.impl.hibernate.exception;
+package org.sakaiproject.sms.logic.hibernate.exception;
 
 /**
  * General search exception that will be thrown when hibernate search criteria

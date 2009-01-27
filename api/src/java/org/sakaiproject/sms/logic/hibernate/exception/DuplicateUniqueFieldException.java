@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.impl.hibernate.exception;
+package org.sakaiproject.sms.logic.hibernate.exception;
 
 public class DuplicateUniqueFieldException extends RuntimeException {
 

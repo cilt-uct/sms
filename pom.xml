@@ -16,14 +16,14 @@
     <version>0.1</version><!--Sms.version-->
 
     <!-- Sakai master pom is the parent -->
-    <parent>
-        <artifactId>master</artifactId>
-        <groupId>org.sakaiproject</groupId>
+<!--    <parent>-->
+<!--        <artifactId>master</artifactId>-->
+<!--        <groupId>org.sakaiproject</groupId>-->
 <!--        <version>SNAPSHOT</version>-->
 <!--        <version>M2</version>-->
-        <version>2.5.0</version>
-        <relativePath>../master/pom.xml</relativePath>
-    </parent>
+<!--        <version>2.5.0</version>-->
+<!--        <relativePath>../master/pom.xml</relativePath>-->
+<!--    </parent>-->
 
     <profiles>
         <profile>
@@ -33,9 +33,9 @@
             </activation>
             <modules>
                 <module>api</module>
-                <module>impl</module>
-                <module>pack</module>
-                <module>tool</module>
+<!--                <module>impl</module>-->
+<!--                <module>pack</module>-->
+<!--                <module>tool</module>-->
             </modules>
         </profile>
         <profile>
@@ -50,28 +50,11 @@
                 <module>api</module>
             </modules>
         </profile>
-        <profile>
-            <id>ddl</id>
-            <modules>
-                <module>impl/src/ddl</module>
-            </modules>
-        </profile>
     </profiles>
 
     <!-- handles the management of all related dependencies -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.sakaiproject.sms</groupId>
-                <artifactId>sms-api</artifactId>
-                <version>0.1</version><!--Sms.version-->
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.sakaiproject.sms</groupId>
-                <artifactId>sms-impl</artifactId>
-                <version>0.1</version><!--Sms.version-->
-            </dependency>
 <!-- 
             <dependency>
                 <groupId>org.sakaiproject.entitybroker</groupId>

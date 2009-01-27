@@ -23,31 +23,121 @@
         <artifactId>sms</artifactId>
         <version>0.1</version><!--Sms.version-->
     </parent>
+	
+	<repositories>
 
-    <dependencies />
+		<repository>
+			<id>Sakai</id>
+			<name>Sakai Maven Repo</name>
+			<url>http://source.sakaiproject.org/maven2</url>
+		</repository>
+
+		<repository>
+			<id>opensymphony</id>
+			<url>http://maven2.opensymphony.com</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+    <dependencies>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.groboutils</groupId>
+			<artifactId>groboutils-core</artifactId>
+			<version>5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code</groupId>
+			<artifactId>jsmpp</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+				<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.5.ga</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.0.1B</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		<dependency>
+        	<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+    		<version>2.4</version>
+    	</dependency>
+	</dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-            <!-- include the readme.txt file and the java source files -->
-            <resource>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>*.txt</include>
-                    <include>src/**/*.java</include>
-                    <include>src/**/*.html</include>
-                    <include>src/**/*.xml</include>
-                    <include>src/**/*.properties</include>
-                </includes>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-    </build>
+		<finalName>sms_api</finalName>
+		<sourceDirectory>${basedir}/src/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>smpp.properties</include>
+					<include>messages_en.properties</include>
+				</includes>
+				<excludes>
+					<exclude>src/*</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**</exclude>
+					</excludes>
+				</configuration>
+
+			</plugin>
+
+		</plugins>
+	</build>
 
 </project>

@@ -28,7 +28,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsPropertyConstants;

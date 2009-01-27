@@ -20,6 +20,8 @@ package org.sakaiproject.sms.model.hibernate;
 
 import java.util.Date;
 
+import org.sakaiproject.sms.util.DateUtil;
+
 /**
  * Transactions linked to a specific sms account. When a sms task is created, a
  * transaction will be inserted indicating that credits are reserved. When the

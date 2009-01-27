@@ -21,7 +21,7 @@ package org.sakaiproject.sms.logic.smpp;
 import java.util.Date;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 

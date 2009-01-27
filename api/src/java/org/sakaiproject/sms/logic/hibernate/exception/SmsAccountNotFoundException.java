@@ -1,4 +1,4 @@
-package org.sakaiproject.sms.logic.impl.hibernate.exception;
+package org.sakaiproject.sms.logic.hibernate.exception;
 
 /**
  * A exception class that indicates an account does not exists for a partucluar action
