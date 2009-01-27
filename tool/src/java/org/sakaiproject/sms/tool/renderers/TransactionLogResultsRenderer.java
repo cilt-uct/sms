@@ -39,7 +39,8 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 	private final static org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(TransactionLogResultsRenderer.class);
 
-	private SearchResultContainer<SmsTransaction> smsTransactions = new SearchResultContainer<SmsTransaction>(SmsUiConstants.NO_RESULTS_PAGING_SIZE);
+	private SearchResultContainer<SmsTransaction> smsTransactions = new SearchResultContainer<SmsTransaction>(
+			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
 
 	private SearchFilterBean searchFilterBean;
 	private SortHeaderRenderer sortHeaderRenderer;
@@ -66,14 +67,16 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 		searchFilterBean.setOrderBy(sortViewParams.sortBy);
 		searchFilterBean.setSortDirection(sortViewParams.sortDir);
 		setCurrentPage(searchFilterBean, sortViewParams);
-		
-		if(searchFilterBean.getNumber() != null && searchFilterBean.getNumber().trim().equals(""))
+
+		if (searchFilterBean.getNumber() != null
+				&& searchFilterBean.getNumber().trim().equals(""))
 			searchFilterBean.setNumber(null);
 
 		smsTransactions = null;
 		boolean fail = false;
 		try {
-			smsTransactions = smsTransactionLogic.getPagedSmsTransactionsForCriteria(searchFilterBean);
+			smsTransactions = smsTransactionLogic
+					.getPagedSmsTransactionsForCriteria(searchFilterBean);
 			sortViewParams.current_count = smsTransactions.getNumberOfPages();
 		} catch (SmsSearchException e) {
 			LOG.error(e);
@@ -86,8 +89,7 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 			UIMessage.make(searchResultsTable, "warning", "GeneralActionError");
 		else {
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-id:", sortViewParams,
-					"id",
+					"tableheader-id:", sortViewParams, "id",
 					"sms.transaction-log-search-results.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-account-number:", sortViewParams,
@@ -113,7 +115,8 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 					"tableheader-account-balance:", sortViewParams, "balance",
 					"sms.transaction-log-search-results.account.balanace");
 
-			for (SmsTransaction smsTransaction : smsTransactions.getPageResults()) {
+			for (SmsTransaction smsTransaction : smsTransactions
+					.getPageResults()) {
 
 				UIBranchContainer row = UIBranchContainer.make(
 						searchResultsTable, "dataset:");
@@ -123,10 +126,10 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 				UIOutput.make(row, "row-data-account-number", NullHandling
 						.safeToString(smsTransaction.getSmsAccount().getId()));
 				UIOutput.make(row, "row-data-transaction-type", NullHandling
-						.safeToString(smsTransaction
-						.getTransactionTypeCode()));
+						.safeToString(smsTransaction.getTransactionTypeCode()));
 				UIOutput.make(row, "row-data-transaction-date", NullHandling
-						.safeToStringFormated(smsTransaction.getTransactionDate()));
+						.safeToStringFormated(smsTransaction
+								.getTransactionDate()));
 				UIOutput.make(row, "row-data-transaction-credits", NullHandling
 						.safeToString(smsTransaction.getTransactionCredits()));
 				UIOutput.make(row, "row-data-transaction-amount", NullHandling
@@ -136,16 +139,17 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 			}
 		}
 	}
-	
-	private void setCurrentPage(SearchFilterBean searchBean, SortPagerViewParams sortViewParams) {
 
-		//new search
-		if(searchBean.isNewSearch()){
+	private void setCurrentPage(SearchFilterBean searchBean,
+			SortPagerViewParams sortViewParams) {
+
+		// new search
+		if (searchBean.isNewSearch()) {
 			sortViewParams.current_start = 1;
 			searchBean.setNewSearch(false);
-		}
-		else//paging
-			searchBean.setCurrentPage(sortViewParams.current_start);	
+		} else
+			// paging
+			searchBean.setCurrentPage(sortViewParams.current_start);
 	}
 
 	public Long getTotalNumberOfRowsReturned() {

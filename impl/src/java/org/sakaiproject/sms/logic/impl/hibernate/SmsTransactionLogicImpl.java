@@ -41,6 +41,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.factory.SmsTransactionFactory;
+import org.sakaiproject.sms.util.DateUtil;
 import org.sakaiproject.sms.util.HibernateUtil;
 
 /**

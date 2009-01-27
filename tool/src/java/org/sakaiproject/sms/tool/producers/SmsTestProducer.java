@@ -17,6 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.producers;
 
+import static org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants.MAX_SMS_LENGTH;
+
 import java.util.ArrayList;
 import java.util.List;
 
