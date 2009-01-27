@@ -19,6 +19,7 @@ package org.sakaiproject.sms.model.smpp;
 
 import java.util.HashMap;
 
+import org.jsmpp.util.DeliveryReceiptState;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 
 /**

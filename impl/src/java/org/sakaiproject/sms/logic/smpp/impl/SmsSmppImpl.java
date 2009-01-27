@@ -17,7 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.impl;
 
-import java.awt.TrayIcon.MessageType;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,9 +30,37 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 
-import org.sakaiproject.event.api.SessionState;
+import org.apache.log4j.Level;
+import org.jsmpp.InvalidResponseException;
+import org.jsmpp.PDUException;
+import org.jsmpp.bean.Address;
+import org.jsmpp.bean.AlertNotification;
+import org.jsmpp.bean.Alphabet;
+import org.jsmpp.bean.BindType;
+import org.jsmpp.bean.DeliverSm;
+import org.jsmpp.bean.DeliveryReceipt;
+import org.jsmpp.bean.ESMClass;
+import org.jsmpp.bean.GeneralDataCoding;
+import org.jsmpp.bean.MessageClass;
+import org.jsmpp.bean.MessageType;
+import org.jsmpp.bean.NumberingPlanIndicator;
+import org.jsmpp.bean.RegisteredDelivery;
+import org.jsmpp.bean.ReplaceIfPresentFlag;
+import org.jsmpp.bean.SMSCDeliveryReceipt;
+import org.jsmpp.bean.SubmitMultiResult;
+import org.jsmpp.bean.TypeOfNumber;
+import org.jsmpp.extra.NegativeResponseException;
+import org.jsmpp.extra.ProcessRequestException;
+import org.jsmpp.extra.ResponseTimeoutException;
+import org.jsmpp.extra.SessionState;
+import org.jsmpp.session.BindParameter;
+import org.jsmpp.session.MessageReceiverListener;
+import org.jsmpp.session.SMPPSession;
+import org.jsmpp.session.SessionStateListener;
+import org.jsmpp.util.AbsoluteTimeFormatter;
+import org.jsmpp.util.InvalidDeliveryReceiptException;
+import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -59,7 +86,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	private String password;
 	private int port;
 	private byte priorityFlag;
-	private Properties properties = new Properties();
+	private final Properties properties = new Properties();
 	private byte protocolId;
 	private byte replaceIfPresentFlag;
 	private String serviceType;
