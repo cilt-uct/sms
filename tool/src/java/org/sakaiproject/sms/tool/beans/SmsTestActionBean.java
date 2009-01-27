@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.api.SmsSmpp;
 import org.sakaiproject.sms.hibernate.model.SmsMessage;
+import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 
 import uk.org.ponder.messageutil.TargettedMessage;

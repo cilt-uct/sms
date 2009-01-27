@@ -19,8 +19,8 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.api.SmsCore;
 import org.sakaiproject.sms.hibernate.model.SmsTask;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsCoreStub;
 

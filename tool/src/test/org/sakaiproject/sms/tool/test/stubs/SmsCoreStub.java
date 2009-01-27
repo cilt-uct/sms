@@ -21,9 +21,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.api.SmsCore;
 import org.sakaiproject.sms.hibernate.model.SmsMessage;
 import org.sakaiproject.sms.hibernate.model.SmsTask;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
 
 public class SmsCoreStub implements SmsCore {
 

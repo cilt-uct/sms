@@ -20,7 +20,7 @@ package org.sakaiproject.sms.tool.validators;
 import java.util.ArrayList;
 
 import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.impl.validate.TaskValidator;
+import org.sakaiproject.sms.logic.smpp.impl.validate.TaskValidator;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

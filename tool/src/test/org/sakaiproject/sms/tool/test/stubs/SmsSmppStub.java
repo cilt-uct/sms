@@ -20,9 +20,9 @@ package org.sakaiproject.sms.tool.test.stubs;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.api.SmsSmpp;
 import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.model.SmsDeliveryReport;
+import org.sakaiproject.sms.logic.smpp.SmsSmpp;
+import org.sakaiproject.sms.model.smpp.SmsDeliveryReport;
 
 /**
  * The Class SmsSmppStub. Stub implementation of {@link SmsSmpp} with minimal
@@ -116,7 +116,7 @@ public class SmsSmppStub implements SmsSmpp {
 	/**
 	 * Test method that sets debugInfo as "called"
 	 * 
-	 * @see org.sakaiproject.sms.api.SmsSmpp#sendMessageToGateway(org.sakaiproject
+	 * @see org.sakaiproject.sms.logic.smpp.SmsSmpp#sendMessageToGateway(org.sakaiproject
 	 *      .sms.hibernate.model.SmsMessage)
 	 */
 	public SmsMessage sendMessageToGateway(SmsMessage msg) {
