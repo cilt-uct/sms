@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="api/src/java"/>
 	<classpathentry kind="src" path="impl/src/java"/>
 	<classpathentry kind="src" path="pack/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="tool/src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
