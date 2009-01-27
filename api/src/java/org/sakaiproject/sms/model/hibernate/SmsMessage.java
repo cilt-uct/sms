@@ -20,8 +20,8 @@ package org.sakaiproject.sms.model.hibernate;
 
 import java.util.Date;
 
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.hibernate.util.DateUtil;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * A single sms message. One or more messages is linked to a sms task. When a

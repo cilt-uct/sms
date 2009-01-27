@@ -19,12 +19,12 @@ package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.ArrayList;
 
-import org.sakaiproject.sms.hibernate.logic.impl.HibernateLogicFactory;
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.model.constants.ValidationConstants;
-import org.sakaiproject.sms.impl.SmsBillingImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 /**
  * This class is used to do various validations involving SmsTasks. It is called

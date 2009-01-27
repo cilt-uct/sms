@@ -25,11 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.util.DateUtil;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
 /**
  * A sms task that needs to be processed. For example: send message X to sakai

@@ -19,9 +19,9 @@ package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.ArrayList;
 
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.hibernate.model.constants.ValidationConstants;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 /**
  * This class is used to do varaious validations involving SmsTasks

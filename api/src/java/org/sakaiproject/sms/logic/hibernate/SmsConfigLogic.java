@@ -20,7 +20,7 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.model.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 
 /**
  * SMS configuration is stored in SMS_CONFIG. It caters for site-specific

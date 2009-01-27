@@ -15,11 +15,10 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.hibernate.dao;
+package org.sakaiproject.sms.dao;
 
 import java.util.Date;
-
-import org.apache.log4j.Level;
+import java.util.logging.Level;
 
 /**
  * Implementations of any specialized DAO methods from the specialized DAO that

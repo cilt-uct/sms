@@ -20,10 +20,10 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
-import org.sakaiproject.sms.hibernate.bean.SearchResultContainer;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsSearchException;
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
+import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
 
 /**
  * The data service will handle all sms Message database transactions for the
@@ -91,7 +91,8 @@ public interface SmsMessageLogic {
 			String... statusCodes);
 
 	/**
-	 * Gets a search results for all SmsMessages that match the specified criteria  
+	 * Gets a search results for all SmsMessages that match the specified
+	 * criteria
 	 * 
 	 * @param searchBean
 	 * @return Search result container
@@ -99,7 +100,7 @@ public interface SmsMessageLogic {
 	 */
 	public List<SmsMessage> getAllSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException;
-	
+
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page

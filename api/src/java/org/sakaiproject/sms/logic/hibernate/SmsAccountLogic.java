@@ -20,7 +20,7 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.model.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
 
 /**
  * The data service will handle all sms Account database transactions for the

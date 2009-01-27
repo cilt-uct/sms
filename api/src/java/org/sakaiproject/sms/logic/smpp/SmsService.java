@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.hibernate.model.SmsTask;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * This API allows for implementation of SMS services in an existing or new

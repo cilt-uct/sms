@@ -20,10 +20,10 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
-import org.sakaiproject.sms.hibernate.bean.SearchResultContainer;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsSearchException;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
+import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * The data service will handle all sms task database transactions for the sms

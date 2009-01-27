@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.hibernate.model.SmsMessage;
-import org.sakaiproject.sms.hibernate.model.SmsTask;
 import org.sakaiproject.sms.logic.smpp.impl.SmsTaskValidationException;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * The SMS service will handle all logic regarding the queueing, sending and

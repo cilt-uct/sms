@@ -19,8 +19,7 @@ package org.sakaiproject.sms.model.smpp;
 
 import java.util.HashMap;
 
-import org.jsmpp.util.DeliveryReceiptState;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 
 /**
  * Matches up the statuses from the JSMPP API to our local statuses.

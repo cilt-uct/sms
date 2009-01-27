@@ -1,10 +1,10 @@
-package org.sakaiproject.sms.hibernate.dao;
+package org.sakaiproject.sms.dao;
 
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
-import org.sakaiproject.sms.hibernate.model.BaseModel;
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
+import org.sakaiproject.sms.model.hibernate.BaseModel;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * Implements the database transactions and convenience methods that are common

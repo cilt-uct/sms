@@ -20,11 +20,11 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.bean.SearchFilterBean;
-import org.sakaiproject.sms.hibernate.bean.SearchResultContainer;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.hibernate.logic.impl.exception.SmsSearchException;
-import org.sakaiproject.sms.hibernate.model.SmsTransaction;
+import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.impl.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 
 /**
  * The data service will handle all sms Account database transactions for the

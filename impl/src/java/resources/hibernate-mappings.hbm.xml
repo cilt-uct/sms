@@ -1,0 +1,189 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+
+<hibernate-mapping>
+
+	<!-- SMS Task mapping -->
+	<class name="org.sakaiproject.sms.hibernate.model.SmsTask" table="SMS_TASK">
+		<id name="id" type="long" column="TASK_ID">
+			<generator class="native" />
+		</id>
+
+		<property name="sakaiSiteId" type="string" column="SAKAI_SITE_ID"
+			not-null="true" length="99" />
+		<property name="deliveryUserId" type="string" column="DELIVERY_USER_ID"
+			not-null="false" length="99" />
+		<property name="deliveryGroupId" type="string" column="DELIVERY_GROUP_ID"
+			not-null="false" length="99" />
+		<property name="messageTypeId" type="integer" column="MESSAGE_TYPE_ID"
+			not-null="false" />
+		<property name="smsAccountId" type="long" column="SMS_ACCOUNT_ID"
+			not-null="true" />
+		<property name="dateCreated" type="timestamp" column="DATE_CREATED"
+			not-null="true" />
+		<property name="dateToSend" type="timestamp" column="DATE_TO_SEND"
+			not-null="true" />
+		<property name="creditEstimate" type="integer" column="CREDIT_ESTIMATE"
+			not-null="false" />
+		<property name="statusCode" type="string" column="STATUS_CODE"
+			not-null="true" length="2" />
+		<property name="attemptCount" type="integer" column="ATTEMPT_COUNT"
+			not-null="true" />
+		<property name="messageBody" type="string" column="MESSAGE_BODY"
+			not-null="true" length="200" />
+		<property name="sakaiToolName" type="string" column="SAKAI_TOOL_NAME"
+			not-null="false" length="50" />
+		<property name="sakaiToolId" type="string" column="SAKAI_TOOL_ID"
+			not-null="false" length="99" />
+		<property name="senderUserName" type="string" column="SENDER_USER_NAME"
+			not-null="true" length="20" />
+		<property name="dateProcessed" type="timestamp" column="DATE_PROCESSED"
+			not-null="false" />
+		<property name="deliveryGroupName" type="string" column="DELIVERY_GROUP_NAME"
+			not-null="false" length="50" />
+		<property name="groupSizeEstimate" type="integer" column="GROUP_SIZE_ESTIMATE"
+			not-null="false" />
+		<property name="groupSizeActual" type="integer" column="GROUP_SIZE_ACTUAL"
+			not-null="false" />
+		<property name="maxTimeToLive" type="integer" column="MAX_TIME_TO_LIVE"
+			not-null="true" />
+		<property name="messagesProcessed" type="integer" column="MESSAGES_PROCESSED"
+			not-null="true" />
+		<property name="costEstimate" type="double" column="COST_ESTIMATE"
+			not-null="false" />
+		<property name="delReportTimeoutDuration" type="integer"
+			column="DEL_REPORT_TIMEOUT_DURATION" not-null="true" />
+		<property name="deliveryMobileNumbers" type="string"
+			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="1024" />
+		<property name="deliveryEntities" type="string" column="DELIVERY_ENTITY_LIST"
+			not-null="false" length="1024" />
+		<property name="failReason" type="string" column="FAIL_REASON"
+			not-null="false" length="200" />
+		<set name="smsMessages" lazy="false" inverse="true" cascade="all-delete-orphan">
+			<key column="TASK_ID" not-null="true" />
+			<one-to-many class="org.sakaiproject.sms.hibernate.model.SmsMessage"
+				not-found="ignore" />
+		</set>
+	</class>
+
+	<!-- SMS Message mapping -->
+	<class name="org.sakaiproject.sms.hibernate.model.SmsMessage"
+		table="SMS_MESSAGE">
+		<id name="id" type="long" column="MESSAGE_ID">
+			<generator class="native" />
+		</id>
+		<property name="smscMessageId" type="string" column="SMSC_MESSAGE_ID"
+			not-null="false" length="20" unique-key="true" />
+		<property name="smscId" type="string" column="SMSC_ID"
+			not-null="false" length="20" unique-key="true" />
+		<property name="mobileNumber" type="string" column="MOBILE_NUMBER"
+			not-null="true" length="50" />
+		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"
+			not-null="true" length="99" />
+		<property name="statusCode" type="string" column="STATUS_CODE"
+			not-null="true" length="2" />
+		<property name="smscDeliveryStatusCode" type="integer"
+			column="SMSC_DELIVERY_STATUS_CODE" not-null="false" />
+		<property name="dateDelivered" type="timestamp" column="DATE_DELIVERED"
+			not-null="false" />
+		<many-to-one name="smsTask" lazy="false"
+			class="org.sakaiproject.sms.hibernate.model.SmsTask" column="TASK_ID"
+			not-null="true" />
+	</class>
+
+
+	<class name="org.sakaiproject.sms.hibernate.model.SmsAccount"
+		table="SMS_ACCOUNT">
+		<id name="id" type="long" column="ACCOUNT_ID">
+			<generator class="native" />
+		</id>
+		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"
+			not-null="false" length="99" unique="true" />
+		<property name="sakaiSiteId" type="string" column="SAKAI_SITE_ID"
+			not-null="false" length="99" unique="true" />
+		<property name="messageTypeCode" type="string" column="MESSAGE_TYPE_CODE"
+			not-null="true" length="5" />
+		<property name="overdraftLimit" type="float" column="OVERDRAFT_LIMIT"
+			not-null="false" />
+		<property name="balance" type="float" column="BALANCE"
+			not-null="true" />
+		<property name="accountName" type="string" column="ACCOUNT_NAME"
+			not-null="true" length="99" />
+
+		<property name="startdate" type="timestamp" column="START_DATE"
+			not-null="true" />
+		<property name="enddate" type="timestamp" column="END_DATE"
+			not-null="false" />
+		<property name="accountEnabled" type="boolean" column="ACCOUNT_ENABLED"
+			not-null="true" />
+
+		<set name="smsTransactions" lazy="false" inverse="true"
+			cascade="all-delete-orphan">
+			<key column="SMS_ACCOUNT_ID" not-null="true" />
+			<one-to-many class="org.sakaiproject.sms.hibernate.model.SmsTransaction"
+				not-found="ignore" />
+		</set>
+	</class>
+
+	<class name="org.sakaiproject.sms.hibernate.model.SmsTransaction"
+		table="SMS_TRANSACTION">
+		<id name="id" type="long" column="TRANSACTION_ID">
+			<generator class="native" />
+		</id>
+		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"
+			not-null="true" length="99" />
+		<property name="transactionTypeCode" type="string"
+			column="TRANSACTION_TYPE_CODE" not-null="true" length="5" />
+		<property name="transactionDate" type="timestamp" column="TRANSACTION_DATE"
+			not-null="false" />
+		<property name="transactionCredits" type="integer"
+			column="TRANSACTION_CREDITS" not-null="true" />
+		<property name="transactionAmount" type="float" column="TRANSACTION_AMOUNT"
+			not-null="true" />
+		<property name="balance" type="float" column="BALANCE"
+			not-null="true" />
+		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
+			not-null="true" />
+		<many-to-one name="smsAccount"
+			class="org.sakaiproject.sms.hibernate.model.SmsAccount" column="SMS_ACCOUNT_ID"
+			not-null="true" />
+	</class>
+
+	<class name="org.sakaiproject.sms.hibernate.model.SmsConfig"
+		table="SMS_CONFIG">
+		<id name="id" type="long" column="CONFIG_ID">
+			<generator class="native" />
+		</id>
+		<property name="sakaiSiteId" type="string" column="SAKAI_SITE_ID"
+			not-null="false" length="99" unique="true" />
+		<property name="sakaiToolId" type="string" column="SAKAI_TOOL_ID"
+			not-null="false" length="99" unique="false" />
+		<property name="smsEnabled" type="string" column="SMS_ENABLED"
+			not-null="false" length="1" />
+		<property name="notificationEmail" type="string" column="NOTIFICATION_EMAIL"
+			not-null="false" length="100" />
+		<property name="delReportTimeoutDuration" type="integer"
+			column="DEL_REPORT_TIMEOUT_DURATION" not-null="false" />
+		<property name="schedulerInterval" type="integer" column="SCHEDULER_INTERVAL"
+			not-null="false" />
+		<property name="smsRetryMaxCount" type="integer" column="SMS_RETRY_MAX_COUNT"
+			not-null="false" />
+		<property name="smsRetryScheduleInterval" type="integer"
+			column="SMS_RETRY_SCHEDULE_INTERVAL" not-null="false" />
+		<property name="smsTaskMaxLifeTime" type="integer"
+			column="SMS_TASK_MAX_LIFETIME" not-null="false" />
+		<property name="notificationEmailBilling" type="string"
+			column="NOTIFICATION_EMAIL_BILLING" not-null="false" length="100" />
+		<property name="notificationEmailSent" type="string"
+			column="NOTIFICATION_EMAIL_SENT" not-null="false" length="100" />
+		<property name="pagingSize" type="integer" column="PAGING_SIZE"
+			not-null="false" />
+		<property name="creditCost" type="float" column="CREDIT_COST"
+			not-null="false" />
+
+	</class>
+
+</hibernate-mapping>
