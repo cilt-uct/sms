@@ -3,7 +3,7 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.sakaiproject.sms.hibernate.util.HibernateUtil;
+import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * Run all tests.

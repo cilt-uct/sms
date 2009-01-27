@@ -20,7 +20,7 @@ package org.sakaiproject.sms.logic.hibernate.test.dataload;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.model.SmsTransaction;
+import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 
 public class SampleSmsTransactionFactory implements Listable {
 	private static int theYear = 2009;

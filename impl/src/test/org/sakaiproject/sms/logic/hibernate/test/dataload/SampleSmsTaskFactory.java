@@ -20,8 +20,8 @@ package org.sakaiproject.sms.logic.hibernate.test.dataload;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.hibernate.model.SmsTask;
-import org.sakaiproject.sms.hibernate.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 
 public class SampleSmsTaskFactory implements Listable {
 	private static int theYear = 2009;
