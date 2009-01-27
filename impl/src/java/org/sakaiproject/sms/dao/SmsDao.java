@@ -18,7 +18,9 @@
 package org.sakaiproject.sms.dao;
 
 import java.util.Date;
-import java.util.logging.Level;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * Implementations of any specialized DAO methods from the specialized DAO that
@@ -29,12 +31,12 @@ import java.util.logging.Level;
 public class SmsDao extends BaseDao {
 
 	static {
-		log = org.apache.log4j.Logger.getLogger(SmsDao.class);
+		log = Logger.getLogger(SmsDao.class);
 		init();
 	}
 
 	/** The log. */
-	protected static org.apache.log4j.Logger log;
+	protected static Logger log;
 
 	/**
 	 * Gets the current Date.

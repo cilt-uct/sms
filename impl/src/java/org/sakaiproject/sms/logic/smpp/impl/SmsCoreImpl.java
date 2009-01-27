@@ -23,8 +23,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -50,8 +51,7 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsCoreImpl implements SmsCore {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmsCoreImpl.class);
+	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
 	public SmsSmpp smsSmpp = null;
 
