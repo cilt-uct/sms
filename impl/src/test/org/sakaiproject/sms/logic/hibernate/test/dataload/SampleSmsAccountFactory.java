@@ -25,7 +25,7 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 public class SampleSmsAccountFactory implements Listable {
 
 	private List<SmsAccount> smsAccounts;
-	private RandomUtils randomUtils = new RandomUtils();
+	private final RandomUtils randomUtils = new RandomUtils();
 
 	public SampleSmsAccountFactory() {
 		createSampleSmsAccounts();

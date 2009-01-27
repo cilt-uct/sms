@@ -26,7 +26,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 public class SampleSmsMessageFactory implements Listable {
 
 	private List<SmsMessage> smsMessages;
-	private RandomUtils randomUtils = new RandomUtils();
+	private final RandomUtils randomUtils = new RandomUtils();
 	private static int theYear = 2009;
 
 	public SampleSmsMessageFactory() {

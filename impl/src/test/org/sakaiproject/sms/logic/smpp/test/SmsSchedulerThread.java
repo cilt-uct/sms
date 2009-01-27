@@ -19,8 +19,10 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
 
+import net.sourceforge.groboutils.junit.v1.TestRunnable;
+
+import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
@@ -49,7 +51,7 @@ public class SmsSchedulerThread extends TestRunnable {
 			.getLogger(SmsSchedulerThread.class);
 
 	/** The session name. */
-	private String sessionName;
+	private final String sessionName;
 
 	private static SmsAccount smsAccount = null;
 
@@ -86,6 +88,7 @@ public class SmsSchedulerThread extends TestRunnable {
 	 * Inserts 3 new tasks to be processed. The test is successful if no more
 	 * tasks exists to process.
 	 */
+	@Override
 	public void runTest() throws Throwable {
 		LOG.info(sessionName + ": Inserting tasks ");
 		smsSmppImpl.setLogLevel(Level.ALL);

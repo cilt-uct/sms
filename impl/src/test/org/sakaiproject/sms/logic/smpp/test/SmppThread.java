@@ -20,8 +20,10 @@ package org.sakaiproject.sms.logic.smpp.test;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
+import net.sourceforge.groboutils.junit.v1.TestRunnable;
+
+import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;

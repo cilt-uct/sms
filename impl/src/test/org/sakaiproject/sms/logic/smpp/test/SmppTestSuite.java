@@ -32,7 +32,7 @@ public class SmppTestSuite {
 	 */
 	public static Test suite() {
 		TestSuite suite = new TestSuite(
-				"Test for org.sakaiproject.sms.smpp.test");
+				"Test for org.sakaiproject.sms.logic.smpp.test");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(SmsCoreTest.class);
 		suite.addTestSuite(SmppAPITest.class);

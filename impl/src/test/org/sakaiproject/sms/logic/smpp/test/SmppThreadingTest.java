@@ -19,6 +19,8 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
+import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
@@ -65,11 +67,11 @@ public class SmppThreadingTest extends AbstractBaseTestCase {
 	static {
 		HibernateUtil.createSchema();
 	}
-	private int delay_between_messages = 1; // ms
+	private final int delay_between_messages = 1; // ms
 
-	private int session1_message_count = 200;
+	private final int session1_message_count = 200;
 
-	private int session2_message_count = 200;
+	private final int session2_message_count = 200;
 
 	/**
 	 * You use the MultiThreadedTestRunner in your test cases. The MTTR takes an

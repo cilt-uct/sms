@@ -20,8 +20,8 @@ package org.sakaiproject.sms.logic.smpp.test;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 
+import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;

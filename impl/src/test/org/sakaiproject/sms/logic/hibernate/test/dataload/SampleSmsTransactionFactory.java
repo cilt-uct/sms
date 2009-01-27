@@ -25,7 +25,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 public class SampleSmsTransactionFactory implements Listable {
 	private static int theYear = 2009;
 	private List<SmsTransaction> smsTransactionList;
-	private RandomUtils randomUtils = new RandomUtils();
+	private final RandomUtils randomUtils = new RandomUtils();
 
 	public SampleSmsTransactionFactory() {
 		createSampleSmsTransactions();
