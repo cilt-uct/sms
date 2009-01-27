@@ -17,6 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.reporting;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
@@ -24,14 +26,13 @@ import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
-public class ReportHandlerHook implements HandlerHook{
+public class ReportHandlerHook implements HandlerHook {
 
 	private static Log log = LogFactory.getLog(ReportHandlerHook.class);
 
 	private CsvExportBean csvExportBean;
 	private HttpServletResponse response;
 	private ViewParameters viewparams;
-	
 
 	public void setViewparams(ViewParameters viewparams) {
 		this.viewparams = viewparams;
@@ -46,11 +47,13 @@ public class ReportHandlerHook implements HandlerHook{
 	}
 
 	public boolean handle() {
-		
+
 		if (viewparams instanceof DownloadReportViewParams) {
-			log.debug("Handing viewparams and response off to the csvExportBean");
-			return csvExportBean.createCsv((DownloadReportViewParams) viewparams, response);
+			log
+					.debug("Handing viewparams and response off to the csvExportBean");
+			return csvExportBean.createCsv(
+					(DownloadReportViewParams) viewparams, response);
 		}
 		return false;
-	}	
+	}
 }

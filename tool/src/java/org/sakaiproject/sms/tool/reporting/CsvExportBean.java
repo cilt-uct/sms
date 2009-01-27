@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -39,104 +42,100 @@ import org.sakaiproject.sms.tool.util.SakaiDateFormat;
 public class CsvExportBean {
 
 	private static Log log = LogFactory.getLog(CsvExportBean.class);
-	private Map<String, CsvExportStrategy> csvExporters = new TreeMap<String, CsvExportStrategy>();
+	private final Map<String, CsvExportStrategy> csvExporters = new TreeMap<String, CsvExportStrategy>();
 	private SakaiDateFormat sakaiDateFormat;
-	
+
 	public void setSakaiDateFormat(SakaiDateFormat dateFormat) {
 		this.sakaiDateFormat = dateFormat;
 	}
 
 	public CsvExportBean() {
 		csvExporters.put(TaskListProducer.VIEW_ID, new SmsTaskExportStrategy());
-		csvExporters.put(MessageLogProducer.VIEW_ID, new SmsMessageExportStrategy());
-		csvExporters.put(TransactionLogProducer.VIEW_ID, new SmsTransactionLogExportStrategy());
+		csvExporters.put(MessageLogProducer.VIEW_ID,
+				new SmsMessageExportStrategy());
+		csvExporters.put(TransactionLogProducer.VIEW_ID,
+				new SmsTransactionLogExportStrategy());
 	}
 
-	public boolean createCsv(DownloadReportViewParams viewparams, HttpServletResponse response) {
-		
-		if(log.isInfoEnabled())
+	public boolean createCsv(DownloadReportViewParams viewparams,
+			HttpServletResponse response) {
+
+		if (log.isInfoEnabled())
 			log.info("Create csv data for view " + viewparams.sourceView);
 
 		try {
-			 createResponse(response, viewparams);
+			createResponse(response, viewparams);
 		} catch (IOException e) {
 			log.error("Failed to create csv output" + e);
 			throw new RuntimeException("Failed to create csv output", e);
 		}
-		
+
 		return true;
 	}
 
-	private void createResponse(HttpServletResponse response, DownloadReportViewParams viewparams)
-			throws IOException {
-		
-		SearchFilterBean searchFilterBean = viewparams.extractSearchFilter(sakaiDateFormat.getSakaiDateFormat());
-		csvExporters.get(viewparams.sourceView).createCsvResponse(response, searchFilterBean);
+	private void createResponse(HttpServletResponse response,
+			DownloadReportViewParams viewparams) throws IOException {
+
+		SearchFilterBean searchFilterBean = viewparams
+				.extractSearchFilter(sakaiDateFormat.getSakaiDateFormat());
+		csvExporters.get(viewparams.sourceView).createCsvResponse(response,
+				searchFilterBean);
 	}
 
-	private abstract class CsvExportStrategy{
-		
+	private abstract class CsvExportStrategy {
+
 		protected BeanToCSVReflector beanToCSVReflector = new BeanToCSVReflector();
 
-		public void createCsvResponse(HttpServletResponse response, SearchFilterBean searchFilterBean) {
+		public void createCsvResponse(HttpServletResponse response,
+				SearchFilterBean searchFilterBean) {
 
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			
+
 			// Set the response headers
 			response.setHeader("Content-disposition", "inline");
 			response.setContentType("text/csv");
-			
-			response.setHeader("Content-Disposition", "attachment; filename=" + getFileNamePrefix() + sdf.format(date) + ".csv");
-			
-			List<?> pageResults = null;	
+
+			response.setHeader("Content-Disposition", "attachment; filename="
+					+ getFileNamePrefix() + sdf.format(date) + ".csv");
+
+			List<?> pageResults = null;
 			try {
-				 pageResults = getCriteriaResults(searchFilterBean);
+				pageResults = getCriteriaResults(searchFilterBean);
 			} catch (SmsSearchException e) {
 				throw new RuntimeException("Failed to obtain search results", e);
 			}
-	
-			String csvText = beanToCSVReflector.toCSV(pageResults, getCsvColumns());
-			
+
+			String csvText = beanToCSVReflector.toCSV(pageResults,
+					getCsvColumns());
+
 			try {
 				ServletOutputStream outputStream = response.getOutputStream();
 				outputStream.print(csvText);
 			} catch (IOException e) {
-				throw new RuntimeException("Failed to write csv to output stream");
-			}			
+				throw new RuntimeException(
+						"Failed to write csv to output stream");
+			}
 		}
-		
-		protected abstract String[] getCsvColumns();
-		protected abstract List<?> getCriteriaResults(SearchFilterBean searchFilterBean) throws SmsSearchException;
-		protected abstract String getFileNamePrefix();  
-	}
-	
-	private final class SmsTaskExportStrategy extends CsvExportStrategy{
 
-		private  final String[] taskListColumns = new String[]{
-			"id",
-			"creditEstimate", 
-			"dateCreated", 
-			"dateProcessed", 
-			"dateToSend",
-			"deliveryGroupId",
-			"deliveryGroupName",
-			"deliveryUserId",
-			"groupSizeActual",
-			"groupSizeEstimate",
-			"costEstimate",
-			"messageBody",
-			"messageTypeId",
-			"attemptCount",
-			"sakaiSiteId",
-			"sakaiToolId",
-			"sakaiToolName",
-			"senderUserName",
-			"smsAccountId",
-			"statusCode",
-			"maxTimeToLive",
-			"delReportTimeoutDuration"
-		};
+		protected abstract String[] getCsvColumns();
+
+		protected abstract List<?> getCriteriaResults(
+				SearchFilterBean searchFilterBean) throws SmsSearchException;
+
+		protected abstract String getFileNamePrefix();
+	}
+
+	private final class SmsTaskExportStrategy extends CsvExportStrategy {
+
+		private final String[] taskListColumns = new String[] { "id",
+				"creditEstimate", "dateCreated", "dateProcessed", "dateToSend",
+				"deliveryGroupId", "deliveryGroupName", "deliveryUserId",
+				"groupSizeActual", "groupSizeEstimate", "costEstimate",
+				"messageBody", "messageTypeId", "attemptCount", "sakaiSiteId",
+				"sakaiToolId", "sakaiToolName", "senderUserName",
+				"smsAccountId", "statusCode", "maxTimeToLive",
+				"delReportTimeoutDuration" };
 
 		@Override
 		public String[] getCsvColumns() {
@@ -144,8 +143,10 @@ public class CsvExportBean {
 		}
 
 		@Override
-		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean) throws SmsSearchException {
-			return HibernateLogicFactory.getTaskLogic().getAllSmsTasksForCriteria(searchFilterBean);
+		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
+				throws SmsSearchException {
+			return HibernateLogicFactory.getTaskLogic()
+					.getAllSmsTasksForCriteria(searchFilterBean);
 		}
 
 		@Override
@@ -153,21 +154,14 @@ public class CsvExportBean {
 			return "smsTask";
 		}
 	}
-	
-	private final class SmsMessageExportStrategy extends CsvExportStrategy{
 
-		private final String[] messageColumns = new String[]{
-				"id",
-				"dateDelivered",
-				"mobileNumber",
-				"sakaiUserId",
-				"smscMessageId",
-				"statusCode",
-				"submitResult",
-				"smscDeliveryStatusCode",
-				"smscId"
-		};
-		
+	private final class SmsMessageExportStrategy extends CsvExportStrategy {
+
+		private final String[] messageColumns = new String[] { "id",
+				"dateDelivered", "mobileNumber", "sakaiUserId",
+				"smscMessageId", "statusCode", "submitResult",
+				"smscDeliveryStatusCode", "smscId" };
+
 		@Override
 		public String[] getCsvColumns() {
 			return messageColumns;
@@ -176,7 +170,8 @@ public class CsvExportBean {
 		@Override
 		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
 				throws SmsSearchException {
-			return HibernateLogicFactory.getMessageLogic().getAllSmsMessagesForCriteria(searchFilterBean);
+			return HibernateLogicFactory.getMessageLogic()
+					.getAllSmsMessagesForCriteria(searchFilterBean);
 		}
 
 		@Override
@@ -184,20 +179,15 @@ public class CsvExportBean {
 			return "smsMessage";
 		}
 	}
-	
-	private final class SmsTransactionLogExportStrategy extends CsvExportStrategy{
 
-		private final String[] transactionLogColumns = new String[]{
-				"id",
-				"balance",
-				"sakaiUserId",
-				"transactionAmount",
-				"transactionCredits",
-				"transactionDate",
-				"transactionTypeCode",
-				"smsTaskId"
-		};
-		
+	private final class SmsTransactionLogExportStrategy extends
+			CsvExportStrategy {
+
+		private final String[] transactionLogColumns = new String[] { "id",
+				"balance", "sakaiUserId", "transactionAmount",
+				"transactionCredits", "transactionDate", "transactionTypeCode",
+				"smsTaskId" };
+
 		@Override
 		public String[] getCsvColumns() {
 			return transactionLogColumns;
@@ -206,7 +196,8 @@ public class CsvExportBean {
 		@Override
 		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
 				throws SmsSearchException {
-			return HibernateLogicFactory.getTransactionLogic().getAllSmsTransactionsForCriteria(searchFilterBean);
+			return HibernateLogicFactory.getTransactionLogic()
+					.getAllSmsTransactionsForCriteria(searchFilterBean);
 		}
 
 		@Override

@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.validators;
 
 import java.util.StringTokenizer;
 
+import org.apache.commons.validator.EmailValidator;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
