@@ -138,6 +138,21 @@
 			</resource>			
 			
 		</resources>
+		
+		<testResources>
+			<testResource>
+				<directory>${basedir}/src/java/resources</directory>
+				<excludes>
+					<exclude>**/log4j.properties</exclude>
+					<!-- Will be double loded by hbm2ddl otherwise -->
+					<exclude>**/hibernate-mappings.hbm.xml</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>${basedir}/src/test/resources</directory>
+			</testResource>
+		</testResources>		
+		
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
