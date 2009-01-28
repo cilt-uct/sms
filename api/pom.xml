@@ -48,34 +48,29 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
+			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.groboutils</groupId>
 			<artifactId>groboutils-core</artifactId>
-			<version>5</version>
+			<version>${groboutils-core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code</groupId>
 			<artifactId>jsmpp</artifactId>
-			<version>2.0</version>
+			<version>${jsmpp.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.3</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.4.3</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
-				<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
 			<version>3.2.5.ga</version>
@@ -89,7 +84,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.5</version>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>quartz</groupId>
@@ -99,7 +94,7 @@
 		<dependency>
         	<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-    		<version>2.4</version>
+    		<version>${commons.lang.version}</version>
     	</dependency>
 	</dependencies>
 
