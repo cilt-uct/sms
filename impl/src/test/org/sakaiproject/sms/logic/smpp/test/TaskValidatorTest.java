@@ -23,16 +23,16 @@ import org.sakaiproject.sms.util.HibernateUtil;
 public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	/** The sms task. */
-	private SmsTask smsTask;
+	private static SmsTask smsTask;
 
 	/** The msg. */
-	private SmsMessage msg;
+	private static SmsMessage msg;
 
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 	/** The account. */
-	private SmsAccount account;
+	private static SmsAccount account;
 
 	ArrayList<String> errors = new ArrayList<String>();
 
@@ -42,8 +42,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	@Override
-	public void setUp() {
+	static {
 
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId" + Math.random());
@@ -56,7 +55,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		msg = new SmsMessage();
 		smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
-		smsTask.setSmsAccountId(account.getId());
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
@@ -82,6 +80,15 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		HibernateUtil.createSchema();
 
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		smsTask.setSmsAccountId(account.getId());
+	}
+
+	/**
+	 * Test valid message.
+	 */
+	public void testValidMessage() {
+		errors = TaskValidator.validateInsertTask(smsTask);
+		assertTrue(errors.size() == 0);
 	}
 
 	/**
@@ -317,14 +324,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		errors = TaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertTrue(errors.contains(ValidationConstants.TASK_STATUS_CODE_EMPTY));
-	}
-
-	/**
-	 * Test valid message.
-	 */
-	public void testValidMessage() {
-		errors = TaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() == 0);
 	}
 
 }
