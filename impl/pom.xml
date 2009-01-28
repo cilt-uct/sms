@@ -114,42 +114,43 @@
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>smpp.properties</include>
-					<include>messages_en.properties</include>
-				</includes>
-				<excludes>
-					<exclude>src/*</exclude>
-				</excludes>
-			</resource>
-			
-			<resource>
 				<directory>${basedir}/src/resources</directory>
 			</resource>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>sms.properties</include>
-				</includes>
-				<excludes>
-					<exclude>src/*</exclude>
-				</excludes>
-			</resource>			
+<!--			<resource>-->
+<!--				<directory>${basedir}</directory>-->
+<!--				<includes>-->
+<!--					<include>smpp.properties</include>-->
+<!--					<include>messages_en.properties</include>-->
+<!--				</includes>-->
+<!--				<excludes>-->
+<!--					<exclude>src/*</exclude>-->
+<!--				</excludes>-->
+<!--			</resource>-->
+			
+
+<!--			<resource>-->
+<!--				<directory>${basedir}</directory>-->
+<!--				<includes>-->
+<!--					<include>sms.properties</include>-->
+<!--				</includes>-->
+<!--				<excludes>-->
+<!--					<exclude>src/*</exclude>-->
+<!--				</excludes>-->
+<!--			</resource>			-->
 			
 		</resources>
 		
 		<testResources>
+<!--			<testResource>-->
+<!--				<directory>${basedir}/src/resources</directory>-->
+<!--				<excludes>-->
+<!--					<exclude>**/log4j.properties</exclude>-->
+<!--					 Will be double loded by hbm2ddl otherwise -->
+<!--					<exclude>**/hibernate-mappings.hbm.xml</exclude>-->
+<!--				</excludes>-->
+<!--			</testResource>-->
 			<testResource>
 				<directory>${basedir}/src/resources</directory>
-				<excludes>
-					<exclude>**/log4j.properties</exclude>
-					<!-- Will be double loded by hbm2ddl otherwise -->
-					<exclude>**/hibernate-mappings.hbm.xml</exclude>
-				</excludes>
-			</testResource>
-			<testResource>
-				<directory>${basedir}/src/test/resources</directory>
 			</testResource>
 		</testResources>		
 		
