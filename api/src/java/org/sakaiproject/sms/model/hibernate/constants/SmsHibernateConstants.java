@@ -130,7 +130,7 @@ public class SmsHibernateConstants {
 	public static final int MAX_MOBILE_NR_LENGTH = 20;
 
 	/** The Constant catelog message not found */
-	public static final String CATELOG_MESSAGE_NOT_FOUND = "<Property not found>";
+	public static final String CATALOG_MESSAGE_NOT_FOUND = "<Property not found>";
 
 	/** The Constant catelog message not found */
 	public static final String PROPERTY_NOT_FOUND = "<Property not found>";

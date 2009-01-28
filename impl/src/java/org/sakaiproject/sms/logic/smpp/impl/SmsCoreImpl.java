@@ -32,7 +32,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.util.MessageCatelog;
+import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -405,37 +405,37 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_STARTED)) {
-			subject = MessageCatelog.getMessage(
+			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
 							.toString());
-			body = MessageCatelog.getMessage(
+			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", creditsRequired,
 					creditsAvailable);
 			toAddress = config.getNotificationEmail();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_SENT)) {
-			subject = MessageCatelog.getMessage(
+			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectSent", smsTask.getId()
 							.toString());
-			body = MessageCatelog.getMessage("messages.notificationBodySent",
+			body = MessageCatalog.getMessage("messages.notificationBodySent",
 					creditsRequired, creditsAvailable);
 			toAddress = config.getNotificationEmailSent();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_FAILED)) {
-			subject = MessageCatelog.getMessage(
+			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectFailed", smsTask.getId()
 							.toString());
-			body = MessageCatelog.getMessage("messages.notificationBodyFailed",
+			body = MessageCatalog.getMessage("messages.notificationBodyFailed",
 					creditsRequired, creditsAvailable);
 			toAddress = config.getNotificationEmail();
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED)) {
-			subject = MessageCatelog.getMessage(
+			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectCompleted", smsTask.getId()
 							.toString());
-			body = MessageCatelog.getMessage(
+			body = MessageCatalog.getMessage(
 					"messages.notificationBodyCompleted", creditsRequired,
 					creditsAvailable);
 			toAddress = config.getNotificationEmail();

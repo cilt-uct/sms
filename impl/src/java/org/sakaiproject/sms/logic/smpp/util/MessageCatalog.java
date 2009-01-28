@@ -30,7 +30,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
  * @version 1.0
  * @created 15-Jan-2009
  */
-public abstract class MessageCatelog {
+public abstract class MessageCatalog {
 
 	/**
 	 * Gets the message.
@@ -96,7 +96,7 @@ public abstract class MessageCatelog {
 				message = bundle.getString(messageKey);
 			} catch (MissingResourceException ex) {
 				ex.printStackTrace();
-				message = SmsHibernateConstants.CATELOG_MESSAGE_NOT_FOUND;
+				message = SmsHibernateConstants.CATALOG_MESSAGE_NOT_FOUND;
 			}
 		}
 		return message;

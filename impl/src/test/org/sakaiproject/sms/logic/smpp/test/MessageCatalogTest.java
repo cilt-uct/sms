@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
-import org.sakaiproject.sms.logic.smpp.util.MessageCatelog;
+import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
@@ -29,7 +29,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * @version 1.0
  * @created 15-Jan-2009
  */
-public class MessageCatelogTest extends AbstractBaseTestCase {
+public class MessageCatalogTest extends AbstractBaseTestCase {
 
 	static {
 		System.out.println("Static setUp");
@@ -39,13 +39,13 @@ public class MessageCatelogTest extends AbstractBaseTestCase {
 	/**
 	 * Test message catelog.
 	 */
-	public void testMessageCatelog() {
+	public void testMessageCatalog() {
 		String subject = null;
 		String body = null;
 		try {
-			subject = MessageCatelog.getMessage(
+			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", "654");
-			body = MessageCatelog.getMessage(
+			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", "35", "R12.45");
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -54,12 +54,12 @@ public class MessageCatelogTest extends AbstractBaseTestCase {
 		System.out.println("Body" + body);
 	}
 
-	public void testMessageCatelog_MessageNotFound() {
+	public void testMessageCatalog_MessageNotFound() {
 		String message = null;
 		try {
-			message = MessageCatelog.getMessage("messages.nonexistent");
+			message = MessageCatalog.getMessage("messages.nonexistent");
 			assertTrue(message
-					.equals(SmsHibernateConstants.CATELOG_MESSAGE_NOT_FOUND));
+					.equals(SmsHibernateConstants.CATALOG_MESSAGE_NOT_FOUND));
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
