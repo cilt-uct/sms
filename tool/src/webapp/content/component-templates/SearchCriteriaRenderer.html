@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <title rsf:id="page-title"></title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <link href="tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+   <link href="tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+   <script type="text/javascript" rsf:id="scr=portal-matter" language="JavaScript" src="/library/js/headscripts.js"></script>
+   <link href="../css/qna.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+<body>
+<!-- everything outside this div is thrown away -->
+<div rsf:id="search-component:">
+<script type="text/javascript">
+		function initClearDateInput(dateInputId) {
+			var dateInput = document.getElementById(dateInputId);
+			dateInput.value = '';
+		}
+</script>
+<fieldset><legend>Search / Filter</legend>
+<form action="#" method="get" rsf:id="search-criteria">
+<table class="shorttext" border="0">
+	<tr>
+		<td><div rsf:id="label-dropdown">Task Status:</div></td>
+		<td>
+			<select id="task-status" rsf:id="task-status">
+				<option>All</option>
+			</select> 
+		</td>
+		<td>Date From:</td>
+		<td>
+			<span rsf:id="date-from:"> <input type="text"
+			id="start_date_dummy" name="start_date_dummy" value="YYYY/MM/DD"
+			size="12" maxlength="10" /> <img src="../images/calendar.gif"
+			alt="calendar" /> </span>
+		</td>
+		<td>Date To:</td>
+		<td>
+			<span rsf:id="date-to:"> <input type="text"
+			id="start_date_dummy" name="start_date_dummy" value="YYYY/MM/DD"
+			size="12" maxlength="10" /> <img src="../images/calendar.gif"
+			alt="calendar" /> </span>
+		</td>
+		<td><div id="id" rsf:id="label-id">Mobile Number:</div></td>
+		<td><input id="mobileNumber" style="width: 80px;" onkeyup="checkNumbers()" type="text" rsf:id="id"></input></td>
+		<td><div rsf:id="tool-name-label">Tool Name:</div></td>
+		<td><input style="width: 80px;" id="toolName" type="text" rsf:id="tool-name"/></td>
+		<td rsf:id="sender-label">Sender:</td>
+		<td><input style="width: 80px;" id="sender" type="text" rsf:id="sender"/></td>
+	</tr>
+</table>
+	<input rsf:id="search" type="submit" value="Search"/>
+	<input rsf:id="reset" type="submit" value="Reset"/>
+</form>	
+</fieldset>
+	<script rsf:id="init-clear-from-date-input" type="text/javascript">
+		initClearDateInput("dateInputId");
+	</script>
+		<script rsf:id="init-clear-end-date-input" type="text/javascript">
+		initClearDateInput("dateInputId");
+	</script>
+
+</div>
+</body>
+</html>

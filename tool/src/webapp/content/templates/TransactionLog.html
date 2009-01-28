@@ -1,0 +1,34 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+<title>SMS Transaction Log</title>
+<script type="text/javascript" language="JavaScript" src="../js/datePicker.js"></script>
+<script type="text/javascript" language="JavaScript" src="../js/searchCriteria.js"></script>
+<script type="text/javascript" language="JavaScript" src="../js/sms.js"></script>
+	<link href="../css/tool_base.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="../css/default/tool.css" type="text/css" rel="stylesheet" media="all" />
+<link rel="stylesheet" href="../css/datePicker.css" type="text/css" media="all" />
+</head>
+<body style="margin-left : 5px;">
+<div rsf:id="message-for:*">
+  <span>Message for user here</span>
+</div>
+<h2>SMS Transactions</h2>
+<div rsf:id="searchCriteria:"/>
+<fieldset><legend rsf:id="table-caption">Task List</legend> 
+<div rsf:id="searchResults:"/>
+<p></p>
+<div rsf:id="searchPager:"/>
+</fieldset>
+<p></p>	
+<form method="post">
+<div rsf:id="export:" style="padding-left: 10px">
+	<a id="export-to-csv" rsf:id="export-to-csv"></a>
+	<input id="buttonlink" type="button" value="Export to CSV" onclick="make_button_call_link('export-to-csv')"/>
+	<p></p>
+</div>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+	<title rsf:id="page-title">SMS Billing Admin</title>
+	<link href="../css/tool_base.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="../css/default/tool.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body style="margin-left : 5px;">
+	<div class="navIntraTool"><a href="#" rsf:id="new-account">New Account</a></div>
+	<br/>
+	<h3 rsf:id="accounts-heading" >SMS Accounts</h3>
+	<div rsf:id="message-for:*">
+		<span>Message for user here</span>
+	</div>
+	
+	<table class="listHier lines" cellspacing="0">
+		<thead>
+			<tr>
+				<th rsf:id="account-name-title">Account Name</th>
+				<th rsf:id="account-no-title">Account No.</th>
+				<th rsf:id="sakai-site-title">Sakai Site</th>
+				<th rsf:id="sakai-user-title">Sakai User</th>
+				<th rsf:id="overdraft-limit-title">Overdraft Limit</th>
+				<th rsf:id="balance-title">Balance</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr rsf:id="account-entry:">
+				<td><a rsf:id="account-name-link" href="edit_account.html">Account name</a></td>
+				<td rsf:id="account-no">21212121212</td>
+				<td rsf:id="sakai-site">something</td>
+				<td rsf:id="sakai-user">someone</td>
+				<td rsf:id="overdraft-limit">2000</td>
+				<td rsf:id="balance">1500</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="act">
+		<input type="button" class="active" value="Debit Account" onclick='window.location.href="debit_account"'/>
+	</div>
+</body>
+
+
+</html>
