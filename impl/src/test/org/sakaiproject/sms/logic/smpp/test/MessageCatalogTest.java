@@ -20,7 +20,6 @@ package org.sakaiproject.sms.logic.smpp.test;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * Test case to test the MessageCatelog class functionality
@@ -31,9 +30,8 @@ import org.sakaiproject.sms.util.HibernateUtil;
  */
 public class MessageCatalogTest extends AbstractBaseTestCase {
 
-	static {
-		System.out.println("Static setUp");
-		HibernateUtil.createSchema();
+	@Override
+	public void testOnetimeSetup() {
 	}
 
 	/**
@@ -64,4 +62,5 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 			fail(e.getMessage());
 		}
 	}
+
 }
