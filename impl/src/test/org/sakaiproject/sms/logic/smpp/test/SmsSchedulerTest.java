@@ -22,7 +22,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * @author Etienne@psybergate.co.za
  * 
  */
-public class SmsScheduler extends AbstractBaseTestCase {
+public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsSchedulerImpl smsSchedulerImpl = null;
@@ -32,7 +32,6 @@ public class SmsScheduler extends AbstractBaseTestCase {
 			.getLogger(SmsCoreTest.class);
 
 	static {
-		HibernateUtil.createSchema();
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
@@ -44,6 +43,16 @@ public class SmsScheduler extends AbstractBaseTestCase {
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
 		smsSchedulerImpl.init();
 		LOG.setLevel(Level.WARN);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

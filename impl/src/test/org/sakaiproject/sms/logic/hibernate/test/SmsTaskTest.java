@@ -42,8 +42,6 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	static {
 
-		HibernateUtil.createSchema();
-
 		insertTask = createTestTask();
 
 		insertMessage1 = createTestMessage1();
@@ -92,6 +90,16 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 */
 	public SmsTaskTest() {
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

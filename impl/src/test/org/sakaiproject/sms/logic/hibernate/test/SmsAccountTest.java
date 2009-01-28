@@ -25,8 +25,6 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	private static SmsTransaction insertSmsTransaction2;
 
 	static {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
 
 		insertSmsAccount = new SmsAccount();
 		insertSmsAccount.setSakaiUserId("1");
@@ -72,6 +70,16 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 */
 	public SmsAccountTest(String name) {
 		super(name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

@@ -55,7 +55,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			.getLogger(SmsCoreTest.class);
 
 	static {
-		HibernateUtil.createSchema();
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
@@ -74,7 +73,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsAccount.setBalance(1000f);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+
 	}
 
 	public SmsCoreTest() {
@@ -91,6 +90,17 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		smsSmppImpl.disconnectGateWay();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
+		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 	}
 
 	/**

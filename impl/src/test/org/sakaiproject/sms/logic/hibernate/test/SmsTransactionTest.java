@@ -18,10 +18,6 @@ import org.sakaiproject.sms.util.HibernateUtil;
  */
 public class SmsTransactionTest extends AbstractBaseTestCase {
 
-	static {
-		HibernateUtil.createSchema();
-	}
-
 	/**
 	 * Instantiates a new sms transaction test.
 	 */
@@ -36,6 +32,16 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	 */
 	public SmsTransactionTest(String name) {
 		super(name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

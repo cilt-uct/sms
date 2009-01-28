@@ -19,7 +19,6 @@ package org.sakaiproject.sms.util;
 
 import junit.framework.TestCase;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * Abstract base class for all JUnit test cases. This allows for unit testing
@@ -57,4 +56,15 @@ public abstract class AbstractBaseTestCase extends TestCase {
 		super(name);
 	}
 
+	/**
+	 * Abstract method will be implemented by all subclasses forcing this method
+	 * to be called. This will be used to call
+	 * <code> HibernateUtil.setTestConfiguration(true) and HibernateUtil.createSchema() </code>
+	 * and for any other one time setup.
+	 * <p>
+	 * We realise that there are correct ways to implement one time setup but
+	 * none of which allow one time setup for each test case when run from as
+	 * suite.
+	 */
+	public abstract void testOnetimeSetup();
 }

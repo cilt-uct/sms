@@ -17,13 +17,21 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	private static SmsConfig insertSmsConfig;
 
 	static {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
 		insertSmsConfig = new SmsConfig();
 		insertSmsConfig.setSakaiSiteId("sakaiSiteId2");
 		insertSmsConfig.setSakaiToolId("sakaiToolId");
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

@@ -43,6 +43,15 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 		msg.setMobileNumber("072 1889 987");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		// No need to set call createSchema for this test
+	}
+
 	/**
 	 * Test valid message.
 	 */

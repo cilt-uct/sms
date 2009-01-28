@@ -31,10 +31,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
-	static {
-		HibernateUtil.createSchema();
-	}
-
 	/** The account. */
 	private SmsAccount account;
 
@@ -56,7 +52,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 		msg = new SmsMessage();
 		smsTask = new SmsTask();
@@ -75,6 +70,18 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		smsTask.setDeliveryGroupId("delGrpId");
 		msg.setSmsTask(smsTask);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
+
+		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 	}
 
 	/**

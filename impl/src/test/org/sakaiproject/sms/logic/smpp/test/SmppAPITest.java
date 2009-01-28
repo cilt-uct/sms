@@ -43,8 +43,6 @@ public class SmppAPITest extends AbstractBaseTestCase {
 	private static SmsSmppImpl smsSmppImpl = null;
 
 	static {
-		System.out.println("Static setUp");
-		HibernateUtil.createSchema();
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
@@ -55,6 +53,16 @@ public class SmppAPITest extends AbstractBaseTestCase {
 
 	public SmppAPITest(String name) {
 		super(name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

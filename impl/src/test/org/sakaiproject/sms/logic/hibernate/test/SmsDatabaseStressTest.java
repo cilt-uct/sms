@@ -37,7 +37,13 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 */
 	private static Session session;
 
-	static {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
 	}
 

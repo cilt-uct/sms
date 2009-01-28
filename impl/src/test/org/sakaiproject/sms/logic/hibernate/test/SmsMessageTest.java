@@ -31,7 +31,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	private static SmsMessage insertMessage2;
 
 	static {
-		HibernateUtil.createSchema();
 
 		insertTask = new SmsTask();
 		insertTask.setSakaiSiteId("sakaiSiteId");
@@ -59,6 +58,16 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage2.setSmscId(SmsHibernateConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**

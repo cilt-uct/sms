@@ -64,14 +64,21 @@ public class SmppThreadingTest extends AbstractBaseTestCase {
 		return new TestSuite(SmppThreadingTest.class);
 	}
 
-	static {
-		HibernateUtil.createSchema();
-	}
 	private final int delay_between_messages = 1; // ms
 
 	private final int session1_message_count = 200;
 
 	private final int session2_message_count = 200;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
+	}
 
 	/**
 	 * You use the MultiThreadedTestRunner in your test cases. The MTTR takes an

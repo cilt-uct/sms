@@ -153,6 +153,8 @@ public class SmppThread extends TestRunnable {
 		// know all the reports were received from the simulator.
 		SmsTask updatedSmsTask = null;
 		boolean waitForDeliveries = true;
+		long start = System.currentTimeMillis();
+		long timeoutPeriod = (1000 * 120);
 		while (waitForDeliveries) {
 
 			Thread.sleep(1000);
@@ -161,7 +163,9 @@ public class SmppThread extends TestRunnable {
 			reportsRemainingAfterSleep = updatedSmsTask
 					.getMessagesWithSmscStatus(
 							SmsConst_SmscDeliveryStatus.ENROUTE).size();
-			if (reportsRemainingAfterSleep == 0) {
+			long time = System.currentTimeMillis();
+			long diff = time - start;
+			if (reportsRemainingAfterSleep == 0 || diff >= timeoutPeriod) {
 				waitForDeliveries = false;
 
 			} else {

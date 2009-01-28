@@ -48,7 +48,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	public static SmsAccount account;
 
 	static {
-		HibernateUtil.createSchema();
 		smsBillingImpl = new SmsBillingImpl();
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
@@ -93,6 +92,16 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	protected void tearDown() throws Exception {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	public void testOnetimeSetup() {
+		HibernateUtil.setTestConfiguration(true);
+		HibernateUtil.createSchema();
 	}
 
 	/**
