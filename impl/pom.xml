@@ -125,7 +125,7 @@
 			</resource>
 			
 			<resource>
-				<directory>${basedir}/src/java/resources</directory>
+				<directory>${basedir}/src/resources</directory>
 			</resource>
 			<resource>
 				<directory>${basedir}</directory>
@@ -141,7 +141,7 @@
 		
 		<testResources>
 			<testResource>
-				<directory>${basedir}/src/java/resources</directory>
+				<directory>${basedir}/src/resources</directory>
 				<excludes>
 					<exclude>**/log4j.properties</exclude>
 					<!-- Will be double loded by hbm2ddl otherwise -->
