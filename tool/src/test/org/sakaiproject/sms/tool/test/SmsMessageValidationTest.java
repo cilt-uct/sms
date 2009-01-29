@@ -17,6 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.test;
 
+import junit.framework.TestCase;
+
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -24,8 +26,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.tool.validators.SmsMessageValidator;
-import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
 import org.springframework.validation.BindException;
 
 // TODO: Auto-generated Javadoc
@@ -33,7 +33,7 @@ import org.springframework.validation.BindException;
  * The Class SmsMessageValidationTest. Runs tests for {@link SmsMessage}
  * validation that is run by {@link SmsMessageValidator}
  */
-public class SmsMessageValidationTest extends AbstractBaseTestCase {
+public class SmsMessageValidationTest extends TestCase {
 
 	/** The validator. */
 	private SmsMessageValidator validator;
@@ -49,10 +49,6 @@ public class SmsMessageValidationTest extends AbstractBaseTestCase {
 
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-
-	static {
-		HibernateUtil.createSchema();
-	}
 
 	/** The account. */
 	private SmsAccount account;
