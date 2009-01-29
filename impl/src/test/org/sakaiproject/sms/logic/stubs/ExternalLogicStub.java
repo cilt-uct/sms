@@ -17,6 +17,9 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.stubs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 
 /**
@@ -43,4 +46,26 @@ public class ExternalLogicStub implements ExternalLogic {
 		return true;
 	}
 
+	@Override
+	public int getSiteMemberCount(String siteId) {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+
+	@Override
+	public String[] sendEmails(String from, String[] emails, String subject,
+			String message) {
+		return emails;
+	}
+
+	@Override
+	public String[] sendEmailsToUsers(String from, String[] toUserIds,
+			String subject, String message) {
+
+		List<String> sent = new ArrayList<String>();
+		for (String userId : toUserIds) {
+			sent.add(userId + "@example.com");
+		}
+		return ((String[]) sent.toArray());
+	}
 }

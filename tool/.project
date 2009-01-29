@@ -1,7 +1,10 @@
 <projectDescription>
   <name>sms-tool</name>
   <comment>Sms webapp (tool)</comment>
-  <projects/>
+  <projects>
+    <project>sms-api</project>
+    <project>sms-impl</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
