@@ -18,7 +18,8 @@
 
 package org.sakaiproject.sms.logic.impl.hibernate;
 
-import org.sakaiproject.sms.logic.hibernate.ExternalLogic;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.external.ExternalLogicImpl;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;

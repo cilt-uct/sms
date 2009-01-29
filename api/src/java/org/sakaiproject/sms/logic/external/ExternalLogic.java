@@ -16,7 +16,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic.external;
 
 /**
  * Interface to logic which is external to SMS
@@ -60,4 +60,15 @@ public interface ExternalLogic {
 	 */
 	public boolean isUserAllowedInLocation(String userId, String permission,
 			String locationId);
+
+	/**
+	 * Retrieves mobile number for user
+	 * 
+	 * @param userID
+	 *            the internal user id (not username)
+	 * 
+	 * @return mobile number for user
+	 */
+	public String getSakaiMobileNumber(String userID);
+
 }

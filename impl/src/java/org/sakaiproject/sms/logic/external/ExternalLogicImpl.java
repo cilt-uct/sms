@@ -15,11 +15,10 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.impl.hibernate;
+package org.sakaiproject.sms.logic.external;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.hibernate.ExternalLogic;
 
 // Sakai imports
 //import org.sakaiproject.authz.api.FunctionManager;
@@ -36,16 +35,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	// private FunctionManager functionManager;
 	// private SecurityService securityService;
-
-	/**
-	 * Leave this as protected to try and prevent the random instantiation of
-	 * this class.
-	 * <p>
-	 * Use LogicFactory.java to get instances of logic classes.
-	 */
-	protected ExternalLogicImpl() {
-
-	}
+	// private UserDirectoryService userDirectoryService;
 
 	public void init() {
 		log.debug("init");
@@ -91,6 +81,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return allowed;
 	}
 
+	public String getSakaiMobileNumber(String userId) {
+		// TODO Uncomment sakai specific code
+		// try {
+		// return userDirectoryService.getUser(userId).getMobile???;
+		// } catch (UserNotDefinedException e) {
+		// log.warn("Cannot retrive mobile number for invalid user id: " +
+		// userId);
+		// return null;
+		// }
+		return "0123456789";
+	}
+
 	// public void setSecurityService(SecurityService securityService) {
 	// this.securityService = securityService;
 	// }
@@ -98,4 +100,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 	// public void setFunctionManager(FunctionManager functionManager) {
 	// this.functionManager = functionManager;
 	// }
+
+	// public void setUserDirectoryService(UserDirectoryService
+	// userDirectoryService) {
+	// this.userDirectoryService = userDirectoryService;
+	// }
+
 }
