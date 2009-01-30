@@ -19,7 +19,7 @@ package org.sakaiproject.sms.model.hibernate.constants;
 
 /**
  * Constants class for the sms hibernate project
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 08-Dec-2008
@@ -141,7 +141,7 @@ public class SmsHibernateConstants {
 	/**
 	 * The delivery report timeout duration.
 	 */
-	public static final int DEL_REPORT_TIMEOUT_DURATION = 1800;
+	public static final int DEL_REPORT_TIMEOUT_DURATION = 5;
 
 	/** The Constant for task notification failed */
 	public static final int TASK_NOTIFICATION_FAILED = 1;
