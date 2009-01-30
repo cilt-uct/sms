@@ -25,14 +25,16 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// Sakai imports
-//import org.sakaiproject.authz.api.FunctionManager;
-//import org.sakaiproject.authz.api.SecurityService;
-//import org.sakaiproject.site.api.SiteService;
-//import org.sakaiproject.user.api.User;
-//import org.sakaiproject.email.api.EmailService;
-//import org.sakaiproject.user.api.UserDirectoryService;
-//import org.sakaiproject.user.api.UserNotDefinedException;
+// TODO: Uncomment
+/**
+ //import org.sakaiproject.authz.api.SecurityService;
+ //import org.sakaiproject.site.api.SiteService;
+ //import org.sakaiproject.user.api.User;
+ //import org.sakaiproject.email.api.EmailService;
+ //import org.sakaiproject.user.api.UserDirectoryService;
+ //import org.sakaiproject.user.api.UserNotDefinedException;
+ //import org.sakaiproject.authz.api.FunctionManager;
+ */
 
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
@@ -52,15 +54,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 		log.debug("init");
 		// register Sakai permissions for this tool
 
+		// functionManager.registerFunction(SMS_SEND);
+		// functionManager.registerFunction(SMS_MANAGE);
 		// functionManager.registerFunction(SMS_ACCOUNT_VIEW);
 		// functionManager.registerFunction(SMS_ACCOUNT_CREATE);
 		// functionManager.registerFunction(SMS_ACCOUNT_EDIT);
-		// functionManager.registerFunction(SMS_CONFIG_SITE);
-		// functionManager.registerFunction(SMS_CONFIG_SYSTEM);
-		// functionManager.registerFunction(SMS_TASK_CREATE);
-		// functionManager.registerFunction(SMS_TASK_VIEW);
-		// functionManager.registerFunction(SMS_MESSAGE_VIEW);
 		// functionManager.registerFunction(SMS_TRANSACTION_VIEW);
+		// functionManager.registerFunction(SMS_MESSAGE_VIEW_ALL);
+		// functionManager.registerFunction(SMS_MESSAGE_VIEW_OWN);
+
 	}
 
 	/**
