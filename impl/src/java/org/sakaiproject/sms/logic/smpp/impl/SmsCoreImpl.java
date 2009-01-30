@@ -293,11 +293,13 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_EXPIRE);
 			sendTaskNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			return;
 		}
 
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 			if (smsTask.getAttemptCount() <= 1) {
 
