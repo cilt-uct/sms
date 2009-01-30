@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -74,5 +75,11 @@ public class SmsServiceStub implements SmsService {
 
 	public boolean checkSufficientCredits(SmsTask smsTask) {
 		return false;
+	}
+
+	public void abortPendingTask(Long smsTaskID)
+			throws SmsTaskNotFoundException {
+		// TODO Auto-generated method stub
+
 	}
 }
