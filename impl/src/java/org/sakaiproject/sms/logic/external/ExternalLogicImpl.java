@@ -56,7 +56,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		// functionManager.registerFunction(SMS_SEND);
 		// functionManager.registerFunction(SMS_MANAGE);
-		// functionManager.registerFunction(SMS_ACCOUNT_VIEW);
+		// functionManager.registerFunction(SMS_ACCOUNTS_VIEW);
 		// functionManager.registerFunction(SMS_ACCOUNT_CREATE);
 		// functionManager.registerFunction(SMS_ACCOUNT_EDIT);
 		// functionManager.registerFunction(SMS_TRANSACTION_VIEW);

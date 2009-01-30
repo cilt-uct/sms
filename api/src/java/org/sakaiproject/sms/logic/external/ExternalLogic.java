@@ -35,7 +35,7 @@ public interface ExternalLogic {
 	public final static String SMS_MANAGE = "sms.manage";
 
 	// View list of accounts
-	public final static String SMS_ACCOUNT_VIEW = "sms.account.view";
+	public final static String SMS_ACCOUNTS_VIEW = "sms.accounts.view";
 
 	// Add new account (site or member account)
 	public final static String SMS_ACCOUNT_CREATE = "sms.account.create";
