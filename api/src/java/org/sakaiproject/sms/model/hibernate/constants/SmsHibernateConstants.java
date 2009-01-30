@@ -104,9 +104,9 @@ public class SmsHibernateConstants {
 	public static final Integer MAXIMUM_TASK_LIFETIME = 60 * 60 * 24;
 
 	/**
-	 * The time to wait before retrying an smsTask.
+	 * The time to wait before retrying an smsTask in minutes.
 	 */
-	public static final Integer RETRY_SCHEDULE_INTERVAL = 60 * 5;
+	public static final Integer RETRY_SCHEDULE_INTERVAL = 5;
 
 	/**
 	 * Default paging size
@@ -141,7 +141,7 @@ public class SmsHibernateConstants {
 	/**
 	 * The delivery report timeout duration.
 	 */
-	public static final int DEL_REPORT_TIMEOUT_DURATION = 5;
+	public static final int DEL_REPORT_TIMEOUT_DURATION = 1800;
 
 	/** The Constant for task notification failed */
 	public static final int TASK_NOTIFICATION_FAILED = 1;
