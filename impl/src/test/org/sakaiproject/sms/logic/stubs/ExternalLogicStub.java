@@ -23,42 +23,36 @@ import java.util.List;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 
 /**
- * Stub implemenation of {@link ExternalLogic} for testing
+ * Stub implementation of {@link ExternalLogic} for testing
  * 
  */
 public class ExternalLogicStub implements ExternalLogic {
 
-	@Override
 	public String getSakaiMobileNumber(String userID) {
 		return "0123456789";
 	}
 
-	@Override
 	public boolean isUserAdmin(String userId) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean isUserAllowedInLocation(String userId, String permission,
 			String locationId) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
-	@Override
 	public int getSiteMemberCount(String siteId) {
 		// TODO Auto-generated method stub
 		return 1;
 	}
 
-	@Override
 	public String[] sendEmails(String from, String[] emails, String subject,
 			String message) {
 		return emails;
 	}
 
-	@Override
 	public String[] sendEmailsToUsers(String from, String[] toUserIds,
 			String subject, String message) {
 

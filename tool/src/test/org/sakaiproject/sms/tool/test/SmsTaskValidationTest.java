@@ -360,4 +360,10 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		assertFalse(errors.hasGlobalErrors());
 	}
 
+	@Override
+	public void testOnetimeSetup() {
+		// TODO Auto-generated method stub
+
+	}
+
 }
