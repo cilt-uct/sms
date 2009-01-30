@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
@@ -490,6 +491,23 @@ public class SmsCoreImpl implements SmsCore {
 			}
 			HibernateLogicFactory.getMessageLogic().persistSmsMessage(
 					smsMessage);
+		}
+
+	}
+
+	public void abortPendingTask(Long smsTaskID)
+			throws SmsTaskNotFoundException {
+		SmsTask smsTask = HibernateLogicFactory.getTaskLogic().getSmsTask(
+				smsTaskID);
+		if (smsTask == null) {
+			throw new SmsTaskNotFoundException();
+		} else {
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
+			smsTask.setStatusForMessages(
+					SmsConst_DeliveryStatus.STATUS_PENDING,
+					SmsConst_DeliveryStatus.STATUS_ABORT);
+			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+
 		}
 
 	}

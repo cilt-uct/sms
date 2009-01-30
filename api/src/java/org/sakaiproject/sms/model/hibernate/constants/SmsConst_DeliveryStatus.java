@@ -8,6 +8,14 @@ public class SmsConst_DeliveryStatus {
 	 * the mobile number.
 	 */
 	public final static String STATUS_DELIVERED = "D";
+
+
+	/**
+	 * The gateway reported back that the message was successfully delivered to
+	 * the mobile number.
+	 */
+	public final static String STATUS_ABORT = "A";
+
 	/**
 	 * The gateway reported back that the message was successfully delivered to
 	 * the mobile number.

@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.log4j.Level;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -41,9 +42,9 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -94,7 +95,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
@@ -109,7 +110,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 * 
+	 *
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -553,5 +554,49 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE));
 			LOG.debug(e1.getErrorMessagesAsBlock());
 		}
+	}
+
+	/**
+	 * Tests the aborting of a task
+	 */
+	public void testAbortTask() {
+
+		SmsTask insertTask = new SmsTask();
+		insertTask
+				.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		insertTask
+				.setSenderUserName(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+		insertTask
+				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+		insertTask.setSmsAccountId(smsAccount.getId());
+		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
+		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
+		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		insertTask.setAttemptCount(2);
+		insertTask.setMessageBody("messageBody");
+		insertTask.setSenderUserName("senderUserName");
+		insertTask.setMaxTimeToLive(60);
+		insertTask.setDelReportTimeoutDuration(60);
+		smsCoreImpl.calculateEstimatedGroupSize(insertTask);
+		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+
+		try {
+			smsCoreImpl.abortPendingTask(insertTask.getId());
+		} catch (SmsTaskNotFoundException e) {
+
+			e.printStackTrace();
+		}
+		SmsTask insertTaskUpdate = HibernateLogicFactory.getTaskLogic()
+				.getSmsTask(insertTask.getId());
+
+		assertEquals(insertTaskUpdate.getStatusCode(),
+				SmsConst_DeliveryStatus.STATUS_ABORT);
+
+		for (SmsMessage smsMessage : insertTaskUpdate.getSmsMessages()) {
+
+			assertEquals(smsMessage.getStatusCode(),
+					SmsConst_DeliveryStatus.STATUS_ABORT);
+		}
+
 	}
 }
