@@ -50,7 +50,7 @@ public interface ExternalLogic {
 	public final static String SMS_MESSAGE_VIEW_ALL = "sms.messages.view.all";
 
 	// View own Sms messages
-	public final static String SMS_MESSAGE_VIEW_OWN = "sms.messages.view.all";
+	public final static String SMS_MESSAGE_VIEW_OWN = "sms.messages.view.own";
 
 	/**
 	 * Check if this user has super admin access
