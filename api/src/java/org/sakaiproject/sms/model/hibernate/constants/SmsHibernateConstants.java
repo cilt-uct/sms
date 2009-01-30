@@ -104,9 +104,9 @@ public class SmsHibernateConstants {
 	public static final Integer MAXIMUM_TASK_LIFETIME = 60 * 60 * 24;
 
 	/**
-	 * The time to wait before retrying an smsTask in minutes.
+	 * The time to wait before retrying an smsTask.
 	 */
-	public static final Integer RETRY_SCHEDULE_INTERVAL = 5;
+	public static final Integer RETRY_SCHEDULE_INTERVAL = 60*5;
 
 	/**
 	 * Default paging size
