@@ -21,6 +21,7 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer;
 import org.sakaiproject.sms.tool.renderers.SearchResultsRenderer;
 import org.sakaiproject.sms.tool.renderers.TablePagerRenderer;
@@ -51,6 +52,8 @@ public abstract class AbstractSearchListProducer implements
 
 	private SearchFilterBean searchFilterBean;
 
+	private NavBarRenderer navBarRenderer;
+
 	public abstract String getViewID();
 
 	public abstract String getTitleMessage();
@@ -75,6 +78,10 @@ public abstract class AbstractSearchListProducer implements
 		this.searchCriteriaRenderer = searchCriteriaRender;
 	}
 
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
+	}
+
 	public void init() {
 		Assert.notNull(searchCriteriaRenderer);
 		Assert.notNull(searchResultsRenderer);
@@ -85,6 +92,7 @@ public abstract class AbstractSearchListProducer implements
 			ComponentChecker checker) {
 
 		init();
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", getViewID());
 
 		tablePagerRenderer = new TablePagerRenderer();
 

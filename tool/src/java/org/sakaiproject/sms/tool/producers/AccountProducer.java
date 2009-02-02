@@ -24,6 +24,7 @@ import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.otp.SmsAccountLocator;
 import org.sakaiproject.sms.tool.params.IdParams;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
 import uk.org.ponder.beanutil.BeanGetter;
@@ -54,6 +55,11 @@ public class AccountProducer implements ViewComponentProducer,
 	private FormatAwareDateInputEvolver dateEvolver;
 	private BeanGetter ELEvaluator;
 	private MessageFixupHelper messageFixupHelper;
+	private NavBarRenderer navBarRenderer;
+
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
+	}
 
 	public void setMessageFixupHelper(MessageFixupHelper messageFixupHelper) {
 		this.messageFixupHelper = messageFixupHelper;
@@ -78,6 +84,8 @@ public class AccountProducer implements ViewComponentProducer,
 			ComponentChecker checker) {
 
 		init();
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+
 		UIMessage.make(tofill, "page-title", "sms.sms-account.title");
 		UIMessage.make(tofill, "sms-account-heading", "sms.sms-account.title");
 

@@ -18,6 +18,7 @@
 package org.sakaiproject.sms.tool.producers;
 
 import org.sakaiproject.sms.tool.otp.SmsSystemConfigLocator;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
 import uk.org.ponder.rsf.components.UICommand;
@@ -40,6 +41,7 @@ public class SmsSystemConfigProducer implements ViewComponentProducer {
 	private static final String DUMMY_ID = "12345";
 
 	private MessageFixupHelper messageFixupHelper;
+	private NavBarRenderer navBarRenderer;
 
 	public void init() {
 		messageFixupHelper.fixupMessages("sms-config-retry-count",
@@ -56,9 +58,14 @@ public class SmsSystemConfigProducer implements ViewComponentProducer {
 		this.messageFixupHelper = messageFixupHelper;
 	}
 
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
+	}
+
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		init();
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		String smsSystemConfigOTP = SmsSystemConfigLocator.LOCATOR_NAME + "."
 				+ DUMMY_ID;

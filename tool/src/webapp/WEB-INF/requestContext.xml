@@ -46,27 +46,34 @@
   <bean id="messageLogSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.MessageLogResultsRenderer">  
   	 <property name="smsMessageLogic" ref="smsMessageLogic"/>
   </bean>
+  
+  <bean id="navBarRenderer" class="org.sakaiproject.sms.tool.renderers.NavBarRenderer" />
 
   <!--  Producers -->
   <bean class="org.sakaiproject.sms.tool.producers.DebitAccountProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
+	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.SmsTestProducer" >
 	<property name="accountHelper" ref="accountHelper" />
+	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.HelperProducer">
  	<property name="accountHelper" ref="accountHelper" />
  	<property name="smsTaskLocator" ref="SmsTaskLocator" />
+ 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer">
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsSystemConfigProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
+	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   											  
   <bean class="org.sakaiproject.sms.tool.producers.TaskListPopupProducer" >
@@ -77,10 +84,12 @@
   	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   	<property name="ELEvaluator" ref="ELEvaluator" />
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.BillingAdminProducer" >
   	<property name="smsAccountLogic" ref="SmsAccountLogic" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>	
   
   <bean id="taskListProducer" class="org.sakaiproject.sms.tool.producers.TaskListProducer">
@@ -88,6 +97,7 @@
   	<property name="searchResultsRenderer" ref="taskListSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchTaskList"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
    
   <bean id="transactionLogProducer" class="org.sakaiproject.sms.tool.producers.TransactionLogProducer">
@@ -95,6 +105,7 @@
   	<property name="searchResultsRenderer" ref="transactionLogSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchTransactionLog"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
 
   <bean id="messageLogProducer" class="org.sakaiproject.sms.tool.producers.MessageLogProducer">
@@ -102,6 +113,7 @@
   	<property name="searchResultsRenderer" ref="messageLogSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchMessageLog"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+  	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   

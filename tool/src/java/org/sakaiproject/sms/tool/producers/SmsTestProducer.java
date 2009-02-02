@@ -25,6 +25,7 @@ import java.util.List;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.SmsAccountHelper;
 
 import uk.org.ponder.rsf.components.UICommand;
@@ -48,6 +49,7 @@ public class SmsTestProducer implements ViewComponentProducer, DefaultView,
 		NavigationCaseReporter {
 
 	private SmsAccountHelper accountHelper;
+	private NavBarRenderer navBarRenderer;
 
 	public static final String VIEW_ID = "sms_test";
 
@@ -57,6 +59,8 @@ public class SmsTestProducer implements ViewComponentProducer, DefaultView,
 	 */
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
+
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		String smsMessageOTP = SmsMessageLocator.LOCATOR_NAME + "."
 				+ SmsMessageLocator.NEW_1;
@@ -140,6 +144,10 @@ public class SmsTestProducer implements ViewComponentProducer, DefaultView,
 
 	public void setAccountHelper(SmsAccountHelper accountHelper) {
 		this.accountHelper = accountHelper;
+	}
+
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
 	}
 
 }

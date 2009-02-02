@@ -24,6 +24,7 @@ import java.util.List;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsConfigLocator;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
 import uk.org.ponder.rsf.components.ELReference;
@@ -51,6 +52,7 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 	public static final String VIEW_ID = "SmsSiteConfig";
 
 	private MessageFixupHelper messageFixupHelper;
+	private NavBarRenderer navBarRenderer;
 
 	public String getViewID() {
 		return VIEW_ID;
@@ -60,6 +62,10 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 		this.messageFixupHelper = messageFixupHelper;
 	}
 
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
+	}
+
 	public void init() {
 		messageFixupHelper.fixupMessages("sms-config-paging-size");
 	}
@@ -67,6 +73,8 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		init();
+
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		String smsConfigOTP = SmsConfigLocator.LOCATOR_NAME + "."
 				+ SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;

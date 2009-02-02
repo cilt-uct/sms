@@ -25,7 +25,7 @@
 
   <bean id="messageTemplateContributor" parent="templateContributorParent">
   	<property name="baseDirectory" value="content/component-templates/" />
-  	<property name="templateNames" value="Messages,SearchCriteriaRenderer,SearchResultsRenderer,SortHeader,TablePagerRenderer" />
+  	<property name="templateNames" value="Messages,SearchCriteriaRenderer,SearchResultsRenderer,SortHeader,TablePagerRenderer, navbar" />
   </bean>
 
   <!-- Define the bean roots from the request scope file that are accessible 

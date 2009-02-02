@@ -23,6 +23,7 @@ import java.util.List;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
+import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -38,6 +39,7 @@ public class BillingAdminProducer implements ViewComponentProducer {
 	public static final String VIEW_ID = "billing_admin";
 
 	private SmsAccountLogic smsAccountLogic;
+	private NavBarRenderer navBarRenderer;
 
 	/**
 	 * @see uk.org.ponder.rsf.view.ComponentProducer#fillComponents(uk.org.ponder.rsf.components.UIContainer,
@@ -47,6 +49,8 @@ public class BillingAdminProducer implements ViewComponentProducer {
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		UIMessage.make(tofill, "page-title", "sms.billing-admin.title");
+
+		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		// TODO: Make it link to add new account screen. Perhaps a specific
 		// permission must be checked?
@@ -106,5 +110,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
+	}
+
+	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
+		this.navBarRenderer = navBarRenderer;
 	}
 }
