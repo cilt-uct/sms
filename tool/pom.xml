@@ -58,11 +58,33 @@
 		<artifactId>log4j</artifactId>
 		<version>${log4j.version}</version>
 	</dependency>
+	
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
 		<version>${junit.version}</version>
-		</dependency>    
+		<scope>test</scope>
+	</dependency>    
+
+    <dependency>
+      <groupId>uk.org.ponder.sakairsf</groupId>
+      <artifactId>sakairsf</artifactId>
+      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.ponder.sakairsf</groupId>
+      <artifactId>SakaiRSFComponents-evolvers</artifactId>
+      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.ponder.sakairsf</groupId>
+      <artifactId>SakaiRSFComponents-templates</artifactId>
+      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+      <type>war</type>
+    </dependency>  	
+
+
 	<dependency>
 		<groupId>uk.org.ponder.rsfutil</groupId>
 		<artifactId>rsfutil</artifactId>
@@ -79,11 +101,11 @@
    	  <version>0.7.4</version>
    	  <type>war</type>
 	</dependency>
+	
 	<dependency>
         <groupId>org.springframework</groupId>
-		<artifactId>spring-test</artifactId>
-    	<version>${spring.version}</version>
-    	<scope>test</scope>
+		<artifactId>spring</artifactId>
+		<scope>provided</scope>
     </dependency>
 	<dependency>
         <groupId>commons-lang</groupId>
@@ -122,8 +144,17 @@
   	  <artifactId>commons-collections</artifactId>
   	  <version>${commons-collections.version}</version>
   	</dependency>
-  	
-  	  	
+	<dependency>
+		<groupId>commons-logging</groupId>
+		<artifactId>commons-logging</artifactId>
+		<version>${commons.logging.version}</version> 	
+  	</dependency>
+ 	<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>test</scope>
+	</dependency>  	
   </dependencies>
   
 	<build>
@@ -177,13 +208,12 @@
 					<configuration>
 						<contextPath>${project.build.finalName}</contextPath>
 						<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
-						<webXml>
-							${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml 
-						</webXml>
-						<webApp>
-							${project.build.directory}/${project.build.finalName}.war 
-						</webApp>
-						<scanIntervalSeconds>5</scanIntervalSeconds>
+				        
+				        <configuration>
+				          <webApp>${basedir}/target/${project.build.finalName}</webApp>
+				        </configuration>
+
+						<scanIntervalSeconds>0</scanIntervalSeconds>
 						<connectors>
 							<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 								<port>8080</port>
@@ -192,18 +222,49 @@
 						</connectors>
 					</configuration>
 					<dependencies>
-						<dependency>
+							 <dependency>
 	          					<groupId>log4j</groupId>
 	          					<artifactId>log4j</artifactId>
 	          					<version>${log4j.version}</version>
 	          					<type>jar</type>
-	        				</dependency>
-	        				<dependency>
+	        				 </dependency>
+	        				 <dependency>
 	          					<groupId>commons-logging</groupId>
 	          					<artifactId>commons-logging</artifactId>
 	          					<version>${commons.logging.version}</version>
 	          					<type>jar</type>
-	        				</dependency>
+	        				 </dependency>
+	        				 <dependency>
+								<groupId>uk.org.ponder.rsfutil</groupId>
+								<artifactId>rsfutil</artifactId>
+								<version>${rsfutil.version}</version>
+							 </dependency>
+							 <dependency>
+							  <groupId>uk.org.ponder.rsfutil</groupId>
+							  <artifactId>RSFComponents-evolvers</artifactId>
+						   	  <version>0.7.4</version>
+						    </dependency>
+						    <dependency>
+							  <groupId>uk.org.ponder.rsfutil</groupId>
+						   	  <artifactId>RSFComponents-templates</artifactId>
+						   	  <version>0.7.4</version>
+						   	  <type>war</type>
+							</dependency>
+							<dependency>
+        						<groupId>org.springframework</groupId>
+								<artifactId>spring</artifactId>
+								<version>2.0.6</version>
+    						</dependency>
+    					 	<dependency>
+								<groupId>org.hibernate</groupId>
+								<artifactId>hibernate</artifactId>
+								<version>${hibernate.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>${mysql.connector.version}</version>
+							</dependency>	
 	       			</dependencies>
 				</plugin>
 				<plugin>

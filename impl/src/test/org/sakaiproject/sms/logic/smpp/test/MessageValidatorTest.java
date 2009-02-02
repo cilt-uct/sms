@@ -8,14 +8,13 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
-import org.sakaiproject.sms.tool.validators.SmsMessageValidator;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class SmsMessageValidationTest. Runs tests for {@link SmsMessage}
- * validation that is run by {@link SmsMessageValidator}
+ * validation
  */
 public class MessageValidatorTest extends AbstractBaseTestCase {
 
@@ -48,6 +47,7 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		// No need to set call createSchema for this test
 	}

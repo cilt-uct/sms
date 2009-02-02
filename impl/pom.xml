@@ -110,6 +110,12 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<dependency>
       		<groupId>org.sakaiproject.kernel</groupId>
       		<artifactId>sakai-kernel-api</artifactId>
       		<!-- TODO: Remove this when using Sakai master pom -->
