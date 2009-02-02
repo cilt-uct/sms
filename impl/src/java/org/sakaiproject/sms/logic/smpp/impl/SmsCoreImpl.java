@@ -355,6 +355,8 @@ public class SmsCoreImpl implements SmsCore {
 							.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
 					HibernateLogicFactory.getMessageLogic().persistSmsMessage(
 							message);
+					HibernateLogicFactory.getTaskLogic()
+					.incrementMessagesProcessed(message.getSmsTask());
 				}
 
 			}
