@@ -84,29 +84,60 @@
       <type>war</type>
     </dependency>  	
 
-
 	<dependency>
 		<groupId>uk.org.ponder.rsfutil</groupId>
 		<artifactId>rsfutil</artifactId>
 		<version>${rsfutil.version}</version>
+		<exclusions>
+		    <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-aop</artifactId>
+       		</exclusion>
+        	<exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-core</artifactId>
+       		 </exclusion>
+       		 <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-beans</artifactId>
+          	</exclusion>	
+       		 <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-context</artifactId>
+       		 </exclusion>
+       		 <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-context-support</artifactId>
+       		 </exclusion>
+       		 <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-web</artifactId>
+       		 </exclusion>
+       		 <exclusion>  
+          		<groupId>org.springframework</groupId>
+          		<artifactId>spring-webmvc</artifactId>
+       		 </exclusion>
+      </exclusions> 
     </dependency>
+ 
   	<dependency>
 	  <groupId>uk.org.ponder.rsfutil</groupId>
    	  <artifactId>RSFComponents-evolvers</artifactId>
-   	  <version>0.7.4</version>
+   	  <version>${rsfutil.version}</version>
     </dependency>
+ 
     <dependency>
 	  <groupId>uk.org.ponder.rsfutil</groupId>
    	  <artifactId>RSFComponents-templates</artifactId>
-   	  <version>0.7.4</version>
+   	  <version>${rsfutil.version}</version>
    	  <type>war</type>
 	</dependency>
 	
 	<dependency>
         <groupId>org.springframework</groupId>
 		<artifactId>spring</artifactId>
-		<scope>provided</scope>
     </dependency>
+    
 	<dependency>
         <groupId>commons-lang</groupId>
 		<artifactId>commons-lang</artifactId>
@@ -242,18 +273,18 @@
 							 <dependency>
 							  <groupId>uk.org.ponder.rsfutil</groupId>
 							  <artifactId>RSFComponents-evolvers</artifactId>
-						   	  <version>0.7.4</version>
+						   	  <version>${rsfutil.version}</version>
 						    </dependency>
 						    <dependency>
 							  <groupId>uk.org.ponder.rsfutil</groupId>
 						   	  <artifactId>RSFComponents-templates</artifactId>
-						   	  <version>0.7.4</version>
+						   	  <version>${rsfutil.version}</version>
 						   	  <type>war</type>
 							</dependency>
 							<dependency>
         						<groupId>org.springframework</groupId>
-								<artifactId>spring</artifactId>
-								<version>2.0.6</version>
+								<artifactId>spring-core</artifactId>
+								<version>2.5.4</version>
     						</dependency>
     					 	<dependency>
 								<groupId>org.hibernate</groupId>
