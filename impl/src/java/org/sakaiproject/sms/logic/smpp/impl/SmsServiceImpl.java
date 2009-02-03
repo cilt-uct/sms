@@ -27,6 +27,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
+import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -197,6 +198,26 @@ public class SmsServiceImpl implements SmsService {
 	 */
 	public void abortPendingTask(Long smsTaskID)
 			throws SmsTaskNotFoundException {
-		 smsCore.abortPendingTask(smsTaskID);
+		smsCore.abortPendingTask(smsTaskID);
+	}
+
+	/**
+	 * Add a new task to the sms task list, for eg. send message to all
+	 * administrators at 10:00, or get latest announcements and send to mobile
+	 * numbers of Sakai group x (phase II). Validation will be done to make sure
+	 * that the preliminary values are supplied.
+	 *
+	 * @param smsTask
+	 *            the sms task
+	 *
+	 * @return the sms task
+	 *
+	 * @throws SmsTaskValidationException
+	 *             the sms task validation exception
+	 */
+	public SmsTask insertTask(SmsTask smsTask)
+			throws SmsTaskValidationException {
+
+		return smsCore.insertTask(smsTask);
 	}
 }

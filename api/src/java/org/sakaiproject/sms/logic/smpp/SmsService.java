@@ -170,4 +170,21 @@ public interface SmsService {
 	public void abortPendingTask(Long smsTaskID)
 			throws SmsTaskNotFoundException ;
 
+	/**
+	 * Add a new task to the sms task list, for eg. send message to all
+	 * administrators at 10:00, or get latest announcements and send to mobile
+	 * numbers of Sakai group x (phase II). Validation will be done to make sure
+	 * that the preliminary values are supplied.
+	 *
+	 * @param smsTask
+	 *            the sms task
+	 *
+	 * @return the sms task
+	 *
+	 * @throws SmsTaskValidationException
+	 *             the sms task validation exception
+	 */
+	public SmsTask insertTask(SmsTask smsTask)
+			throws SmsTaskValidationException;
+
 }

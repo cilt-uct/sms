@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
+import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public class SmsServiceStub implements SmsService {
@@ -81,5 +82,11 @@ public class SmsServiceStub implements SmsService {
 			throws SmsTaskNotFoundException {
 		// TODO Auto-generated method stub
 
+	}
+
+	public SmsTask insertTask(SmsTask smsTask)
+			throws SmsTaskValidationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
