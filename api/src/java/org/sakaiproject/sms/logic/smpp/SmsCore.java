@@ -161,7 +161,7 @@ public interface SmsCore {
 	 * If we did not receive gateway delivery reports for messages that was sent
 	 * out, then we mark those messages as time out after a predefined period as
 	 * determined by DEL_REPORT_TIMEOUT_DURATION on the task. These messages are
-	 * not billable. But they will be billable if the report comes in ver late.
+	 * not billable. But they will be billable if the report comes in very late.
 	 */
 	public void processTimedOutDeliveryReports();
 
