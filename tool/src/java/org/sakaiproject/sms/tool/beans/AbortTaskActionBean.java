@@ -22,12 +22,16 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 
+import uk.org.ponder.messageutil.TargettedMessage;
+import uk.org.ponder.messageutil.TargettedMessageList;
+
 public class AbortTaskActionBean {
 
 	private static Log LOG = LogFactory.getLog(AbortTaskActionBean.class);
 
 	private String taskToAbort;
 	private SmsService smsService;
+	private TargettedMessageList messages;
 
 	public void setTaskToAbort(String taskToAbort) {
 		this.taskToAbort = taskToAbort;
@@ -37,18 +41,26 @@ public class AbortTaskActionBean {
 		this.smsService = smsService;
 	}
 
+	public void setMessages(TargettedMessageList messages) {
+		this.messages = messages;
+	}
+
 	/**
 	 * Abort specified task
 	 * 
 	 * @return {@link ActionResults}
 	 */
 	public String abortTask() {
-		if (taskToAbort != null) {
-			try {
-				smsService.abortPendingTask(Long.parseLong(taskToAbort));
-			} catch (SmsTaskNotFoundException e) {
-				LOG.error(e);
-			}
+		try {
+			smsService.abortPendingTask(Long.parseLong(taskToAbort));
+			messages.addMessage(new TargettedMessage("sms.abort-task.success",
+					new Object[] { taskToAbort },
+					TargettedMessage.SEVERITY_INFO));
+		} catch (SmsTaskNotFoundException e) {
+			LOG.error(e);
+			messages.addMessage(new TargettedMessage(
+					"sms.abort-task.invalid-task", null,
+					TargettedMessage.SEVERITY_ERROR));
 		}
 
 		return ActionResults.SUCCESS;

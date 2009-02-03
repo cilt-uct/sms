@@ -125,6 +125,7 @@
   <!--  Action Beans -->  
   <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">
   	<property name="smsService" ref="org.sakaiproject.sms.api.SmsService" />
+  	<property name="messages" ref="targettedMessageList"/>
   </bean>
   
   <bean id="debitAccountActionBean" class="org.sakaiproject.sms.tool.beans.DebitAccountActionBean">

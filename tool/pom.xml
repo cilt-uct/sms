@@ -300,7 +300,13 @@
         						<groupId>commons-lang</groupId>
 								<artifactId>commons-lang</artifactId>
     							<version>${commons.lang.version}</version>
-    						</dependency>	
+    						</dependency>
+    						<!-- TODO: Remove this when using stub: -->
+    						<dependency>
+      							<groupId>org.sakaiproject.kernel</groupId>
+      							<artifactId>sakai-kernel-api</artifactId>
+        						<version>1.0</version>
+    						</dependency>		
 	       			</dependencies>
 				</plugin>
 				<plugin>

@@ -69,15 +69,21 @@ public class AbortTaskProducer implements ViewComponentProducer,
 		IdParams params = (IdParams) viewparams;
 		SmsTask task = (SmsTask) ELEvaluator
 				.getBean(SmsTaskLocator.LOCATOR_NAME + "." + params.id);
-		UIMessage.make(form, "confirm-msg", "sms.abort-task.confirm",
-				new Object[] { task.getId(), task.getDeliveryGroupName(),
-						task.getMessageBody() });
 
-		UICommand command = UICommand.make(form, "abort-button", UIMessage
-				.make("sms.abort-task.abort"), "AbortTaskActionBean.abortTask");
+		if (task != null) {
+			UIMessage.make(form, "confirm-msg", "sms.abort-task.confirm",
+					new Object[] { task.getId(), task.getDeliveryGroupName(),
+							task.getMessageBody() });
 
-		form.addParameter(new UIELBinding("AbortTaskActionBean.taskToAbort",
-				task.getId()));
+			UICommand command = UICommand.make(form, "abort-button", UIMessage
+					.make("sms.abort-task.abort"),
+					"AbortTaskActionBean.abortTask");
+
+			form.addParameter(new UIELBinding(
+					"AbortTaskActionBean.taskToAbort", task.getId()));
+		} else {
+			UIMessage.make(form, "invalid-task", "sms.abort-task.invalid-task");
+		}
 
 		UICommand.make(form, "cancel-button",
 				UIMessage.make("sms.general.cancel")).setReturn(
