@@ -15,16 +15,17 @@
 <div rsf:id="warning"></div>
 <table class="listHier lines" cellspacing="0">
 	<thead>
-		<th width="10%"><a rsf:id="tableheader-task-id:">Group</a></th>
-		<th width="10%"><a rsf:id="tableheader-group:">Group</a></th>
-		<th width="10%"><a rsf:id="tableheader-size-estimate:">Size Estimate</a></th>
-		<th width="10%"><a rsf:id="tableheader-size-actual:">Size Actual</a></th>
-		<th width="10%"><a rsf:id="tableheader-messages-processed:">Messages Processed</a></th>
-		<th width="10%"><a rsf:id="tableheader-tool-name:">Tool Name</a></th>
-		<th width="10%"><a rsf:id="tableheader-sender:">Sender</a></th>
-		<th width="10%"><a rsf:id="tableheader-message:">Message</a></th>
-		<th width="10%"><a rsf:id="tableheader-process-date:">Process Date</a></th>
-		<th width="10%"><a rsf:id="tableheader-status:">Status</a></th>
+		<th width="9%"><a rsf:id="tableheader-task-id:">Group</a></th>
+		<th width="9%"><a rsf:id="tableheader-group:">Group</a></th>
+		<th width="9%"><a rsf:id="tableheader-size-estimate:">Size Estimate</a></th>
+		<th width="9%"><a rsf:id="tableheader-size-actual:">Size Actual</a></th>
+		<th width="9%"><a rsf:id="tableheader-messages-processed:">Messages Processed</a></th>
+		<th width="9%"><a rsf:id="tableheader-tool-name:">Tool Name</a></th>
+		<th width="9%"><a rsf:id="tableheader-sender:">Sender</a></th>
+		<th width="9%"><a rsf:id="tableheader-message:">Message</a></th>
+		<th width="9%"><a rsf:id="tableheader-process-date:">Process Date</a></th>
+		<th width="9%"><a rsf:id="tableheader-status:">Status</a></th>
+		<th width="10%"></th>
 	</thead>
 	<tbody>
 		<tr rsf:id="dataset:">
@@ -39,6 +40,12 @@
 			<td rsf:id="row-data-message">8</td>
 			<td rsf:id="row-data-process-date">9</td>
 			<td rsf:id="row-data-status">10</td>
+			<td><a rsf:id="abort-link" href="abort" id="abort-link" style="display:none;"></a>
+				<input rsf:id="abort-button" id="abort-button" type="button" value="Abort" /> 
+				<script rsf:id="make-button-link" type="text/javascript">
+					make_button_call_link("abort-link" ,"abort-button");
+  				</script>
+			</td>
 		</tr>
 	</tbody>
 </table>

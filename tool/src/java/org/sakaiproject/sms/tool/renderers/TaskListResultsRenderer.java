@@ -23,15 +23,18 @@ import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
+import org.sakaiproject.sms.tool.producers.SmsTestProducer;
 import org.sakaiproject.sms.tool.producers.TaskListPopupProducer;
 import org.sakaiproject.sms.tool.util.NullHandling;
 import org.springframework.util.Assert;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -43,12 +46,12 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 	private final static org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(TaskListResultsRenderer.class);
 
-	private SearchResultContainer<SmsTask> smsTaskList = new SearchResultContainer<SmsTask>(SmsUiConstants.NO_RESULTS_PAGING_SIZE);
+	private SearchResultContainer<SmsTask> smsTaskList = new SearchResultContainer<SmsTask>(
+			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
 
 	private SearchFilterBean searchFilterBean;
 	private SortHeaderRenderer sortHeaderRenderer;
 	private SmsTaskLogic smsTaskLogic;
-	
 
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
@@ -71,13 +74,13 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 		searchFilterBean.setOrderBy(sortViewParams.sortBy);
 		searchFilterBean.setSortDirection(sortViewParams.sortDir);
 		setCurrentPage(searchFilterBean, sortViewParams);
-		
+
 		boolean fail = false;
 		try {
-				smsTaskList = smsTaskLogic.getPagedSmsTasksForCriteria(searchFilterBean);
-				sortViewParams.current_count = smsTaskList.getNumberOfPages();
-		} 
-		catch (SmsSearchException e) {
+			smsTaskList = smsTaskLogic
+					.getPagedSmsTasksForCriteria(searchFilterBean);
+			sortViewParams.current_count = smsTaskList.getNumberOfPages();
+		} catch (SmsSearchException e) {
 			LOG.error(e);
 			fail = true;
 		}
@@ -128,13 +131,18 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 
 				UIBranchContainer row = UIBranchContainer.make(
 						searchResultsTable, "dataset:");
-				
-				UIInternalLink link = UIInternalLink.make(row, "popup-link", new IdParams(TaskListPopupProducer.VIEW_ID, smsTask.getId().toString()));
-				link.decorate(new UIIDStrategyDecorator(new Integer(id).toString() + "link"));
+
+				UIInternalLink link = UIInternalLink.make(row, "popup-link",
+						new IdParams(TaskListPopupProducer.VIEW_ID, smsTask
+								.getId().toString()));
+				link.decorate(new UIIDStrategyDecorator(new Integer(id)
+						.toString()
+						+ "link"));
 
 				UIOutput idRow = UIOutput.make(row, "row-data-id", NullHandling
 						.safeToString(smsTask.getId()));
-				idRow.decorate(new UIIDStrategyDecorator(new Integer(id).toString()));
+				idRow.decorate(new UIIDStrategyDecorator(new Integer(id)
+						.toString()));
 				UIOutput.make(row, "row-data-group", NullHandling
 						.safeToString(smsTask.getDeliveryGroupName()));
 				UIOutput.make(row, "row-data-size-estimate", NullHandling
@@ -143,30 +151,43 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 						.safeToString(smsTask.getGroupSizeActual()));
 				UIOutput.make(row, "row-data-messages-processed", NullHandling
 						.safeToString(smsTask.getMessagesProcessed()));
-				UIOutput.make(row, "row-data-tool-name", NullHandling.safeToString(smsTask
-						.getSakaiToolName()));
+				UIOutput.make(row, "row-data-tool-name", NullHandling
+						.safeToString(smsTask.getSakaiToolName()));
 				UIOutput.make(row, "row-data-sender", NullHandling
 						.safeToString(smsTask.getSenderUserName()));
-				UIOutput
-						.make(row, "row-data-message", NullHandling.safeTruncatedToString(smsTask.getMessageBody(), 20));
+				UIOutput.make(row, "row-data-message", NullHandling
+						.safeTruncatedToString(smsTask.getMessageBody(), 20));
 				UIOutput.make(row, "row-data-process-date", NullHandling
 						.safeToStringFormated(smsTask.getDateProcessed()));
-				UIOutput.make(row, "row-data-status", NullHandling.safeToString(smsTask.getStatusCode()));
-				
+				UIOutput.make(row, "row-data-status", NullHandling
+						.safeToString(smsTask.getStatusCode()));
+
+				if (SmsConst_DeliveryStatus.STATUS_PENDING.equals(smsTask
+						.getStatusCode())) {
+					UIInternalLink abortLink = UIInternalLink.make(row,
+							"abort-link", new IdParams(SmsTestProducer.VIEW_ID,
+									smsTask.getId().toString()));
+					UIMessage abortButton = UIMessage.make(row, "abort-button",
+							"sms.task-list-search-results.abort");
+					UIInitBlock.make(row, "make-button-link",
+							"make_button_call_link", new Object[] {
+									abortButton, abortLink });
+				}
 				id++;
 			}
 		}
 	}
-	
-	private void setCurrentPage(SearchFilterBean searchBean, SortPagerViewParams sortViewParams) {
 
-		//new search
-		if(searchBean.isNewSearch()){
+	private void setCurrentPage(SearchFilterBean searchBean,
+			SortPagerViewParams sortViewParams) {
+
+		// new search
+		if (searchBean.isNewSearch()) {
 			sortViewParams.current_start = 1;
 			searchBean.setNewSearch(false);
-		}
-		else//paging
-			searchBean.setCurrentPage(sortViewParams.current_start);	
+		} else
+			// paging
+			searchBean.setCurrentPage(sortViewParams.current_start);
 	}
 
 	public Long getTotalNumberOfRowsReturned() {
