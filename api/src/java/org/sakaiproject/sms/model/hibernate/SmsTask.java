@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.DateUtil;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * A sms task that needs to be processed. For example: send message X to sakai
@@ -114,6 +113,9 @@ public class SmsTask extends BaseModel {
 
 	/** The sms account (cost centre) that will pay for the messages. */
 	private Long smsAccountId;
+
+	/** The sender user id. */
+	private String senderUserId;
 
 	/**
 	 * The total number of smsMessages processed.
@@ -883,11 +885,41 @@ public class SmsTask extends BaseModel {
 		return deliveryEntityList;
 	}
 
+	/**
+	 * Sets the fail reason.
+	 * 
+	 * @param failReason
+	 *            the new fail reason
+	 */
 	public void setFailReason(String failReason) {
 		this.failReason = failReason;
 	}
 
+	/**
+	 * Gets the fail reason.
+	 * 
+	 * @return the fail reason
+	 */
 	public String getFailReason() {
 		return failReason;
+	}
+
+	/**
+	 * Gets the sender user id.
+	 * 
+	 * @return the sender user id
+	 */
+	public String getSenderUserId() {
+		return senderUserId;
+	}
+
+	/**
+	 * Sets the sender user id.
+	 * 
+	 * @param senderUserId
+	 *            the new sender user id
+	 */
+	public void setSenderUserId(String senderUserId) {
+		this.senderUserId = senderUserId;
 	}
 }

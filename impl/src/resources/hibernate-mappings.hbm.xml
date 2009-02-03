@@ -40,6 +40,8 @@
 			not-null="false" length="99" />
 		<property name="senderUserName" type="string" column="SENDER_USER_NAME"
 			not-null="true" length="20" />
+		<property name="senderUserId" type="string" column="SENDER_USER_ID"
+			not-null="false" length="99" />
 		<property name="dateProcessed" type="timestamp" column="DATE_PROCESSED"
 			not-null="false" />
 		<property name="deliveryGroupName" type="string" column="DELIVERY_GROUP_NAME"
