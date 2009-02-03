@@ -27,7 +27,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
-import org.sakaiproject.sms.tool.producers.SmsTestProducer;
+import org.sakaiproject.sms.tool.producers.AbortTaskProducer;
 import org.sakaiproject.sms.tool.producers.TaskListPopupProducer;
 import org.sakaiproject.sms.tool.util.NullHandling;
 import org.springframework.util.Assert;
@@ -165,8 +165,9 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 				if (SmsConst_DeliveryStatus.STATUS_PENDING.equals(smsTask
 						.getStatusCode())) {
 					UIInternalLink abortLink = UIInternalLink.make(row,
-							"abort-link", new IdParams(SmsTestProducer.VIEW_ID,
-									smsTask.getId().toString()));
+							"abort-link", new IdParams(
+									AbortTaskProducer.VIEW_ID, smsTask.getId()
+											.toString()));
 					UIMessage abortButton = UIMessage.make(row, "abort-button",
 							"sms.task-list-search-results.abort");
 					UIInitBlock.make(row, "make-button-link",

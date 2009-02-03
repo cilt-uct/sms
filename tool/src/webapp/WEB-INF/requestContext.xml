@@ -50,6 +50,10 @@
   <bean id="navBarRenderer" class="org.sakaiproject.sms.tool.renderers.NavBarRenderer" />
 
   <!--  Producers -->
+  <bean class="org.sakaiproject.sms.tool.producers.AbortTaskProducer">
+	<property name="navBarRenderer" ref="navBarRenderer" />
+  </bean>
+  
   <bean class="org.sakaiproject.sms.tool.producers.DebitAccountProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
