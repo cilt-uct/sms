@@ -52,6 +52,7 @@
   <!--  Producers -->
   <bean class="org.sakaiproject.sms.tool.producers.AbortTaskProducer">
 	<property name="navBarRenderer" ref="navBarRenderer" />
+	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.DebitAccountProducer">
@@ -122,6 +123,10 @@
   
   
   <!--  Action Beans -->  
+  <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">
+  	<property name="smsService" ref="org.sakaiproject.sms.api.SmsService" />
+  </bean>
+  
   <bean id="debitAccountActionBean" class="org.sakaiproject.sms.tool.beans.DebitAccountActionBean">
   	<property name="debitAccountBean" ref="debitAccountBean"/>
   	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
@@ -182,6 +187,7 @@
   
   <bean id="SmsTaskLocator" class="org.sakaiproject.sms.tool.otp.SmsTaskLocator">
     	<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore"/>
+    	<property name="smsTaskLogic" ref="smsTaskLogic" />
   </bean>
   
   <!-- Handler Hook -->

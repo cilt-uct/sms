@@ -34,7 +34,7 @@
     <property name="value" value="searchTaskList, searchTransactionLog, searchMessageLog, smsConfig, 
     smsSiteConfigActionBean, HelperActionBean, SmsTestActionBean, SmsMessageLocator, SmsConfigLocator,  
     SmsSystemConfigLocator, csvExportBean, SmsAccountLocator, SmsTaskLocator, nullableFieldDateTransit, 
-    debitAccountBean, debitAccountActionBean, destroyScope"/>
+    debitAccountBean, debitAccountActionBean, destroyScope, AbortTaskActionBean"/>
   </bean>
 
   <!-- The beans which will be preserved across a flow via simple instance copying -->

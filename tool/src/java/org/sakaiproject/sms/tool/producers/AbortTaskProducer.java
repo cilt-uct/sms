@@ -20,12 +20,16 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.beans.ActionResults;
+import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 
+import uk.org.ponder.beanutil.BeanGetter;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
@@ -42,9 +46,14 @@ public class AbortTaskProducer implements ViewComponentProducer,
 	public static final String VIEW_ID = "abort_task";
 
 	private NavBarRenderer navBarRenderer;
+	private BeanGetter ELEvaluator;
 
 	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
 		this.navBarRenderer = navBarRenderer;
+	}
+
+	public void setELEvaluator(BeanGetter ELEvaluator) {
+		this.ELEvaluator = ELEvaluator;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
@@ -57,9 +66,19 @@ public class AbortTaskProducer implements ViewComponentProducer,
 
 		UIForm form = UIForm.make(tofill, "abort-task-form");
 
-		UICommand.make(form, "abort-button",
-				UIMessage.make("sms.abort-task.abort")).setReturn(
-				ActionResults.SUCCESS);
+		IdParams params = (IdParams) viewparams;
+		SmsTask task = (SmsTask) ELEvaluator
+				.getBean(SmsTaskLocator.LOCATOR_NAME + "." + params.id);
+		UIMessage.make(form, "confirm-msg", "sms.abort-task.confirm",
+				new Object[] { task.getId(), task.getDeliveryGroupName(),
+						task.getMessageBody() });
+
+		UICommand command = UICommand.make(form, "abort-button", UIMessage
+				.make("sms.abort-task.abort"), "AbortTaskActionBean.abortTask");
+
+		form.addParameter(new UIELBinding("AbortTaskActionBean.taskToAbort",
+				task.getId()));
+
 		UICommand.make(form, "cancel-button",
 				UIMessage.make("sms.general.cancel")).setReturn(
 				ActionResults.CANCEL);
