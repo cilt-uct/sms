@@ -253,6 +253,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask
 					.setFailReason(SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE);
+			smsBilling.cancelPendingRequest(smsTask.getId());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors, SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE);
@@ -293,7 +294,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_EXPIRE);
 			sendTaskNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
-
+			smsBilling.cancelPendingRequest(smsTask.getId());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			return;
 		}
@@ -335,6 +336,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_FAIL);
 			sendTaskNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+			smsBilling.cancelPendingRequest(smsTask.getId());
 		}
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 	}
@@ -485,13 +487,12 @@ public class SmsCoreImpl implements SmsCore {
 
 		for (SmsMessage smsMessage : messages) {
 
-			smsBilling.creditLateMessage(smsMessage);
-
 			if ((smsMessage.getSmscDeliveryStatusCode()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
 				smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			} else {
 				smsMessage
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+				smsBilling.creditLateMessage(smsMessage);
 			}
 			HibernateLogicFactory.getMessageLogic().persistSmsMessage(
 					smsMessage);
@@ -506,6 +507,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			throw new SmsTaskNotFoundException();
 		} else {
+			smsBilling.cancelPendingRequest(smsTaskID);
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
 			smsTask.setStatusForMessages(
 					SmsConst_DeliveryStatus.STATUS_PENDING,
