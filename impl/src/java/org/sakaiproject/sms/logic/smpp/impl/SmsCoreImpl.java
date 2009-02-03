@@ -46,9 +46,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -74,7 +74,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -85,7 +85,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -207,7 +207,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 *
+	 * 
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -233,18 +233,18 @@ public class SmsCoreImpl implements SmsCore {
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(TaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {
-			// Do not presist, just throw exception
+			// Do not persist, just throw exception
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors, "Task validation failed.");
 			LOG.error(validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
 
-		// we set the date again dew to time laps between getPreliminaryTask and
+		// we set the date again due to time laps between getPreliminaryTask and
 		// insertask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 
-		// We do this becuase if there the invalid values in the task then the
+		// We do this because if there the invalid values in the task then the
 		// checkSufficientCredits() will throw unexpected exceptions. Check for
 		// sufficient credit only if the task is valid
 		errors.clear();
@@ -356,7 +356,7 @@ public class SmsCoreImpl implements SmsCore {
 					HibernateLogicFactory.getMessageLogic().persistSmsMessage(
 							message);
 					HibernateLogicFactory.getTaskLogic()
-					.incrementMessagesProcessed(message.getSmsTask());
+							.incrementMessagesProcessed(message.getSmsTask());
 				}
 
 			}
@@ -372,12 +372,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendTaskNotification(SmsTask smsTask,
@@ -405,7 +405,7 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 		String creditsAvailable = smsBilling.convertAmountToCredits(amount)
-				+ ""; // GET THIS
+				+ "";
 		String creditsRequired = smsTask.getCreditEstimate() + "";
 
 		if (taskMessageType
