@@ -62,4 +62,16 @@ public class ExternalLogicStub implements ExternalLogic {
 		}
 		return ((String[]) sent.toArray());
 	}
+
+	public String getCurrentSiteId() {
+		return "StubCurrentSiteId";
+	}
+
+	public String getCurrentUserId() {
+		return "StubUserId";
+	}
+
+	public String getCurrentUserDisplayId() {
+		return "StubCurrentUserDisplayId";
+	}
 }

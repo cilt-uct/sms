@@ -24,6 +24,14 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.FunctionManager;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.email.api.EmailService;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
 // TODO: Uncomment
 /**
@@ -45,6 +53,57 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
 
+	public final static String NO_LOCATION = "noLocationAvailable";
+
+	private FunctionManager functionManager;
+
+	public void setFunctionManager(FunctionManager functionManager) {
+		this.functionManager = functionManager;
+	}
+
+	private SessionManager sessionManager;
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+
+	private ToolManager toolManager;
+
+	public void setToolManager(ToolManager toolManager) {
+		this.toolManager = toolManager;
+	}
+
+	private SecurityService securityService;
+
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	private SiteService siteService;
+
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
+
+	private UserDirectoryService userDirectoryService;
+
+	public void setUserDirectoryService(
+			UserDirectoryService userDirectoryService) {
+		this.userDirectoryService = userDirectoryService;
+	}
+
+	// private EntityBroker entityBroker;
+	//
+	// public void setEntityBroker(EntityBroker entityBroker) {
+	// this.entityBroker = entityBroker;
+	// }
+
+	private EmailService emailService;
+
+	public void setEmailService(EmailService emailService) {
+		this.emailService = emailService;
+	}
+
 	// private FunctionManager functionManager;
 	// private SecurityService securityService;
 	// private UserDirectoryService userDirectoryService;
@@ -63,6 +122,47 @@ public class ExternalLogicImpl implements ExternalLogic {
 		// functionManager.registerFunction(SMS_MESSAGE_VIEW_ALL);
 		// functionManager.registerFunction(SMS_MESSAGE_VIEW_OWN);
 
+	}
+
+	/**
+	 * @see ExternalLogic#getCurrentUserId()
+	 */
+	public String getCurrentUserId() {
+		return sessionManager.getCurrentSessionUserId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
+	 */
+	public String getCurrentSiteId() {
+		return getCurrentLocationId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
+	 */
+	public String getCurrentLocationId() {
+		String location = null;
+		try {
+			String context = toolManager.getCurrentPlacement().getContext();
+			location = context;
+			// Site s = siteService.getSite( context );
+			// location = s.getReference(); // get the entity reference to the
+			// site
+		} catch (Exception e) {
+			// sakai failed to get us a location so we can assume we are not
+			// inside the portal
+			return NO_LOCATION;
+		}
+		if (location == null) {
+			location = NO_LOCATION;
+		}
+		return location;
 	}
 
 	/**
@@ -253,6 +353,24 @@ public class ExternalLogicImpl implements ExternalLogic {
 		// }
 		// return addresses;
 		return ((String[]) toEmails.toArray());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
+	 */
+	public String getCurrentUserDisplayId() {
+		String userId = getCurrentUserId();
+		String name = null;
+		try {
+			name = userDirectoryService.getUserEid(userId);
+		} catch (UserNotDefinedException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return name;
 	}
 
 }

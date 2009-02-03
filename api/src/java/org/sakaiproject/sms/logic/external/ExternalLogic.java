@@ -62,6 +62,16 @@ public interface ExternalLogic {
 	public boolean isUserAdmin(String userId);
 
 	/**
+	 * @return the current sakai user id (not username)
+	 */
+	public String getCurrentUserId();
+
+	/**
+	 * @return the current sakai site id
+	 */
+	public String getCurrentSiteId();
+
+	/**
 	 * Check if a user has a specified permission within a context, primarily a
 	 * convenience method and passthrough
 	 * 
@@ -127,5 +137,13 @@ public interface ExternalLogic {
 	 * @return an integer with current number of members in site
 	 */
 	public int getSiteMemberCount(String siteId);
+
+	/**
+	 * Get the display id for the current user.
+	 * 
+	 * @return display id
+	 * 
+	 */
+	public String getCurrentUserDisplayId();
 
 }
