@@ -24,9 +24,11 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.email.api.EmailService;
+import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
@@ -92,11 +94,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 		this.userDirectoryService = userDirectoryService;
 	}
 
-	// private EntityBroker entityBroker;
-	//
-	// public void setEntityBroker(EntityBroker entityBroker) {
-	// this.entityBroker = entityBroker;
-	// }
+	private EntityBroker entityBroker;
+
+	public void setEntityBroker(EntityBroker entityBroker) {
+		this.entityBroker = entityBroker;
+	}
 
 	private EmailService emailService;
 
@@ -207,14 +209,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	/**
-	 * @see {@link ExternalLogic#getSiteMemberCount(String)}
+	 * @see {@link ExternalLogic#getGroupMemberCount(String)}
 	 */
-	public int getSiteMemberCount(String siteId) {
-		// TODO Uncomment sakai code + catch + handle exceptions
-		// siteService.getSite(siteId);
-		// site.getMembers().size();
-
-		return 1;
+	public int getGroupMemberCount(String reference) {
+		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
+		if (group == null) {
+			return 0;
+		}
+		return group.getMembers().size();
 	}
 
 	// public void setSecurityService(SecurityService securityService) {

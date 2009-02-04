@@ -43,9 +43,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return true;
 	}
 
-	public int getSiteMemberCount(String siteId) {
-		// TODO Auto-generated method stub
-		return 1;
+	public int getGroupMemberCount(String reference) {
+		return 5;
 	}
 
 	public String[] sendEmails(String from, String[] emails, String subject,

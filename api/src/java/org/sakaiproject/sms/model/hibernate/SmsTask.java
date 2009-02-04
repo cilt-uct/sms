@@ -807,6 +807,10 @@ public class SmsTask extends BaseModel {
 	 * @return A set of delivery mobile numbers
 	 */
 	public Set<String> getDeliveryMobileNumbersSet() {
+		if (deliveryMobileNumbers == null) {
+			return null;
+		}
+
 		Set<String> deliveryMobileNumbersSet = new HashSet<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(
 				deliveryMobileNumbers, ",");
@@ -854,27 +858,29 @@ public class SmsTask extends BaseModel {
 	/**
 	 * Set the delivery group IDs
 	 */
-	public void setDeliveryEntityList(List<String> delieryEntityList) {
-		if (delieryEntityList != null) {
+	public void setDeliveryEntityList(List<String> deliveryEntityList) {
+		if (deliveryEntityList != null) {
 			StringBuffer buffer = new StringBuffer();
 			int number = 1;
-			for (String deliveryIds : delieryEntityList) {
+			for (String deliveryIds : deliveryEntityList) {
 
 				buffer.append(deliveryIds);
-				if (number < delieryEntityList.size())
+				if (number < deliveryEntityList.size())
 					buffer.append(",");
 
 				number++;
 			}
 			deliveryEntities = buffer.toString();
 		}
-
 	}
 
 	/**
 	 * Get the delivery group IDs
 	 */
 	public List<String> getDeliveryEntityList() {
+		if (deliveryEntities == null) {
+			return null;
+		}
 		List<String> deliveryEntityList = new ArrayList<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(deliveryEntities,
 				",");

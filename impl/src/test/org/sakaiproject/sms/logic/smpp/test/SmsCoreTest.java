@@ -17,9 +17,12 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
@@ -28,6 +31,7 @@ import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -42,9 +46,9 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -58,7 +62,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static {
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
+
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
+		smsCoreImpl.setExternalLogic(new ExternalLogicStub());
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
@@ -95,9 +101,10 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
@@ -110,7 +117,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 *
+	 * 
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -597,6 +604,46 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			assertEquals(smsMessage.getStatusCode(),
 					SmsConst_DeliveryStatus.STATUS_ABORT);
 		}
+
+	}
+
+	public void testCalculateEstimatedGroupSize() {
+		SmsTask toTest = new SmsTask();
+		toTest.setDeliveryUserId("xxx");
+
+		// Test for single userId
+		smsCoreImpl.calculateEstimatedGroupSize(toTest);
+		assertEquals(1.5, toTest.getCostEstimate());
+		assertEquals(new Integer(1), toTest.getGroupSizeEstimate());
+
+		// Test for single Group
+		toTest.setDeliveryUserId(null);
+		toTest.setDeliveryGroupId("testing");
+		smsCoreImpl.calculateEstimatedGroupSize(toTest);
+		assertEquals(7.5, toTest.getCostEstimate());
+		assertEquals(new Integer(5), toTest.getGroupSizeEstimate());
+
+		// Test for Mobile Numbers set
+		toTest.setDeliveryGroupId(null);
+		Set<String> mobileNumbers = new TreeSet<String>();
+		mobileNumbers.add("0831231234");
+		mobileNumbers.add("0821231234");
+		mobileNumbers.add("0841231234");
+		toTest.setDeliveryMobileNumbersSet(mobileNumbers);
+		smsCoreImpl.calculateEstimatedGroupSize(toTest);
+		assertEquals(4.5, toTest.getCostEstimate());
+		assertEquals(new Integer(3), toTest.getGroupSizeEstimate());
+
+		// Test for multiple Group
+		toTest.setDeliveryMobileNumbersSet(null);
+		List<String> deliveryEntityList = new ArrayList<String>();
+		deliveryEntityList.add("testing1");
+		deliveryEntityList.add("testing2");
+		deliveryEntityList.add("testing3");
+		toTest.setDeliveryEntityList(deliveryEntityList);
+		smsCoreImpl.calculateEstimatedGroupSize(toTest);
+		assertEquals(22.5, toTest.getCostEstimate());
+		assertEquals(new Integer(15), toTest.getGroupSizeEstimate());
 
 	}
 }

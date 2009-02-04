@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
@@ -54,17 +55,32 @@ public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 	public SmsSmpp smsSmpp = null;
 
 	public SmsBilling smsBilling = null;
 
-	// TODO, we must calculate size for only one of deliveryEntityList,
-	// deliveryMobileNumbers, sakaiGroupId or sakaiUserIds. For now we only
-	// return a dummy list of users until the code is integrated into Sakai
-
 	public SmsTask calculateEstimatedGroupSize(SmsTask smsTask) {
-		Set<SmsMessage> deliverGroupMessages = generateSmsMessages(smsTask);
-		int groupSize = deliverGroupMessages.size();
+		int groupSize = 0;
+
+		if (smsTask.getDeliveryEntityList() != null) {
+			for (String reference : smsTask.getDeliveryEntityList()) {
+				groupSize += externalLogic.getGroupMemberCount(reference);
+			}
+		} else if (smsTask.getDeliveryGroupId() != null) {
+			groupSize += externalLogic.getGroupMemberCount(smsTask
+					.getDeliveryGroupId());
+		} else if (smsTask.getDeliveryMobileNumbersSet() != null) {
+			groupSize += smsTask.getDeliveryMobileNumbersSet().size();
+		} else if (smsTask.getDeliveryUserId() != null) {
+			groupSize = 1;
+		}
+
 		smsTask.setGroupSizeEstimate(groupSize);
 		smsTask.setCreditEstimate(groupSize);
 		smsTask.setCostEstimate(smsBilling.convertCreditsToAmount(groupSize)

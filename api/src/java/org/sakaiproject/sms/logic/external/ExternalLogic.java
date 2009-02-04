@@ -130,13 +130,13 @@ public interface ExternalLogic {
 			String message);
 
 	/**
-	 * Get current number of members in a specific site
+	 * Get current number of members in a specific group
 	 * 
-	 * @param siteId
-	 *            unique site id
-	 * @return an integer with current number of members in site
+	 * @param reference
+	 *            entity reference of group
+	 * @return an integer with current number of members in group
 	 */
-	public int getSiteMemberCount(String siteId);
+	public int getGroupMemberCount(String reference);
 
 	/**
 	 * Get the display id for the current user.

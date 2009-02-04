@@ -117,10 +117,13 @@
 		</dependency>
 		
 		<dependency>
+        	<groupId>org.sakaiproject.entitybroker</groupId>
+        	<artifactId>entitybroker-api</artifactId>
+      	</dependency>
+		
+		<dependency>
       		<groupId>org.sakaiproject.kernel</groupId>
       		<artifactId>sakai-kernel-api</artifactId>
-      		<!-- TODO: Remove this when using Sakai master pom -->
-      		<version>1.0</version>
     	</dependency>		
     </dependencies>
 
