@@ -352,6 +352,9 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_FAIL);
 			sendTaskNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+			smsTask.setFailReason((MessageCatalog.getMessage(
+					"messages.taskRetryFailure", String.valueOf(systemConfig
+							.getSmsRetryMaxCount()))));
 			smsBilling.cancelPendingRequest(smsTask.getId());
 		}
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
