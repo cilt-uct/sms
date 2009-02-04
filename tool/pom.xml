@@ -306,7 +306,7 @@
       							<groupId>org.sakaiproject.kernel</groupId>
       							<artifactId>sakai-kernel-api</artifactId>
         						<version>1.0</version>
-    						</dependency>		
+    						</dependency>
 	       			</dependencies>
 				</plugin>
 				<plugin>

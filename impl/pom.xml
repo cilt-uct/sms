@@ -166,6 +166,9 @@
 <!--			</testResource>-->
 			<testResource>
 				<directory>${basedir}/src/resources</directory>
+			</testResource>			
+			<testResource>
+				<directory>${basedir}/src/test</directory>
 			</testResource>
 		</testResources>		
 		

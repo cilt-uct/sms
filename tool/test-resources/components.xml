@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+	<!--  TODO: MOVE ALL OF THIS TO USE SAKAI PACKAGING!!!! -->
+<beans>
+
+	<!-- add sakai application scope bean definitions here -->
+	
+	<bean id="smsConfigLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl"/>
+	<bean id="SmsAccountLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl" />
+	<bean id="smsTaskLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl"/>
+	<bean id="smsTransactionLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl"/>
+	<bean id="smsMessageLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl" />
+
+	<bean id="org.sakaiproject.sms.api.SmsBilling" class="org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl" />
+
+	<bean id="org.sakaiproject.sms.api.SmsSmpp" class="org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl"
+		init-method="init">
+	</bean>
+
+	<bean id="org.sakaiproject.sms.api.SmsCore" class="org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl"
+		init-method="init">
+		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
+		<property name="smsSmpp" ref="org.sakaiproject.sms.api.SmsSmpp" />
+	</bean>
+
+	<bean id="org.sakaiproject.sms.api.SmsScheduler" class="org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl"
+		init-method="init">
+		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
+	</bean>
+	
+	<bean id="org.sakaiproject.sms.api.SmsService" class="org.sakaiproject.sms.logic.smpp.impl.SmsServiceImpl" >
+		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore"/>
+	</bean>
+	
+	<!-- add sakai application scope bean definitions here -->
+	<!-- create an external logic bean which abstracts out the Sakai bits -->
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub">
+	</bean>
+	
+</beans>
