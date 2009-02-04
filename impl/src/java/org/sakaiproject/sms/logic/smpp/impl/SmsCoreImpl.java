@@ -47,9 +47,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -90,7 +90,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -101,7 +101,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -223,7 +223,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 * 
+	 *
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -365,18 +365,23 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsMessages != null) {
 			for (SmsMessage message : smsMessages) {
 				SmsTask task = message.getSmsTask();
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(task.getDateProcessed());
-				cal.add(Calendar.SECOND, task.getDelReportTimeoutDuration());
-				if (cal.getTime().before(new Date())) {
-					message
-							.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
-					HibernateLogicFactory.getMessageLogic().persistSmsMessage(
-							message);
-					HibernateLogicFactory.getTaskLogic()
-							.incrementMessagesProcessed(message.getSmsTask());
-				}
+				if (task.getDateProcessed() != null) {
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(task.getDateProcessed());
+					cal
+							.add(Calendar.SECOND, task
+									.getDelReportTimeoutDuration());
+					if (cal.getTime().before(new Date())) {
+						message
+								.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
+						HibernateLogicFactory.getMessageLogic()
+								.persistSmsMessage(message);
+						HibernateLogicFactory.getTaskLogic()
+								.incrementMessagesProcessed(
+										message.getSmsTask());
+					}
 
+				}
 			}
 		}
 
@@ -390,12 +395,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendTaskNotification(SmsTask smsTask,
