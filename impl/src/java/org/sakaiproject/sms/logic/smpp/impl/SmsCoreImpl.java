@@ -253,7 +253,7 @@ public class SmsCoreImpl implements SmsCore {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
 					(MessageCatalog
-							.getMessage("sms.errors.task.maxTimeToLive.validationFailed")));
+							.getMessage("sms.errors.task.validationFailed")));
 			LOG.error(validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
@@ -271,7 +271,7 @@ public class SmsCoreImpl implements SmsCore {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
 					MessageCatalog
-							.getMessage("sms.errors.task.maxTimeToLive.validationFailed"));
+							.getMessage("sms.errors.task.validationFailed"));
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask
 					.setFailReason(validationException
