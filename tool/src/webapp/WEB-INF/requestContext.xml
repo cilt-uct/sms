@@ -68,7 +68,6 @@
   <bean class="org.sakaiproject.sms.tool.producers.HelperProducer">
  	<property name="accountHelper" ref="accountHelper" />
  	<property name="smsTaskLocator" ref="SmsTaskLocator" />
- 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer">

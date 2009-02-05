@@ -24,7 +24,6 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
-import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.SmsAccountHelper;
 
 import uk.org.ponder.rsf.components.UICommand;
@@ -49,12 +48,10 @@ public class HelperProducer implements ViewComponentProducer,
 
 	private SmsAccountHelper accountHelper;
 	private SmsTaskLocator smsTaskLocator;
-	private NavBarRenderer navBarRenderer;
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 
-		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		String smsTaskOTP = SmsTaskLocator.LOCATOR_NAME + "."
 				+ SmsTaskLocator.NEW_1;
 
@@ -148,10 +145,6 @@ public class HelperProducer implements ViewComponentProducer,
 
 	public void setSmsTaskLocator(SmsTaskLocator smsTaskLocator) {
 		this.smsTaskLocator = smsTaskLocator;
-	}
-
-	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-		this.navBarRenderer = navBarRenderer;
 	}
 
 }
