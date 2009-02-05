@@ -76,7 +76,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 	private BindThread bindTest;
 	private int bindThreadTimer;
-	private byte dataCoding;
 	private byte destAddressNPI;
 	private byte destAddressTON;
 	private boolean disconnectGateWayCalled;
@@ -416,7 +415,6 @@ public class SmsSmppImpl implements SmsSmpp {
 					.getProperty("priorityFlag"));
 			replaceIfPresentFlag = Byte.parseByte(properties
 					.getProperty("replaceIfPresentFlag"));
-			dataCoding = Byte.parseByte(properties.getProperty("dataCoding"));
 			smDefaultMsgId = Byte.parseByte(properties
 					.getProperty("smDefaultMsgId"));
 			enquireLinkTimeOut = Integer.parseInt(properties
