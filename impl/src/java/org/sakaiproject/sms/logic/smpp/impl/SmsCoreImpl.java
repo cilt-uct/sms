@@ -251,7 +251,9 @@ public class SmsCoreImpl implements SmsCore {
 		if (errors.size() > 0) {
 			// Do not persist, just throw exception
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
-					errors, "Task validation failed.");
+					errors,
+					(MessageCatalog
+							.getMessage("sms.errors.task.maxTimeToLive.validationFailed")));
 			LOG.error(validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
@@ -266,17 +268,20 @@ public class SmsCoreImpl implements SmsCore {
 		errors.clear();
 		errors.addAll(TaskValidator.checkSufficientCredits(smsTask));
 		if (errors.size() > 0) {
+			SmsTaskValidationException validationException = new SmsTaskValidationException(
+					errors,
+					MessageCatalog
+							.getMessage("sms.errors.task.maxTimeToLive.validationFailed"));
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask
-					.setFailReason(SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE);
+					.setFailReason(validationException
+							.getErrorMessagesAsBlock());
 			smsBilling.cancelPendingRequest(smsTask.getId());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
-			SmsTaskValidationException validationException = new SmsTaskValidationException(
-					errors, SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE);
+
 			LOG.error(validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
-
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 		smsBilling.reserveCredits(smsTask);
 		tryProcessTaskRealTime(smsTask);
