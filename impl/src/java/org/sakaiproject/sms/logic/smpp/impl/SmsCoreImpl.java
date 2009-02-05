@@ -47,9 +47,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -90,7 +90,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -101,7 +101,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -223,7 +223,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 *
+	 * 
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -254,7 +254,9 @@ public class SmsCoreImpl implements SmsCore {
 					errors,
 					(MessageCatalog
 							.getMessage("messages.sms.errors.task.validationFailed")));
-			LOG.error(validationException.getErrorMessagesAsBlock());
+			LOG.error(MessageCatalog
+					.getMessage("messages.sms.errors.task.validationFailed")
+					+ ": " + validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
 
@@ -276,10 +278,9 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask
 					.setFailReason(validationException
 							.getErrorMessagesAsBlock());
-			smsBilling.cancelPendingRequest(smsTask.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
-
-			LOG.error(validationException.getErrorMessagesAsBlock());
+			LOG.error(MessageCatalog
+					.getMessage("messages.sms.errors.task.validationFailed")
+					+ ": " + validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
@@ -403,12 +404,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendTaskNotification(SmsTask smsTask,
