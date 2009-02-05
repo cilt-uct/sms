@@ -222,6 +222,9 @@ public class SmsSmppImpl implements SmsSmpp {
 							} else {
 								smsMessage
 										.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+								HibernateLogicFactory.getTaskLogic()
+								.incrementMessagesDelivered(
+										smsMessage.getSmsTask());
 							}
 						}
 						HibernateLogicFactory.getTaskLogic()

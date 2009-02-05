@@ -28,7 +28,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 /**
  * The data service will handle all sms task database transactions for the sms
  * tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008
@@ -37,7 +37,7 @@ public interface SmsTaskLogic {
 
 	/**
 	 * Delete sms task.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 */
@@ -45,31 +45,31 @@ public interface SmsTaskLogic {
 
 	/**
 	 * Gets the sms task.
-	 * 
+	 *
 	 * @param smsTaskId
 	 *            the sms task id
-	 * 
+	 *
 	 * @return the sms task
 	 */
 	public SmsTask getSmsTask(Long smsTaskId);
 
 	/**
 	 * Gets the next sms task to be processed.
-	 * 
+	 *
 	 * @return the next sms task
 	 */
 	public SmsTask getNextSmsTask();
 
 	/**
 	 * Gets the all sms task.
-	 * 
+	 *
 	 * @return the all sms task
 	 */
 	public List<SmsTask> getAllSmsTask();
 
 	/**
 	 * Persist sms task.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 */
@@ -77,7 +77,7 @@ public interface SmsTaskLogic {
 
 	/**
 	 * Gets a all search results for the specified search criteria
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -88,7 +88,7 @@ public interface SmsTaskLogic {
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -98,10 +98,10 @@ public interface SmsTaskLogic {
 
 	/**
 	 * Gets the sms tasks filtered by one or more message statuses.
-	 * 
+	 *
 	 * @param messageStatusCode
 	 *            the message status code
-	 * 
+	 *
 	 * @return the sms tasks filtered by message status
 	 */
 	public List<SmsTask> getSmsTasksFilteredByMessageStatus(
@@ -109,7 +109,7 @@ public interface SmsTaskLogic {
 
 	/**
 	 * Increments the total messages processed on a task by one.
-	 * 
+	 *
 	 * @param smsTask
 	 */
 	public void incrementMessagesProcessed(SmsTask smsTask);
@@ -119,4 +119,11 @@ public interface SmsTaskLogic {
 	 * processed equals the actual group size the task is marked as complete.
 	 */
 	public List<SmsTask> checkAndSetTasksCompleted();
+
+	/**
+	 * Increments the total messages delivered on a task by one.
+	 *
+	 * @param smsTask
+	 */
+	public void incrementMessagesDelivered(SmsTask smsTask);
 }

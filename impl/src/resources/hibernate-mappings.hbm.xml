@@ -54,6 +54,8 @@
 			not-null="true" />
 		<property name="messagesProcessed" type="integer" column="MESSAGES_PROCESSED"
 			not-null="true" />
+		<property name="messagesDelivered" type="integer" column="MESSAGES_DELIVERED"
+			not-null="true" />
 		<property name="costEstimate" type="double" column="COST_ESTIMATE"
 			not-null="false" />
 		<property name="delReportTimeoutDuration" type="integer"
