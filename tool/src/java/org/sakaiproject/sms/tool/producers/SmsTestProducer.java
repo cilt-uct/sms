@@ -40,12 +40,11 @@ import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCaseReporter;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ComponentProducer;
-import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
-public class SmsTestProducer implements ViewComponentProducer, DefaultView,
+public class SmsTestProducer implements ViewComponentProducer,
 		NavigationCaseReporter {
 
 	private SmsAccountHelper accountHelper;

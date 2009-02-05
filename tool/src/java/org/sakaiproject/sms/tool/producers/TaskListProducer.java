@@ -23,9 +23,11 @@ import java.util.List;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
+import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
-public class TaskListProducer extends AbstractSearchListProducer {
+public class TaskListProducer extends AbstractSearchListProducer implements
+		DefaultView {
 
 	public static final String VIEW_ID = "TaskList";
 
