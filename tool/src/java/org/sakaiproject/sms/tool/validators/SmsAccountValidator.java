@@ -17,14 +17,21 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.validators;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class SmsAccountValidator implements Validator {
-
+	
+	private ExternalLogic externalLogic;
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+	
+	
 	private boolean isEmptyOrNull(String field) {
 		if (field == null) {
 			return true;
@@ -84,8 +91,7 @@ public class SmsAccountValidator implements Validator {
 
 		// TODO: Validate site id and user id against Sakai
 		if (!isEmptyOrNull(smsAccount.getSakaiSiteId())) {
-			if (!SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID
-					.equals(smsAccount.getSakaiSiteId())) {
+			if (!externalLogic.isValidSite(smsAccount.getSakaiSiteId())) {
 				err
 						.rejectValue("sakaiSiteId",
 								"sms.errors.sakaiSiteId.invalid");
@@ -93,8 +99,7 @@ public class SmsAccountValidator implements Validator {
 		}
 
 		if (!isEmptyOrNull(smsAccount.getSakaiUserId())) {
-			if (!SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID
-					.equals(smsAccount.getSakaiUserId())) {
+			if (!externalLogic.isValidUser(smsAccount.getSakaiUserId())) {
 				err
 						.rejectValue("sakaiUserId",
 								"sms.errors.sakaiUserId.invalid");

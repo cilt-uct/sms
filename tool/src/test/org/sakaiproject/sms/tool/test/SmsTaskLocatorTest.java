@@ -19,7 +19,9 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsCoreStub;
@@ -28,6 +30,7 @@ public class SmsTaskLocatorTest extends TestCase {
 
 	private SmsTaskLocator smsTaskLocator;
 	private SmsCore smsCore;
+	private ExternalLogic externalLogic;
 
 	/**
 	 * setUp to run at start of every test
@@ -38,8 +41,10 @@ public class SmsTaskLocatorTest extends TestCase {
 	public void setUp() {
 		smsTaskLocator = new SmsTaskLocator();
 		smsCore = new SmsCoreStub();
+		externalLogic = new ExternalLogicStub();
 
 		smsTaskLocator.setSmsCore(smsCore);
+		smsTaskLocator.setExternalLogic(externalLogic);
 	}
 
 	/**

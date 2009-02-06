@@ -2,9 +2,10 @@ package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.List;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
@@ -15,6 +16,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	/** The insert sms config. */
 	private static SmsConfig insertSmsConfig;
+	
+	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	static {
 		insertSmsConfig = new SmsConfig();
@@ -29,6 +32,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
@@ -159,7 +163,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	public void testFindByIdDevMode() {
 		SmsConfig getSmsConfig = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
-						SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+						externalLogic.getCurrentSiteId());
 		assertNotNull(getSmsConfig);
 
 	}

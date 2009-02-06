@@ -9,9 +9,16 @@
 	
 	<bean id="smsConfigLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl"/>
 	<bean id="SmsAccountLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl" />
-	<bean id="smsTaskLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl"/>
-	<bean id="smsTransactionLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl"/>
-	<bean id="smsMessageLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl" />
+	
+	<bean id="smsTaskLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl">
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
+	<bean id="smsTransactionLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl">
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
+	<bean id="smsMessageLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl">
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsBilling" class="org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl" />
 
@@ -37,7 +44,6 @@
 	
 	<!-- add sakai application scope bean definitions here -->
 	<!-- create an external logic bean which abstracts out the Sakai bits -->
-	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub">
-	</bean>
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub" />
 	
 </beans>

@@ -28,6 +28,18 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
  */
 public class ExternalLogicStub implements ExternalLogic {
 
+	
+	/**
+	 * The default sakai_userId to be used in development mode.
+	 */
+	public static final String SMS_DEV_DEFAULT_SAKAI_USER_ID = "SakaiUserID";
+	
+	/**
+	 * The default sakai_Site_id to be used in development mode.
+	 */
+	public static final String SMS_DEV_DEFAULT_SAKAI_SITE_ID = "SakaiSiteID";
+
+	
 	public String getSakaiMobileNumber(String userID) {
 		return "0123456789";
 	}
@@ -63,14 +75,22 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String getCurrentSiteId() {
-		return "StubCurrentSiteId";
+		return SMS_DEV_DEFAULT_SAKAI_SITE_ID;
 	}
 
 	public String getCurrentUserId() {
-		return "StubUserId";
+		return SMS_DEV_DEFAULT_SAKAI_USER_ID;
 	}
 
 	public String getCurrentUserDisplayId() {
 		return "StubCurrentUserDisplayId";
+	}
+
+	public boolean isValidSite(String siteId) {
+		return SMS_DEV_DEFAULT_SAKAI_SITE_ID.equals(siteId);
+	}
+
+	public boolean isValidUser(String userId) {
+		return SMS_DEV_DEFAULT_SAKAI_USER_ID.equals(userId);
 	}
 }

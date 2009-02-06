@@ -35,17 +35,6 @@ import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
-// TODO: Uncomment
-/**
- //import org.sakaiproject.authz.api.SecurityService;
- //import org.sakaiproject.site.api.SiteService;
- //import org.sakaiproject.user.api.User;
- //import org.sakaiproject.email.api.EmailService;
- //import org.sakaiproject.user.api.UserDirectoryService;
- //import org.sakaiproject.user.api.UserNotDefinedException;
- //import org.sakaiproject.authz.api.FunctionManager;
- */
-
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
  * out for the moment
@@ -219,23 +208,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return group.getMembers().size();
 	}
 
-	// public void setSecurityService(SecurityService securityService) {
-	// this.securityService = securityService;
-	// }
-
-	// public void setFunctionManager(FunctionManager functionManager) {
-	// this.functionManager = functionManager;
-	// }
-
-	// public void setUserDirectoryService(UserDirectoryService
-	// userDirectoryService) {
-	// this.userDirectoryService = userDirectoryService;
-	// }
-
-	// public void setSiteService(SiteService siteService) {
-	// this.siteService = siteService;
-	// }
-
 	/**
 	 * @see ExternalLogic#sendEmailsToUsers(String, String[], String, String)
 	 */
@@ -373,6 +345,25 @@ public class ExternalLogicImpl implements ExternalLogic {
 			return null;
 		}
 		return name;
+	}
+
+	/**
+	 * @see ExternalLogic#isValidSite(String)
+	 */
+	public boolean isValidSite(String siteId) {
+		return siteService.siteExists(siteId);	
+	}
+
+	/**
+	 * @see ExternalLogic#isValidUser(String)
+	 */
+	public boolean isValidUser(String userId) {
+		try {
+			userDirectoryService.getUser(userId);
+			return true;
+		} catch (UserNotDefinedException e) {
+			return false;
+		}
 	}
 
 }

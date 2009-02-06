@@ -10,6 +10,8 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -39,6 +41,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	/** The insert message2. */
 	private static SmsMessage insertMessage2;
+	
+	private SmsTaskLogicImpl smsTaskLogic;
 
 	static {
 
@@ -48,7 +52,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 		insertMessage2 = createTestMessage2();
 	}
-
+	
+	public void onSetup() {
+		smsTaskLogic = new SmsTaskLogicImpl();
+		smsTaskLogic.setExternalLogic(new ExternalLogicStub());
+	}
+	
+	
 	private static SmsMessage createTestMessage1() {
 		SmsMessage message = new SmsMessage();
 		message.setMobileNumber("0721998919");
@@ -97,6 +107,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
@@ -241,9 +252,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			bean.setDateTo(new Date());
 			bean.setToolName(insertTask.getSakaiToolName());
 			bean.setSender(insertTask.getSenderUserName());
-
-			List<SmsTask> tasks = HibernateLogicFactory.getTaskLogic()
-					.getPagedSmsTasksForCriteria(bean).getPageResults();
+			
+			List<SmsTask> tasks = smsTaskLogic.getPagedSmsTasksForCriteria(bean).getPageResults();
 			assertTrue("Collection returned has no objects", tasks.size() > 0);
 
 			for (SmsTask task : tasks) {
@@ -291,8 +301,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 			bean.setCurrentPage(2);
 
-			SearchResultContainer<SmsTask> con = HibernateLogicFactory
-					.getTaskLogic().getPagedSmsTasksForCriteria(bean);
+			SearchResultContainer<SmsTask> con = smsTaskLogic.getPagedSmsTasksForCriteria(bean);
 			List<SmsTask> tasks = con.getPageResults();
 			assertTrue("Incorrect collection size returned",
 					tasks.size() == SmsHibernateConstants.DEFAULT_PAGE_SIZE);
@@ -309,8 +318,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 				bean.setCurrentPage(pages + 1);
 			}
 
-			con = HibernateLogicFactory.getTaskLogic()
-					.getPagedSmsTasksForCriteria(bean);
+			con = smsTaskLogic.getPagedSmsTasksForCriteria(bean);
 			tasks = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert
 					- (pages * SmsHibernateConstants.DEFAULT_PAGE_SIZE);

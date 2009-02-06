@@ -33,6 +33,7 @@ import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -52,16 +53,12 @@ import org.sakaiproject.sms.util.HibernateUtil;
  */
 public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
-	/**
-	 * Leave this as protected to try and prevent the random instantiation of
-	 * this class.
-	 * <p>
-	 * Use LogicFactory.java to get instances of logic classes.
-	 */
-	protected SmsTaskLogicImpl() {
-
+	private ExternalLogic externalLogic;
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
-
+	
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -271,7 +268,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	private int getPageSize() {
 		SmsConfig smsConfig = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
-						SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+						externalLogic.getCurrentSiteId());
 		if (smsConfig == null)
 			return SmsHibernateConstants.DEFAULT_PAGE_SIZE;
 		else

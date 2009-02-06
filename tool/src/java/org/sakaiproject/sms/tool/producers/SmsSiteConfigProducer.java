@@ -21,7 +21,7 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsConfigLocator;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
@@ -53,6 +53,11 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 
 	private MessageFixupHelper messageFixupHelper;
 	private NavBarRenderer navBarRenderer;
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
 	public String getViewID() {
 		return VIEW_ID;
@@ -77,7 +82,7 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		String smsConfigOTP = SmsConfigLocator.LOCATOR_NAME + "."
-				+ SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;
+				+ externalLogic.getCurrentSiteId();
 
 		UIInternalLink.make(tofill, "system-settings",
 				new SimpleViewParameters(SmsSystemConfigProducer.VIEW_ID));

@@ -61,7 +61,11 @@
   
   <bean id="smsAccountGuard" parent="writeGuardParent">
  	<property name="guardedPath" value="SmsAccountLocator.*" />
- 	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator" /></property>
+ 	<property name="guard">
+ 		<bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator" >
+ 			<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>			
+ 		</bean>
+ 	</property>
   </bean>
  
   <bean id="smsTaskGuard" parent="writeGuardParent">

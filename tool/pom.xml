@@ -47,6 +47,13 @@
 		<version>0.1</version>
     </dependency>
     
+  	<dependency>
+		<groupId>org.sakaiproject.sms</groupId>
+		<artifactId>sms-stubs</artifactId>
+		<version>0.1</version>
+		<scope>test</scope>
+    </dependency>
+     
     <dependency>
 		<groupId>org.sakaiproject.sms</groupId>
 		<artifactId>sms-impl</artifactId>
@@ -185,7 +192,7 @@
 			<artifactId>hibernate</artifactId>
 			<version>${hibernate.version}</version>
 			<scope>test</scope>
-	</dependency>  	
+	</dependency>  
   </dependencies>
   
 	<build>
@@ -239,7 +246,7 @@
 					<configuration>
 						<contextPath>${project.build.finalName}</contextPath>
 						<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
-				        
+
 				        <configuration>
 				          <webApp>${basedir}/target/${project.build.finalName}</webApp>
 				        </configuration>
@@ -251,8 +258,15 @@
 								<maxIdleTime>60000</maxIdleTime>
 							</connector>
 						</connectors>
+						<useTestClasspath>true</useTestClasspath>					
 					</configuration>
 					<dependencies>
+					 		<dependency>
+								<groupId>org.sakaiproject.sms</groupId>
+								<artifactId>sms-stubs</artifactId>
+								<version>0.1</version>
+								<scope>runtime</scope>
+							</dependency>
 							 <dependency>
 	          					<groupId>log4j</groupId>
 	          					<artifactId>log4j</artifactId>
@@ -270,17 +284,6 @@
 								<artifactId>rsfutil</artifactId>
 								<version>${rsfutil.version}</version>
 							 </dependency>
-							 <dependency>
-							  <groupId>uk.org.ponder.rsfutil</groupId>
-							  <artifactId>RSFComponents-evolvers</artifactId>
-						   	  <version>${rsfutil.version}</version>
-						    </dependency>
-						    <dependency>
-							  <groupId>uk.org.ponder.rsfutil</groupId>
-						   	  <artifactId>RSFComponents-templates</artifactId>
-						   	  <version>${rsfutil.version}</version>
-						   	  <type>war</type>
-							</dependency>
 							<dependency>
         						<groupId>org.springframework</groupId>
 								<artifactId>spring-core</artifactId>
@@ -301,7 +304,7 @@
 								<artifactId>commons-lang</artifactId>
     							<version>${commons.lang.version}</version>
     						</dependency>
-	       			</dependencies>
+ 	       			</dependencies>
 				</plugin>
 				<plugin>
 	            	<groupId>org.apache.maven.plugins</groupId>

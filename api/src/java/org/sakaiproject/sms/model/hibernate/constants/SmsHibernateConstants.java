@@ -60,19 +60,9 @@ public class SmsHibernateConstants {
 	public static boolean SMS_DEV_MODE = true;
 
 	/**
-	 * The default sakai_Site_id to be used in development mode.
-	 */
-	public static final String SMS_DEV_DEFAULT_SAKAI_SITE_ID = "SakaiSiteID";
-
-	/**
 	 * The Sakai site id used to store global system settings
 	 */
 	public static final String SMS_SYSTEM_SAKAI_SITE_ID = "";
-
-	/**
-	 * The default sakai_userId to be used in development mode.
-	 */
-	public static final String SMS_DEV_DEFAULT_SAKAI_USER_ID = "SakaiUserID";
 
 	/**
 	 * The default interval to look for new tasks to process.

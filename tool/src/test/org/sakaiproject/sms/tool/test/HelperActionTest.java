@@ -19,6 +19,8 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.beans.HelperActionBean;
@@ -37,6 +39,7 @@ public class HelperActionTest extends TestCase {
 	private SmsCoreStub smsCore;
 	private SmsServiceStub smsService;
 	private SmsBillingStub smsBilling;
+	private ExternalLogic externalLogic;
 
 	/**
 	 * setUp to run at start of every test
@@ -48,11 +51,14 @@ public class HelperActionTest extends TestCase {
 		helperAction = new HelperActionBean();
 		messages = new TargettedMessageList();
 		smsTaskLocator = new SmsTaskLocator();
+		externalLogic = new ExternalLogicStub();
+		
 		smsCore = new SmsCoreStub();
 		smsService = new SmsServiceStub();
-
+		
 		smsTaskLocator.setSmsCore(smsCore);
-
+		smsTaskLocator.setExternalLogic(externalLogic);
+		
 		helperAction.setMessages(messages);
 		helperAction.setSmsCore(smsCore);
 		helperAction.setSmsService(smsService);

@@ -4,15 +4,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Level;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
@@ -27,6 +28,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsSchedulerImpl smsSchedulerImpl = null;
 	static SmsSmppImpl smsSmppImpl = null;
+	
+	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
@@ -50,6 +53,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
@@ -60,11 +64,12 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 * tasks remain after 1 min.
 	 */
 	public void testTaskProcessing() {
+		smsCoreImpl.setExternalLogic(externalLogic);
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount
-				.setSakaiUserId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				.setSakaiUserId(externalLogic.getCurrentUserId());
 		smsAccount
-				.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+				.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
 		smsAccount.setBalance(1000f);
@@ -75,8 +80,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		Calendar now = Calendar.getInstance();
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
 				now.getTimeInMillis()), "smsTask3",
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, null,
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
@@ -89,8 +94,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
 				now.getTimeInMillis()), "smsTask2MessageBody",
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, null,
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
 		try {
@@ -102,8 +107,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		now.add(Calendar.MINUTE, -3);
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
 				now.getTimeInMillis()), "smsTask1MessageBody",
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, null,
-				SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
 		smsTask1.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		try {

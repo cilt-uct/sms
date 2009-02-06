@@ -22,10 +22,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
 import uk.org.ponder.beanutil.BeanLocator;
 
@@ -37,6 +37,11 @@ public class SmsTaskLocator implements BeanLocator {
 
 	private SmsCore smsCore;
 	private SmsTaskLogic smsTaskLogic;
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
 	/** The Constant LOCATOR_NAME. */
 	public static final String LOCATOR_NAME = "SmsTaskLocator";
@@ -82,9 +87,9 @@ public class SmsTaskLocator implements BeanLocator {
 								"deliveryGroup",
 								dateToProcess,
 								"",
-								SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID,
+								externalLogic.getCurrentSiteId(),
 								"",
-								SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+								externalLogic.getCurrentUserId());
 			} else {
 				togo = smsTaskLogic.getSmsTask(Long.parseLong(name));
 			}

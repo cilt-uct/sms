@@ -20,9 +20,9 @@ package org.sakaiproject.sms.tool.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.otp.SmsConfigLocator;
 import org.springframework.util.Assert;
 
@@ -32,7 +32,8 @@ public class SmsSiteConfigActionBean {
 
 	private SmsConfigLocator smsConfigLocator;
 	private SmsConfigLogic smsConfigLogic;
-
+	private ExternalLogic externalLogic;
+	
 	public void setSmsConfigLocator(SmsConfigLocator smsConfigLocator) {
 		this.smsConfigLocator = smsConfigLocator;
 	}
@@ -41,17 +42,21 @@ public class SmsSiteConfigActionBean {
 		this.smsConfigLogic = smsConfigLogic;
 	}
 
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+	
 	public void init() {
 		Assert.notNull(smsConfigLocator);
 		Assert.notNull(smsConfigLogic);
+		Assert.notNull(externalLogic);
 	}
 
 	public String save() {
 
-		// TODO hard code id for now
 		SmsConfig smsConfig = (SmsConfig) smsConfigLocator
-				.locateBean(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
-
+				.locateBean(externalLogic.getCurrentSiteId());
+		
 		// TODO: find out if this should be the case
 		// if(smsConfig.getSmsEnabled().equals(Boolean.FALSE))
 		// smsConfig.setNotificationEmail("");

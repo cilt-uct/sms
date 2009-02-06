@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.otp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -46,6 +47,12 @@ public class SmsAccountLocator implements BeanLocator {
 	private SmsAccountLogic smsAccountLogic;
 
 	private TargettedMessageList messages;
+	
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
 	public Object locateBean(String name) {
 		SmsAccount togo = delivered.get(name);
@@ -54,7 +61,7 @@ public class SmsAccountLocator implements BeanLocator {
 				togo = new SmsAccount();
 				togo.setBalance(SmsHibernateConstants.INITIAL_BALANCE);
 				togo
-						.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+						.setSakaiSiteId(externalLogic.getCurrentSiteId());
 			} else {
 				togo = smsAccountLogic.getSmsAccount(Long.parseLong(name));
 			}

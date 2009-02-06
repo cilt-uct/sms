@@ -73,6 +73,7 @@
   <bean class="org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer">
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsSystemConfigProducer">
@@ -147,6 +148,7 @@
   <bean id="smsSiteConfigActionBean" class="org.sakaiproject.sms.tool.beans.SmsSiteConfigActionBean">
   	 <property name="smsConfigLocator" ref="SmsConfigLocator"/>
   	 <property name="smsConfigLogic" ref="smsConfigLogic"/>
+  	 <property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
   
   <bean id="HelperActionBean" class="org.sakaiproject.sms.tool.beans.HelperActionBean" >
@@ -183,11 +185,13 @@
    <bean id="SmsAccountLocator" class="org.sakaiproject.sms.tool.otp.SmsAccountLocator">
   	<property name="smsAccountLogic" ref="SmsAccountLogic"/>
   	<property name="messages" ref="targettedMessageList" />
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
   
   <bean id="SmsTaskLocator" class="org.sakaiproject.sms.tool.otp.SmsTaskLocator">
     	<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore"/>
     	<property name="smsTaskLogic" ref="smsTaskLogic" />
+    	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
   
   <!-- Handler Hook -->

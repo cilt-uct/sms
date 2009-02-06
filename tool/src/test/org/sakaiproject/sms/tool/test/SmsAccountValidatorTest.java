@@ -21,8 +21,9 @@ import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.validators.SmsAccountValidator;
 import org.springframework.validation.BindException;
@@ -36,7 +37,8 @@ public class SmsAccountValidatorTest extends TestCase {
 	private SmsAccountValidator validator;
 	private BindException errors;
 	private SmsAccount account;
-
+	private ExternalLogic externalLogic;
+	
 	private static String ACCOUNT_NAME_FIELD = "accountName";
 	private static String SAKAI_SITE_ID_FIELD = "sakaiSiteId";
 	private static String SAKAI_USER_ID_FIELD = "sakaiUserId";
@@ -61,20 +63,23 @@ public class SmsAccountValidatorTest extends TestCase {
 	 */
 	@Override
 	public void setUp() {
+		externalLogic = new ExternalLogicStub();
 		validator = new SmsAccountValidator();
+		validator.setExternalLogic(externalLogic);
 		account = new SmsAccount();
 		account.setAccountEnabled(true);
 		account.setAccountName("account name");
 		account
-				.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+				.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		account
-				.setSakaiUserId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				.setSakaiUserId(externalLogic.getCurrentUserId());
 		account.setStartdate(new Date());
 		account.setEnddate(new Date());
 		account.setBalance(100f);
 		account.setOverdraftLimit(10f);
 		account.setMessageTypeCode(SmsUiConstants.MESSAGE_TYPE_CODE);
 		errors = new BindException(account, "SmsAccount");
+		
 	}
 
 	/**
@@ -217,7 +222,7 @@ public class SmsAccountValidatorTest extends TestCase {
 	 */
 	public void testSakaiSiteUserId_valid1() {
 		account
-				.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+				.setSakaiSiteId(externalLogic.getCurrentUserId());
 		account.setSakaiUserId(null);
 		validator.validate(account, errors);
 		assertFalse(errors.hasGlobalErrors());
@@ -229,7 +234,7 @@ public class SmsAccountValidatorTest extends TestCase {
 	public void testSakaiSiteUserId_valid2() {
 		account.setSakaiSiteId(null);
 		account
-				.setSakaiUserId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				.setSakaiUserId(externalLogic.getCurrentUserId());
 		validator.validate(account, errors);
 		assertFalse(errors.hasGlobalErrors());
 	}
@@ -239,9 +244,9 @@ public class SmsAccountValidatorTest extends TestCase {
 	 */
 	public void testSakaiSiteUserId_valid3() {
 		account
-				.setSakaiSiteId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+				.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		account
-				.setSakaiUserId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				.setSakaiUserId(externalLogic.getCurrentUserId());
 		validator.validate(account, errors);
 		assertFalse(errors.hasGlobalErrors());
 	}
@@ -297,7 +302,7 @@ public class SmsAccountValidatorTest extends TestCase {
 
 	public void testSakaiUserId_valid() {
 		account
-				.setSakaiUserId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+				.setSakaiUserId(externalLogic.getCurrentUserId());
 		validator.validate(account, errors);
 		assertFalse(errors.hasFieldErrors(SAKAI_USER_ID_FIELD));
 	}

@@ -18,6 +18,7 @@
 
 package org.sakaiproject.sms.logic.external;
 
+
 /**
  * Interface to logic which is external to SMS
  */
@@ -145,5 +146,23 @@ public interface ExternalLogic {
 	 * 
 	 */
 	public String getCurrentUserDisplayId();
+	
+	/**
+	 * Check if id supplied is a valid site id
+	 * 
+	 * @param siteId
+	 * 				Unique id of a site			
+	 * @return true if valid, false otherwise
+	 */
+	public boolean isValidSite(String siteId);
+	
+	/**
+	 * Check if id supplied is a valid user id
+	 * 
+	 * @param userId
+	 *				Unique id of a user 
+	 * @return true if valid, false otherwise
+	 */
+	public boolean isValidUser(String userId);
 
 }
