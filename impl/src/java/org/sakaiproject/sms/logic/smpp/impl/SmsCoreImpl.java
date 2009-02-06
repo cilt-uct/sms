@@ -88,6 +88,21 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
+	/**
+	 * Method sets the sms Messages on the task and calculates the actual group
+	 * size.
+	 *
+	 * @param smsTask
+	 * @return
+	 */
+	private SmsTask calculateActualGroupSize(SmsTask smsTask) {
+		smsTask.setSmsMessagesOnTask(this.generateSmsMessages(smsTask));
+		smsTask.setGroupSizeActual(smsTask.getSmsMessages().size());
+
+		return smsTask;
+
+	}
+
 	/*
 	 * Enables or disables the debug Information
 	 *
@@ -216,7 +231,7 @@ public class SmsCoreImpl implements SmsCore {
 				.getDelReportTimeoutDuration());
 		smsTask.setDeliveryMobileNumbersSet(mobileNumbers);
 		smsTask.setDeliveryEntityList(deliveryEntityList);
-
+		smsTask.setCreditCost(smsBilling.convertCreditsToAmount(1));
 		return smsTask;
 	}
 
@@ -263,7 +278,6 @@ public class SmsCoreImpl implements SmsCore {
 		// we set the date again due to time laps between getPreliminaryTask and
 		// insertask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
-
 		// We do this because if there the invalid values in the task then the
 		// checkSufficientCredits() will throw unexpected exceptions. Check for
 		// sufficient credit only if the task is valid
@@ -325,13 +339,7 @@ public class SmsCoreImpl implements SmsCore {
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 			if (smsTask.getAttemptCount() <= 1) {
-
-				// TODO: we need to generate messages based on a list of userIDs
-				// or mobileNumbers
-				smsTask.setSmsMessagesOnTask(this.generateSmsMessages(smsTask));
-				LOG.info("Total messages on task:="
-						+ smsTask.getSmsMessages().size());
-				smsTask.setGroupSizeActual(smsTask.getSmsMessages().size());
+				calculateActualGroupSize(smsTask);
 				HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			}
 			String submissionStatus = smsSmpp
@@ -523,7 +531,7 @@ public class SmsCoreImpl implements SmsCore {
 				smsMessage
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 				HibernateLogicFactory.getTaskLogic()
-				.incrementMessagesDelivered(smsMessage.getSmsTask());
+						.incrementMessagesDelivered(smsMessage.getSmsTask());
 				smsBilling.creditLateMessage(smsMessage);
 			}
 			HibernateLogicFactory.getMessageLogic().persistSmsMessage(
