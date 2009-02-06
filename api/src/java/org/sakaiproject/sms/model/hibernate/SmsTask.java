@@ -130,6 +130,16 @@ public class SmsTask extends BaseModel {
 	/** The reason for a task failing */
 	private String failReason;
 
+	private double creditCost;
+
+	public double getCreditCost() {
+		return creditCost;
+	}
+
+	public void setCreditCost(double creditCost) {
+		this.creditCost = creditCost;
+	}
+
 	public int getMessagesProcessed() {
 		return messagesProcessed;
 	}

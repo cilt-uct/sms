@@ -58,6 +58,8 @@
 			not-null="true" />
 		<property name="costEstimate" type="double" column="COST_ESTIMATE"
 			not-null="false" />
+		<property name="creditCost" type="double" column="CREDIT_COST"
+			not-null="true" />
 		<property name="delReportTimeoutDuration" type="integer"
 			column="DEL_REPORT_TIMEOUT_DURATION" not-null="true" />
 		<property name="deliveryMobileNumbers" type="string"
