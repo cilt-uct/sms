@@ -110,6 +110,10 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 					"messagesProcessed",
 					"sms.task-list-search-results.messages-processed");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
+					"tableheader-messages-delivered:", sortViewParams,
+					"messagesDelivered",
+					"sms.task-list-search-results.messages-delivered");			
+			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-tool-name:", sortViewParams, "sakaiToolName",
 					"sms.task-list-search-results.tool.name");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
@@ -151,6 +155,8 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 						.safeToString(smsTask.getGroupSizeActual()));
 				UIOutput.make(row, "row-data-messages-processed", NullHandling
 						.safeToString(smsTask.getMessagesProcessed()));
+				UIOutput.make(row, "row-data-messages-delivered", NullHandling
+						.safeToString(smsTask.getMessagesDelivered()));
 				UIOutput.make(row, "row-data-tool-name", NullHandling
 						.safeToString(smsTask.getSakaiToolName()));
 				UIOutput.make(row, "row-data-sender", NullHandling
