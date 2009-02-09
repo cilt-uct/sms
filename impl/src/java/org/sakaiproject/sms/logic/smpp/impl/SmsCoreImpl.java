@@ -47,9 +47,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -91,7 +91,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -105,7 +105,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -116,7 +116,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -245,7 +245,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 * 
+	 *
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -335,7 +335,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusForMessages(
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_EXPIRE);
-			sendTaskNotification(smsTask,
+			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
 			smsBilling.cancelPendingRequest(smsTask.getId());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
@@ -371,7 +371,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusForMessages(
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_FAIL);
-			sendTaskNotification(smsTask,
+			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
 			smsTask.setFailReason((MessageCatalog.getMessage(
 					"messages.taskRetryFailure", String.valueOf(systemConfig
@@ -419,15 +419,15 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
-	private boolean sendTaskNotification(SmsTask smsTask,
+	private boolean sendEmailNotification(SmsTask smsTask,
 			Integer taskMessageType) {
 
 		String subject = null;
@@ -509,10 +509,7 @@ public class SmsCoreImpl implements SmsCore {
 			if (toAddress == null || toAddress.length() == 0) {
 				return false;
 			}
-			System.out
-					.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%InsufficientCredits"
-							+ toAddress);
-		}
+					}
 		return sendNotificationEmail(toAddress, subject, body);
 
 	}
@@ -541,7 +538,7 @@ public class SmsCoreImpl implements SmsCore {
 		for (SmsTask smsTask : smsTasks) {
 			smsBilling.settleCreditDifference(smsTask);
 			checkOverdraft(smsTask);
-			sendTaskNotification(smsTask,
+			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
 		}
 
@@ -551,7 +548,7 @@ public class SmsCoreImpl implements SmsCore {
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if ((account.getBalance() < (-1 * account.getOverdraftLimit()))) {
-			sendTaskNotification(smsTask,
+			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS);
 		}
 
