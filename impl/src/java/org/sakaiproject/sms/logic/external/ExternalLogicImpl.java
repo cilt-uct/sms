@@ -24,6 +24,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.email.api.EmailService;
@@ -37,7 +38,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
  * out for the moment
- *
+ * 
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
@@ -123,7 +124,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
 	 */
 	public String getCurrentSiteId() {
@@ -132,7 +133,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
 	 */
@@ -165,7 +166,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/**
 	 * At the moment always returning true
-	 *
+	 * 
 	 * @see ExternalLogic#isUserAllowedInLocation(String, String, String)
 	 */
 	public boolean isUserAllowedInLocation(String userId, String permission,
@@ -200,12 +201,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see {@link ExternalLogic#getGroupMemberCount(String)}
 	 */
 	public int getGroupMemberCount(String reference) {
-		return 15; // for testing
-		// AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
-		// if (group == null) {
-		// return 0;
-		// }
-		// return group.getMembers().size();
+		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
+		if (group == null) {
+			return 15; // for testing
+		}
+		return group.getMembers().size();
 	}
 
 	public String getSakaiUserDisplayName(String userId) {
@@ -345,7 +345,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
 	 */
@@ -383,6 +383,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String getSakaiSiteContactEmail() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getTestDeliveryGroup() {
+		return "/site/!admin/group/804cf62a-8fbf-438f-aa7f-c8962a9f42e4";
 	}
 
 }
