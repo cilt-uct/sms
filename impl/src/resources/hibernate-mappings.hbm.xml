@@ -118,7 +118,8 @@
 			not-null="true" />
 		<property name="accountName" type="string" column="ACCOUNT_NAME"
 			not-null="true" length="99" />
-
+		<property name="notificationEmail" type="string" column="NOTIFICATION_EMAIL"
+			not-null="false" length="100" />
 		<property name="startdate" type="timestamp" column="START_DATE"
 			not-null="true" />
 		<property name="enddate" type="timestamp" column="END_DATE"
