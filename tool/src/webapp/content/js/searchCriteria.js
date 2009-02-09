@@ -7,15 +7,12 @@ function getToday(){
 	return dateString;
 }
 
-function checkNumbers(){
-	
-	var input = document.getElementById('searchCriteria::id');	
-	if(document.getElementById('searchCriteria::label-id').innerHTML == 'Account Number:'){
-		input.value = input.value.replace(/[^0-9]/g, '');
-	}
-	else{
-		input.value = input.value.replace(/[^0-9/+]/g, '');
-	}
+function checkNumbers(input){
+	input.value = input.value.replace(/[^0-9]/g, '');
+}
+
+function checkPhoneNumbers(input){
+	input.value = input.value.replace(/[^0-9/+]/g, '');
 }
 
 //delete when deployed into sakai since this function will be available
