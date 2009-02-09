@@ -67,12 +67,6 @@ public class SmsConfigValidatorTest extends TestCase {
 		assertTrue(bindException.hasErrors());
 	}
 
-	public void testNotificationDisabled() throws Exception {
-		smsConfig.setSendSmsEnabled(false);
-		validator.validate(smsConfig, bindException);
-		assertFalse(bindException.hasErrors());
-	}
-
 	public void testPagingSizeNotSet() throws Exception {
 		smsConfig.setSendSmsEnabled(false);
 		smsConfig.setPagingSize(null);

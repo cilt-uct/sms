@@ -162,12 +162,12 @@
 <!--					<exclude>src/*</exclude>-->
 <!--				</excludes>-->
 <!--			</resource>			-->
- <resource>
+			 <resource>
                 <directory>${basedir}/../tool/src/webapp/WEB-INF/bundle</directory>
                 <includes>
                         <include>**/*.properties</include>
                 </includes>
-               </resource>
+             </resource>
 
 		</resources>
 
