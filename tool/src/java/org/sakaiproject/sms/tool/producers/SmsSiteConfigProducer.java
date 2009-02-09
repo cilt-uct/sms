@@ -93,16 +93,28 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 
 		UIMessage.make(smsSiteConfigform, "sms-enabled",
 				"sms.site.config.enabled");
+		UIMessage.make(smsSiteConfigform, "use-site-account",
+				"sms.use.site.account");
+
+		UIBoundList comboValues = new UIBoundList();
+		comboValues.setValue(new String[] { "true", "false" });
+		UIBoundList comboNames = new UIBoundList();
+		comboNames.setValue(new String[] { "Yes", "No" });
+
 		UISelect combo = UISelect.make(smsSiteConfigform, "sms-config-enabled");
+		combo.optionlist = comboValues;
+		combo.optionnames = comboNames;
 		combo.selection = new UIInput();
 		combo.selection.valuebinding = new ELReference(smsConfigOTP
 				+ ".sendSmsEnabled");
-		UIBoundList comboValues = new UIBoundList();
-		comboValues.setValue(new String[] { "true", "false" });
-		combo.optionlist = comboValues;
-		UIBoundList comboNames = new UIBoundList();
-		comboNames.setValue(new String[] { "Yes", "No" });
-		combo.optionnames = comboNames;
+
+		UISelect combo2 = UISelect.make(smsSiteConfigform,
+				"config-use-site-account");
+		combo2.selection = new UIInput();
+		combo2.selection.valuebinding = new ELReference(smsConfigOTP
+				+ ".useSiteAcc");
+		combo2.optionlist = comboValues;
+		combo2.optionnames = comboNames;
 
 		UIMessage.make(smsSiteConfigform, "notification-email",
 				"sms.site.config.notification.email");

@@ -130,6 +130,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 	public SmsConfig createDefaultSmsConfig(String sakaiSiteId) {
 		SmsConfig config = new SmsConfig();
 
+		// Settings for the Sakai instance
 		if (sakaiSiteId != null && sakaiSiteId.equals("")) {
 			config.setSakaiToolId("");
 			config
@@ -148,6 +149,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 
 			config.setCreditCost(SmsHibernateConstants.COST_OF_CREDIT);
 		} else {
+			// Setting for each site
 			config.setSakaiToolId("DummyToolId");
 			config
 					.setNotificationEmail(SmsHibernateConstants.NOTIFICATION_EMAIL);
@@ -155,7 +157,8 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 					.setNotificationEmailBilling("notificationBilling@instution.com");
 			config.setNotificationEmailSent("notificationSent@instution.com");
 			config.setPagingSize(SmsHibernateConstants.DEFAULT_PAGE_SIZE);
-
+			config
+					.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
 			config.setSendSmsEnabled(false);
 
 		}

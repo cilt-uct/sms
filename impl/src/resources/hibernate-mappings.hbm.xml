@@ -189,6 +189,8 @@
 			not-null="false" />
 		<property name="creditCost" type="float" column="CREDIT_COST"
 			not-null="false" />
+		<property name="useSiteAccount" type="string" column="USE_SITE_ACCOUNT"
+			not-null="false" length="1" />
 
 	</class>
 

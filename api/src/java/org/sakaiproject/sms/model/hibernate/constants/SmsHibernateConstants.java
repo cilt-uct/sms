@@ -19,7 +19,7 @@ package org.sakaiproject.sms.model.hibernate.constants;
 
 /**
  * Constants class for the sms hibernate project
- *
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 08-Dec-2008
@@ -96,7 +96,7 @@ public class SmsHibernateConstants {
 	/**
 	 * The time to wait before retrying an smsTask.
 	 */
-	public static final Integer RETRY_SCHEDULE_INTERVAL = 60*5;
+	public static final Integer RETRY_SCHEDULE_INTERVAL = 60 * 5;
 
 	/**
 	 * Default paging size
@@ -104,7 +104,7 @@ public class SmsHibernateConstants {
 	public static final Integer PAGING_SIZE = 200;
 
 	/**
-	 * The defauly overdraft limit
+	 * The default overdraft limit
 	 */
 	public static final Float OVERDRAFT_LIMIT = 10.0f;
 
@@ -119,13 +119,13 @@ public class SmsHibernateConstants {
 	/** Max mobile number length. */
 	public static final int MAX_MOBILE_NR_LENGTH = 20;
 
-	/** The Constant catelog message not found */
+	/** The Constant catalogue message not found */
 	public static final String CATALOG_MESSAGE_NOT_FOUND = "<Property not found>";
 
-	/** The Constant catelog message not found */
+	/** The Constant catalogue message not found */
 	public static final String PROPERTY_NOT_FOUND = "<Property not found>";
 
-	/** The Constant catelog message not found */
+	/** The Constant catalogue message not found */
 	public static final String PROPERTY_FILE_NOT_FOUND = "<Property file not found>";
 
 	/**
@@ -155,5 +155,9 @@ public class SmsHibernateConstants {
 
 	/** The Constant INSUFFICIENT_CREDIT_MESSAGE. */
 	public static final String INSUFFICIENT_CREDIT_MESSAGE = "Insufficient credit.";
+
+	// use the site account for all transactions rather than the user's own
+	// account
+	public static final Boolean DEFAULT_ACCOUNT_USE_SITE_ACCOUNT = true;
 
 }

@@ -30,10 +30,10 @@ import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsPropertyConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.HibernateUtil;
-import org.sakaiproject.sms.util.SmsPropertyReader;
 
 /**
  * The data service will handle all sms Account database transactions for the
@@ -142,6 +142,34 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	}
 
 	/**
+	 * This is a test method to insert a sms account.It is only used during
+	 * development.
+	 * 
+	 * @param sakaiSiteID
+	 * @param sakaiUserID
+	 * @return
+	 */
+	private SmsAccount insertTestSmsAccount(String sakaiSiteID,
+			String sakaiUserID) {
+
+		SmsAccount smsAccount = new SmsAccount();
+		smsAccount.setSakaiUserId(sakaiUserID);
+		smsAccount.setSakaiSiteId(sakaiSiteID);
+		smsAccount.setMessageTypeCode("3");
+		smsAccount.setOverdraftLimit(0f);
+		smsAccount.setBalance(100f);
+		smsAccount.setAccountName("TestAccountName");
+		smsAccount.setAccountEnabled(true);
+		try {
+			HibernateLogicFactory.getAccountLogic().persistSmsAccount(
+					smsAccount);
+		} catch (Exception e) {
+
+		}
+		return smsAccount;
+	}
+
+	/**
 	 * Gets a SmsAccount entity for the given sakai site id or sakai user id.
 	 * <p>
 	 * If the property account.checkSiteIdBeforeUserId == true in sms.properties
@@ -158,30 +186,29 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	 * @param SakaiUserId
 	 *            the sakai user id. Can be null.
 	 * 
-	 * @return sms congiguration
+	 * @return sms configuration
 	 * 
 	 */
 	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
-		boolean checkSiteBeforeUser = Boolean
-				.parseBoolean(SmsPropertyReader
-						.getProperty(SmsPropertyConstants.ACCOUNT_CHECK_SITE_ID_BEFORE_USER_ID));
+		SmsConfig config = HibernateLogicFactory.getConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(sakaiSiteId);
+		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
 		SmsAccount account = null;
-
-		if (checkSiteBeforeUser) {
-			account = getAccountBySakaiSiteId(sakaiSiteId);
-			if (account == null) {
-				return getAccountBySakaiUserId(SakaiUserId);
+		if (SmsHibernateConstants.SMS_DEV_MODE) {
+			if (useSiteAccount) {
+				insertTestSmsAccount(sakaiSiteId, null);
 			} else {
-				return account;
-			}
-		} else {
-			account = getAccountBySakaiUserId(SakaiUserId);
-			if (account == null) {
-				return getAccountBySakaiSiteId(sakaiSiteId);
-			} else {
-				return account;
+				insertTestSmsAccount(null, SakaiUserId);
 			}
 		}
+		if (useSiteAccount) {
+			account = getAccountBySakaiSiteId(sakaiSiteId);
+		} else {
+			account = getAccountBySakaiUserId(SakaiUserId);
+		}
+
+		// may return null if acc does not exist
+		return account;
 	}
 
 	/**

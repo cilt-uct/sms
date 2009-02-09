@@ -79,6 +79,29 @@ public class SmsConfig extends BaseModel {
 	/** The cost of one credit */
 	private Float creditCost;
 
+	// use the site account for all transactions rather than the user's own
+	// account
+	private String useSiteAccount;
+
+	public String isUseSiteAccount() {
+		return useSiteAccount;
+	}
+
+	public void setUseSiteAcc(Boolean useSite) {
+		this.useSiteAccount = useSite ? "1" : "0";
+	}
+
+	public Boolean getUseSiteAcc() {
+		if (this.useSiteAccount != null) {
+			return this.useSiteAccount.equals("1") ? true : false;
+		}
+		return null;
+	}
+
+	public void setUseSiteAccount(String useSiteAccount) {
+		this.useSiteAccount = useSiteAccount;
+	}
+
 	/**
 	 * Instantiates a new sms configuration.
 	 */
