@@ -25,8 +25,7 @@ import org.springframework.validation.BindException;
 
 public class SmsConfigValidatorTest extends TestCase {
 
-	private static final String INVALID_EMAILS = "jo@gmail.com,mark@gmailcom";
-	private static final String VALID_EMAILS = "jo@gmail.com,mark@gmail.com";
+	private static final String INVALID_EMAIL = "jo@@gmail.com";
 	private static final String VALID_EMAIL = "jo@gmail.com";
 	private SmsConfigValidator validator;
 	private BindException bindException;
@@ -54,17 +53,24 @@ public class SmsConfigValidatorTest extends TestCase {
 	}
 
 	public void testCorrectEmails() throws Exception {
-		smsConfig.setNotificationEmail(VALID_EMAILS);
+		smsConfig.setNotificationEmail(VALID_EMAIL);
 		smsConfig.setSendSmsEnabled(true);
 		validator.validate(smsConfig, bindException);
 		assertFalse(bindException.hasErrors());
 	}
 
 	public void testInvalidEmails() throws Exception {
-		smsConfig.setNotificationEmail(INVALID_EMAILS);
+		smsConfig.setNotificationEmail(INVALID_EMAIL);
 		smsConfig.setSendSmsEnabled(true);
 		validator.validate(smsConfig, bindException);
 		assertTrue(bindException.hasErrors());
+	}
+
+	public void testNotificationDisabled() throws Exception {
+		smsConfig.setNotificationEmail(VALID_EMAIL);
+		smsConfig.setSendSmsEnabled(false);
+		validator.validate(smsConfig, bindException);
+		assertFalse(bindException.hasErrors());
 	}
 
 	public void testPagingSizeNotSet() throws Exception {
