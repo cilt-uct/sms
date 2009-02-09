@@ -221,6 +221,11 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 				crit.add(Restrictions.ilike("statusCode", searchBean
 						.getStatus()));
 			}
+			
+			// Task Id
+			if (searchBean.getTaskId() != null) {
+				crit.add(Restrictions.like("smsTask.id", new Long(searchBean.getTaskId())));
+			}
 
 			// Sakai tool name
 			if (searchBean.getToolName() != null

@@ -45,6 +45,13 @@ public class SearchFilterBean {
 	/** The date to. */
 	private Date dateTo;
 
+	/** The Task ID (on Messages Log) */
+	private String taskId;
+	
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
 	/** The tool name. */
 	private String toolName;
 
@@ -78,11 +85,9 @@ public class SearchFilterBean {
 
 	/**
 	 * Instantiates a new search filter bean.
-	 * 
-	 * @param id
-	 *            the id
 	 * @param status
 	 *            the status
+	 * @param taskId TODO
 	 * @param dateFrom
 	 *            the date from
 	 * @param dateTo
@@ -97,13 +102,16 @@ public class SearchFilterBean {
 	 *            the order by
 	 * @param sortDirection
 	 *            the sort direction
+	 * @param id
+	 *            the id
 	 */
-	public SearchFilterBean(String number, String status, Date dateFrom,
-			Date dateTo, String toolName, String sender, Integer currentPage,
-			String orderBy, String sortDirection) {
+	public SearchFilterBean(String number, String status, String taskId,
+			Date dateFrom, Date dateTo, String toolName, String sender,
+			Integer currentPage, String orderBy, String sortDirection) {
 		super();
 		this.number = number;
 		this.status = status;
+		this.taskId = taskId;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
 		this.toolName = toolName;
@@ -313,6 +321,10 @@ public class SearchFilterBean {
 		return true;
 	}
 
+	public String getTaskId() {
+		return taskId;
+	}
+
 	/**
 	 * Sort asc.
 	 * 
@@ -355,6 +367,7 @@ public class SearchFilterBean {
 		retStr.append("status: ").append(status).append("\n");
 		retStr.append("dateFrom: ").append(dateFrom).append("\n");
 		retStr.append("dateTo: ").append(dateTo).append("\n");
+		retStr.append("taskId: ").append(taskId).append("\n");
 		retStr.append("toolName: ").append(toolName).append("\n");
 		retStr.append("sender: ").append(sender).append("\n");
 		retStr.append("currentPage: ").append(currentPage).append("\n");

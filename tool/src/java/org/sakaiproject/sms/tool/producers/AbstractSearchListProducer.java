@@ -134,13 +134,13 @@ public abstract class AbstractSearchListProducer implements
 		// Search criteria set as parameter since beans are not available when
 		// the handler hook intercepts
 		DownloadReportViewParams downloadReportViewParams = new DownloadReportViewParams(
-				"downloadCsv", getViewID(), sakaiDateFormat
+				"downloadCsv", getViewID(), searchFilterBean.getTaskId(),
+				sakaiDateFormat
 						.formatDate(searchFilterBean.getDateFrom()),
-				sakaiDateFormat.formatDate(searchFilterBean.getDateTo()),
-				searchFilterBean.getNumber(), searchFilterBean.getOrderBy(),
-				searchFilterBean.getSender(), searchFilterBean
-						.getSortDirection(), searchFilterBean.getStatus(),
-				searchFilterBean.getToolName(), searchFilterBean
+				sakaiDateFormat.formatDate(searchFilterBean.getDateTo()), searchFilterBean.getNumber(),
+				searchFilterBean.getOrderBy(), searchFilterBean.getSender(), searchFilterBean
+								.getSortDirection(),
+				searchFilterBean.getStatus(), searchFilterBean.getToolName(), searchFilterBean
 						.getTransactionType());
 		UIInternalLink.make(tofill, "export-to-csv", downloadReportViewParams);
 

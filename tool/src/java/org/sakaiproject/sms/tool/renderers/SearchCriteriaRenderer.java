@@ -31,6 +31,7 @@ import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIJointContainer;
+import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
@@ -96,6 +97,12 @@ public class SearchCriteriaRenderer {
 				+ "." + "dateTo");
 		dateEvolver.evolveDateInput(dateTo);
 
+		// Task ID field only on message log
+		if (labelDropDown.indexOf("Message") != -1) {
+			UIMessage.make(searchForm, "task-id-label", "sms.search.task-id");
+			UIInput.make(searchForm, "task-id", createSearchELString("taskId"));
+		}
+		
 		// No Id field for Task
 		if (labelDropDown.indexOf("Task") == -1)
 			UIOutput.make(searchForm, "label-id", labelID);
