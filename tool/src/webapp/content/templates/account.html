@@ -3,7 +3,7 @@
 <html xmlns:rsf="http://ponder.org.uk/rsf">
 <head>
 	<title rsf:id="page-title">SMS Account</title>
-	
+
 	<script rsf:id="scr=portal-matter" type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
 	<link href="../css/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
     <link href="../css/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
@@ -43,7 +43,7 @@
 				Sakai Site Id
 			</label>
 			<input rsf:id="sakai-site-id" type="text" maxlength="99" />
-		</p>	
+		</p>
 		<p class="shorttext required">
 			<label rsf:id="sakai-user-id-label" for="sakaiUserId" >
 				Sakai User Id
@@ -62,7 +62,13 @@
 			</label>
 			<input rsf:id="balance" type="text" maxlength="10" style="width:80px" />
 		</p>
-		
+		<p class="shorttext required">
+			<label rsf:id="notiEmail-label" for="notiEmail">
+
+			</label>
+			<input rsf:id="notiEmail" type="text" maxlength="100" style="width:200px" />
+		</p>
+
 		<p class="shorttext required">
 			<label rsf:id="end-date-label">
 				End Date
@@ -72,13 +78,13 @@
 			size="12" maxlength="10" /> <img src="../images/calendar.gif"
 			alt="calendar" /> </span>
 		</p>
-		
+
 		<div class="act">
 			<input rsf:id="save-btn" class="active" value="Save" accesskey="s" type="submit" />
 			<input rsf:id="cancel-btn" value="Cancel" accesskey="x" type="submit" />
-		</div>		
+		</div>
 	</form>
-	  
+
 	<script rsf:id="init-clear-date-input" type="text/javascript">
 		initClearDateInput("dateInputId");
 	</script>
