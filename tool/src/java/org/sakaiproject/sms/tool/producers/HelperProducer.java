@@ -80,7 +80,7 @@ public class HelperProducer implements ViewComponentProducer,
 					"HelperActionBean.doContinue");
 		}
 		UICommand.make(form, "cancel-button", UIMessage
-				.make("sms.general.cancel"), "HelperActionBean.cancel");
+				.make("sms.general.cancel"));
 
 		UIMessage.make(form, "estimated-group-size-label",
 				"sms.helper.estimated-group-size");
