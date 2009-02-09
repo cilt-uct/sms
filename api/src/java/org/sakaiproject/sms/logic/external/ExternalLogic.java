@@ -54,7 +54,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Check if this user has super admin access
-	 *
+	 * 
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @return true if the user has admin access, false otherwise
@@ -74,7 +74,7 @@ public interface ExternalLogic {
 	/**
 	 * Check if a user has a specified permission within a context, primarily a
 	 * convenience method and passthrough
-	 *
+	 * 
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @param permission
@@ -89,17 +89,17 @@ public interface ExternalLogic {
 
 	/**
 	 * Retrieves mobile number for user
-	 *
+	 * 
 	 * @param userID
 	 *            the internal user id (not username)
-	 *
+	 * 
 	 * @return mobile number for user
 	 */
 	public String getSakaiMobileNumber(String userID);
 
 	/**
 	 * Send e-mails to users ids
-	 *
+	 * 
 	 * @param from
 	 *            from address to be used
 	 * @param toUserIds
@@ -115,7 +115,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Send e-mail to array of e-mail addresses
-	 *
+	 * 
 	 * @param from
 	 *            from address to be used
 	 * @param toEmails
@@ -131,7 +131,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Get current number of members in a specific group
-	 *
+	 * 
 	 * @param reference
 	 *            entity reference of group
 	 * @return an integer with current number of members in group
@@ -148,9 +148,9 @@ public interface ExternalLogic {
 
 	/**
 	 * Get the display id for the current user.
-	 *
+	 * 
 	 * @return display id
-	 *
+	 * 
 	 */
 
 	public String getCurrentUserDisplayId();
@@ -175,9 +175,16 @@ public interface ExternalLogic {
 
 	/**
 	 * Get the sakai contacts email.
-	 *
+	 * 
 	 * @return sakaiSiteContactEmail
 	 */
 	public String getSakaiSiteContactEmail();
+
+	/**
+	 * Used for testing only
+	 * 
+	 * @return
+	 */
+	public String getTestDeliveryGroup();
 
 }

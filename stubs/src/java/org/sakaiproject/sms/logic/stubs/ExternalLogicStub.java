@@ -100,4 +100,8 @@ public class ExternalLogicStub implements ExternalLogic {
 
 		return "louis@psybergate.com";
 	}
+
+	public String getTestDeliveryGroup() {
+		return "deliveryGroup";
+	}
 }
