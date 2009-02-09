@@ -82,6 +82,14 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 			UIMessage.make(searchResultsTable, "warning", "GeneralActionError");
 		else {
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
+					"tableheader-id:", sortViewParams,
+					"id",
+					"sms.message-log-search-results.account.id");
+			sortHeaderRenderer.makeSortingLink(searchResultsTable,
+					"tableheader-task-id:", sortViewParams,
+					"smsTask.id",
+					"sms.message-log-search-results.account.task.id");
+			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-group:", sortViewParams,
 					"smsTask.deliveryGroupId",
 					"sms.message-log-search-results.account.group");
@@ -114,7 +122,10 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 
 				UIBranchContainer row = UIBranchContainer.make(
 						searchResultsTable, "dataset:");
-
+				UIOutput.make(row, "row-data-id", NullHandling
+						.safeToString(smsMessage.getId()));
+				UIOutput.make(row, "row-data-task-id", NullHandling
+						.safeToString(smsMessage.getSmsTask().getId()));				
 				UIOutput.make(row, "row-data-group", NullHandling
 						.safeToString(smsMessage.getSmsTask().getDeliveryGroupId()));
 				UIOutput.make(row, "row-data-tool-name", NullHandling
