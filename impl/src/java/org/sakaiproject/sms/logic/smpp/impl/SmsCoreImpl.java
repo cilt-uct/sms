@@ -484,6 +484,27 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationBodyCompleted", creditsRequired,
 					creditsAvailable);
 			toAddress = config.getNotificationEmail();
+		} else if (taskMessageType
+				.equals(SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS)) {
+			subject = MessageCatalog
+					.getMessage("messages.notificationSubjectTaskInsufficientCredits");
+			body = MessageCatalog.getMessage(
+					"messages.notificationBodyTaskInsufficientCredits", String
+							.valueOf(account.getOverdraftLimit()), String
+							.valueOf(account.getOverdraftLimit()
+									+ account.getBalance()));
+			toAddress = account.getNotificationEmail();
+
+			if (toAddress == null || toAddress.length() == 0) {
+
+				toAddress = externalLogic.getSakaiSiteContactEmail();
+			}
+			if (toAddress == null || toAddress.length() == 0) {
+				return false;
+			}
+			System.out
+					.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%InsufficientCredits"
+							+ toAddress);
 		}
 		return sendNotificationEmail(toAddress, subject, body);
 
@@ -512,8 +533,19 @@ public class SmsCoreImpl implements SmsCore {
 
 		for (SmsTask smsTask : smsTasks) {
 			smsBilling.settleCreditDifference(smsTask);
+			checkOverdraft(smsTask);
 			sendTaskNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
+		}
+
+	}
+
+	private void checkOverdraft(SmsTask smsTask) {
+		SmsAccount account = HibernateLogicFactory.getAccountLogic()
+				.getSmsAccount(smsTask.getSmsAccountId());
+		if ((account.getBalance() < (-1 * account.getOverdraftLimit()))) {
+			sendTaskNotification(smsTask,
+					SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS);
 		}
 
 	}
