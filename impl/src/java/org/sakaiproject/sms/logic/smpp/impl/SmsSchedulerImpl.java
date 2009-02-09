@@ -28,6 +28,8 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	SmsConfig smsConfig = null;
 
+	private boolean schedulerEnabled = true;// for unit testing only
+
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsSmppImpl.class);
 
@@ -101,6 +103,14 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	public void stopSmsScheduler() {
 		smsSchedulerThread.stopScheduler = true;
 
+	}
+
+	public boolean isSchedulerEnabled() {
+		return schedulerEnabled;
+	}
+
+	public void setSchedulerEnabled(boolean schedulerEnabled) {
+		this.schedulerEnabled = schedulerEnabled;
 	}
 
 }

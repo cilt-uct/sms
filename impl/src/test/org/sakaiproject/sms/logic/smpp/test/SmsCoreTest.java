@@ -58,7 +58,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsAccount smsAccount = null;
 	static ExternalLogic externalLogic = null;
-	
+
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
 
@@ -76,10 +76,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsCoreImpl.setLoggingLevel(Level.WARN);
 		LOG.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
-		smsAccount
-				.setSakaiUserId(externalLogic.getCurrentUserId());
-		smsAccount
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
+		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
 		smsAccount.setBalance(1000f);
@@ -135,17 +133,17 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask(
 					"testProcessNextTask-smsTask3", new Date(now
 							.getTimeInMillis()),
-					"testProcessNextTask-smsTask3",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"testProcessNextTask-smsTask3", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 
 			now.add(Calendar.MINUTE, -1);
 			SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask(
 					"testProcessNextTask-smsTask2", new Date(now
 							.getTimeInMillis()),
-					"testProcessNextTask-smsTask2MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"testProcessNextTask-smsTask2MessageBody", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 
 			smsTask2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 
@@ -153,9 +151,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask(
 					"testProcessNextTask-smsTask1", new Date(now
 							.getTimeInMillis()),
-					"testProcessNextTask-smsTask1MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"testProcessNextTask-smsTask1MessageBody", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 
 			smsTask1.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 
@@ -163,9 +161,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			SmsTask smsTask4 = smsCoreImpl.getPreliminaryTask(
 					"testProcessNextTask-smsTask4", new Date(now
 							.getTimeInMillis()),
-					"testProcessNextTask-smsTask4MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"testProcessNextTask-smsTask4MessageBody", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 
 			smsTask4.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 
@@ -239,18 +237,18 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask(
 					"TestTaskStatuses-SusscessFullTask", new Date(now
 							.getTimeInMillis()),
-					"TestTaskStatuses-SmsTask2MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"TestTaskStatuses-SmsTask2MessageBody", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 
 			smsTask2.setMaxTimeToLive(300);
 			now.add(Calendar.MINUTE, -3);
 			SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask(
 					"TestTaskStatuses-ExpiresTask", new Date(now
 							.getTimeInMillis()),
-					"TestTaskStatuses-ExpiresTask",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
+					"TestTaskStatuses-ExpiresTask", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
 			smsTask1.setMaxTimeToLive(60);
 			smsTask1.setSmsAccountId(smsAccount.getId());
 			smsTask1.setDateCreated(DateUtil.getCurrentDate());
@@ -303,9 +301,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsSmppImpl.connectToGateway();
 		SmsTask smsTask = smsCoreImpl.getPreliminaryTask("testProcessTaskFail",
 				new Date(System.currentTimeMillis()),
-				"testProcessTaskFailMessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				"testProcessTaskFailMessageBody", externalLogic
+						.getCurrentSiteId(), null, externalLogic
+						.getCurrentUserId());
 
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		smsTask.setSmsAccountId(smsAccount.getId());
@@ -363,16 +361,15 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask", new Date(
 						System.currentTimeMillis()),
 				"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				externalLogic.getCurrentSiteId(), null, externalLogic
+						.getCurrentUserId());
 		statusUpdateTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		statusUpdateTask.setAttemptCount(0);
 		statusUpdateTask.setDateProcessed(new Date());
 		statusUpdateTask.setSmsMessagesOnTask(smsCoreImpl
 				.generateSmsMessages(statusUpdateTask));
 		statusUpdateTask.setSmsAccountId(smsAccount.getId());
-		statusUpdateTask
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+		// statusUpdateTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		smsCoreImpl.calculateEstimatedGroupSize(statusUpdateTask);
 		try {
 			smsCoreImpl.insertTask(statusUpdateTask);
@@ -386,9 +383,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		SmsTask timeOutTask = smsCoreImpl.getPreliminaryTask(
 				"testTimeoutAndMessageStatusUpdate-TIMEOUT", new Date(),
-				"testTimeoutAndMessageStatusUpdate-TIMEOUT",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				"testTimeoutAndMessageStatusUpdate-TIMEOUT", externalLogic
+						.getCurrentSiteId(), null, externalLogic
+						.getCurrentUserId());
 		timeOutTask.setDelReportTimeoutDuration(60);
 		timeOutTask.setSmsMessagesOnTask(smsCoreImpl
 				.generateSmsMessages(timeOutTask));
@@ -426,10 +423,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	public void testVeryLateDeliveryReports() {
 		SmsTask insertTask = new SmsTask();
-		insertTask
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
-		insertTask
-				.setSenderUserName(externalLogic.getCurrentUserId());
+		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
 				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());
@@ -501,10 +496,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 		SmsTask insertTask = new SmsTask();
-		insertTask
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
-		insertTask
-				.setSenderUserName(externalLogic.getCurrentUserId());
+		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
 				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
@@ -540,10 +533,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 		SmsTask insertTask = new SmsTask();
-		insertTask
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
-		insertTask
-				.setSenderUserName(externalLogic.getCurrentUserId());
+		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
 				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
@@ -574,10 +565,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	public void testAbortTask() {
 
 		SmsTask insertTask = new SmsTask();
-		insertTask
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
-		insertTask
-				.setSenderUserName(externalLogic.getCurrentUserId());
+		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
 				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());

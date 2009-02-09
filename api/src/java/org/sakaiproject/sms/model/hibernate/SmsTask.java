@@ -187,9 +187,6 @@ public class SmsTask extends BaseModel {
 	 */
 	public SmsTask() {
 		setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		this
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED);// outgoing,
-		// 1=incoming
 	}
 
 	/**
@@ -220,8 +217,7 @@ public class SmsTask extends BaseModel {
 		this.statusCode = "";
 		this.creditEstimate = 0;
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
-		this
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED);
+		this.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_OUTGOING);
 
 	}
 

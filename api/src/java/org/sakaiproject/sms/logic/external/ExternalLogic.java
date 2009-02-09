@@ -18,7 +18,6 @@
 
 package org.sakaiproject.sms.logic.external;
 
-
 /**
  * Interface to logic which is external to SMS
  */
@@ -140,27 +139,36 @@ public interface ExternalLogic {
 	public int getGroupMemberCount(String reference);
 
 	/**
+	 *return the friendly display name of a specific user
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public String getSakaiUserDisplayName(String userId);
+
+	/**
 	 * Get the display id for the current user.
 	 *
 	 * @return display id
 	 *
 	 */
+
 	public String getCurrentUserDisplayId();
-	
+
 	/**
 	 * Check if id supplied is a valid site id
 	 * 
 	 * @param siteId
-	 * 				Unique id of a site			
+	 *            Unique id of a site
 	 * @return true if valid, false otherwise
 	 */
 	public boolean isValidSite(String siteId);
-	
+
 	/**
 	 * Check if id supplied is a valid user id
 	 * 
 	 * @param userId
-	 *				Unique id of a user 
+	 *            Unique id of a user
 	 * @return true if valid, false otherwise
 	 */
 	public boolean isValidUser(String userId);

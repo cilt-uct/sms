@@ -47,15 +47,15 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
-	private ExternalLogic externalLogic;
+	public ExternalLogic externalLogic; // public for unit test to use stub impl
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
@@ -91,7 +91,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -105,7 +105,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -116,7 +116,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -195,6 +195,12 @@ public class SmsCoreImpl implements SmsCore {
 				sakaiSiteID, sakaiToolId, sakaiSenderID, deliveryEntityList);
 	}
 
+	// ONLY FOR UNIT TESTS
+	public SmsTask getPreliminaryTestTask() {
+		return getPreliminaryTask(null, null, null, new Date(), "",
+				"SakaiSiteID", "", "SakaiUserID", null);
+	}
+
 	private SmsTask getPreliminaryTask(String deliverGroupId,
 			Set<String> mobileNumbers, Set<String> sakaiUserIds,
 			Date dateToSend, String messageBody, String sakaiSiteID,
@@ -216,10 +222,11 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setSakaiSiteId(sakaiSiteID);
-		smsTask
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED);
+		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_OUTGOING);
 		smsTask.setSakaiToolId(sakaiToolId);
-		smsTask.setSenderUserName(sakaiSenderID);
+		smsTask.setSenderUserName(externalLogic
+				.getSakaiUserDisplayName(sakaiSenderID));
+		smsTask.setSenderUserId(sakaiSenderID);
 		smsTask.setDeliveryGroupName(deliverGroupId);
 		smsTask.setDeliveryGroupId(deliverGroupId);
 		smsTask.setDateCreated(new Date());
@@ -238,7 +245,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 *
+	 * 
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -412,12 +419,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendTaskNotification(SmsTask smsTask,

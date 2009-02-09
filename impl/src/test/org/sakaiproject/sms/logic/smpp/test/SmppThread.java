@@ -33,7 +33,6 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
@@ -113,8 +112,7 @@ public class SmppThread extends TestRunnable {
 		insertTask.setDelReportTimeoutDuration(300);
 		insertTask.setDateProcessed(new Date());
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
-		insertTask
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setSmsAccountId(smsAccount.getId());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
 		return insertTask;
@@ -129,8 +127,7 @@ public class SmppThread extends TestRunnable {
 		SmsTask insertTask = insertNewTask(this.sessionName,
 				SmsConst_DeliveryStatus.STATUS_PENDING, new Date(System
 						.currentTimeMillis()), 0);
-		insertTask
-				.setMessagesProcessed(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+		// insertTask.setMessagesProcessed(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setAttemptCount(2);
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 		for (int i = 0; i < message_count; i++) {

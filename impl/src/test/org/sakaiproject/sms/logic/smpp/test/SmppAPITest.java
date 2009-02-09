@@ -28,7 +28,6 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
@@ -88,11 +87,9 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("administrator");
 		insertTask.setMaxTimeToLive(300);
 		insertTask.setDelReportTimeoutDuration(300);
-		insertTask
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setDateProcessed(new Date());
-		insertTask
-				.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
 		return insertTask;
 	}

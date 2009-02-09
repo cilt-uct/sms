@@ -46,7 +46,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
 /**
  * The data service will handle all sms task database transactions for the sms
  * tool in Sakai.
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008
@@ -54,11 +54,11 @@ import org.sakaiproject.sms.util.HibernateUtil;
 public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	private ExternalLogic externalLogic;
-	
+
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
+
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -68,7 +68,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets a SmsTask entity for the given id
-	 *
+	 * 
 	 * @param Long
 	 *            sms task id
 	 * @return sms task
@@ -79,7 +79,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets all the sms task records
-	 *
+	 * 
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
@@ -92,10 +92,10 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * This method will persists the given object.
-	 *
+	 * 
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updated on the DB.
-	 *
+	 * 
 	 * @param sms
 	 *            task to be persisted
 	 */
@@ -105,14 +105,14 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets the next sms task to be processed.
-	 *
+	 * 
 	 * @return next sms task
 	 */
 	public SmsTask getNextSmsTask() {
 		StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
-		hql.append(" and task.messageTypeId = (:messageTypeId) ");
+		// hql.append(" and task.messageTypeId = (:messageTypeId) ");
 		hql.append(" order by task.dateToSend ");
 		Query query = HibernateUtil.getSession().createQuery(hql.toString());
 		query.setParameter("today", getCurrentDate(), Hibernate.TIMESTAMP);
@@ -120,9 +120,8 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 				SmsConst_DeliveryStatus.STATUS_PENDING,
 				SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
 				SmsConst_DeliveryStatus.STATUS_RETRY }, Hibernate.STRING);
-		query.setParameter("messageTypeId",
-				SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED,
-				Hibernate.INTEGER);
+		// query.setParameter("messageTypeId",SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED,
+		// Hibernate.INTEGER);
 		log.debug("getNextSmsTask() HQL: " + query.getQueryString());
 		List<SmsTask> tasks = query.list();
 		HibernateUtil.closeSession();
@@ -136,7 +135,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	/**
 	 * Returns a list of SmsTask objects with messages that have the specified
 	 * status code(s)
-	 *
+	 * 
 	 * @param message
 	 *            status code(s)
 	 * @return List of SmsTask objetcs
@@ -169,7 +168,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets a all search results for the specified search criteria
-	 *
+	 * 
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -182,7 +181,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 *
+	 * 
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -277,7 +276,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Increments the total messages processed on a task by one.
-	 *
+	 * 
 	 * @param smsTask
 	 */
 	public void incrementMessagesProcessed(SmsTask smsTask) {
@@ -290,10 +289,9 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	}
 
-
 	/**
 	 * Increments the total messages delivered on a task by one.
-	 *
+	 * 
 	 * @param smsTask
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask) {

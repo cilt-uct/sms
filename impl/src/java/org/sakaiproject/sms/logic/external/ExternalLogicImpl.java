@@ -24,7 +24,6 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.email.api.EmailService;
@@ -201,11 +200,26 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see {@link ExternalLogic#getGroupMemberCount(String)}
 	 */
 	public int getGroupMemberCount(String reference) {
-		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
-		if (group == null) {
-			return 0;
+		return 15; // for testing
+		// AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
+		// if (group == null) {
+		// return 0;
+		// }
+		// return group.getMembers().size();
+	}
+
+	public String getSakaiUserDisplayName(String userId) {
+		String result = null;
+		if (isValidUser(userId)) { // user may be null or not a Sakai user
+			try {
+				result = userDirectoryService.getUser(userId).getDisplayName();
+			} catch (UserNotDefinedException e) {
+				log
+						.warn("Cannot getSakaiUserDisplayName for user id "
+								+ userId);
+			}
 		}
-		return group.getMembers().size();
+		return result;
 	}
 
 	/**

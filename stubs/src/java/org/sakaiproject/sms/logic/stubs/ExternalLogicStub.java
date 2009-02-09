@@ -24,7 +24,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- *
+ * 
  */
 public class ExternalLogicStub implements ExternalLogic {
 
@@ -54,7 +54,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public int getGroupMemberCount(String reference) {
-		return 5;
+		return 20;
 	}
 
 	public String[] sendEmails(String from, String[] emails, String subject,
@@ -92,8 +92,12 @@ public class ExternalLogicStub implements ExternalLogic {
 		return SMS_DEV_DEFAULT_SAKAI_USER_ID.equals(userId);
 	}
 
+	public String getSakaiUserDisplayName(String userId) {
+		return "John Smith";
+	}
+
 	public String getSakaiSiteContactEmail() {
 
-		return "Louis@psybergate.com";
+		return "louis@psybergate.com";
 	}
 }

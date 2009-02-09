@@ -21,6 +21,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -70,6 +73,11 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	@Override
 	public void setUp() {
 
+		// Inject the required impl's into core impl for testing
+		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
+		smsCoreImpl.smsBilling = new SmsBillingImpl();
+		smsCoreImpl.externalLogic = new ExternalLogicStub();
+
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");
 		account.setMessageTypeCode("");
@@ -81,7 +89,9 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 		validator = new SmsTaskValidator();
 		msg = new SmsMessage();
-		smsTask = new SmsTask();
+		// smsTask = new SmsTask();
+		smsTask = smsCoreImpl.getPreliminaryTestTask();
+
 		smsTask.setSakaiSiteId("sakaiSiteId");
 		smsTask.setSmsAccountId(account.getId());
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));

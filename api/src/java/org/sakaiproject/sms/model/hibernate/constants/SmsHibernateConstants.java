@@ -47,13 +47,11 @@ public class SmsHibernateConstants {
 	/**
 	 * Used to indicate if the Task must be processed immediately.
 	 */
-	public static final Integer SMS_TASK_TYPE_PROCESS_NOW = 1;
-
+	// public static final Integer SMS_TASK_TYPE_PROCESS_NOW = 1;
 	/**
 	 * Used to indicate if the Task must be processed by the scheduler.
 	 */
-	public static final Integer SMS_TASK_TYPE_PROCESS_SCHEDULED = 0;
-
+	// public static final Integer SMS_TASK_TYPE_PROCESS_SCHEDULED = 0;
 	/**
 	 * Used to indicate if the system is running in development mode.
 	 */
