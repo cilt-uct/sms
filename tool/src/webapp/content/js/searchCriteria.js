@@ -8,11 +8,12 @@ function getToday(){
 }
 
 function checkNumbers(input){
-	input.value = input.value.replace(/[^0-9]/g, '');
-}
-
-function checkPhoneNumbers(input){
-	input.value = input.value.replace(/[^0-9/+]/g, '');
+	var fossil = document.getElementsByName(input.id + '-fossil')[0];
+	if (fossil.value == 'istring#{searchMessageLog.number}') {
+		input.value = input.value.replace(/[^0-9/+]/g, '');
+	} else {
+		input.value = input.value.replace(/[^0-9]/g, '');
+	}
 }
 
 //delete when deployed into sakai since this function will be available
