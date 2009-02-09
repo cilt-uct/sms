@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Each Sakai site will have its own set of accounts for billing outgoing
  * messages. A specific user may also have a account.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -76,7 +76,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the account status.
-	 * 
+	 *
 	 * @return
 	 */
 	public Boolean getAccountEnabled() {
@@ -85,7 +85,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the account status.
-	 * 
+	 *
 	 * @param accountEnabled
 	 */
 	public void setAccountEnabled(Boolean accountEnabled) {
@@ -98,6 +98,19 @@ public class SmsAccount extends BaseModel {
 	public SmsAccount() {
 		this.startdate = new Date(System.currentTimeMillis());
 
+	}
+
+	/**
+	 * The email address that will receive the notification email
+	 */
+	private String notificationEmail;
+
+	public String getNotificationEmail() {
+		return notificationEmail;
+	}
+
+	public void setNotificationEmail(String notificationEmail) {
+		this.notificationEmail = notificationEmail;
 	}
 
 	/**
@@ -134,7 +147,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the balance.
-	 * 
+	 *
 	 * @return the balance
 	 */
 	public Float getBalance() {
@@ -143,7 +156,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the message type code.
-	 * 
+	 *
 	 * @return the message type code
 	 */
 	public String getMessageTypeCode() {
@@ -152,7 +165,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the overdraft limit.
-	 * 
+	 *
 	 * @return the overdraft limit
 	 */
 	public Float getOverdraftLimit() {
@@ -161,7 +174,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the sakai site id.
-	 * 
+	 *
 	 * @return the sakai site id
 	 */
 	public String getSakaiSiteId() {
@@ -170,7 +183,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the sakai user id.
-	 * 
+	 *
 	 * @return the sakai user id
 	 */
 	public String getSakaiUserId() {
@@ -179,7 +192,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the balance.
-	 * 
+	 *
 	 * @param balance
 	 *            the new balance
 	 */
@@ -189,7 +202,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the message type code.
-	 * 
+	 *
 	 * @param messageTypeCode
 	 *            the new message type code
 	 */
@@ -199,7 +212,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the overdraft limit.
-	 * 
+	 *
 	 * @param overdraftLimit
 	 *            the new overdraft limit
 	 */
@@ -209,7 +222,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the sakai site id.
-	 * 
+	 *
 	 * @param sakaiSiteId
 	 *            the new sakai site id
 	 */
@@ -219,7 +232,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the sakai user id.
-	 * 
+	 *
 	 * @param sakaiUserId
 	 *            the new sakai user id
 	 */
@@ -229,7 +242,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the sms transactions.
-	 * 
+	 *
 	 * @return the sms transactions
 	 */
 	private Set<SmsTransaction> getSmsTransactions() {
@@ -238,7 +251,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the sms transactions.
-	 * 
+	 *
 	 * @param smsTransactions
 	 *            the new sms transactions
 	 */
@@ -248,7 +261,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Gets the account name.
-	 * 
+	 *
 	 * @return the account name
 	 */
 	public String getAccountName() {
@@ -257,7 +270,7 @@ public class SmsAccount extends BaseModel {
 
 	/**
 	 * Sets the account name.
-	 * 
+	 *
 	 * @param accountName
 	 *            the new account name
 	 */

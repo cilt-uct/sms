@@ -1,17 +1,17 @@
 /***********************************************************************************
  * ExternalLogic.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -55,7 +55,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Check if this user has super admin access
-	 * 
+	 *
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @return true if the user has admin access, false otherwise
@@ -75,7 +75,7 @@ public interface ExternalLogic {
 	/**
 	 * Check if a user has a specified permission within a context, primarily a
 	 * convenience method and passthrough
-	 * 
+	 *
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @param permission
@@ -90,17 +90,17 @@ public interface ExternalLogic {
 
 	/**
 	 * Retrieves mobile number for user
-	 * 
+	 *
 	 * @param userID
 	 *            the internal user id (not username)
-	 * 
+	 *
 	 * @return mobile number for user
 	 */
 	public String getSakaiMobileNumber(String userID);
 
 	/**
 	 * Send e-mails to users ids
-	 * 
+	 *
 	 * @param from
 	 *            from address to be used
 	 * @param toUserIds
@@ -116,7 +116,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Send e-mail to array of e-mail addresses
-	 * 
+	 *
 	 * @param from
 	 *            from address to be used
 	 * @param toEmails
@@ -132,7 +132,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Get current number of members in a specific group
-	 * 
+	 *
 	 * @param reference
 	 *            entity reference of group
 	 * @return an integer with current number of members in group
@@ -141,9 +141,9 @@ public interface ExternalLogic {
 
 	/**
 	 * Get the display id for the current user.
-	 * 
+	 *
 	 * @return display id
-	 * 
+	 *
 	 */
 	public String getCurrentUserDisplayId();
 	
@@ -164,5 +164,12 @@ public interface ExternalLogic {
 	 * @return true if valid, false otherwise
 	 */
 	public boolean isValidUser(String userId);
+
+	/**
+	 * Get the sakai contacts email.
+	 *
+	 * @return sakaiSiteContactEmail
+	 */
+	public String getSakaiSiteContactEmail();
 
 }

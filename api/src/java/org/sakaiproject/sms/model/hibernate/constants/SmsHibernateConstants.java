@@ -145,6 +145,9 @@ public class SmsHibernateConstants {
 	/** The Constant for task notification started */
 	public static final int TASK_NOTIFICATION_COMPLETED = 4;
 
+	/** The Constant for task notification started */
+	public static final int TASK_INSUFFICIENT_CREDITS = 5;
+
 	/** The smsc_id is used to uniquely identify the smsc. */
 	public static final String SMSC_ID = "1";
 
