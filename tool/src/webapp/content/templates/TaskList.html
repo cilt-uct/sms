@@ -27,9 +27,20 @@
 <div rsf:id="export:" style="padding-left: 10px">
 	<a id="export-to-csv" rsf:id="export-to-csv"></a>
 	<input id="buttonlink" type="button" value="Export to CSV" onclick="call_link('export-to-csv')"/>
-	<input type="button" value="Add Task" onclick="openWindow('helper', 
-					'sms_test', 'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); 
-					return false"/>
+	<input type="button" value="Add Task" id="add-task-button" rsf:id="add-task-button" />
+	
+	<a id="add-task-link" rsf:id="add-task-link" style="display:none;" />
+	<script type="text/javascript">
+		function initTaskBtn(addTaskButtonId , linkId) {
+			var addTaskButton = document.getElementById(addTaskButtonId);
+			var addTaskLink = document.getElementById(linkId);
+			addTaskButton.onclick = function () {openWindow(addTaskLink.href, 'helper' ,'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); return false;  };
+		}
+	</script>
+	<script rsf:id="init-add-task-btn" type="text/javascript">
+		initTaskBtn("add-task-button", "add-task-link");
+	</script>
+
 	<p></p>
 </div> 
 </form>

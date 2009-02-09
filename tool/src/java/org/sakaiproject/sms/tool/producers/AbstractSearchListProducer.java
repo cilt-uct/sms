@@ -115,7 +115,7 @@ public abstract class AbstractSearchListProducer implements
 				getViewID(), searchResultsRenderer
 						.getTotalNumberOfRowsReturned());
 		UIBranchContainer branchContainer = exportToCSV(tofill);
-		addAddtionalButtons(branchContainer);
+		addAdditionalButtons(branchContainer);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public abstract class AbstractSearchListProducer implements
 	 * 
 	 * @param tofill
 	 */
-	protected void addAddtionalButtons(UIBranchContainer branch) {
+	protected void addAdditionalButtons(UIBranchContainer branch) {
 
 	}
 

@@ -22,6 +22,11 @@ import java.util.List;
 
 import org.sakaiproject.sms.tool.beans.ActionResults;
 
+import uk.org.ponder.rsf.components.UIBranchContainer;
+import uk.org.ponder.rsf.components.UIInitBlock;
+import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
 import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
@@ -44,6 +49,14 @@ public class TaskListProducer extends AbstractSearchListProducer implements
 	@Override
 	public String getDefaultSortColumn() {
 		return "dateProcessed";
+	}
+	
+	@Override
+	protected void addAdditionalButtons(UIBranchContainer branch) {
+		UIInternalLink link = UIInternalLink.make(branch, "add-task-link", new SimpleViewParameters(HelperProducer.VIEW_ID));
+		UIOutput button = UIOutput.make(branch, "add-task-button", UIMessage.make("sms.task-list.add-task").getValue());
+		
+		UIInitBlock.make(branch, "init-add-task-btn", "initTaskBtn", new Object[] {button, link});
 	}
 
 	public List reportNavigationCases() {
