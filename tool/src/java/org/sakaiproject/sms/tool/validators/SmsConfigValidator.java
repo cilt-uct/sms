@@ -42,29 +42,26 @@ public class SmsConfigValidator implements Validator {
 		if (smsConfig.getPagingSize() == null)
 			err.rejectValue("pagingSize", "sms.errors.paging.empty");
 
-		if (smsConfig.isSendSmsEnabled()) {
-
-			ValidationUtils.rejectIfEmptyOrWhitespace(err, "notificationEmail",
+		ValidationUtils.rejectIfEmptyOrWhitespace(err, "notificationEmail",
 					"sms.errors.email.empty");
 
-			if (smsConfig.getNotificationEmail() != null) {
-				EmailValidator emailValidator = EmailValidator.getInstance();
+		if (smsConfig.getNotificationEmail() != null) {
+			EmailValidator emailValidator = EmailValidator.getInstance();
 
-				StringTokenizer stringTokenizer = new StringTokenizer(smsConfig
-						.getNotificationEmail(), ",");
+			StringTokenizer stringTokenizer = new StringTokenizer(smsConfig
+					.getNotificationEmail(), ",");
 
-				boolean invalidEmail = false;
-				while (stringTokenizer.hasMoreElements()) {
-					String address = stringTokenizer.nextToken();
+			boolean invalidEmail = false;
+			while (stringTokenizer.hasMoreElements()) {
+				String address = stringTokenizer.nextToken();
 
-					if (!emailValidator.isValid(address)) {
-						invalidEmail = true;
-					}
+				if (!emailValidator.isValid(address)) {
+					invalidEmail = true;
 				}
-				if (invalidEmail) {
-					err.rejectValue("notificationEmail",
-							"sms.errors.email.invalid");
-				}
+			}
+			if (invalidEmail) {
+				err.rejectValue("notificationEmail",
+				"sms.errors.email.invalid");
 			}
 		}
 	}
