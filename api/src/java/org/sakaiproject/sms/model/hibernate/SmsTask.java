@@ -35,7 +35,7 @@ import org.sakaiproject.sms.util.DateUtil;
  * A sms task that needs to be processed. For example: send message X to sakai
  * group Y at time Z. When a sms task is processed, a record is inserted into
  * SMS_MESSAGE for each message that must be sent out.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -167,6 +167,29 @@ public class SmsTask extends BaseModel {
 	private Integer maxTimeToLive;
 
 	/**
+	 * The date the task will expire on.It is calculated using maxTimeToLive.
+	 */
+	private Date dateToExpire;
+
+	/**
+	 * Gets the date the task will expire on.
+	 *
+	 * @return
+	 */
+	public Date getDateToExpire() {
+		return dateToExpire;
+	}
+
+	/**
+	 * Sets the date the task will expire on.
+	 *
+	 * @param dateToExpire
+	 */
+	public void setDateToExpire(Date dateToExpire) {
+		this.dateToExpire = dateToExpire;
+	}
+
+	/**
 	 * The maximum amount of minutes to wait for a delivery report for each
 	 * message. If a message exeeds this time, it will be marked as failed.
 	 */
@@ -191,7 +214,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Instantiates a new sms task.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            the sakai site id
 	 * @param deliveryUserID
@@ -203,7 +226,7 @@ public class SmsTask extends BaseModel {
 	 * @param messageBody
 	 *            the message body
 	 * @Depricated Use default constructor and setter methods instead
-	 * 
+	 *
 	 */
 	private SmsTask(String sakaiSiteID, String deliveryUserID,
 			String deliveryGroupID, Long accountID, String messageBody) {
@@ -223,7 +246,7 @@ public class SmsTask extends BaseModel {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -234,7 +257,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the attempt count.
-	 * 
+	 *
 	 * @return the attempt count
 	 */
 	public Integer getAttemptCount() {
@@ -266,7 +289,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the credit estimate.
-	 * 
+	 *
 	 * @return the credit estimate
 	 */
 	public Integer getCreditEstimate() {
@@ -275,7 +298,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the credit estimate.
-	 * 
+	 *
 	 * @return the credit estimate
 	 */
 	public Integer getCreditEstimateInt() {
@@ -288,7 +311,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the date created.
-	 * 
+	 *
 	 * @return the date created
 	 */
 	public Date getDateCreated() {
@@ -297,7 +320,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the date processed.
-	 * 
+	 *
 	 * @return the date processed
 	 */
 	public Date getDateProcessed() {
@@ -306,7 +329,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the date to send.
-	 * 
+	 *
 	 * @return the date to send
 	 */
 	public Date getDateToSend() {
@@ -315,7 +338,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the delivery group id.
-	 * 
+	 *
 	 * @return the delivery group id
 	 */
 	public String getDeliveryGroupId() {
@@ -324,7 +347,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the delivery group name.
-	 * 
+	 *
 	 * @return the delivery group name
 	 */
 	public String getDeliveryGroupName() {
@@ -333,7 +356,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the delivery user id.
-	 * 
+	 *
 	 * @return the delivery user id
 	 */
 	public String getDeliveryUserId() {
@@ -344,7 +367,7 @@ public class SmsTask extends BaseModel {
 	 * Gets the delivery report timeout duration.
 	 * <p>
 	 * NB: This is in minutes
-	 * 
+	 *
 	 * @return the del report timeout duration
 	 */
 	public Integer getDelReportTimeoutDuration() {
@@ -353,7 +376,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the group size actual.
-	 * 
+	 *
 	 * @return the group size actual
 	 */
 	public Integer getGroupSizeActual() {
@@ -362,7 +385,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the group size estimate.
-	 * 
+	 *
 	 * @return the group size estimate
 	 */
 	public Integer getGroupSizeEstimate() {
@@ -373,7 +396,7 @@ public class SmsTask extends BaseModel {
 	 * Gets the max time to live.
 	 * <p>
 	 * NB: This is in minutes
-	 * 
+	 *
 	 * @return the max time to live
 	 */
 	public Integer getMaxTimeToLive() {
@@ -382,7 +405,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the message body.
-	 * 
+	 *
 	 * @return the message body
 	 */
 	public String getMessageBody() {
@@ -391,10 +414,10 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the messages with smsc status.
-	 * 
+	 *
 	 * @param smscStatus
 	 *            the smsc status
-	 * 
+	 *
 	 * @return the messages with smsc status
 	 */
 	public Set<SmsMessage> getMessagesWithSmscStatus(int smscStatus) {
@@ -414,10 +437,10 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the messages with status.
-	 * 
+	 *
 	 * @param status
 	 *            the status
-	 * 
+	 *
 	 * @return the messages with status
 	 */
 	public Set<SmsMessage> getMessagesWithStatus(String status) {
@@ -434,7 +457,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the message type id.
-	 * 
+	 *
 	 * @return the message type id
 	 */
 	public Integer getMessageTypeId() {
@@ -443,7 +466,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sakai site id.
-	 * 
+	 *
 	 * @return the sakai site id
 	 */
 	public String getSakaiSiteId() {
@@ -452,7 +475,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sakai tool id.
-	 * 
+	 *
 	 * @return the sakai tool id
 	 */
 	public String getSakaiToolId() {
@@ -461,7 +484,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sakai tool name.
-	 * 
+	 *
 	 * @return the sakai tool name
 	 */
 	public String getSakaiToolName() {
@@ -470,7 +493,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sender user name.
-	 * 
+	 *
 	 * @return the sender user name
 	 */
 	public String getSenderUserName() {
@@ -479,7 +502,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sms account id.
-	 * 
+	 *
 	 * @return the sms account id
 	 */
 	public Long getSmsAccountId() {
@@ -488,7 +511,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sms messages.
-	 * 
+	 *
 	 * @return the sms messages
 	 */
 	public Set<SmsMessage> getSmsMessages() {
@@ -497,7 +520,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the status code.
-	 * 
+	 *
 	 * @return the status code
 	 */
 	public String getStatusCode() {
@@ -506,7 +529,7 @@ public class SmsTask extends BaseModel {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -517,7 +540,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Reschedules the date to send the message.
-	 * 
+	 *
 	 * @param dateToSend
 	 *            the date to send
 	 */
@@ -527,7 +550,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the attempt count.
-	 * 
+	 *
 	 * @param attemptCount
 	 *            the new attempt count
 	 */
@@ -541,7 +564,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the credit estimate.
-	 * 
+	 *
 	 * @param creditEstimate
 	 *            the new credit estimate
 	 */
@@ -551,7 +574,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the date created.
-	 * 
+	 *
 	 * @param dateCreated
 	 *            the new date created
 	 */
@@ -561,7 +584,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the date processed.
-	 * 
+	 *
 	 * @param dateProcessed
 	 *            the new date processed
 	 */
@@ -571,7 +594,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the date to send.
-	 * 
+	 *
 	 * @param dateToSend
 	 *            the new date to send
 	 */
@@ -581,7 +604,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the delivery group id.
-	 * 
+	 *
 	 * @param deliveryGroupId
 	 *            the new delivery group id
 	 */
@@ -591,7 +614,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the delivery group name.
-	 * 
+	 *
 	 * @param deliveryGroupName
 	 *            the new delivery group name
 	 */
@@ -601,7 +624,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the delivery user id.
-	 * 
+	 *
 	 * @param deliveryUserId
 	 *            the new delivery user id
 	 */
@@ -613,7 +636,7 @@ public class SmsTask extends BaseModel {
 	 * Sets the delivery report timeout duration.
 	 * <p>
 	 * NB: This is in minutes
-	 * 
+	 *
 	 * @param delReportTimeoutDuration
 	 *            the new del report timeout duration
 	 */
@@ -623,7 +646,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the group size actual.
-	 * 
+	 *
 	 * @param groupSizeActual
 	 *            the new group size actual
 	 */
@@ -633,7 +656,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the group size estimate.
-	 * 
+	 *
 	 * @param groupSizeEstimate
 	 *            the new group size estimate
 	 */
@@ -645,7 +668,7 @@ public class SmsTask extends BaseModel {
 	 * Sets the max time to live.
 	 * <p>
 	 * NB: This is in minutes
-	 * 
+	 *
 	 * @param maxTimeToLive
 	 *            the new max time to live
 	 */
@@ -655,7 +678,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the message body.
-	 * 
+	 *
 	 * @param messageBody
 	 *            the new message body
 	 */
@@ -665,7 +688,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the message type id.
-	 * 
+	 *
 	 * @param messageTypeId
 	 *            the new message type id
 	 */
@@ -675,7 +698,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sakai site id.
-	 * 
+	 *
 	 * @param sakaiSiteId
 	 *            the new sakai site id
 	 */
@@ -685,7 +708,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sakai tool id.
-	 * 
+	 *
 	 * @param sakaiToolId
 	 *            the new sakai tool id
 	 */
@@ -695,7 +718,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sakai tool name.
-	 * 
+	 *
 	 * @param sakaiToolName
 	 *            the new sakai tool name
 	 */
@@ -705,7 +728,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sender user name.
-	 * 
+	 *
 	 * @param senderUserName
 	 *            the new sender user name
 	 */
@@ -715,7 +738,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sms account id.
-	 * 
+	 *
 	 * @param smsAccountId
 	 *            the new sms account id
 	 */
@@ -725,7 +748,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sms messages.
-	 * 
+	 *
 	 * @param smsMessages
 	 *            the new sms messages
 	 */
@@ -735,7 +758,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sms messages on a this SmsTask object.
-	 * 
+	 *
 	 * @param smsMessages
 	 *            the sms messages
 	 */
@@ -749,7 +772,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the status code.
-	 * 
+	 *
 	 * @param statusCode
 	 *            the new status code
 	 */
@@ -759,7 +782,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the status for messages.
-	 * 
+	 *
 	 * @param oldStatus
 	 *            the old status
 	 * @param newStatus
@@ -779,7 +802,7 @@ public class SmsTask extends BaseModel {
 	/**
 	 * Sets the timeout status for messages that did not received delivery
 	 * reports .
-	 * 
+	 *
 	 * @param oldStatus
 	 *            the old status
 	 * @param newStatus
@@ -800,7 +823,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Get the delivery mobile numbers internal method for hibernate
-	 * 
+	 *
 	 * @return
 	 */
 	String getDeliveryMobileNumbers() {
@@ -809,7 +832,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the delivery mobile numbers internal method for hibernate
-	 * 
+	 *
 	 * @param deliveryMobileNumbers
 	 */
 	void setDeliveryMobileNumbers(String deliveryMobileNumbers) {
@@ -906,7 +929,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the fail reason.
-	 * 
+	 *
 	 * @param failReason
 	 *            the new fail reason
 	 */
@@ -916,7 +939,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the fail reason.
-	 * 
+	 *
 	 * @return the fail reason
 	 */
 	public String getFailReason() {
@@ -925,7 +948,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Gets the sender user id.
-	 * 
+	 *
 	 * @return the sender user id
 	 */
 	public String getSenderUserId() {
@@ -934,7 +957,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the sender user id.
-	 * 
+	 *
 	 * @param senderUserId
 	 *            the new sender user id
 	 */
@@ -944,7 +967,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 *Gets the messages delivered on the task
-	 * 
+	 *
 	 * @return
 	 */
 	public int getMessagesDelivered() {
@@ -953,7 +976,7 @@ public class SmsTask extends BaseModel {
 
 	/**
 	 * Sets the messages delivered on the task
-	 * 
+	 *
 	 * @param messagesDelivered
 	 */
 	public void setMessagesDelivered(int messagesDelivered) {

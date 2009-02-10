@@ -234,6 +234,10 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setAttemptCount(0);
 		smsTask.setMessageBody(messageBody);
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
 		smsTask.setDelReportTimeoutDuration(systemConfig
 				.getDelReportTimeoutDuration());
 		smsTask.setDeliveryMobileNumbersSet(mobileNumbers);
@@ -326,11 +330,8 @@ public class SmsCoreImpl implements SmsCore {
 				.getOrCreateSystemSmsConfig();
 		smsTask.setDateProcessed(new Date());
 		smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(smsTask.getDateToSend());
-		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 
-		if (cal.getTime().before(new Date())) {
+		if (smsTask.getDateToExpire().before(new Date())) {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_EXPIRE);
 			smsTask.setStatusForMessages(
 					SmsConst_DeliveryStatus.STATUS_PENDING,

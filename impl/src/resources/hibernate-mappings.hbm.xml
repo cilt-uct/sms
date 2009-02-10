@@ -52,6 +52,9 @@
 			not-null="false" />
 		<property name="maxTimeToLive" type="integer" column="MAX_TIME_TO_LIVE"
 			not-null="true" />
+			<property name="dateToExpire" type="timestamp" column="DATE_TO_EXPIRE"
+			not-null="false" />
+
 		<property name="messagesProcessed" type="integer" column="MESSAGES_PROCESSED"
 			not-null="true" />
 		<property name="messagesDelivered" type="integer" column="MESSAGES_DELIVERED"
