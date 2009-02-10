@@ -94,11 +94,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
 	}
-
-	// private FunctionManager functionManager;
-	// private SecurityService securityService;
-	// private UserDirectoryService userDirectoryService;
-	// private SiteService siteService;
+	
+	private MobileNumberHelper mobileNumberHelper;
+	
+	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
+		this.mobileNumberHelper = mobileNumberHelper;
+	}
 
 	public void init() {
 		log.debug("init");
@@ -186,15 +187,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSakaiMobileNumber(String userId) {
-		// TODO Uncomment sakai specific code
-		// try {
-		// return userDirectoryService.getUser(userId).getMobile???;
-		// } catch (UserNotDefinedException e) {
-		// log.warn("Cannot retrive mobile number for invalid user id: " +
-		// userId);
-		// return null;
-		// }
-		return "0123456789";
+		return mobileNumberHelper.getUserMobileNumber(userId);
 	}
 
 	/**
