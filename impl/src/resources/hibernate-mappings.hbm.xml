@@ -43,7 +43,7 @@
 		<property name="senderUserId" type="string" column="SENDER_USER_ID"
 			not-null="false" length="99" />
 		<property name="dateProcessed" type="timestamp" column="DATE_PROCESSED"
-			not-null="false" />
+			not-null="true" />
 		<property name="deliveryGroupName" type="string" column="DELIVERY_GROUP_NAME"
 			not-null="false" length="50" />
 		<property name="groupSizeEstimate" type="integer" column="GROUP_SIZE_ESTIMATE"
