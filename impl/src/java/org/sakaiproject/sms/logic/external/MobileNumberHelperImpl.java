@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.sakaiproject.api.app.profile.Profile;
 import org.sakaiproject.api.app.profile.ProfileManager;
 
@@ -31,6 +32,7 @@ import org.sakaiproject.api.app.profile.ProfileManager;
  */
 public class MobileNumberHelperImpl implements MobileNumberHelper {
 	
+	private static final Logger LOG = Logger.getLogger(MobileNumberHelperImpl.class);
 	private ProfileManager profileManager;
 	
 	public void setProfileManager(ProfileManager profileManager) {
@@ -45,7 +47,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		if (profile != null) {
 			return profile.getSakaiPerson().getMobile();
 		} else {
-			System.out.println("profile is NULL");
+			LOG.error("Profile not found for userid: " + userid);
 			return null;
 		}
 	}
