@@ -53,13 +53,12 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsSmppImpl.init();
 
 		account = new SmsAccount();
-		account.setSakaiSiteId("sakaiSiteId");
+		account.setSakaiSiteId("121112322");
 		account.setMessageTypeCode("");
 		account.setBalance(10f);
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 	}
 
@@ -102,6 +101,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
+		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 	}
 
 	/**
@@ -158,14 +158,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
 		assertFalse("Expected insufficient credit", sufficientCredits);
-
-		// Add overdraft to account
-		account.setOverdraftLimit(10f);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
-
 		sufficientCredits = smsBillingImpl.checkSufficientCredits(account
 				.getId(), creditsRequired);
-		assertTrue("Expected sufficient credit", sufficientCredits);
+		assertTrue("Expected insufficient credit", !sufficientCredits);
 	}
 
 	/**
@@ -173,8 +169,9 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	public void testCheckSufficientCredits_True() {
 
-		int creditsRequired = 5;
-
+		int creditsRequired = 1;
+		account.setBalance(10f);
+		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 		SmsMessage msg = new SmsMessage();
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");

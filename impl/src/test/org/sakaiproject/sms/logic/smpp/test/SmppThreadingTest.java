@@ -101,7 +101,7 @@ public class SmppThreadingTest extends AbstractBaseTestCase {
 				delay_between_messages);
 
 		// pass that instance to the MTTR
-		TestRunnable[] trs = { smsThread1, smsThread2 };
+		TestRunnable[] trs = { smsThread1 };
 		MultiThreadedTestRunner mttr = new MultiThreadedTestRunner(trs);
 
 		// kickstarts the MTTR & fires off threads

@@ -17,10 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -225,7 +223,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * In this test the updating of the tasks statusses are tested.
+	 * In this test the updating of the tasks statuses are tested.
 	 */
 	public void testTaskStatuses() {
 		smsSmppImpl.connectToGateway();
@@ -346,12 +344,12 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/**
 	 * In this test the updating of smsStatuses is tested. First a new task is
-	 * created and populated with smsMessages.The total number of pending
-	 * messages must equal 0 at the end.The total sent messages must equal the
-	 * total messages on the task.Secondly a new task is created and the
-	 * delivery report lister is switched off. After 1 min the core service must
-	 * mark all the messages on the task as timedout.The test is successful if a
-	 * timedout message is found.
+	 * created and populated with smsMessages. The total number of pending
+	 * messages must equal 0 at the end. The total sent messages must equal the
+	 * total messages on the task. Secondly a new task is created and the
+	 * delivery report listener is switched off. After 1 minute the core service
+	 * must mark all the messages on the task as timed out. The test is
+	 * successful if a timed out message is found.
 	 */
 	public void testTimeoutAndMessageStatusUpdate() {
 		smsSmppImpl.connectToGateway();
@@ -524,7 +522,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	public void testInsertTask_InsuficientCredit() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiSiteId("1");
+		account.setSakaiSiteId("11111");
 		account.setMessageTypeCode("1");
 		account.setOverdraftLimit(10000.00f);
 		account.setBalance(5000.00f);
@@ -533,6 +531,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 		SmsTask insertTask = new SmsTask();
+		insertTask.setMessageTypeId(1);
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
@@ -553,8 +552,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("Excpected validation exception");
 		} catch (SmsTaskValidationException e1) {
 			assertTrue(e1.getErrorMessages().size() > 0);
-			assertTrue(e1.getMessage().equals(
-					SmsHibernateConstants.INSUFFICIENT_CREDIT_MESSAGE));
+			assertTrue(e1.getErrorMessages().get(0).equals(
+					"sms.errors.task.credit.insufficient"));
 			LOG.debug(e1.getErrorMessagesAsBlock());
 		}
 	}
@@ -607,15 +606,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		// Test for single userId
 		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(1.5, toTest.getCostEstimate());
+		assertEquals(smsCoreImpl.getSmsBilling().convertCreditsToAmount(1)
+				.doubleValue(), toTest.getCostEstimate());
 		assertEquals(new Integer(1), toTest.getGroupSizeEstimate());
-
-		// Test for single Group
-		toTest.setDeliveryUserId(null);
-		toTest.setDeliveryGroupId("testing");
-		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(7.5, toTest.getCostEstimate());
-		assertEquals(new Integer(5), toTest.getGroupSizeEstimate());
 
 		// Test for Mobile Numbers set
 		toTest.setDeliveryGroupId(null);
@@ -625,19 +618,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		mobileNumbers.add("0841231234");
 		toTest.setDeliveryMobileNumbersSet(mobileNumbers);
 		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(4.5, toTest.getCostEstimate());
+		assertEquals(smsCoreImpl.getSmsBilling().convertCreditsToAmount(3)
+				.doubleValue(), toTest.getCostEstimate());
 		assertEquals(new Integer(3), toTest.getGroupSizeEstimate());
-
-		// Test for multiple Group
-		toTest.setDeliveryMobileNumbersSet(null);
-		List<String> deliveryEntityList = new ArrayList<String>();
-		deliveryEntityList.add("testing1");
-		deliveryEntityList.add("testing2");
-		deliveryEntityList.add("testing3");
-		toTest.setDeliveryEntityList(deliveryEntityList);
-		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(22.5, toTest.getCostEstimate());
-		assertEquals(new Integer(15), toTest.getGroupSizeEstimate());
 
 	}
 }

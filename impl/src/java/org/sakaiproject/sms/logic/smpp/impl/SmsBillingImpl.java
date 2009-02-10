@@ -418,21 +418,25 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 
-		// The juicy bits
-		int transactionCredits = origionalTransaction.getTransactionCredits()
-				* -1;// Reverse the sign cause we are deducting from the account
-		float transactionAmount = convertCreditsToAmount(transactionCredits);
-		smsTransaction.setTransactionCredits(transactionCredits);
-		smsTransaction.setTransactionAmount(transactionAmount);
-		smsTransaction.setBalance(smsAccount.getBalance() + transactionAmount);
+		if (origionalTransaction != null) {
+			// The juicy bits
+			int transactionCredits = origionalTransaction
+					.getTransactionCredits()
+					* -1;// Reverse the sign cause we are deducting from the
+			// account
+			float transactionAmount = convertCreditsToAmount(transactionCredits);
+			smsTransaction.setTransactionCredits(transactionCredits);
+			smsTransaction.setTransactionAmount(transactionAmount);
+			smsTransaction.setBalance(smsAccount.getBalance()
+					+ transactionAmount);
 
-		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
-		smsTransaction.setSmsAccount(smsAccount);
-		smsTransaction.setSmsTaskId(smsTask.getId());
+			smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+			smsTransaction.setSmsAccount(smsAccount);
+			smsTransaction.setSmsTaskId(smsTask.getId());
 
-		HibernateLogicFactory.getTransactionLogic()
-				.insertCancelPendingRequestTransaction(smsTransaction);
-
+			HibernateLogicFactory.getTransactionLogic()
+					.insertCancelPendingRequestTransaction(smsTransaction);
+		}
 		return false;
 	}
 

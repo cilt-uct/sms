@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -52,8 +55,14 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
 
+		// Inject the required impl's into core impl for testing
+		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
+		smsCoreImpl.smsBilling = new SmsBillingImpl();
+		smsCoreImpl.externalLogic = new ExternalLogicStub();
+
 		msg = new SmsMessage();
-		smsTask = new SmsTask();
+		// smsTask = new SmsTask();
+		smsTask = smsCoreImpl.getPreliminaryTestTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
