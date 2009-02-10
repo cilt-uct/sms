@@ -43,7 +43,7 @@
 		<property name="senderUserId" type="string" column="SENDER_USER_ID"
 			not-null="false" length="99" />
 		<property name="dateProcessed" type="timestamp" column="DATE_PROCESSED"
-			not-null="true" />
+			not-null="false" />
 		<property name="deliveryGroupName" type="string" column="DELIVERY_GROUP_NAME"
 			not-null="false" length="50" />
 		<property name="groupSizeEstimate" type="integer" column="GROUP_SIZE_ESTIMATE"
@@ -53,7 +53,7 @@
 		<property name="maxTimeToLive" type="integer" column="MAX_TIME_TO_LIVE"
 			not-null="true" />
 			<property name="dateToExpire" type="timestamp" column="DATE_TO_EXPIRE"
-			not-null="false" />
+			not-null="true" />
 
 		<property name="messagesProcessed" type="integer" column="MESSAGES_PROCESSED"
 			not-null="true" />
