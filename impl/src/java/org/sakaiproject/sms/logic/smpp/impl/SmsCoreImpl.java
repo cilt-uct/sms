@@ -47,9 +47,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -91,7 +91,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -105,7 +105,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -116,7 +116,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -237,6 +237,7 @@ public class SmsCoreImpl implements SmsCore {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
 		smsTask.setDateToExpire(cal.getTime());
 		smsTask.setDelReportTimeoutDuration(systemConfig
 				.getDelReportTimeoutDuration());
@@ -249,7 +250,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 *
+	 * 
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -420,12 +421,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -510,7 +511,7 @@ public class SmsCoreImpl implements SmsCore {
 			if (toAddress == null || toAddress.length() == 0) {
 				return false;
 			}
-					}
+		}
 		return sendNotificationEmail(toAddress, subject, body);
 
 	}
