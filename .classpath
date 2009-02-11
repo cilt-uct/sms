@@ -8,6 +8,7 @@
 	<classpathentry kind="src" path="stubs/src/java"/>
 	<classpathentry excluding="bundle/" kind="src" path="tool/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="tool/src/webapp/WEB-INF/bundle"/>
+	<classpathentry kind="src" path="impl/src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
@@ -18,7 +19,6 @@
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/RSFComponents-evolvers/0.7.4/RSFComponents-evolvers-0.7.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.4/rsfutil-0.7.4.jar"/>
-	<classpathentry kind="src" path="impl/src/test"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.2/junit-3.8.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring-mock/2.0.6/spring-mock-2.0.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/hsqldb/hsqldb/1.8.0.5/hsqldb-1.8.0.5.jar"/>

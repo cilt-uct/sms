@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
@@ -15,6 +16,7 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
@@ -30,6 +32,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsSchedulerImpl smsSchedulerImpl = null;
 	static SmsSmppImpl smsSmppImpl = null;
+	static SmsConfigLogicImpl smsConfigLogic = null;
 
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
@@ -39,6 +42,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	static {
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
+		smsConfigLogic = new SmsConfigLogicImpl();
+		
+		smsCoreImpl.setSmsConfigLogic(smsConfigLogic);
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
@@ -59,6 +65,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
+		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		config.setSendSmsEnabled(true);
+		smsConfigLogic.persistSmsConfig(config);
 	}
 
 	/**
@@ -92,8 +101,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
 		} catch (SmsSendDeniedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -1);
@@ -108,8 +118,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
 		} catch (SmsSendDeniedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -3);
@@ -124,8 +135,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
 		} catch (SmsSendDeniedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 
 		try {
@@ -133,9 +145,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 
 			e.printStackTrace();
-		} catch (SmsSendDisabledException sd) {
-			fail("SmsSendDisabledException caught");
-		}
+		} 
 		assertTrue(smsCoreImpl.getNextSmsTask() == null);
 	}
 
