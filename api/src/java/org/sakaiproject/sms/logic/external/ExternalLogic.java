@@ -157,11 +157,4 @@ public interface ExternalLogic {
 	 */
 	public String getSakaiSiteContactEmail();
 
-	/**
-	 * Used for testing only
-	 * 
-	 * @return
-	 */
-	public String getTestDeliveryGroup();
-
 }

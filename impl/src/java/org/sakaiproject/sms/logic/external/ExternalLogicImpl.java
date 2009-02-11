@@ -94,9 +94,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
 	}
-	
+
 	private MobileNumberHelper mobileNumberHelper;
-	
+
 	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
@@ -165,10 +165,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 		log.debug("isUserAllowedInLocation(" + userId + ", " + permission + ","
 				+ locationId + ")");
 		Boolean allowed = true;
-		 if (userId != null)
-			 allowed = securityService.unlock(userId, permission, locationId);
-		 else
-			 allowed = securityService.unlock(permission, locationId);
+		if (userId != null)
+			allowed = securityService.unlock(userId, permission, locationId);
+		else
+			allowed = securityService.unlock(permission, locationId);
 
 		log.debug("allowed: " + allowed);
 
@@ -366,10 +366,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String getSakaiSiteContactEmail() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public String getTestDeliveryGroup() {
-		return "/site/!admin/group/804cf62a-8fbf-438f-aa7f-c8962a9f42e4";
 	}
 
 }
