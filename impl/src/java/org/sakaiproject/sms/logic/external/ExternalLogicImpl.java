@@ -105,15 +105,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		log.debug("init");
 		// register Sakai permissions for this tool
 
-		// functionManager.registerFunction(SMS_SEND);
-		// functionManager.registerFunction(SMS_MANAGE);
-		// functionManager.registerFunction(SMS_ACCOUNTS_VIEW);
-		// functionManager.registerFunction(SMS_ACCOUNT_CREATE);
-		// functionManager.registerFunction(SMS_ACCOUNT_EDIT);
-		// functionManager.registerFunction(SMS_TRANSACTION_VIEW);
-		// functionManager.registerFunction(SMS_MESSAGE_VIEW_ALL);
-		// functionManager.registerFunction(SMS_MESSAGE_VIEW_OWN);
-
+		functionManager.registerFunction(SMS_SEND);
 	}
 
 	/**
@@ -161,8 +153,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see ExternalLogic#isUserAdmin(String)
 	 */
 	public boolean isUserAdmin(String userId) {
-		// return securityService.isSuperUser(userId);
-		return true;
+		return securityService.isSuperUser(userId);
 	}
 
 	/**
@@ -176,10 +167,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 		log.debug("isUserAllowedInLocation(" + userId + ", " + permission + ","
 				+ locationId + ")");
 		Boolean allowed = true;
-		// if (userId != null)
-		// allowed = securityService.unlock(userId, permission, locationId);
-		// else
-		// allowed = securityService.unlock(permission, locationId);
+		 if (userId != null)
+			 allowed = securityService.unlock(userId, permission, locationId);
+		 else
+			 allowed = securityService.unlock(permission, locationId);
 
 		log.debug("allowed: " + allowed);
 

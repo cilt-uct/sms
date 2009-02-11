@@ -89,7 +89,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 		validator = new SmsTaskValidator();
 		msg = new SmsMessage();
-		// smsTask = new SmsTask();
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
 
 		smsTask.setSakaiSiteId("sakaiSiteId");

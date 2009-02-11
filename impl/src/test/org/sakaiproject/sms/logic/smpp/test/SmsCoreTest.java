@@ -27,6 +27,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
@@ -124,7 +125,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	public void testProcessNextTask() {
 		smsSmppImpl.connectToGateway();
-
+		
 		if (smsCoreImpl.getSmsSmpp().getConnectionStatus()) {
 
 			Calendar now = Calendar.getInstance();
@@ -220,6 +221,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
 
 		}
+
 	}
 
 	/**
@@ -286,8 +288,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
 			assertEquals(true, smsTask2Update.getMessagesWithStatus(
 					SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
-
 		}
+
+
 	}
 
 	/**
@@ -352,70 +355,74 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * successful if a timed out message is found.
 	 */
 	public void testTimeoutAndMessageStatusUpdate() {
-		smsSmppImpl.connectToGateway();
-		smsSmppImpl.setLogLevel(Level.ALL);
-		smsSmppImpl.getSession().setMessageReceiverListener(null);
-		SmsTask statusUpdateTask = smsCoreImpl.getPreliminaryTask(
-				"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask", new Date(
-						System.currentTimeMillis()),
-				"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask",
-				externalLogic.getCurrentSiteId(), null, externalLogic
-						.getCurrentUserId());
-		statusUpdateTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		statusUpdateTask.setAttemptCount(0);
-		statusUpdateTask.setDateProcessed(new Date());
-		statusUpdateTask.setSmsMessagesOnTask(smsCoreImpl
-				.generateSmsMessages(statusUpdateTask));
-		statusUpdateTask.setSmsAccountId(smsAccount.getId());
-		// statusUpdateTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
-		smsCoreImpl.calculateEstimatedGroupSize(statusUpdateTask);
 		try {
-			smsCoreImpl.insertTask(statusUpdateTask);
-		} catch (SmsTaskValidationException e1) {
-			fail(e1.getErrorMessagesAsBlock());
-		}
-		smsSmppImpl.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
-
-		assertEquals(true, statusUpdateTask.getMessagesWithStatus(
-				SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
-
-		SmsTask timeOutTask = smsCoreImpl.getPreliminaryTask(
-				"testTimeoutAndMessageStatusUpdate-TIMEOUT", new Date(),
-				"testTimeoutAndMessageStatusUpdate-TIMEOUT", externalLogic
-						.getCurrentSiteId(), null, externalLogic
-						.getCurrentUserId());
-		timeOutTask.setDelReportTimeoutDuration(60);
-		timeOutTask.setSmsMessagesOnTask(smsCoreImpl
-				.generateSmsMessages(timeOutTask));
-		timeOutTask.setSmsAccountId(smsAccount.getId());
-		smsCoreImpl.calculateEstimatedGroupSize(timeOutTask);
-		try {
-			smsCoreImpl.insertTask(timeOutTask);
-		} catch (SmsTaskValidationException e1) {
-			fail(e1.getErrorMessagesAsBlock());
-		}
-		smsCoreImpl.processNextTask();
-
-		try {
-			Thread.sleep(60000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		smsCoreImpl.processTimedOutDeliveryReports();
-		SmsTask smsTask3Update = HibernateLogicFactory.getTaskLogic()
-				.getSmsTask(timeOutTask.getId());
-
-		Set<SmsMessage> smsMessages = smsTask3Update.getSmsMessages();
-		boolean timedOutMessagesFound = false;
-		for (SmsMessage message : smsMessages) {
-			if (message.getStatusCode().equals(
-					SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
-				timedOutMessagesFound = true;
-				break;
+			smsSmppImpl.connectToGateway();
+			smsSmppImpl.setLogLevel(Level.ALL);
+			smsSmppImpl.getSession().setMessageReceiverListener(null);
+			SmsTask statusUpdateTask = smsCoreImpl.getPreliminaryTask(
+					"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask", new Date(
+							System.currentTimeMillis()),
+					"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask",
+					externalLogic.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
+			statusUpdateTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+			statusUpdateTask.setAttemptCount(0);
+			statusUpdateTask.setDateProcessed(new Date());
+			statusUpdateTask.setSmsMessagesOnTask(smsCoreImpl
+					.generateSmsMessages(statusUpdateTask));
+			statusUpdateTask.setSmsAccountId(smsAccount.getId());
+			// statusUpdateTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
+			smsCoreImpl.calculateEstimatedGroupSize(statusUpdateTask);
+			try {
+				smsCoreImpl.insertTask(statusUpdateTask);
+			} catch (SmsTaskValidationException e1) {
+				fail(e1.getErrorMessagesAsBlock());
 			}
+			smsSmppImpl.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
 
+			assertEquals(true, statusUpdateTask.getMessagesWithStatus(
+					SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
+
+			SmsTask timeOutTask = smsCoreImpl.getPreliminaryTask(
+					"testTimeoutAndMessageStatusUpdate-TIMEOUT", new Date(),
+					"testTimeoutAndMessageStatusUpdate-TIMEOUT", externalLogic
+							.getCurrentSiteId(), null, externalLogic
+							.getCurrentUserId());
+			timeOutTask.setDelReportTimeoutDuration(60);
+			timeOutTask.setSmsMessagesOnTask(smsCoreImpl
+					.generateSmsMessages(timeOutTask));
+			timeOutTask.setSmsAccountId(smsAccount.getId());
+			smsCoreImpl.calculateEstimatedGroupSize(timeOutTask);
+			try {
+				smsCoreImpl.insertTask(timeOutTask);
+			} catch (SmsTaskValidationException e1) {
+				fail(e1.getErrorMessagesAsBlock());
+			}
+			smsCoreImpl.processNextTask();
+
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			smsCoreImpl.processTimedOutDeliveryReports();
+			SmsTask smsTask3Update = HibernateLogicFactory.getTaskLogic()
+					.getSmsTask(timeOutTask.getId());
+
+			Set<SmsMessage> smsMessages = smsTask3Update.getSmsMessages();
+			boolean timedOutMessagesFound = false;
+			for (SmsMessage message : smsMessages) {
+				if (message.getStatusCode().equals(
+						SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
+					timedOutMessagesFound = true;
+					break;
+				}
+
+			}
+			assertEquals(timedOutMessagesFound, true);
+		} catch (SmsSendDeniedException se) {
+			fail("SmsSendDeniedException caught");
 		}
-		assertEquals(timedOutMessagesFound, true);
 
 	}
 
@@ -514,6 +521,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		} catch (SmsTaskValidationException e1) {
 			assertTrue(e1.getErrorMessages().size() > 0);
 			LOG.debug(e1.getErrorMessagesAsBlock());
+		} catch (SmsSendDeniedException se) {
+			fail("SmsSendDeniedException caught");
 		}
 	}
 
@@ -555,6 +564,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			assertTrue(e1.getErrorMessages().get(0).equals(
 					"sms.errors.task.credit.insufficient"));
 			LOG.debug(e1.getErrorMessagesAsBlock());
+		} catch (SmsSendDeniedException se) {
+			fail("SmsSendDeniedException caught");
 		}
 	}
 

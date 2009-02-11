@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
@@ -72,6 +73,7 @@ public interface SmsService {
 	 * @param sakaiSenderID
 	 * @param deliveryMobileNumbers
 	 * @return
+	 * @throws SmsSendDeniedException 
 	 */
 	public SmsTask getPreliminaryTask(Date dateToSend, String messageBody,
 			String sakaiSiteID, String sakaiToolId, String sakaiSenderID,
@@ -183,8 +185,9 @@ public interface SmsService {
 	 *
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
+	 * @throws SmsSendDeniedException 
 	 */
 	public SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException;
+			throws SmsTaskValidationException, SmsSendDeniedException;
 
 }

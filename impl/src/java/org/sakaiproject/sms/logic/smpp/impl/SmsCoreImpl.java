@@ -34,6 +34,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -206,7 +207,7 @@ public class SmsCoreImpl implements SmsCore {
 			Date dateToSend, String messageBody, String sakaiSiteID,
 			String sakaiToolId, String sakaiSenderID,
 			List<String> deliveryEntityList) {
-
+		
 		SmsConfig siteConfig = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		SmsConfig systemConfig = HibernateLogicFactory.getConfigLogic()
@@ -271,8 +272,12 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public synchronized SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException {
+			throws SmsTaskValidationException, SmsSendDeniedException {
 
+		if (!externalLogic.isUserAllowedInLocation(smsTask.getSenderUserId(), ExternalLogic.SMS_SEND, smsTask.getSakaiSiteId())) {
+			throw new SmsSendDeniedException();
+		}
+		
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(TaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {

@@ -28,6 +28,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -214,9 +215,10 @@ public class SmsServiceImpl implements SmsService {
 	 *
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
+	 * @throws SmsSendDeniedException 
 	 */
 	public SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException {
+			throws SmsTaskValidationException, SmsSendDeniedException {
 
 		return smsCore.insertTask(smsTask);
 	}

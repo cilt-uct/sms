@@ -29,29 +29,6 @@ public interface ExternalLogic {
 	// Implies Create a new Sms task in current site
 	public final static String SMS_SEND = "sms.send";
 
-	// Includes: SMS configuration for current site, View/Edit/Delete any
-	// pending task in the site
-	// (note that this requires a task to have an associated site/context)
-	public final static String SMS_MANAGE = "sms.manage";
-
-	// View list of accounts
-	public final static String SMS_ACCOUNTS_VIEW = "sms.accounts.view";
-
-	// Add new account (site or member account)
-	public final static String SMS_ACCOUNT_CREATE = "sms.account.create";
-
-	// Edit/change all accounts
-	public final static String SMS_ACCOUNT_EDIT = "sms.account.edit";
-
-	// View list of account transactions
-	public final static String SMS_TRANSACTION_VIEW = "sms.transaction.view";
-
-	// View all Sms messages with statuses
-	public final static String SMS_MESSAGE_VIEW_ALL = "sms.messages.view.all";
-
-	// View own Sms messages
-	public final static String SMS_MESSAGE_VIEW_OWN = "sms.messages.view.own";
-
 	/**
 	 * Check if this user has super admin access
 	 * 

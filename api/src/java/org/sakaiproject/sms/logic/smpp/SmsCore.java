@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -73,9 +74,10 @@ public interface SmsCore {
 	 *
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
+	 * @throws SmsSendDeniedException 
 	 */
 	public SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException;
+			throws SmsTaskValidationException, SmsSendDeniedException;
 
 	/**
 	 * Add a new task to the sms task list, that contains a list of delivery
