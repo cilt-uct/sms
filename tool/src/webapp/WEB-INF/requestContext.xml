@@ -121,6 +121,7 @@
   	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
   
+  <bean id="permissionDeniedProducer" class="org.sakaiproject.sms.tool.producers.PermissionDeniedProducer" />
   
   <!--  Action Beans -->  
   <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">

@@ -44,7 +44,7 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public boolean isUserAdmin(String userId) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public boolean isUserAllowedInLocation(String userId, String permission,
