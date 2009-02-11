@@ -98,10 +98,10 @@ public class HelperProducer implements ViewComponentProducer,
 		accountCredits.decorate(new UIDisabledDecorator());
 		accountCredits.fossilize = false;
 
-		UIMessage.make(form, "estimated-cost-label",
-				"sms.helper.estimated-cost");
-		UIInput estimatedCost = UIInput.make(form, "estimated-cost", smsTaskOTP
-				+ ".costEstimate");
+		UIMessage.make(form, "estimated-credits-label",
+				"sms.helper.estimated-credits");
+		UIInput estimatedCost = UIInput.make(form, "estimated-credits", smsTaskOTP
+				+ ".groupSizeEstimate");
 		estimatedCost.decorate(new UIDisabledDecorator());
 		estimatedCost.fossilize = false;
 
