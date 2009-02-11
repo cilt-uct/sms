@@ -13,37 +13,37 @@ public class DebitAccountValidatorTest extends TestCase{
 	private BindException bindException;
 	private DebitAccountBean debitAccountBean;
 
-	
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		validator = new DebitAccountValidator();
 		debitAccountBean = new DebitAccountBean();
 		bindException = new BindException(debitAccountBean, "SmsConfig");
-		
+
 		validator.setSmsAccountLogic(new SmsAccountLogicStub());
 	}
 
 	public void testAccountDoesNotExsist() throws Exception {
 		debitAccountBean.setAccountId(-10L);
-		debitAccountBean.setAmountToDebit(10f);
+		debitAccountBean.setCreditsToDebit(10L);
 		validator.validate(debitAccountBean, bindException);
 		assertTrue(bindException.hasErrors());
 		assertEquals("sms.debit.account.errors.no.account", bindException.getGlobalError().getCode());
-		
+
 	}
-	
+
 	public void testNegativeDebitAmount() throws Exception {
 		debitAccountBean.setAccountId(1L);
-		debitAccountBean.setAmountToDebit(-10f);
+		debitAccountBean.setCreditsToDebit(-10L);
 		validator.validate(debitAccountBean, bindException);
 		assertTrue(bindException.hasErrors());
-		assertEquals("sms.errors.amountToDebit.empty", bindException.getFieldError().getCode());
+		assertEquals("sms.errors.creditsToDebit.empty", bindException.getFieldError().getCode());
 	}
-	
+
 	public void testValidationPasses() throws Exception {
 		debitAccountBean.setAccountId(1L);
-		debitAccountBean.setAmountToDebit(20f);
+		debitAccountBean.setCreditsToDebit(20L);
 		validator.validate(debitAccountBean, bindException);
 		assertFalse(bindException.hasErrors());
 	}

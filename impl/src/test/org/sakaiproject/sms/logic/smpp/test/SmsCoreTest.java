@@ -46,9 +46,9 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -79,7 +79,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(1000f);
+		smsAccount.setCredits(smsCoreImpl.smsBilling
+				.convertAmountToCredits(100f));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 
@@ -103,7 +104,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -119,7 +120,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 * 
+	 *
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -495,7 +496,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("sakSitId");
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(0f);
-		account.setBalance(0f);
+		account.setCredits(0L);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
@@ -534,7 +535,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("11111");
 		account.setMessageTypeCode("1");
 		account.setOverdraftLimit(10000.00f);
-		account.setBalance(5000.00f);
+		account.setCredits(smsCoreImpl.smsBilling
+				.convertAmountToCredits(5000.00f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);

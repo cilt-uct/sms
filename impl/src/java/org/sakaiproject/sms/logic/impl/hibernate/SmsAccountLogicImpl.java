@@ -38,7 +38,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
 /**
  * The data service will handle all sms Account database transactions for the
  * sms tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
@@ -64,7 +64,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Gets a SmsAccount entity for the given id
-	 * 
+	 *
 	 * @param Long
 	 *            sms account id
 	 * @return sms congiguration
@@ -75,7 +75,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Gets all the sms account records
-	 * 
+	 *
 	 * @return List of SmsAccount objects
 	 */
 	public List<SmsAccount> getAllSmsAccounts() {
@@ -89,10 +89,10 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * This method will persists the given object.
-	 * 
+	 *
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updates on the DB.
-	 * 
+	 *
 	 * @param sms
 	 *            account to be persisted
 	 */
@@ -109,7 +109,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Checks if account has unique Sakai site id
-	 * 
+	 *
 	 * @param smsAccount
 	 * @return
 	 */
@@ -126,7 +126,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Checks if account has unique Sakai user id
-	 * 
+	 *
 	 * @param smsAccount
 	 * @return
 	 */
@@ -144,7 +144,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	/**
 	 * This is a test method to insert a sms account.It is only used during
 	 * development.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 * @param sakaiUserID
 	 * @return
@@ -157,7 +157,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		smsAccount.setSakaiSiteId(sakaiSiteID);
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(0f);
-		smsAccount.setBalance(100f);
+		smsAccount.setCredits(100L);
 		smsAccount.setAccountName("TestAccountName");
 		smsAccount.setAccountEnabled(true);
 		try {
@@ -180,14 +180,14 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	 * If the property account.checkSiteIdBeforeUserId == false then it will
 	 * behave as described above but will first try find the account by sakai
 	 * user id before the sakai site id.
-	 * 
+	 *
 	 * @param sakaiSiteId
 	 *            the sakai site id. Can be null.
 	 * @param SakaiUserId
 	 *            the sakai user id. Can be null.
-	 * 
+	 *
 	 * @return sms configuration
-	 * 
+	 *
 	 */
 	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
 		SmsConfig config = HibernateLogicFactory.getConfigLogic()
@@ -213,12 +213,12 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Gets the account by sakai site id.
-	 * 
+	 *
 	 * @param sakaiSiteId
 	 *            the sakai site id
-	 * 
+	 *
 	 * @return the account by sakai site id
-	 * 
+	 *
 	 * @throws MoreThanOneAccountFoundException
 	 *             the more than one account found exception
 	 */
@@ -246,12 +246,12 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Gets the account by sakai site id.
-	 * 
+	 *
 	 * @param sakaiUserId
 	 *            the sakai user id
-	 * 
+	 *
 	 * @return the account by sakai site id
-	 * 
+	 *
 	 */
 	private SmsAccount getAccountBySakaiUserId(String sakaiUserId) {
 		if (sakaiUserId == null || sakaiUserId.trim().equals("")) {
@@ -277,7 +277,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
 	 * @param account
@@ -306,11 +306,11 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		});
 
 		// Calculate balance
-		Float balance = 0.0F;
+		Long credits = 0l;
 		for (SmsTransaction transaction : transactions) {
-			balance += transaction.getTransactionAmount();
+			credits += transaction.getCredits();
 		}
-		account.setBalance(balance);
+		account.setCredits(credits);
 		persistSmsAccount(account);
 	}
 }

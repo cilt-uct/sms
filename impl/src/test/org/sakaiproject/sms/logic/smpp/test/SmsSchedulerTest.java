@@ -7,7 +7,6 @@ import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
@@ -20,16 +19,16 @@ import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * SmsScheduler Junit.This class will test various scheduling related scenarios.
- * 
+ *
  * @author Etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsSchedulerImpl smsSchedulerImpl = null;
 	static SmsSmppImpl smsSmppImpl = null;
-	
+
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
@@ -51,7 +50,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -65,70 +64,66 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 * tasks remain after 1 min.
 	 */
 	public void testTaskProcessing() {
+		smsCoreImpl.setExternalLogic(externalLogic);
+		SmsAccount smsAccount = new SmsAccount();
+		smsAccount
+				.setSakaiUserId(externalLogic.getCurrentUserId());
+		smsAccount
+				.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		smsAccount.setMessageTypeCode("3");
+		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setCredits(1000);
+		smsAccount.setAccountName("accountname");
+		smsAccount.setAccountEnabled(true);
+		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+
+		Calendar now = Calendar.getInstance();
+		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
+				now.getTimeInMillis()), "smsTask3",
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
+
+		smsTask3.setSmsAccountId(smsAccount.getId());
+		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
 		try {
-			smsCoreImpl.setExternalLogic(externalLogic);
-			SmsAccount smsAccount = new SmsAccount();
-			smsAccount
-					.setSakaiUserId(externalLogic.getCurrentUserId());
-			smsAccount
-					.setSakaiSiteId(externalLogic.getCurrentSiteId());
-			smsAccount.setMessageTypeCode("3");
-			smsAccount.setOverdraftLimit(10000.00f);
-			smsAccount.setBalance(1000f);
-			smsAccount.setAccountName("accountname");
-			smsAccount.setAccountEnabled(true);
-			HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
-
-			Calendar now = Calendar.getInstance();
-			SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
-					now.getTimeInMillis()), "smsTask3",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
-
-			smsTask3.setSmsAccountId(smsAccount.getId());
-			smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
-			try {
-				smsCoreImpl.insertTask(smsTask3);
-			} catch (SmsTaskValidationException e1) {
-				fail(e1.getMessage());
-			}
-
-			now.add(Calendar.MINUTE, -1);
-			SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
-					now.getTimeInMillis()), "smsTask2MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
-			smsTask2.setSmsAccountId(smsAccount.getId());
-			smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
-			try {
-				smsCoreImpl.insertTask(smsTask2);
-			} catch (SmsTaskValidationException e1) {
-				fail(e1.getMessage());
-			}
-
-			now.add(Calendar.MINUTE, -3);
-			SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
-					now.getTimeInMillis()), "smsTask1MessageBody",
-					externalLogic.getCurrentSiteId(), null,
-					externalLogic.getCurrentUserId());
-			smsTask1.setSmsAccountId(smsAccount.getId());
-			smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
-			try {
-				smsCoreImpl.insertTask(smsTask1);
-			} catch (SmsTaskValidationException e1) {
-				fail(e1.getMessage());
-			}
-
-			try {
-				Thread.sleep(60000);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-			}
-			assertTrue(smsCoreImpl.getNextSmsTask() == null);
-		} catch (SmsSendDeniedException e) {
-			fail("SmsSendDeniedException caught");
+			smsCoreImpl.insertTask(smsTask3);
+		} catch (SmsTaskValidationException e1) {
+			fail(e1.getMessage());
 		}
+
+		now.add(Calendar.MINUTE, -1);
+		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
+				now.getTimeInMillis()), "smsTask2MessageBody",
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
+		smsTask2.setSmsAccountId(smsAccount.getId());
+		smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
+		try {
+			smsCoreImpl.insertTask(smsTask2);
+		} catch (SmsTaskValidationException e1) {
+			fail(e1.getMessage());
+		}
+
+		now.add(Calendar.MINUTE, -3);
+		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
+				now.getTimeInMillis()), "smsTask1MessageBody",
+				externalLogic.getCurrentSiteId(), null,
+				externalLogic.getCurrentUserId());
+		smsTask1.setSmsAccountId(smsAccount.getId());
+		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
+		try {
+			smsCoreImpl.insertTask(smsTask1);
+		} catch (SmsTaskValidationException e1) {
+			fail(e1.getMessage());
+		}
+
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+
+			e.printStackTrace();
+		}
+		assertTrue(smsCoreImpl.getNextSmsTask() == null);
 	}
 
 	@Override

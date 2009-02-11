@@ -55,7 +55,7 @@ public class DebitAccountProducer implements ViewComponentProducer {
 				.make(form, "account-amount-label", "sms.debit.account.amount");
 
 		UIInput.make(form, "account-amount-input",
-				"#{debitAccountBean.amountToDebit}");
+				"#{debitAccountBean.creditsToDebit}");
 		UICommand.make(form, "save-btn",
 				"#{debitAccountActionBean.debitAccount}");
 	}

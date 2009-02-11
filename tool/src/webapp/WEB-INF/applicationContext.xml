@@ -28,12 +28,12 @@
   	<property name="templateNames" value="Messages,SearchCriteriaRenderer,SearchResultsRenderer,SortHeader,TablePagerRenderer, navbar" />
   </bean>
 
-  <!-- Define the bean roots from the request scope file that are accessible 
+  <!-- Define the bean roots from the request scope file that are accessible
     via incoming request URL -->
   <bean parent="requestAddressibleParent">
-    <property name="value" value="searchTaskList, searchTransactionLog, searchMessageLog, smsConfig, 
-    smsSiteConfigActionBean, HelperActionBean, SmsTestActionBean, SmsMessageLocator, SmsConfigLocator,  
-    SmsSystemConfigLocator, csvExportBean, SmsAccountLocator, SmsTaskLocator, nullableFieldDateTransit, 
+    <property name="value" value="searchTaskList, searchTransactionLog, searchMessageLog, smsConfig,
+    smsSiteConfigActionBean, HelperActionBean, SmsTestActionBean, SmsMessageLocator, SmsConfigLocator,
+    SmsSystemConfigLocator, csvExportBean, SmsAccountLocator, SmsTaskLocator, nullableFieldDateTransit,
     debitAccountBean, debitAccountActionBean, destroyScope, AbortTaskActionBean"/>
   </bean>
 
@@ -41,38 +41,38 @@
   <bean parent="copyPreservingParent">
     <property name="value" value="SmsMessageLocator, SmsConfigLocator, SmsTaskLocator, SmsSystemConfigLocator"/>
   </bean>
-  
+
   <bean id="searchScope" parent="beanScopeParent">
     <property name="copyPreservingBeans" value="searchTaskList, searchTransactionLog, searchMessageLog"/>
   </bean>
-    
+
    <!--  Validators -->
   <bean id="smsMessageGuard" parent="writeGuardParent">
      <property name="guardedPath" value="SmsMessageLocator.*"/>
-	 <property name="guard"> 
+	 <property name="guard">
 	 	<bean class="org.sakaiproject.sms.tool.validators.SmsMessageValidator" />
-	 </property> 
+	 </property>
   </bean>
-  
+
   <bean id="smsConfigGaurd" parent="writeGuardParent">
   	<property name="guardedPath" value="SmsConfigLocator.*"/>
 	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsConfigValidator" /></property>
   </bean>
-  
+
   <bean id="smsAccountGuard" parent="writeGuardParent">
  	<property name="guardedPath" value="SmsAccountLocator.*" />
  	<property name="guard">
  		<bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator" >
- 			<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>			
+ 			<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
  		</bean>
  	</property>
   </bean>
- 
+
   <bean id="smsTaskGuard" parent="writeGuardParent">
  	<property name="guardedPath" value="SmsTaskLocator.*" />
  	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsTaskValidator" /></property>
-  </bean> 
-  
+  </bean>
+
   <bean id="debitAccoutGaurd" parent="writeGuardParent">
  	<property name="guardedPath" value="debitAccountBean"/>
  	<property name="guard">
@@ -81,18 +81,18 @@
    		</bean>
    </property>
   </bean>
-  
-  <!-- Data Converters for Float values -->  
+
+  <!-- Data Converters for Float values -->
   <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="debitAccountBean.amountToDebit" />
+	<property name="targetPath" value="debitAccountBean.creditsToDebit" />
 	<property name="converter">
 		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="amountToDebit" />
+			<property name="field" value="creditsToDebit" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
 	</property>
   </bean>
-  
+
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="debitAccountBean.accountId" />
 	<property name="converter">
@@ -102,18 +102,18 @@
 		</bean>
 	</property>
   </bean>
-  
-  
+
+
   <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsAccountLocator.*.balance" />
+	<property name="targetPath" value="SmsAccountLocator.*.credits" />
 	<property name="converter">
 		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="balance" />
+			<property name="field" value="credits" />
 			<property name="numberClass" value="java.lang.Float" />
 		</bean>
 	</property>
   </bean>
- 
+
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsAccountLocator.*.overdraftLimit" />
 	<property name="converter">
@@ -123,7 +123,7 @@
 		</bean>
 	</property>
  </bean>
-   
+
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.creditCost" />
 	<property name="converter">
@@ -153,7 +153,7 @@
 		</bean>
 	</property>
  </bean>
- 
+
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryMaxCount" />
 	<property name="converter">
@@ -173,7 +173,7 @@
 		</bean>
 	</property>
  </bean>
- 
+
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsSystemConfigLocator.*.smsTaskMaxLifeTime" />
 	<property name="converter">
@@ -182,7 +182,7 @@
 			<property name="numberClass" value="java.lang.Integer" />
 		</bean>
 	</property>
- </bean> 
+ </bean>
 
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsConfigLocator.*.pagingSize" />
@@ -193,7 +193,7 @@
 		</bean>
 	</property>
  </bean>
-  
+
  <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="SmsTaskLocator.*.messageBody" />
 	<property name="converter">
@@ -211,20 +211,20 @@
   <bean id="componentsTemplateResourceBase" class="java.lang.String">
 	<constructor-arg value="/" />
   </bean>
-  
+
   <!-- View Params for Downloadable content -->
   <bean parent="viewParamsRegistrarParent">
     <property name="viewID" value="downloadCsv" />
     <property name="viewParamsClass" value="org.sakaiproject.sms.tool.params.DownloadReportViewParams" />
   </bean>
-    
-  <!-- Custom request cycle for downloads --> 
+
+  <!-- Custom request cycle for downloads -->
   <bean parent="handlerHookParent">
     <property name="value">
       <bean parent="RSACBridgeProxy">
         <property name="targetBeanName" value="reportHandlerHook" />
       </bean>
     </property>
-  </bean>  
-  
+  </bean>
+
 </beans>

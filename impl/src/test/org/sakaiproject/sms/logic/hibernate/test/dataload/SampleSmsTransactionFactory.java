@@ -1,17 +1,17 @@
 /***********************************************************************************
  * SampleSmsTransactionFactory.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -43,29 +43,29 @@ public class SampleSmsTransactionFactory implements Listable {
 		smsTransactionList = new ArrayList<SmsTransaction>();
 
 		SmsTransaction smsTransaction1 = new SmsTransaction(randomUtils
-				.getRandomFloat(1000), "JOE001", randomUtils
-				.getRandomFloat(1000), randomUtils.getRandomInteger(1000),
-				randomUtils.getBoundRandomDate(theYear), "TC");
+				.getRandomInteger(1000), "JOE001", randomUtils
+				.getRandomInteger(1000), randomUtils
+				.getBoundRandomDate(theYear), "TC");
 		smsTransactionList.add(smsTransaction1);
 		SmsTransaction smsTransaction2 = new SmsTransaction(randomUtils
-				.getRandomFloat(1000), "BOB001", randomUtils
-				.getRandomFloat(1000), randomUtils.getRandomInteger(1000),
-				randomUtils.getBoundRandomDate(theYear), "TC");
+				.getRandomInteger(1000), "BOB001", randomUtils
+				.getRandomInteger(1000), randomUtils
+				.getBoundRandomDate(theYear), "TC");
 		smsTransactionList.add(smsTransaction2);
 		SmsTransaction smsTransaction3 = new SmsTransaction(randomUtils
-				.getRandomFloat(1000), "GAM003", randomUtils
-				.getRandomFloat(1000), randomUtils.getRandomInteger(1000),
-				randomUtils.getBoundRandomDate(theYear), "TC");
+				.getRandomInteger(1000), "GAM003", randomUtils
+				.getRandomInteger(1000), randomUtils
+				.getBoundRandomDate(theYear), "TC");
 		smsTransactionList.add(smsTransaction3);
 		SmsTransaction smsTransaction4 = new SmsTransaction(randomUtils
-				.getRandomFloat(1000), "MAR008", randomUtils
-				.getRandomFloat(1000), randomUtils.getRandomInteger(1000),
-				randomUtils.getBoundRandomDate(theYear), "TC");
+				.getRandomInteger(1000), "MAR008", randomUtils
+				.getRandomInteger(1000), randomUtils
+				.getBoundRandomDate(theYear), "TC");
 		smsTransactionList.add(smsTransaction4);
 		SmsTransaction smsTransaction5 = new SmsTransaction(randomUtils
-				.getRandomFloat(1000), "CCL005", randomUtils
-				.getRandomFloat(1000), randomUtils.getRandomInteger(1000),
-				randomUtils.getBoundRandomDate(theYear), "TC");
+				.getRandomInteger(1000), "CCL005", randomUtils
+				.getRandomInteger(1000), randomUtils
+				.getBoundRandomDate(theYear), "TC");
 		smsTransactionList.add(smsTransaction5);
 	}
 

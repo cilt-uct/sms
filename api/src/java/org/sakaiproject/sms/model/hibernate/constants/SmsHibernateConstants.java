@@ -19,7 +19,7 @@ package org.sakaiproject.sms.model.hibernate.constants;
 
 /**
  * Constants class for the sms hibernate project
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 08-Dec-2008
@@ -109,7 +109,7 @@ public class SmsHibernateConstants {
 	/**
 	 * The default initial balance for an account
 	 */
-	public static final Float INITIAL_BALANCE = 0.0f;
+	public static final long INITIAL_CREDITS = 0;
 
 	/** Max sms length */
 	public static final int MAX_SMS_LENGTH = 160;

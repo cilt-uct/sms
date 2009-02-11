@@ -22,10 +22,7 @@ public class SmsTransactionFactory {
 		smsTransaction
 				.setTransactionTypeCode(SmsConst_Billing.TRANS_RESERVE_CREDITS);
 		smsTransaction.setSmsTaskId(smsTaskId);
-		smsTransaction.setBalance(smsAccount.getBalance());
-
-		// TODO : Check to see if this is the case
-		smsTransaction.setTransactionAmount(0.0f);
+		smsTransaction.setCredits(smsAccount.getCredits());
 
 		return smsTransaction;
 	}
@@ -42,8 +39,8 @@ public class SmsTransactionFactory {
 		smsTransaction.setSmsTaskId(smsTaskId);
 
 		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setTransactionAmount(0.0f);
-		smsTransaction.setBalance(0.0f);
+
+		smsTransaction.setCredits(0l);
 
 		return smsTransaction;
 	}

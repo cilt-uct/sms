@@ -63,7 +63,7 @@ public class SmppThread extends TestRunnable {
 		smsAccount.setSakaiSiteId("smsSiteId" + Math.random());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(1000f);
+		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
@@ -71,7 +71,7 @@ public class SmppThread extends TestRunnable {
 
 	/**
 	 * Instantiates a new smpp session.
-	 * 
+	 *
 	 * @param sessionName
 	 *            the session name
 	 * @param messageCount

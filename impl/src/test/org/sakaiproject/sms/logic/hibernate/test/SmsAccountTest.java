@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
@@ -24,6 +25,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/** The insert sms transaction2. */
 	private static SmsTransaction insertSmsTransaction2;
 
+	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
+
 	static {
 
 		insertSmsAccount = new SmsAccount();
@@ -31,14 +34,15 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsAccount.setSakaiSiteId("1");
 		insertSmsAccount.setMessageTypeCode("12345");
 		insertSmsAccount.setOverdraftLimit(10000.00f);
-		insertSmsAccount.setBalance(5000.00f);
+		insertSmsAccount.setCredits(smsBillingImpl
+				.convertAmountToCredits(5000.00f));
 		insertSmsAccount.setAccountName("accountName");
 		insertSmsAccount.setAccountEnabled(true);
 
 		insertSmsTransaction1 = new SmsTransaction();
-		insertSmsTransaction1.setBalance(100.00f);
+		insertSmsTransaction1.setCredits(smsBillingImpl
+				.convertAmountToCredits(100f));
 		insertSmsTransaction1.setSakaiUserId("5");
-		insertSmsTransaction1.setTransactionAmount(100.00f);
 		insertSmsTransaction1.setTransactionCredits(100);
 		insertSmsTransaction1.setTransactionDate(new Date(System
 				.currentTimeMillis()));
@@ -46,9 +50,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsTransaction1.setSmsTaskId(1L);
 
 		insertSmsTransaction2 = new SmsTransaction();
-		insertSmsTransaction2.setBalance(100.00f);
+		insertSmsTransaction2.setCredits(smsBillingImpl
+				.convertAmountToCredits(100f));
 		insertSmsTransaction2.setSakaiUserId("SakaiUserId2");
-		insertSmsTransaction2.setTransactionAmount(100.00f);
 		insertSmsTransaction2.setTransactionCredits(100);
 		insertSmsTransaction2.setTransactionDate(new Date(System
 				.currentTimeMillis()));
@@ -64,7 +68,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms account test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -74,7 +78,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
@@ -191,7 +195,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("sakSitId");
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(10000.00f);
-		account.setBalance(5000.00f);
+		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
@@ -210,7 +214,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("testGetSmsAccount_sakaiSiteId");
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(10000.00f);
-		account.setBalance(5000.00f);
+		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);

@@ -20,7 +20,7 @@ public class SmsAccountLogicStub implements SmsAccountLogic {
 	public SmsAccount getSmsAccount(Long id) {
 
 		if (id.equals(1L)) {
-			SmsAccount testAccout = new SmsAccount(1f, "", 100f, "Site", "Joe",
+			SmsAccount testAccout = new SmsAccount(1L, "", 100f, "Site", "Joe",
 					"Joes Account");
 			testAccout.setAccountEnabled(true);
 

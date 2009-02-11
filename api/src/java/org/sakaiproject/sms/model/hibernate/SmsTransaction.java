@@ -27,21 +27,23 @@ import org.sakaiproject.sms.util.DateUtil;
  * transaction will be inserted indicating that credits are reserved. When the
  * task is processed, the actual credits will be calculated and the difference
  * will be settled with another transaction.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
  */
 public class SmsTransaction extends BaseModel {
 
-	/** The running account balance in currency. */
-	private Float balance;
+	/**
+	 * The amount of credits available in the account. 1 sms= 1 credit.
+	 */
+	private Long credits;
 
 	/** The sakai user id. This is the user who request the sms task. */
 	private String sakaiUserId;
 
-	/** The transaction amount. */
-	private Float transactionAmount;
+
+
 
 	/** The transaction credits. */
 	private Integer transactionCredits;
@@ -68,13 +70,13 @@ public class SmsTransaction extends BaseModel {
 	/**
 	 * Instantiates a new sms transaction.
 	 */
-	public SmsTransaction(Float balance, String sakaiUserId,
-			Float transactionAmount, Integer transactionCredits,
+	public SmsTransaction(long credits, String sakaiUserId
+			, Integer transactionCredits,
 			Date transactionDate, String transactionTypeCode) {
 		super();
-		this.balance = balance;
+		this.credits = credits;
 		this.sakaiUserId = sakaiUserId;
-		this.transactionAmount = transactionAmount;
+
 		this.transactionCredits = transactionCredits;
 		this.transactionDate = transactionDate;
 		this.transactionTypeCode = transactionTypeCode;
@@ -82,17 +84,8 @@ public class SmsTransaction extends BaseModel {
 	}
 
 	/**
-	 * Gets the balance.
-	 * 
-	 * @return the balance
-	 */
-	public Float getBalance() {
-		return balance;
-	}
-
-	/**
 	 * Gets the sakai user id.
-	 * 
+	 *
 	 * @return the sakai user id
 	 */
 	public String getSakaiUserId() {
@@ -101,7 +94,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction credits.
-	 * 
+	 *
 	 * @return the transaction credits
 	 */
 	public Integer getTransactionCredits() {
@@ -110,7 +103,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction date.
-	 * 
+	 *
 	 * @return the transaction date
 	 */
 	public Date getTransactionDate() {
@@ -119,7 +112,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction type code.
-	 * 
+	 *
 	 * @return the transaction type code
 	 */
 	public String getTransactionTypeCode() {
@@ -127,18 +120,8 @@ public class SmsTransaction extends BaseModel {
 	}
 
 	/**
-	 * Sets the balance.
-	 * 
-	 * @param balance
-	 *            the new balance
-	 */
-	public void setBalance(Float balance) {
-		this.balance = balance;
-	}
-
-	/**
 	 * Sets the sakai user id.
-	 * 
+	 *
 	 * @param sakaiUserId
 	 *            the new sakai user id
 	 */
@@ -147,18 +130,8 @@ public class SmsTransaction extends BaseModel {
 	}
 
 	/**
-	 * Sets the transaction amount.
-	 * 
-	 * @param transactionAmount
-	 *            the new transaction amount
-	 */
-	public void setTransactionAmount(Float transactionAmount) {
-		this.transactionAmount = transactionAmount;
-	}
-
-	/**
 	 * Sets the transaction credits.
-	 * 
+	 *
 	 * @param transactionCredits
 	 *            the new transaction credits
 	 */
@@ -168,7 +141,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the transaction date.
-	 * 
+	 *
 	 * @param transactionDate
 	 *            the new transaction date
 	 */
@@ -178,7 +151,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the transaction type code.
-	 * 
+	 *
 	 * @param transactionTypeCode
 	 *            the new transaction type code
 	 */
@@ -188,7 +161,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the sms account.
-	 * 
+	 *
 	 * @return the sms account
 	 */
 	public SmsAccount getSmsAccount() {
@@ -197,7 +170,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the sms account.
-	 * 
+	 *
 	 * @param smsAccount
 	 *            the new sms account
 	 */
@@ -205,18 +178,11 @@ public class SmsTransaction extends BaseModel {
 		this.smsAccount = smsAccount;
 	}
 
-	/**
-	 * Gets the transaction amount.
-	 * 
-	 * @return the transaction amount
-	 */
-	public Float getTransactionAmount() {
-		return transactionAmount;
-	}
+
 
 	/**
 	 * Gets the sms task id.
-	 * 
+	 *
 	 * @return the sms task
 	 */
 	public Long getSmsTaskId() {
@@ -225,7 +191,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the sms task id.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the new sms task
 	 */
@@ -233,18 +199,23 @@ public class SmsTransaction extends BaseModel {
 		this.smsTaskId = smsTaskId;
 	}
 
+	public Long getCredits() {
+		return credits;
+	}
+
+	public void setCredits(Long credits) {
+		this.credits = credits;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		// int result = super.hashCode();
-		int result = 43;
-		result = prime * result + ((balance == null) ? 0 : balance.hashCode());
+		int result = 1;
+		result = prime * result + (int) (credits ^ (credits >>> 32));
 		result = prime * result
 				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
-		result = prime
-				* result
-				+ ((transactionAmount == null) ? 0 : transactionAmount
-						.hashCode());
+		result = prime * result
+				+ ((smsTaskId == null) ? 0 : smsTaskId.hashCode());
 		result = prime
 				* result
 				+ ((transactionCredits == null) ? 0 : transactionCredits
@@ -255,8 +226,6 @@ public class SmsTransaction extends BaseModel {
 				* result
 				+ ((transactionTypeCode == null) ? 0 : transactionTypeCode
 						.hashCode());
-		result = prime * result
-				+ ((smsTaskId == null) ? 0 : smsTaskId.hashCode());
 		return result;
 	}
 
@@ -267,20 +236,17 @@ public class SmsTransaction extends BaseModel {
 		if (!(obj instanceof SmsTransaction))
 			return false;
 		SmsTransaction other = (SmsTransaction) obj;
-		if (balance == null) {
-			if (other.balance != null)
-				return false;
-		} else if (!balance.equals(other.balance))
+		if (credits != other.credits)
 			return false;
 		if (sakaiUserId == null) {
 			if (other.sakaiUserId != null)
 				return false;
 		} else if (!sakaiUserId.equals(other.sakaiUserId))
 			return false;
-		if (transactionAmount == null) {
-			if (other.transactionAmount != null)
+		if (smsTaskId == null) {
+			if (other.smsTaskId != null)
 				return false;
-		} else if (!transactionAmount.equals(other.transactionAmount))
+		} else if (!smsTaskId.equals(other.smsTaskId))
 			return false;
 		if (transactionCredits == null) {
 			if (other.transactionCredits != null)
@@ -297,12 +263,9 @@ public class SmsTransaction extends BaseModel {
 				return false;
 		} else if (!transactionTypeCode.equals(other.transactionTypeCode))
 			return false;
-		if (smsTaskId == null) {
-			if (other.smsTaskId != null)
-				return false;
-		} else if (!smsTaskId.equals(other.smsTaskId))
-			return false;
 		return true;
 	}
+
+
 
 }

@@ -42,7 +42,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * setUp to run before every test. Create SmsMessage + TaskValidator +
 	 * errors
-	 * 
+	 *
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	static {
@@ -50,7 +50,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId" + Math.random());
 		account.setMessageTypeCode("");
-		account.setBalance(10f);
+		account.setCredits(10L);
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
@@ -81,7 +81,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {

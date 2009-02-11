@@ -32,8 +32,15 @@ import java.util.Set;
  */
 public class SmsAccount extends BaseModel {
 
-	/** The current account balance in currency. */
-	private Float balance;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The amount of credits available in the account. 1 sms= 1 credit.
+	 */
+	private Long credits;
 
 	/**
 	 * The message type, will be incoming (MO) or outgoing (SO), currently only
@@ -116,11 +123,11 @@ public class SmsAccount extends BaseModel {
 	/**
 	 * Instantiates a new sms account.
 	 */
-	public SmsAccount(Float balance, String messageTypeCode,
+	public SmsAccount(Long credits, String messageTypeCode,
 			Float overdraftLimit, String sakaiSiteId, String sakaiUserId,
 			String accountName) {
 		super();
-		this.balance = balance;
+		this.credits = credits;
 		this.messageTypeCode = messageTypeCode;
 		this.overdraftLimit = overdraftLimit;
 		this.sakaiSiteId = sakaiSiteId;
@@ -143,15 +150,6 @@ public class SmsAccount extends BaseModel {
 
 	public void setEnddate(Date enddate) {
 		this.enddate = enddate;
-	}
-
-	/**
-	 * Gets the balance.
-	 *
-	 * @return the balance
-	 */
-	public Float getBalance() {
-		return balance;
 	}
 
 	/**
@@ -188,16 +186,6 @@ public class SmsAccount extends BaseModel {
 	 */
 	public String getSakaiUserId() {
 		return sakaiUserId;
-	}
-
-	/**
-	 * Sets the balance.
-	 *
-	 * @param balance
-	 *            the new balance
-	 */
-	public void setBalance(Float balance) {
-		this.balance = balance;
 	}
 
 	/**
@@ -278,12 +266,21 @@ public class SmsAccount extends BaseModel {
 		this.accountName = accountName;
 	}
 
+	public Long getCredits() {
+		return credits;
+	}
+
+	public void setCredits(Long credits) {
+		this.credits = credits;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		// int result = super.hashCode();
-		int result = 43;
-		result = prime * result + ((balance == null) ? 0 : balance.hashCode());
+		int result = 1;
+		result = prime * result
+				+ ((accountName == null) ? 0 : accountName.hashCode());
+		result = prime * result + (int) (credits ^ (credits >>> 32));
 		result = prime * result
 				+ ((messageTypeCode == null) ? 0 : messageTypeCode.hashCode());
 		result = prime * result
@@ -292,8 +289,6 @@ public class SmsAccount extends BaseModel {
 				+ ((sakaiSiteId == null) ? 0 : sakaiSiteId.hashCode());
 		result = prime * result
 				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
-		result = prime * result
-				+ ((accountName == null) ? 0 : accountName.hashCode());
 		return result;
 	}
 
@@ -303,11 +298,14 @@ public class SmsAccount extends BaseModel {
 			return true;
 		if (!(obj instanceof SmsAccount))
 			return false;
+
 		SmsAccount other = (SmsAccount) obj;
-		if (balance == null) {
-			if (other.balance != null)
+		if (accountName == null) {
+			if (other.accountName != null)
 				return false;
-		} else if (!balance.equals(other.balance))
+		} else if (!accountName.equals(other.accountName))
+			return false;
+		if (credits != other.credits)
 			return false;
 		if (messageTypeCode == null) {
 			if (other.messageTypeCode != null)
@@ -328,11 +326,6 @@ public class SmsAccount extends BaseModel {
 			if (other.sakaiUserId != null)
 				return false;
 		} else if (!sakaiUserId.equals(other.sakaiUserId))
-			return false;
-		if (accountName == null) {
-			if (other.accountName != null)
-				return false;
-		} else if (!accountName.equals(other.accountName))
 			return false;
 		return true;
 	}

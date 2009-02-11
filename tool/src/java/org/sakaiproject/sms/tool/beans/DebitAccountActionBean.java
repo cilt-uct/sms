@@ -10,12 +10,12 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 public class DebitAccountActionBean {
 
 	private static Log LOG = LogFactory.getLog(DebitAccountActionBean.class);
-	
+
 	private DebitAccountBean debitAccountBean;
 	private SmsBilling smsBilling;
 	private TargettedMessageList messages;;
-	
-		
+
+
 	public void setMessages(TargettedMessageList messages) {
 		this.messages = messages;
 	}
@@ -23,23 +23,23 @@ public class DebitAccountActionBean {
 	public void setDebitAccountBean(DebitAccountBean debitAccountBean) {
 		this.debitAccountBean = debitAccountBean;
 	}
-	
+
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
 	}
 
 	public void debitAccount(){
-		try{			
-			smsBilling.debitAccount(debitAccountBean.getAccountId(), debitAccountBean.getAmountToDebit());
+		try{
+			smsBilling.debitAccount(debitAccountBean.getAccountId(), debitAccountBean.getCreditsToDebit());
 		}
 		catch (Exception e) {
-			
+
 			LOG.error(e);
-			
+
 			messages.addMessage(new TargettedMessage(
 					"GeneralActionError", null,
 					TargettedMessage.SEVERITY_INFO));
-			
+
 		}
 		messages.addMessage(new TargettedMessage(
 				"sms.debit.account.success", null,

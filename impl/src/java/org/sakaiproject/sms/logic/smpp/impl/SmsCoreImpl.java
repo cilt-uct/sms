@@ -449,7 +449,8 @@ public class SmsCoreImpl implements SmsCore {
 		if (account == null) {
 			return false;
 		}
-		Float amount = account.getBalance();
+		Float amount = (smsBilling
+				.convertCreditsToAmount((account.getCredits())));
 
 		if (!account.getAccountEnabled()) {
 			amount = 0.0f;
@@ -506,7 +507,8 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationBodyTaskInsufficientCredits", String
 							.valueOf(account.getOverdraftLimit()), String
 							.valueOf(account.getOverdraftLimit()
-									+ account.getBalance()));
+									+ smsBilling.convertCreditsToAmount(account
+											.getCredits())));
 			toAddress = account.getNotificationEmail();
 
 			if (toAddress == null || toAddress.length() == 0) {
@@ -554,7 +556,8 @@ public class SmsCoreImpl implements SmsCore {
 	private void checkOverdraft(SmsTask smsTask) {
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
-		if ((account.getBalance() < (-1 * account.getOverdraftLimit()))) {
+		if ((smsBilling.convertCreditsToAmount(account.getCredits()) < (-1 * account
+				.getOverdraftLimit()))) {
 			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS);
 		}

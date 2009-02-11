@@ -34,7 +34,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 12-Dec-2008
@@ -43,13 +43,13 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Debit an account by the supplied amount
-	 * 
+	 *
 	 * @param accountId
-	 * @param amountToDebit
+	 * @param creditsToDebit
 	 */
-	public void debitAccount(Long accountId, Float amountToDebit) {
+	public void debitAccount(Long accountId, long creditsToDebit) {
 
-		if (amountToDebit < 0) {
+		if (creditsToDebit < 0) {
 			throw new RuntimeException(
 					"The amount supplied to debit an account must be positive");
 		}
@@ -59,9 +59,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setBalance(account.getBalance() + amountToDebit);
-		smsTransaction.setTransactionAmount(amountToDebit);
-
+		smsTransaction.setCredits((account.getCredits() + creditsToDebit));
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
@@ -73,7 +71,7 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Add extra credits to the specific account by making an entry into
 	 * SMS_TRANSACTION Also update the available credits on the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param creditCount
@@ -85,10 +83,10 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 * 
+	 *
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -100,12 +98,12 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param creditsRequired
 	 *            the credits required
-	 * 
+	 *
 	 * @return true, if sufficient credits
 	 */
 	public boolean checkSufficientCredits(Long accountID,
@@ -125,10 +123,11 @@ public class SmsBillingImpl implements SmsBilling {
 
 		boolean sufficientCredit = false;
 		if (account.getOverdraftLimit() != null) {
-			if ((account.getBalance() + account.getOverdraftLimit()) >= convertCreditsToAmount(creditsRequired)) {
+			if ((convertCreditsToAmount(account.getCredits()) + account
+					.getOverdraftLimit()) >= convertCreditsToAmount(creditsRequired)) {
 				sufficientCredit = true;
 			}
-		} else if (account.getBalance() >= convertCreditsToAmount(creditsRequired)) {
+		} else if (convertCreditsToAmount(account.getCredits()) >= convertCreditsToAmount(creditsRequired)) {
 			sufficientCredit = true;
 		}
 
@@ -137,29 +136,29 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Convert amount to credits.
-	 * 
+	 *
 	 * @param amount
 	 *            the amount
-	 * 
+	 *
 	 * @return the double
 	 */
-	public Integer convertAmountToCredits(Float amount) {
+	public Long convertAmountToCredits(Float amount) {
 		SmsConfig config = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		Float result = (amount / config.getCreditCost());
-		return result.intValue();
+		return result.longValue();
 	}
 
 	/**
 	 * Convert the given credits to currency base on the defined conversion
 	 * value at the given time.
-	 * 
+	 *
 	 * @param creditCount
 	 *            the credit count
-	 * 
+	 *
 	 * @return the credit amount
 	 */
-	public Float convertCreditsToAmount(int creditCount) {
+	public Float convertCreditsToAmount(long creditCount) {
 		SmsConfig config = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		return config.getCreditCost() * creditCount;
@@ -167,10 +166,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return the currency amount available in the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
-	 * 
+	 *
 	 * @return the account balance
 	 */
 	public double getAccountBalance(Long accountID) {
@@ -180,10 +179,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return credits available in the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
-	 * 
+	 *
 	 * @return the account credits
 	 */
 	public int getAccountCredits(Long accountID) {
@@ -194,14 +193,14 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
 	 * id. AccountType is only outgoing masses for now.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            (e.g. !admin)
 	 * @param sakaiUserID
 	 *            the sakai user id
-	 * 
+	 *
 	 * @return the account id
-	 * 
+	 *
 	 * @throws SmsAccountNotFoundException
 	 *             the sms account not found exception
 	 */
@@ -221,14 +220,14 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Return a list of all transactions between startDate and endDate for the
 	 * specific account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param startDate
 	 *            the start date
 	 * @param endDate
 	 *            the end date
-	 * 
+	 *
 	 * @return the acc transactions
 	 */
 	public Set getAccTransactions(Long accountID, Date startDate, Date endDate) {
@@ -239,10 +238,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return all accounts linked to the given Sakai site.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            the sakai site id
-	 * 
+	 *
 	 * @return the all site accounts
 	 */
 	public Set getAllSiteAccounts(String sakaiSiteID) {
@@ -253,10 +252,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Insert a new account and return the new account id.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            the sakai site id
-	 * 
+	 *
 	 * @return true, if insert account
 	 */
 	public boolean insertAccount(String sakaiSiteID) {
@@ -265,14 +264,14 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Insert a new transaction for the given account id.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param transCodeID
 	 *            the trans code id
 	 * @param creditAmount
 	 * @return true, if insert transaction the credit amount
-	 * 
+	 *
 	 */
 	public Boolean insertTransaction(Long accountID, int transCodeID,
 			int creditAmount) {
@@ -284,10 +283,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * Insert a new transaction and indicate that the credits are reserved. If
 	 * the request is pending and the administrator delete the request, the
 	 * reservation must be rolled back with another transaction.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
-	 * 
+	 *
 	 * @return true, if reserve credits
 	 */
 	public boolean reserveCredits(SmsTask smsTask) {
@@ -295,7 +294,7 @@ public class SmsBillingImpl implements SmsBilling {
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
-			// Account does not exist
+			// Account does not existaccount.getCredits() -
 			return false;
 		}
 
@@ -304,11 +303,8 @@ public class SmsBillingImpl implements SmsBilling {
 		// Set transaction credit and amount to negative number because we are
 		// reserving.
 		int credits = smsTask.getCreditEstimate() * -1;
-		float amount = convertCreditsToAmount(credits);
-		smsTransaction.setBalance(account.getBalance() - amount);
+		smsTransaction.setCredits(new Long(credits));
 		smsTransaction.setTransactionCredits(credits);
-		smsTransaction.setTransactionAmount(amount);
-
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
@@ -322,7 +318,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Credits account for a message that came in late.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return true, if successful
 	 */
@@ -339,10 +335,8 @@ public class SmsBillingImpl implements SmsBilling {
 
 		// The juicy bits
 		float transactionAmount = convertCreditsToAmount(-1);
-		smsTransaction.setBalance(account.getBalance() + transactionAmount);
+		smsTransaction.setCredits((account.getCredits() - 1));
 		smsTransaction.setTransactionCredits(1);
-		smsTransaction.setTransactionAmount(transactionAmount);
-
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
@@ -356,7 +350,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
 	 * @param account
@@ -369,7 +363,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 * 
+	 *
 	 * @param account
 	 *            the account
 	 */
@@ -379,7 +373,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
 	 */
@@ -400,10 +394,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Cancel pending request.
-	 * 
+	 *
 	 * @param smsTaskId
 	 *            the sms task id
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean cancelPendingRequest(Long smsTaskId) {
@@ -418,25 +412,19 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 
-		if (origionalTransaction != null) {
-			// The juicy bits
-			int transactionCredits = origionalTransaction
-					.getTransactionCredits()
-					* -1;// Reverse the sign cause we are deducting from the
-			// account
-			float transactionAmount = convertCreditsToAmount(transactionCredits);
-			smsTransaction.setTransactionCredits(transactionCredits);
-			smsTransaction.setTransactionAmount(transactionAmount);
-			smsTransaction.setBalance(smsAccount.getBalance()
-					+ transactionAmount);
+		// The juicy bits
+		int transactionCredits = origionalTransaction.getTransactionCredits()
+				* -1;// Reverse the sign cause we are deducting from the account
+		smsTransaction.setTransactionCredits(transactionCredits);
+		smsTransaction.setCredits(smsAccount.getCredits() + transactionCredits);
 
-			smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
-			smsTransaction.setSmsAccount(smsAccount);
-			smsTransaction.setSmsTaskId(smsTask.getId());
+		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+		smsTransaction.setSmsAccount(smsAccount);
+		smsTransaction.setSmsTaskId(smsTask.getId());
 
-			HibernateLogicFactory.getTransactionLogic()
-					.insertCancelPendingRequestTransaction(smsTransaction);
-		}
+		HibernateLogicFactory.getTransactionLogic()
+				.insertCancelPendingRequestTransaction(smsTransaction);
+
 		return false;
 	}
 
@@ -444,10 +432,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * Settle credit difference. The group size might have change since the time
 	 * that the task was requested. So we need to calculate the difference and
 	 * settle the account.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean settleCreditDifference(SmsTask smsTask) {
@@ -465,9 +453,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int creditEstimate = smsTask.getCreditEstimateInt();
 		int actualCreditsUsed = smsTask.getMessagesDelivered();
 		int transactionCredits = creditEstimate - actualCreditsUsed;
-		float transactionAmount = convertCreditsToAmount(transactionCredits);
-		smsTransaction.setTransactionAmount(transactionAmount);
-		smsTransaction.setBalance(account.getBalance() + transactionAmount);
+		smsTransaction.setCredits(new Long(transactionCredits));
 		smsTransaction.setTransactionCredits(transactionCredits);
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());

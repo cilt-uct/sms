@@ -123,8 +123,8 @@ public class AccountProducer implements ViewComponentProducer,
 		UIMessage.make(form, "overdraft-limit-label",
 				"sms.sms-account.overdraft-limit");
 		UIInput.make(form, "overdraft-limit", accountOTP + ".overdraftLimit");
-		UIMessage.make(form, "balance-label", "sms.sms-account.balance");
-		UIInput.make(form, "balance", accountOTP + ".balance");
+		UIMessage.make(form, "credits-label", "sms.sms-account.credits");
+		UIInput.make(form, "credits", accountOTP + ".credits");
 
 		UIMessage.make(form, "notiEmail-label", "sms.sms-account.notificationEmail");
 		UIInput.make(form, "notiEmail", accountOTP + ".notificationEmail");
@@ -170,7 +170,7 @@ public class AccountProducer implements ViewComponentProducer,
 
 	public void init() {
 		dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
-		messageFixupHelper.fixupMessages("overdraft-limit", "balance");
+		messageFixupHelper.fixupMessages("overdraft-limit", "credits");
 	}
 
 	public List reportNavigationCases() {

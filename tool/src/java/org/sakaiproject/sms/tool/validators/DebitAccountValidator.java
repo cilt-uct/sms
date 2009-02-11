@@ -6,10 +6,10 @@ import org.sakaiproject.sms.tool.beans.DebitAccountBean;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-public class DebitAccountValidator implements Validator{
+public class DebitAccountValidator implements Validator {
 
 	private SmsAccountLogic smsAccountLogic;
-	
+
 	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
 	}
@@ -24,29 +24,28 @@ public class DebitAccountValidator implements Validator{
 
 	public void validate(Object target, Errors errors) {
 		DebitAccountBean account = (DebitAccountBean) target;
-		
-		if(account.getAccountId() != null){
-			//check account exists
-			SmsAccount smsAccount = smsAccountLogic.getSmsAccount(account.getAccountId());
-			
-			if(smsAccount == null){
+
+		if (account.getAccountId() != null) {
+			// check account exists
+			SmsAccount smsAccount = smsAccountLogic.getSmsAccount(account
+					.getAccountId());
+
+			if (smsAccount == null) {
 				errors.reject("sms.debit.account.errors.no.account");
 			}
-		}
-		else{
+		} else {
 			errors.reject("sms.errors.accountId.empty");
 		}
-		
-		if(account.getAmountToDebit() == null){
-			errors.reject("sms.errors.amountToDebit.invalid");
+
+		if (account.getCreditsToDebit() == null) {
+			errors.reject("sms.errors.creditsToDebit.invalid");
+		} else if (account.getCreditsToDebit() < 0) {
+			errors.rejectValue("creditsToDebit",
+					"sms.errors.creditsToDebit.empty");
+		} else {
+
 		}
-		else if(account.getAmountToDebit() < 0){
-			errors.rejectValue("amountToDebit", "sms.errors.amountToDebit.empty");
-		}
-		else{
-			
-		}
-		
+
 	}
 
 }

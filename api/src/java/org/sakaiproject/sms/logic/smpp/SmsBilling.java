@@ -29,7 +29,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
- * 
+ *
  * @author louis@psybergate.com
  * @version 1.0
  * @created 12-Nov-2008
@@ -38,16 +38,16 @@ public interface SmsBilling {
 
 	/**
 	 * Debit an account by the supplied amount
-	 * 
+	 *
 	 * @param accountId
-	 * @param amountToDebit
+	 * @param creditsToDebit
 	 */
-	public void debitAccount(Long accountId, Float amountToDebit);
+	public void debitAccount(Long accountId, long creditsToDebit);
 
 	/**
 	 * Add extra credits to the specific account by making an entry into
 	 * SMS_TRANSACTION . Also update the available credits on the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param creditCount
@@ -58,22 +58,22 @@ public interface SmsBilling {
 	/**
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param creditsRequired
 	 *            the credits required
-	 * 
+	 *
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(Long accountID,
 			Integer creditsRequired);
 
 	/**
-	 * 
+	 *
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -81,41 +81,41 @@ public interface SmsBilling {
 
 	/**
 	 * Convert amount to credits.
-	 * 
+	 *
 	 * @param amount
 	 *            the amount
-	 * 
+	 *
 	 * @return the double
 	 */
-	public Integer convertAmountToCredits(Float amount);
+	public Long convertAmountToCredits(Float amount);
 
 	/**
 	 * Convert the given credits to currency base on the defined conversion
 	 * value at the given time.
-	 * 
+	 *
 	 * @param creditCount
 	 *            the credit count
-	 * 
+	 *
 	 * @return the credit amount
 	 */
-	public Float convertCreditsToAmount(int creditCount);
+	public Float convertCreditsToAmount(long creditCount);
 
 	/**
 	 * Return the currency amount available in the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
-	 * 
+	 *
 	 * @return the account balance
 	 */
 	public double getAccountBalance(Long accountID);
 
 	/**
 	 * Return credits available in the account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
-	 * 
+	 *
 	 * @return the account credits
 	 */
 	public int getAccountCredits(Long accountID);
@@ -123,14 +123,14 @@ public interface SmsBilling {
 	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
 	 * id. AccountType is only outgoing masses for now.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            (e.g. !admin)
 	 * @param sakaiUserID
 	 *            the sakai user id
-	 * 
+	 *
 	 * @return the account id
-	 * 
+	 *
 	 * @throws SmsAccountNotFoundException
 	 *             the sms account not found exception
 	 */
@@ -140,48 +140,48 @@ public interface SmsBilling {
 	/**
 	 * Return a list of all transactions between startDate and endDate for the
 	 * specific account.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param startDate
 	 *            the start date
 	 * @param endDate
 	 *            the end date
-	 * 
+	 *
 	 * @return the acc transactions
 	 */
 	public Set getAccTransactions(Long accountID, Date startDate, Date endDate);
 
 	/**
 	 * Return all accounts linked to the given Sakai site.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            (e.g. !admin)
-	 * 
+	 *
 	 * @return the all site accounts
 	 */
 	public Set getAllSiteAccounts(String sakaiSiteID);
 
 	/**
 	 * Insert a new account and return the new account id.
-	 * 
+	 *
 	 * @param sakaiSiteID
 	 *            (e.g. !admin)
-	 * 
+	 *
 	 * @return true, if insert account
 	 */
 	public boolean insertAccount(String sakaiSiteID);
 
 	/**
 	 * Insert a new transaction for the given account id.
-	 * 
+	 *
 	 * @param accountID
 	 *            the account id
 	 * @param transCodeID
 	 *            the trans code id
 	 * @param creditAmount
 	 *            the credit amount
-	 * 
+	 *
 	 * @return true, if insert transaction
 	 */
 	public Boolean insertTransaction(Long accountID, int transCodeID,
@@ -191,17 +191,17 @@ public interface SmsBilling {
 	 * Insert a new transaction and indicate that the credits are reserved. If
 	 * the request is pending and the administrator delete the request, the
 	 * reservation must be rolled back with another transaction.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
-	 * 
+	 *
 	 * @return true, if reserve credits
 	 */
 	public boolean reserveCredits(SmsTask smsTask);
 
 	/**
 	 * Recalculate balance for a specific account.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
 	 */
@@ -209,17 +209,17 @@ public interface SmsBilling {
 
 	/**
 	 * Cancel pending request.
-	 * 
+	 *
 	 * @param smsTaskId
 	 *            the sms task id
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean cancelPendingRequest(Long smsTaskId);
 
 	/**
 	 * Recalculate balances for all existing accounts.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
 	 */
@@ -227,17 +227,17 @@ public interface SmsBilling {
 
 	/**
 	 * Settle credit difference.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean settleCreditDifference(SmsTask smsTask);
 
 	/**
 	 * Credits account for a message that came in late.
-	 * 
+	 *
 	 * @param smsMessage
 	 * @return
 	 */

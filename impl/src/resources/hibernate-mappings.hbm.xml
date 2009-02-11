@@ -117,7 +117,7 @@
 			not-null="true" length="5" />
 		<property name="overdraftLimit" type="float" column="OVERDRAFT_LIMIT"
 			not-null="false" />
-		<property name="balance" type="float" column="BALANCE"
+		<property name="credits" type="long" column="CREDITS"
 			not-null="true" />
 		<property name="accountName" type="string" column="ACCOUNT_NAME"
 			not-null="true" length="99" />
@@ -151,9 +151,7 @@
 			not-null="false" />
 		<property name="transactionCredits" type="integer"
 			column="TRANSACTION_CREDITS" not-null="true" />
-		<property name="transactionAmount" type="float" column="TRANSACTION_AMOUNT"
-			not-null="true" />
-		<property name="balance" type="float" column="BALANCE"
+		<property name="credits" type="long" column="CREDITS"
 			not-null="true" />
 		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
 			not-null="true" />

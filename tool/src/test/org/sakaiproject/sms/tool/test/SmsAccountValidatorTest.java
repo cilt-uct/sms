@@ -1,17 +1,17 @@
 /***********************************************************************************
  * SmsAccountValidatorTest.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -38,12 +38,12 @@ public class SmsAccountValidatorTest extends TestCase {
 	private BindException errors;
 	private SmsAccount account;
 	private ExternalLogic externalLogic;
-	
+
 	private static String ACCOUNT_NAME_FIELD = "accountName";
 	private static String SAKAI_SITE_ID_FIELD = "sakaiSiteId";
 	private static String SAKAI_USER_ID_FIELD = "sakaiUserId";
 	private static String OVERDRAFT_LIMIT_FIELD = "overdraftLimit";
-	private static String BALANCE_FIELD = "balance";
+	private static String CREDITS_FIELD = "credits";
 
 	private static int VALID_MAX_FIELD_SIZE = 99;
 
@@ -58,7 +58,7 @@ public class SmsAccountValidatorTest extends TestCase {
 
 	/**
 	 * Run before every test
-	 * 
+	 *
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override
@@ -75,11 +75,11 @@ public class SmsAccountValidatorTest extends TestCase {
 				.setSakaiUserId(externalLogic.getCurrentUserId());
 		account.setStartdate(new Date());
 		account.setEnddate(new Date());
-		account.setBalance(100f);
+		account.setCredits(100L);
 		account.setOverdraftLimit(10f);
 		account.setMessageTypeCode(SmsUiConstants.MESSAGE_TYPE_CODE);
 		errors = new BindException(account, "SmsAccount");
-		
+
 	}
 
 	/**
@@ -136,10 +136,10 @@ public class SmsAccountValidatorTest extends TestCase {
 	 * Test null balance
 	 */
 	public void testBalance_null() {
-		account.setBalance(null);
+		account.setCredits(null);
 		validator.validate(account, errors);
-		assertTrue(errors.hasFieldErrors(BALANCE_FIELD));
-		assertEquals("sms.errors.balance.invalid", errors.getFieldError()
+		assertTrue(errors.hasFieldErrors(CREDITS_FIELD));
+		assertEquals("sms.errors.credits.invalid", errors.getFieldError()
 				.getCode());
 	}
 
@@ -150,7 +150,7 @@ public class SmsAccountValidatorTest extends TestCase {
 	 */
 	public void testMessageTypeCode_null() {
 		account.setMessageTypeCode(null);
-		account.setBalance(null);
+		account.setCredits(null);
 		account.setAccountName(null);
 		account.setOverdraftLimit(null);
 		account.setSakaiSiteId(null);

@@ -22,17 +22,17 @@ public class SmsBillingStub implements SmsBilling {
 		return sufficientCredits;
 	}
 
-	public Integer convertAmountToCredits(Float arg0) {
+	public Long convertAmountToCredits(Float arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Float convertCreditsToAmount(int arg0) {
+	public Float convertCreditsToAmount(long arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void debitAccount(Long arg0, Float arg1) {
+	public void debitAccount(Long arg0, long arg1) {
 		// TODO Auto-generated method stub
 
 	}

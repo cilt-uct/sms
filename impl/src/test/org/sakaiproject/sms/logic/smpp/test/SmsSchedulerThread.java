@@ -34,11 +34,11 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
- * 
+ *
  * The Class SmsSchedulerThread. Used in the scheduler threading test.
- * 
+ *
  * @author Etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsSchedulerThread extends TestRunnable {
 
@@ -47,7 +47,7 @@ public class SmsSchedulerThread extends TestRunnable {
 	private SmsSchedulerImpl smsSchedulerImpl = null;
 
 	private SmsSmppImpl smsSmppImpl = null;
-	
+
 	private final ExternalLogic externalLogic;
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
@@ -60,12 +60,12 @@ public class SmsSchedulerThread extends TestRunnable {
 
 	/**
 	 * Sets up the required api's
-	 * 
+	 *
 	 * @param sessionName
 	 */
 	public SmsSchedulerThread(String sessionName) {
 		externalLogic = new ExternalLogicStub();
-		
+
 		this.sessionName = sessionName;
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
@@ -84,7 +84,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsAccount.setSakaiSiteId("smsSiteId" + Math.random());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(1000f);
+		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountnamej");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);

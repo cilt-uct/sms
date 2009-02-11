@@ -6,6 +6,7 @@ import java.util.List;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
@@ -18,6 +19,8 @@ import org.sakaiproject.sms.util.HibernateUtil;
  */
 public class SmsTransactionTest extends AbstractBaseTestCase {
 
+	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
+
 	/**
 	 * Instantiates a new sms transaction test.
 	 */
@@ -26,7 +29,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms transaction test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -36,7 +39,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
@@ -54,18 +57,17 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("0");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(0f);
+		smsAccount.setCredits(0l);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setBalance(1.32f);
+		smsTransaction.setCredits(smsBillingImpl.convertAmountToCredits(1.32f));
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction.setTransactionTypeCode("TC");
 		smsTransaction.setTransactionCredits(666);
-		smsTransaction.setTransactionAmount(1000.00f);
 
 		smsTransaction.setSmsAccount(smsAccount);
 		smsTransaction.setSmsTaskId(1L);
@@ -91,17 +93,16 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("1");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(0f);
+		smsAccount.setCredits(0l);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setBalance(1.32f);
+		smsTransaction.setCredits(smsBillingImpl.convertAmountToCredits(1.32f));
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction.setTransactionTypeCode("TC");
 		smsTransaction.setTransactionCredits(666);
-		smsTransaction.setTransactionAmount(1000.00f);
 
 		smsTransaction.setSmsAccount(smsAccount);
 		smsTransaction.setSmsTaskId(1L);
@@ -117,7 +118,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(theNewAccount);
 		// Check updated account balance with smaller positive value
-		assertTrue(theNewAccount.getBalance() == 1000f);
+		assertTrue(theNewAccount.getCredits() == smsBillingImpl
+				.convertAmountToCredits(1000f));
 	}
 
 	/**
@@ -144,18 +146,19 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("3");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(5000.00f));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setBalance(1.32f);
+		smsTransaction.setCredits(smsBillingImpl
+				.convertAmountToCredits((1.32f)));
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction.setTransactionTypeCode("TTC");
 		smsTransaction.setTransactionCredits(666);
-		smsTransaction.setTransactionAmount(1000.00f);
+
 		smsTransaction.setSmsTaskId(1L);
 
 		smsTransaction.setSmsAccount(smsAccount);
@@ -205,7 +208,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("4");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(5000.00f));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
@@ -213,14 +216,15 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		for (int i = 0; i < recordsToInsert; i++) {
 
 			SmsTransaction smsTransaction = new SmsTransaction();
-			smsTransaction.setBalance(1.32f);
+			smsTransaction.setCredits(smsBillingImpl
+					.convertAmountToCredits((1.32f)));
 			smsTransaction.setSakaiUserId("sakaiUserId");
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()));
 			smsTransaction
 					.setTransactionTypeCode(SmsConst_Billing.TRANS_RESERVE_CREDITS);
 			smsTransaction.setTransactionCredits(i);
-			smsTransaction.setTransactionAmount(1000.00f);
+
 			smsTransaction.setSmsAccount(smsAccount);
 			smsTransaction.setSmsTaskId(1L);
 
@@ -277,7 +281,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		testAccount.setSakaiSiteId("3");
 		testAccount.setMessageTypeCode("12345");
 		testAccount.setOverdraftLimit(10000.00f);
-		testAccount.setBalance(5000.00f);
+		testAccount.setCredits(smsBillingImpl
+				.convertAmountToCredits((5000.00f)));
 		testAccount.setAccountName("accountName");
 		testAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(testAccount);
@@ -301,18 +306,18 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("6");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount
+				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setBalance(1.32f);
+		smsTransaction.setCredits(smsBillingImpl.convertAmountToCredits(1.32f));
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction.setTransactionTypeCode("TTC");
 		smsTransaction.setTransactionCredits(666);
-		smsTransaction.setTransactionAmount(1000.00f);
 		smsTransaction.setSmsTaskId(1L);
 
 		smsTransaction.setSmsAccount(smsAccount);
@@ -339,7 +344,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("7");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount
+				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
@@ -347,13 +353,14 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		int noOfTrans = 4;
 		for (int i = 0; i < noOfTrans; i++) {
 			SmsTransaction smsTransaction = new SmsTransaction();
-			smsTransaction.setBalance(1.32f);
+			smsTransaction.setCredits(smsBillingImpl
+					.convertAmountToCredits(1.32f));
 			smsTransaction.setSakaiUserId("1" + i);
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()));
 			smsTransaction.setTransactionTypeCode("TC");
 			smsTransaction.setTransactionCredits(i);
-			smsTransaction.setTransactionAmount(1000.00f);
+
 			smsTransaction.setSmsAccount(smsAccount);
 			smsTransaction.setSmsTaskId(1L);
 
@@ -386,7 +393,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("8");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount
+				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
@@ -394,13 +402,13 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		int noOfTrans = 4;
 		for (int i = 0; i < noOfTrans; i++) {
 			SmsTransaction smsTransaction = new SmsTransaction();
-			smsTransaction.setBalance(1.32f);
+			smsTransaction.setCredits(smsBillingImpl
+					.convertAmountToCredits((1.32f)));
 			smsTransaction.setSakaiUserId("1" + i);
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()));
 			smsTransaction.setTransactionTypeCode("TC");
 			smsTransaction.setTransactionCredits(i);
-			smsTransaction.setTransactionAmount(1000.00f);
 			smsTransaction.setSmsAccount(smsAccount);
 			smsTransaction.setSmsTaskId(smsTaskId);
 
@@ -427,19 +435,20 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("9");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setBalance(5000.00f);
+		smsAccount
+				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setBalance(5000.00f);
+		smsTransaction.setCredits(smsBillingImpl
+				.convertAmountToCredits((5000.00f)));
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction
 				.setTransactionTypeCode(SmsConst_Billing.TRANS_RESERVE_CREDITS);
 		smsTransaction.setTransactionCredits(100);
-		smsTransaction.setTransactionAmount(1000.00f);
 		smsTransaction.setSmsTaskId(123L);
 		smsTransaction.setSmsAccount(smsAccount);
 
