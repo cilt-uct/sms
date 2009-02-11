@@ -50,9 +50,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -100,7 +100,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -114,7 +114,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -125,7 +125,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -254,17 +254,6 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setDeliveryEntityList(deliveryEntityList);
 		smsTask.setCreditCost(smsBilling.convertCreditsToAmount(1));
 		return smsTask;
-	}
-
-	/**
-	 * Get Sakai user's mobile number from member profile. Return the mobile
-	 * number, null if not found.
-	 *
-	 * @param sakaiUserID
-	 */
-	public String getSakaiMobileNumber(String sakaiUserID) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public SmsBilling getSmsBilling() {
@@ -440,12 +429,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
