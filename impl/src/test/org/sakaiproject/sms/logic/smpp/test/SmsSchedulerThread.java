@@ -83,7 +83,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsAccount.setSakaiUserId("Username" + Math.random());
 		smsAccount.setSakaiSiteId("smsSiteId" + Math.random());
 		smsAccount.setMessageTypeCode("3");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(1000L);
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountnamej");
 		smsAccount.setAccountEnabled(true);

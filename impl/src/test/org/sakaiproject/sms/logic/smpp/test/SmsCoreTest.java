@@ -85,7 +85,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
 		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(1000L);
 		smsAccount.setCredits(smsCoreImpl.smsBilling
 				.convertAmountToCredits(100f));
 		smsAccount.setAccountName("accountname");
@@ -136,7 +136,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	public void testProcessNextTask() {
 		smsSmppImpl.connectToGateway();
-		
+
 		if (smsCoreImpl.getSmsSmpp().getConnectionStatus()) {
 
 			Calendar now = Calendar.getInstance();
@@ -507,7 +507,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId("sakSitId");
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(0f);
+		account.setOverdraftLimit(0L);
 		account.setCredits(0L);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
@@ -548,7 +548,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId("11111");
 		account.setMessageTypeCode("1");
-		account.setOverdraftLimit(10000.00f);
+		account.setOverdraftLimit(1000L);
 		account.setCredits(smsCoreImpl.smsBilling
 				.convertAmountToCredits(5000.00f));
 		account.setAccountName("accountName");

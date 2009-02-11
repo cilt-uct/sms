@@ -59,7 +59,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setCredits((account.getCredits() + creditsToDebit));
+		smsTransaction.setCredits((creditsToDebit));
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
@@ -123,11 +123,11 @@ public class SmsBillingImpl implements SmsBilling {
 
 		boolean sufficientCredit = false;
 		if (account.getOverdraftLimit() != null) {
-			if ((convertCreditsToAmount(account.getCredits()) + account
-					.getOverdraftLimit()) >= convertCreditsToAmount(creditsRequired)) {
+			if ((account.getCredits() + account
+					.getOverdraftLimit()) >= creditsRequired) {
 				sufficientCredit = true;
 			}
-		} else if (convertCreditsToAmount(account.getCredits()) >= convertCreditsToAmount(creditsRequired)) {
+		} else if (account.getCredits() >= creditsRequired) {
 			sufficientCredit = true;
 		}
 
@@ -334,8 +334,8 @@ public class SmsBillingImpl implements SmsBilling {
 		SmsTransaction smsTransaction = new SmsTransaction();
 
 		// The juicy bits
-		float transactionAmount = convertCreditsToAmount(-1);
-		smsTransaction.setCredits((account.getCredits() - 1));
+
+		smsTransaction.setCredits((- 1L));
 		smsTransaction.setTransactionCredits(1);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);

@@ -115,7 +115,7 @@
 			not-null="false" length="99" unique="true" />
 		<property name="messageTypeCode" type="string" column="MESSAGE_TYPE_CODE"
 			not-null="true" length="5" />
-		<property name="overdraftLimit" type="float" column="OVERDRAFT_LIMIT"
+		<property name="overdraftLimit" type="long" column="OVERDRAFT_LIMIT"
 			not-null="false" />
 		<property name="credits" type="long" column="CREDITS"
 			not-null="true" />

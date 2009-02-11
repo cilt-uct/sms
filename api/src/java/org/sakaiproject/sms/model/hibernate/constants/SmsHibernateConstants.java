@@ -104,12 +104,12 @@ public class SmsHibernateConstants {
 	/**
 	 * The default overdraft limit
 	 */
-	public static final Float OVERDRAFT_LIMIT = 10.0f;
+	public static final Long OVERDRAFT_LIMIT = 10L;
 
 	/**
 	 * The default initial balance for an account
 	 */
-	public static final long INITIAL_CREDITS = 0;
+	public static final Long INITIAL_CREDITS = 0L;
 
 	/** Max sms length */
 	public static final int MAX_SMS_LENGTH = 160;

@@ -33,7 +33,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsAccount.setSakaiUserId("1");
 		insertSmsAccount.setSakaiSiteId("1");
 		insertSmsAccount.setMessageTypeCode("12345");
-		insertSmsAccount.setOverdraftLimit(10000.00f);
+		insertSmsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		insertSmsAccount.setCredits(smsBillingImpl
 				.convertAmountToCredits(5000.00f));
 		insertSmsAccount.setAccountName("accountName");
@@ -194,7 +195,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId("sakSitId");
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(10000.00f);
+		account.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
@@ -213,7 +215,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		account.setSakaiUserId("testGetSmsAccount_sakaiUserId");
 		account.setSakaiSiteId("testGetSmsAccount_sakaiSiteId");
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(10000.00f);
+		account.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);

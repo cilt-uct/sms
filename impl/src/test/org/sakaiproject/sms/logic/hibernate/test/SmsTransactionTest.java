@@ -56,7 +56,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("0");
 		smsAccount.setSakaiSiteId("0");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount.setCredits(0l);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
@@ -92,7 +93,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("1");
 		smsAccount.setSakaiSiteId("1");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount.setCredits(0l);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
@@ -145,7 +147,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("3");
 		smsAccount.setSakaiSiteId("3");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(5000.00f));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
@@ -207,7 +210,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("4");
 		smsAccount.setSakaiSiteId("4");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(5000.00f));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
@@ -280,7 +284,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		testAccount.setSakaiUserId("3");
 		testAccount.setSakaiSiteId("3");
 		testAccount.setMessageTypeCode("12345");
-		testAccount.setOverdraftLimit(10000.00f);
+		testAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		testAccount.setCredits(smsBillingImpl
 				.convertAmountToCredits((5000.00f)));
 		testAccount.setAccountName("accountName");
@@ -305,7 +310,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("6");
 		smsAccount.setSakaiSiteId("6");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount
 				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
@@ -343,7 +349,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("7");
 		smsAccount.setSakaiSiteId("7");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount
 				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
@@ -392,7 +399,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("8");
 		smsAccount.setSakaiSiteId("8");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount
 				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");
@@ -434,7 +442,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("9");
 		smsAccount.setSakaiSiteId("9");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(10000.00f);
+		smsAccount.setOverdraftLimit(smsBillingImpl
+				.convertAmountToCredits(10000.00f));
 		smsAccount
 				.setCredits(smsBillingImpl.convertAmountToCredits((5000.00f)));
 		smsAccount.setAccountName("accountName");

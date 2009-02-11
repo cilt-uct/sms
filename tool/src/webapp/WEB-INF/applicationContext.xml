@@ -90,13 +90,13 @@
    </property>
   </bean>
 
-  <!-- Data Converters for Float values -->
+  <!-- Data Converters for Long values -->
   <bean class="uk.org.ponder.mapping.DataConverter">
 	<property name="targetPath" value="debitAccountBean.creditsToDebit" />
 	<property name="converter">
 		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="creditsToDebit" />
-			<property name="numberClass" value="java.lang.Float" />
+			<property name="numberClass" value="java.lang.Long" />
 		</bean>
 	</property>
   </bean>
@@ -117,7 +117,7 @@
 	<property name="converter">
 		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="credits" />
-			<property name="numberClass" value="java.lang.Float" />
+			<property name="numberClass" value="java.lang.Long" />
 		</bean>
 	</property>
   </bean>
@@ -127,7 +127,7 @@
 	<property name="converter">
 		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 			<property name="field" value="overdraftLimit" />
-			<property name="numberClass" value="java.lang.Float" />
+			<property name="numberClass" value="java.lang.Long" />
 		</bean>
 	</property>
  </bean>

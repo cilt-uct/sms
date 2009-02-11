@@ -76,7 +76,7 @@ public class SmsAccountValidatorTest extends TestCase {
 		account.setStartdate(new Date());
 		account.setEnddate(new Date());
 		account.setCredits(100L);
-		account.setOverdraftLimit(10f);
+		account.setOverdraftLimit(10L);
 		account.setMessageTypeCode(SmsUiConstants.MESSAGE_TYPE_CODE);
 		errors = new BindException(account, "SmsAccount");
 

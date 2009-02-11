@@ -49,7 +49,7 @@ public class SmsAccount extends BaseModel {
 	private String messageTypeCode;
 
 	/** Some accounts will be allowed to have a overdraft limit. */
-	private Float overdraftLimit;
+	private Long overdraftLimit;
 
 	/** The account must be linked to either an Sakai site or a Sakai user. */
 	private String sakaiSiteId;
@@ -124,7 +124,7 @@ public class SmsAccount extends BaseModel {
 	 * Instantiates a new sms account.
 	 */
 	public SmsAccount(Long credits, String messageTypeCode,
-			Float overdraftLimit, String sakaiSiteId, String sakaiUserId,
+			Long overdraftLimit, String sakaiSiteId, String sakaiUserId,
 			String accountName) {
 		super();
 		this.credits = credits;
@@ -166,7 +166,7 @@ public class SmsAccount extends BaseModel {
 	 *
 	 * @return the overdraft limit
 	 */
-	public Float getOverdraftLimit() {
+	public Long getOverdraftLimit() {
 		return overdraftLimit;
 	}
 
@@ -204,7 +204,7 @@ public class SmsAccount extends BaseModel {
 	 * @param overdraftLimit
 	 *            the new overdraft limit
 	 */
-	public void setOverdraftLimit(Float overdraftLimit) {
+	public void setOverdraftLimit(Long overdraftLimit) {
 		this.overdraftLimit = overdraftLimit;
 	}
 
@@ -280,7 +280,6 @@ public class SmsAccount extends BaseModel {
 		int result = 1;
 		result = prime * result
 				+ ((accountName == null) ? 0 : accountName.hashCode());
-		result = prime * result + (int) (credits ^ (credits >>> 32));
 		result = prime * result
 				+ ((messageTypeCode == null) ? 0 : messageTypeCode.hashCode());
 		result = prime * result
@@ -298,14 +297,11 @@ public class SmsAccount extends BaseModel {
 			return true;
 		if (!(obj instanceof SmsAccount))
 			return false;
-
 		SmsAccount other = (SmsAccount) obj;
 		if (accountName == null) {
 			if (other.accountName != null)
 				return false;
 		} else if (!accountName.equals(other.accountName))
-			return false;
-		if (credits != other.credits)
 			return false;
 		if (messageTypeCode == null) {
 			if (other.messageTypeCode != null)
@@ -329,5 +325,6 @@ public class SmsAccount extends BaseModel {
 			return false;
 		return true;
 	}
+
 
 }

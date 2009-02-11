@@ -43,31 +43,31 @@ public class SampleSmsAccountFactory implements Listable {
 		smsAccounts = new ArrayList<SmsAccount>();
 
 		SmsAccount smsAccount1 = new SmsAccount(randomUtils
-				.getRandomInteger(2000).longValue(), "S", randomUtils.getRandomFloat(2000),
+				.getRandomInteger(2000).longValue(), "S", randomUtils.getRandomInteger(2000).longValue(),
 				"SAK", "BOB001", "Account 1");
 		smsAccount1.setAccountEnabled(true);
 		smsAccounts.add(smsAccount1);
 
 		SmsAccount smsAccount2 = new SmsAccount(randomUtils
-				.getRandomInteger(2000).longValue(), "P", randomUtils.getRandomFloat(2000),
+				.getRandomInteger(2000).longValue(), "P", randomUtils.getRandomInteger(2000).longValue(),
 				"MMM", "JOE001", "Account 1");
 		smsAccount2.setAccountEnabled(true);
 		smsAccounts.add(smsAccount2);
 
 		SmsAccount smsAccount3 = new SmsAccount(randomUtils
-				.getRandomInteger(2000).longValue(), "R", randomUtils.getRandomFloat(2000),
+				.getRandomInteger(2000).longValue(), "R", randomUtils.getRandomInteger(2000).longValue(),
 				"JJT", "MAR001", "Account 1");
 		smsAccount3.setAccountEnabled(true);
 		smsAccounts.add(smsAccount3);
 
 		SmsAccount smsAccount4 = new SmsAccount(randomUtils
-				.getRandomInteger(2000).longValue(), "F", randomUtils.getRandomFloat(2000),
+				.getRandomInteger(2000).longValue(), "F", randomUtils.getRandomInteger(2000).longValue(),
 				"RMLL", "LEE001", "Account 1");
 		smsAccount4.setAccountEnabled(true);
 		smsAccounts.add(smsAccount4);
 
 		SmsAccount smsAccount5 = new SmsAccount(randomUtils
-				.getRandomInteger(2000).longValue(), "S", randomUtils.getRandomFloat(2000),
+				.getRandomInteger(2000).longValue(), "S", randomUtils.getRandomInteger(2000).longValue(),
 				"APG", "POP001", "Account 1");
 		smsAccount5.setAccountEnabled(true);
 		smsAccounts.add(smsAccount5);

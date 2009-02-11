@@ -156,7 +156,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		smsAccount.setSakaiUserId(sakaiUserID);
 		smsAccount.setSakaiSiteId(sakaiSiteID);
 		smsAccount.setMessageTypeCode("3");
-		smsAccount.setOverdraftLimit(0f);
+		smsAccount.setOverdraftLimit(0L);
 		smsAccount.setCredits(100L);
 		smsAccount.setAccountName("TestAccountName");
 		smsAccount.setAccountEnabled(true);
