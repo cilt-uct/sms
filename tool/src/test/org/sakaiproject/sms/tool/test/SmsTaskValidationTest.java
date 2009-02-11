@@ -76,7 +76,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		// Inject the required impl's into core impl for testing
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
 		smsCoreImpl.smsBilling = new SmsBillingImpl();
-		smsCoreImpl.externalLogic = new ExternalLogicStub();
+		smsCoreImpl.setExternalLogic(new ExternalLogicStub());
 
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");

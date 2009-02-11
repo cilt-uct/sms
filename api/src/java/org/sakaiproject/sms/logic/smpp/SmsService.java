@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
@@ -186,8 +187,9 @@ public interface SmsService {
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
 	 * @throws SmsSendDeniedException 
+	 * @throws SmsSendDisabledException 
 	 */
 	public SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException, SmsSendDeniedException;
+			throws SmsTaskValidationException, SmsSendDeniedException, SmsSendDisabledException;
 
 }

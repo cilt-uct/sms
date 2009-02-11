@@ -58,7 +58,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		// Inject the required impl's into core impl for testing
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
 		smsCoreImpl.smsBilling = new SmsBillingImpl();
-		smsCoreImpl.externalLogic = new ExternalLogicStub();
+		smsCoreImpl.setExternalLogic(new ExternalLogicStub());
 
 		msg = new SmsMessage();
 		// smsTask = new SmsTask();
@@ -84,6 +84,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();

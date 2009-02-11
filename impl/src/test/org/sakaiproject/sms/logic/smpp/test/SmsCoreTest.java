@@ -26,8 +26,10 @@ import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
@@ -65,6 +67,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		externalLogic = new ExternalLogicStub();
 		smsCoreImpl = new SmsCoreImpl();
 		smsCoreImpl.setExternalLogic(externalLogic);
+		smsCoreImpl.setSmsConfigLogic(new SmsConfigLogicImpl());
 		smsSmppImpl = new SmsSmppImpl();
 
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
@@ -423,6 +426,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			assertEquals(timedOutMessagesFound, true);
 		} catch (SmsSendDeniedException se) {
 			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 
 	}
@@ -524,6 +529,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			LOG.debug(e1.getErrorMessagesAsBlock());
 		} catch (SmsSendDeniedException se) {
 			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 	}
 
@@ -568,6 +575,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			LOG.debug(e1.getErrorMessagesAsBlock());
 		} catch (SmsSendDeniedException se) {
 			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 	}
 

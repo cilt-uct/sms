@@ -157,8 +157,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	/**
-	 * At the moment always returning true
-	 * 
 	 * @see ExternalLogic#isUserAllowedInLocation(String, String, String)
 	 */
 	public boolean isUserAllowedInLocation(String userId, String permission,
@@ -185,6 +183,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see {@link ExternalLogic#getGroupMemberCount(String)}
 	 */
 	public int getGroupMemberCount(String reference) {
+		System.out.println(reference);
 		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
 		if (group == null) {
 			return 15; // for testing

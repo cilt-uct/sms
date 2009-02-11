@@ -8,6 +8,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
@@ -132,6 +133,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 
 			e.printStackTrace();
+		} catch (SmsSendDisabledException sd) {
+			fail("SmsSendDisabledException caught");
 		}
 		assertTrue(smsCoreImpl.getNextSmsTask() == null);
 	}

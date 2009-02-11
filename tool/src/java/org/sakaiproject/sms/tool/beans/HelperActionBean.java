@@ -22,6 +22,7 @@ import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 
@@ -96,6 +97,9 @@ public class HelperActionBean {
 					return ActionResults.ERROR;
 				} catch (SmsSendDeniedException se) {
 					messages.addMessage(new TargettedMessage("sms.errors.task.permission-denied", null, TargettedMessage.SEVERITY_ERROR));
+					return ActionResults.ERROR;
+				} catch (SmsSendDisabledException sd) {
+					messages.addMessage(new TargettedMessage("sms.errors.task.sms-send-disabled", new Object[] {smsTask.getSakaiSiteId()}, TargettedMessage.SEVERITY_ERROR));
 					return ActionResults.ERROR;
 				}
 				messages.addMessage(new TargettedMessage(

@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
@@ -35,6 +36,7 @@ import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -56,10 +58,16 @@ public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
-	public ExternalLogic externalLogic; // public for unit test to use stub impl
+	private ExternalLogic externalLogic;
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
+	}
+	
+	private SmsConfigLogic smsConfigLogic;
+	
+	public void setSmsConfigLogic(SmsConfigLogic smsConfigLogic) {
+		this.smsConfigLogic = smsConfigLogic;
 	}
 
 	public SmsSmpp smsSmpp = null;
@@ -272,10 +280,13 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public synchronized SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException, SmsSendDeniedException {
+			throws SmsTaskValidationException, SmsSendDeniedException, SmsSendDisabledException {
 
 		if (!externalLogic.isUserAllowedInLocation(smsTask.getSenderUserId(), ExternalLogic.SMS_SEND, smsTask.getSakaiSiteId())) {
 			throw new SmsSendDeniedException();
+		}
+		if (!smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId()).isSendSmsEnabled()) {
+			throw new SmsSendDisabledException();
 		}
 		
 		ArrayList<String> errors = new ArrayList<String>();
