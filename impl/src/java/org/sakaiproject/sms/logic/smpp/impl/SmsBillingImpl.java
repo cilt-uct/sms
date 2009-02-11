@@ -416,7 +416,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int transactionCredits = origionalTransaction.getTransactionCredits()
 				* -1;// Reverse the sign cause we are deducting from the account
 		smsTransaction.setTransactionCredits(transactionCredits);
-		smsTransaction.setCredits(smsAccount.getCredits() + transactionCredits);
+		smsTransaction.setCredits(new Long(transactionCredits));
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(smsAccount);
