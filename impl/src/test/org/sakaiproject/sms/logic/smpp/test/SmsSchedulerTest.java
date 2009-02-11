@@ -7,6 +7,7 @@ import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
@@ -72,7 +73,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 				.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(10000.00f);
-		smsAccount.setCredits(1000);
+		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
@@ -89,6 +90,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			smsCoreImpl.insertTask(smsTask3);
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
+		} catch (SmsSendDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		now.add(Calendar.MINUTE, -1);
@@ -102,6 +106,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			smsCoreImpl.insertTask(smsTask2);
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
+		} catch (SmsSendDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		now.add(Calendar.MINUTE, -3);
@@ -115,6 +122,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			smsCoreImpl.insertTask(smsTask1);
 		} catch (SmsTaskValidationException e1) {
 			fail(e1.getMessage());
+		} catch (SmsSendDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		try {
