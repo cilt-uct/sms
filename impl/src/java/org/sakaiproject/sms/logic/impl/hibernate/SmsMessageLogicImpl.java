@@ -223,7 +223,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 			}
 			
 			// Task Id
-			if (searchBean.getTaskId() != null) {
+			if (searchBean.getTaskId() != null && !"".equals(searchBean.getTaskId().trim())) {
 				crit.add(Restrictions.like("smsTask.id", new Long(searchBean.getTaskId())));
 			}
 
