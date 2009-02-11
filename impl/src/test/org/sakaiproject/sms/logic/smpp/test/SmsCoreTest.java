@@ -35,6 +35,7 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -59,6 +60,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsAccount smsAccount = null;
 	static ExternalLogic externalLogic = null;
+	static SmsConfigLogicImpl smsConfigLogic = null;
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
@@ -66,8 +68,10 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static {
 		externalLogic = new ExternalLogicStub();
 		smsCoreImpl = new SmsCoreImpl();
+		smsConfigLogic = new SmsConfigLogicImpl();
+		
 		smsCoreImpl.setExternalLogic(externalLogic);
-		smsCoreImpl.setSmsConfigLogic(new SmsConfigLogicImpl());
+		smsCoreImpl.setSmsConfigLogic(smsConfigLogic);
 		smsSmppImpl = new SmsSmppImpl();
 
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
@@ -115,6 +119,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		config.setSendSmsEnabled(true);
+		smsConfigLogic.persistSmsConfig(config);
 	}
 
 	/**
@@ -645,4 +652,32 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		assertEquals(new Integer(3), toTest.getGroupSizeEstimate());
 
 	}
+	
+	public void testSmsSendDisabled() {
+		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		config.setSendSmsEnabled(false);
+		smsConfigLogic.persistSmsConfig(config);
+		
+		SmsTask insertTask = new SmsTask();
+		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
+		
+		try {
+			smsCoreImpl.insertTask(insertTask);
+			fail("SmsSendDisabledException shoud be thrown");
+		} catch (SmsTaskValidationException e) {
+			fail("SmsTaskValidationException caught");
+		} catch (SmsSendDeniedException e) {
+			fail("SmsSendDeniedException caught");
+		} catch (SmsSendDisabledException e) {
+			assertNotNull(e);
+		}
+		
+		// test shouldn't be dependant on eachother
+		// we really must find time to fix it
+		config.setSendSmsEnabled(true);
+		smsConfigLogic.persistSmsConfig(config);
+	}
+	
+
 }
