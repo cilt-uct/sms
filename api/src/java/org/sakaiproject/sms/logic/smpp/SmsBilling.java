@@ -37,7 +37,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 public interface SmsBilling {
 
 	/**
-	 * Debit an account by the supplied amount
+	 * Debit an account by the supplied amount of credits
 	 *
 	 * @param accountId
 	 * @param creditsToDebit
@@ -179,13 +179,13 @@ public interface SmsBilling {
 	 *            the account id
 	 * @param transCodeID
 	 *            the trans code id
-	 * @param creditAmount
-	 *            the credit amount
+	 * @param credits
+	 *            the amount of credits
 	 *
 	 * @return true, if insert transaction
 	 */
 	public Boolean insertTransaction(Long accountID, int transCodeID,
-			int creditAmount);
+			int credits);
 
 	/**
 	 * Insert a new transaction and indicate that the credits are reserved. If

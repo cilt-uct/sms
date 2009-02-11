@@ -42,7 +42,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 public class SmsBillingImpl implements SmsBilling {
 
 	/**
-	 * Debit an account by the supplied amount
+	 * Debit an account by the supplied amount of credits.
 	 *
 	 * @param accountId
 	 * @param creditsToDebit
@@ -51,7 +51,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		if (creditsToDebit < 0) {
 			throw new RuntimeException(
-					"The amount supplied to debit an account must be positive");
+					"The amount of credits supplied to debit an account must be positive");
 		}
 
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
@@ -300,7 +300,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 
-		// Set transaction credit and amount to negative number because we are
+		// Set transaction credit and Credits to negative number because we are
 		// reserving.
 		int credits = smsTask.getCreditEstimate() * -1;
 		smsTransaction.setCredits(new Long(credits));

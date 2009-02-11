@@ -50,9 +50,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -63,9 +63,9 @@ public class SmsCoreImpl implements SmsCore {
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
+
 	private SmsConfigLogic smsConfigLogic;
-	
+
 	public void setSmsConfigLogic(SmsConfigLogic smsConfigLogic) {
 		this.smsConfigLogic = smsConfigLogic;
 	}
@@ -100,7 +100,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -114,7 +114,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -125,7 +125,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * /** For now we just generate the list. Will get it from Sakai later on.
 	 * So we generate a random number of users with random mobile numbers.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -215,7 +215,7 @@ public class SmsCoreImpl implements SmsCore {
 			Date dateToSend, String messageBody, String sakaiSiteID,
 			String sakaiToolId, String sakaiSenderID,
 			List<String> deliveryEntityList) {
-		
+
 		SmsConfig siteConfig = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		SmsConfig systemConfig = HibernateLogicFactory.getConfigLogic()
@@ -259,7 +259,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Get Sakai user's mobile number from member profile. Return the mobile
 	 * number, null if not found.
-	 * 
+	 *
 	 * @param sakaiUserID
 	 */
 	public String getSakaiMobileNumber(String sakaiUserID) {
@@ -280,15 +280,18 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public synchronized SmsTask insertTask(SmsTask smsTask)
-			throws SmsTaskValidationException, SmsSendDeniedException, SmsSendDisabledException {
+			throws SmsTaskValidationException, SmsSendDeniedException,
+			SmsSendDisabledException {
 
-		if (!externalLogic.isUserAllowedInLocation(smsTask.getSenderUserId(), ExternalLogic.SMS_SEND, smsTask.getSakaiSiteId())) {
+		if (!externalLogic.isUserAllowedInLocation(smsTask.getSenderUserId(),
+				ExternalLogic.SMS_SEND, smsTask.getSakaiSiteId())) {
 			throw new SmsSendDeniedException();
 		}
-		if (!smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId()).isSendSmsEnabled()) {
+		if (!smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(
+				smsTask.getSakaiSiteId()).isSendSmsEnabled()) {
 			throw new SmsSendDisabledException();
 		}
-		
+
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(TaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {
@@ -437,12 +440,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -460,18 +463,16 @@ public class SmsCoreImpl implements SmsCore {
 		if (account == null) {
 			return false;
 		}
-		Float amount = (smsBilling
-				.convertCreditsToAmount((account.getCredits())));
+		Long credits = account.getCredits();
 
 		if (!account.getAccountEnabled()) {
-			amount = 0.0f;
+			credits = 0L;
 		} else if (account.getOverdraftLimit() != null) {
 			// Add the overdraft to the available balance
-			amount += account.getOverdraftLimit();
+			credits += account.getOverdraftLimit();
 		}
 
-		String creditsAvailable = smsBilling.convertAmountToCredits(amount)
-				+ "";
+		String creditsAvailable = credits + "";
 		String creditsRequired = smsTask.getCreditEstimate() + "";
 
 		if (taskMessageType
@@ -518,8 +519,7 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationBodyTaskInsufficientCredits", String
 							.valueOf(account.getOverdraftLimit()), String
 							.valueOf(account.getOverdraftLimit()
-									+ smsBilling.convertCreditsToAmount(account
-											.getCredits())));
+									+ account.getCredits()));
 			toAddress = account.getNotificationEmail();
 
 			if (toAddress == null || toAddress.length() == 0) {
@@ -567,8 +567,7 @@ public class SmsCoreImpl implements SmsCore {
 	private void checkOverdraft(SmsTask smsTask) {
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
-		if ((smsBilling.convertCreditsToAmount(account.getCredits()) < (-1 * account
-				.getOverdraftLimit()))) {
+		if ((account.getCredits()) < (-1 * account.getOverdraftLimit())) {
 			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS);
 		}
