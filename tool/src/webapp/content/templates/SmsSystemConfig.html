@@ -9,15 +9,15 @@
 <body style="padding: 5px; margin: 4px;">
 	<div rsf:id="navIntraTool:" class="navIntraTool"/>
 	<div align="left">
-    <div class="navIntraTool"><a href="#" rsf:id="site-settings">Site Config</a></div>	
+    <div class="navIntraTool"><a href="#" rsf:id="site-settings">Site Config</a></div>
 
 	<form name="config" id="config" action="#" rsf:id="sms-system-config-form">
     	<h2 rsf:id="page-heading">SMS Config</h2>
-   	
+
    	<div rsf:id="message-for:*">
 		<span>Message for user here</span>
   	</div>
-    	
+
     <table class="shorttext required" align="left">
       <tr>
       	<td><label rsf:id="scheduler-interval-label">Scheduler Interval</label></td>
@@ -41,14 +41,14 @@
       </tr>
       <tr>
       	<td><label rsf:id="sms-credit-cost">Gateway report timeout:</label></td>
-      	<td><input style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-sms-credit-cost"></input> seconds</td>
+      	<td><input style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-sms-credit-cost"></input></td>
       </tr>
       <tr>
       <td colspan="1" align="left">
         <input style="color:#0099CC;" rsf:id="save" type="submit" value="Save"/>
         <input style="color:#0099CC;" rsf:id="cancel" type="button" value="Cancel" onclick="history.go(-1)"/>
       </td>
-      </tr>      
+      </tr>
     </table>
     </form>
 </div>
