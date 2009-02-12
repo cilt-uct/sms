@@ -35,6 +35,7 @@ import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.UserDirectoryService;
@@ -105,7 +106,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
-
+	
 	public void init() {
 		log.debug("init");
 		// register Sakai permissions for this tool
@@ -184,19 +185,32 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return mobileNumberHelper.getUserMobileNumber(userId);
 	}
 
+	/**
+	 * Sets up session for userId if this is anonymous session
+	 */
+	private void setupSession(String userId) {
+		// Get current session (if no session NonPortableSession will be created in default implementation)
+		Session session = sessionManager.getCurrentSession();
+		
+		// If session is anonymous
+		if (session.getUserId() == null) {
+			session.setUserId(userId);
+			try {
+				session.setUserEid(userDirectoryService.getUser(userId).getEid());
+			} catch (UserNotDefinedException e) {
+				log.error(e);
+			}
+		}
+	}
+	
 	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
 			String entityReference, boolean getMobileNumbers) {
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 		// TODO: here must must figure out if the reference is an Authz group,
 		// role, or list of users
 		Set members = new HashSet<Object>();
-		// Session newsession = SessionManager.startSession();
-		// SessionManager.setCurrentSession(newsession);
-		// // inject this session with new user values
-		// User user = UserDirectoryService.getUserByEid(userid);
-		// newsession.setUserEid(userid);
-		// newsession.setUserId(user.getId());
-
+		
+		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
 		if (obj instanceof AuthzGroup) {
 			AuthzGroup group = (AuthzGroup) entityBroker
@@ -220,8 +234,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					// TODO, user must not be added to list of mobile number is
 					// empty
 				}
-				message.setMobileNumber(getSakaiMobileNumber(message
-						.getSakaiUserId()));
+				message.setMobileNumber(mobileNumber);
 			}
 			message.setSmsTask(smsTask);
 			messages.add(message);
