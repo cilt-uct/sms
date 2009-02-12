@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,9 +32,9 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	/** The insert message2. */
 	private static SmsMessage insertMessage2;
-	
-	private SmsMessageLogicImpl messageLogic;
-	
+
+	private static SmsMessageLogicImpl messageLogic;
+
 	static {
 
 		insertTask = new SmsTask();
@@ -47,6 +48,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(1);
 		insertTask.setDelReportTimeoutDuration(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		insertTask.setDateToExpire(cal.getTime());
 		// Insert the task so we can play with messages
 
 		insertMessage1 = new SmsMessage();
@@ -62,16 +67,16 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage2.setSmscId(SmsHibernateConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-	}
 
-	public void onSetup() {
 		messageLogic = new SmsMessageLogicImpl();
 		messageLogic.setExternalLogic(new ExternalLogicStub());
+
 	}
-	
+
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -88,7 +93,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms message test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -162,6 +167,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
 		insertTask.setDelReportTimeoutDuration(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		insertTask.setDateToExpire(cal.getTime());
 
 		SmsMessage insertMessage = new SmsMessage();
 		insertMessage.setMobileNumber("0721998919");
@@ -223,6 +232,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("messageCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		insertTask.setDateToExpire(cal.getTime());
 		insertTask.setDelReportTimeoutDuration(1);
 
 		for (int i = 0; i < recordsToInsert; i++) {
@@ -268,7 +281,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				bean.setCurrentPage(pages + 1);
 			}
 
-			con = HibernateLogicFactory.getMessageLogic()
+			con = messageLogic
 					.getPagedSmsMessagesForCriteria(bean);
 			messages = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert

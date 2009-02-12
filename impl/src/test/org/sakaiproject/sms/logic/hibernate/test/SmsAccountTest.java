@@ -41,7 +41,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsAccount.setAccountEnabled(true);
 
 		insertSmsTransaction1 = new SmsTransaction();
-		insertSmsTransaction1.setCredits(smsBillingImpl
+		insertSmsTransaction1.setCreditBalance(smsBillingImpl
 				.convertAmountToCredits(100f));
 		insertSmsTransaction1.setSakaiUserId("5");
 		insertSmsTransaction1.setTransactionCredits(100);
@@ -51,7 +51,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsTransaction1.setSmsTaskId(1L);
 
 		insertSmsTransaction2 = new SmsTransaction();
-		insertSmsTransaction2.setCredits(smsBillingImpl
+		insertSmsTransaction2.setCreditBalance(smsBillingImpl
 				.convertAmountToCredits(100f));
 		insertSmsTransaction2.setSakaiUserId("SakaiUserId2");
 		insertSmsTransaction2.setTransactionCredits(100);

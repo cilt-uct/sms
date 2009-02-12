@@ -527,7 +527,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		int g = 10000;
 		for (int i = 0; i < 10; i++) {
 			SmsTransaction smsTransaction = new SmsTransaction();
-			smsTransaction.setCredits(smsBillingImpl.convertAmountToCredits((1.32f)));
+			smsTransaction.setCreditBalance(smsBillingImpl.convertAmountToCredits((1.32f)));
 			smsTransaction.setSakaiUserId("sakaiUserId" + i);
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()

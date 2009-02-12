@@ -129,7 +129,7 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 				UIOutput.make(row, "row-data-transaction-credits", NullHandling
 						.safeToString(smsTransaction.getTransactionCredits()));
 				UIOutput.make(row, "row-data-account-credits", NullHandling
-						.safeToString(smsTransaction.getCredits()));
+						.safeToString(smsTransaction.getCreditBalance()));
 			}
 		}
 	}

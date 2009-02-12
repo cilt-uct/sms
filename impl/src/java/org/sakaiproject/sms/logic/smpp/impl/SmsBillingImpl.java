@@ -59,7 +59,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setCredits((creditsToDebit));
+		smsTransaction.setCreditBalance(((creditsToDebit)));
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
@@ -303,7 +303,7 @@ public class SmsBillingImpl implements SmsBilling {
 		// Set transaction credit and Credits to negative number because we are
 		// reserving.
 		int credits = smsTask.getCreditEstimate() * -1;
-		smsTransaction.setCredits(new Long(credits));
+		smsTransaction.setCreditBalance(new Long(credits));
 		smsTransaction.setTransactionCredits(credits);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
@@ -335,7 +335,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		// The juicy bits
 
-		smsTransaction.setCredits((- 1L));
+		smsTransaction.setCreditBalance((- 1L));
 		smsTransaction.setTransactionCredits(1);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
@@ -416,7 +416,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int transactionCredits = origionalTransaction.getTransactionCredits()
 				* -1;// Reverse the sign cause we are deducting from the account
 		smsTransaction.setTransactionCredits(transactionCredits);
-		smsTransaction.setCredits(new Long(transactionCredits));
+		smsTransaction.setCreditBalance(new Long(transactionCredits));
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(smsAccount);
@@ -453,7 +453,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int creditEstimate = smsTask.getCreditEstimateInt();
 		int actualCreditsUsed = smsTask.getMessagesDelivered();
 		int transactionCredits = creditEstimate - actualCreditsUsed;
-		smsTransaction.setCredits(new Long(transactionCredits));
+		smsTransaction.setCreditBalance(new Long(transactionCredits));
 		smsTransaction.setTransactionCredits(transactionCredits);
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());

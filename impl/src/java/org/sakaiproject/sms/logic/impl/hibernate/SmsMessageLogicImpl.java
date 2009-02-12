@@ -20,6 +20,7 @@ package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +48,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
 /**
  * The data service will handle all sms Message database transactions for the
  * sms tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008
@@ -55,11 +56,11 @@ import org.sakaiproject.sms.util.HibernateUtil;
 public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	private ExternalLogic externalLogic;
-	
+
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
+
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -69,7 +70,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	/**
 	 * Gets all the sms Message records
-	 * 
+	 *
 	 * @return List of SmsMessage objects
 	 */
 	public List<SmsMessage> getAllSmsMessages() {
@@ -82,7 +83,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	/**
 	 * Gets a search results for all SmsMessages that match the specified
 	 * criteria
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -95,17 +96,17 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	/**
 	 * ======================== ONLY FOR TESTING ==================== A new sms
 	 * message factory method. Only used for testing.
-	 * 
+	 *
 	 * This method will instantiate a SmsTask and return a SmsMessage with the
 	 * associated SmsTask object set on it.
 	 * <p>
 	 * The message will not be persisted.
-	 * 
+	 *
 	 * @param mobileNumber
 	 *            the mobile number
 	 * @param messageBody
 	 *            the message body
-	 * 
+	 *
 	 * @return the new sms message instance test
 	 */
 	public SmsMessage getNewTestSmsMessageInstance(String mobileNumber,
@@ -128,6 +129,10 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 		smsTask.setDeliveryGroupId("SakaiGroupID");
 		smsTask.setDeliveryGroupName("SakaiGroupName");
 		smsTask.setCreditEstimate(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
 
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
@@ -147,7 +152,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -177,7 +182,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	/**
 	 * Gets a SmsMessage entity for the given id
-	 * 
+	 *
 	 * @param Long
 	 *            sms Message id
 	 * @return sms Message
@@ -188,7 +193,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	/**
 	 * Returns a message for the given smsc message id or null if nothing found
-	 * 
+	 *
 	 * @param smsc
 	 *            message id
 	 * @return sms message
@@ -221,10 +226,12 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 				crit.add(Restrictions.ilike("statusCode", searchBean
 						.getStatus()));
 			}
-			
+
 			// Task Id
-			if (searchBean.getTaskId() != null && !"".equals(searchBean.getTaskId().trim())) {
-				crit.add(Restrictions.like("smsTask.id", new Long(searchBean.getTaskId())));
+			if (searchBean.getTaskId() != null
+					&& !"".equals(searchBean.getTaskId().trim())) {
+				crit.add(Restrictions.like("smsTask.id", new Long(searchBean
+						.getTaskId())));
 			}
 
 			// Sakai tool name
@@ -285,10 +292,10 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	/**
 	 * Gets a list of SmsMessage objects for the specified and specified status
 	 * code(s).
-	 * 
+	 *
 	 * It will ignore the smsTaskId if it is passed as null and return all
 	 * smsMessages with the specified status code(s).
-	 * 
+	 *
 	 * @param sms
 	 *            task id
 	 * @param statusCode
@@ -328,10 +335,10 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	/**
 	 * This method will persists the given object.
-	 * 
+	 *
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updated on the DB.
-	 * 
+	 *
 	 * @param sms
 	 *            Message to be persisted
 	 */

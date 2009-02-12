@@ -35,9 +35,14 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsTransaction extends BaseModel {
 
 	/**
+	 *
+	 */
+	private static final long serialVersionUID = 5340407908089192124L;
+
+	/**
 	 * The amount of credits available in the account. 1 sms= 1 credit.
 	 */
-	private Long credits;
+	private Long creditBalance;
 
 	/** The sakai user id. This is the user who request the sms task. */
 	private String sakaiUserId;
@@ -74,7 +79,7 @@ public class SmsTransaction extends BaseModel {
 			, Integer transactionCredits,
 			Date transactionDate, String transactionTypeCode) {
 		super();
-		this.credits = credits;
+		this.creditBalance = credits;
 		this.sakaiUserId = sakaiUserId;
 
 		this.transactionCredits = transactionCredits;
@@ -199,19 +204,12 @@ public class SmsTransaction extends BaseModel {
 		this.smsTaskId = smsTaskId;
 	}
 
-	public Long getCredits() {
-		return credits;
-	}
-
-	public void setCredits(Long credits) {
-		this.credits = credits;
-	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (credits ^ (credits >>> 32));
+		result = prime * result + (int) (creditBalance ^ (creditBalance >>> 32));
 		result = prime * result
 				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
 		result = prime * result
@@ -236,7 +234,7 @@ public class SmsTransaction extends BaseModel {
 		if (!(obj instanceof SmsTransaction))
 			return false;
 		SmsTransaction other = (SmsTransaction) obj;
-		if (credits != other.credits)
+		if (creditBalance != other.creditBalance)
 			return false;
 		if (sakaiUserId == null) {
 			if (other.sakaiUserId != null)
@@ -264,6 +262,14 @@ public class SmsTransaction extends BaseModel {
 		} else if (!transactionTypeCode.equals(other.transactionTypeCode))
 			return false;
 		return true;
+	}
+
+	public Long getCreditBalance() {
+		return creditBalance;
+	}
+
+	public void setCreditBalance(Long creditBalance) {
+		this.creditBalance = creditBalance;
 	}
 
 

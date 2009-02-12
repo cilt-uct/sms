@@ -388,8 +388,8 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		// Update the account balance
 		account.setCredits(account.getCredits()
-				+ smsTransaction.getCredits());
-		smsTransaction.setCredits(account.getCredits());
+				+ smsTransaction.getCreditBalance());
+		smsTransaction.setCreditBalance(account.getCredits());
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
 
 		persist(smsTransaction);

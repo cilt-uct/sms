@@ -151,7 +151,7 @@
 			not-null="false" />
 		<property name="transactionCredits" type="integer"
 			column="TRANSACTION_CREDITS" not-null="true" />
-		<property name="credits" type="long" column="CREDITS"
+		<property name="creditBalance" type="long" column="CREDIT_BALANCE"
 			not-null="true" />
 		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
 			not-null="true" />
