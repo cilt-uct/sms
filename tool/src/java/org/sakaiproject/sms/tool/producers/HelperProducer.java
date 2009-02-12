@@ -94,14 +94,15 @@ public class HelperProducer implements ViewComponentProducer,
 		SmsAccount account = accountHelper.retrieveAccount(smsTaskOTP
 				+ ".smsAccountId");
 		UIInput accountCredits = UIInput.make(form, "account-credits", null,
-				(account == null ? 0f : account.getCredits()) + "");
+				(account.getCredits() != null) ? account.getCredits()
+						.toString() : "0");
 		accountCredits.decorate(new UIDisabledDecorator());
 		accountCredits.fossilize = false;
 
 		UIMessage.make(form, "estimated-credits-label",
 				"sms.helper.estimated-credits");
-		UIInput estimatedCost = UIInput.make(form, "estimated-credits", smsTaskOTP
-				+ ".groupSizeEstimate");
+		UIInput estimatedCost = UIInput.make(form, "estimated-credits",
+				smsTaskOTP + ".groupSizeEstimate");
 		estimatedCost.decorate(new UIDisabledDecorator());
 		estimatedCost.fossilize = false;
 

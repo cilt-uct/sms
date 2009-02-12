@@ -25,7 +25,7 @@
 
    <bean id="templateResolverStrategy"
      class="org.sakaiproject.sms.tool.rsf.SmsTemplateResolverStrategy">
-     
+
      <property name="baseDirectory" ref="defaultTemplatePath" />
      <property name="consumerInfo" ref="consumerInfoProxy" />
  	 <property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
