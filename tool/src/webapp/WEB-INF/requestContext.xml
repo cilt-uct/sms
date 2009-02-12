@@ -90,6 +90,7 @@
   	<property name="ELEvaluator" ref="ELEvaluator" />
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
+  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.BillingAdminProducer" >

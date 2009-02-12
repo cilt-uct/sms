@@ -191,7 +191,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	 */
 	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
 		SmsConfig config = HibernateLogicFactory.getConfigLogic()
-				.getOrCreateSmsConfigBySakaiSiteId(sakaiSiteId);
+				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
 		SmsAccount account = null;
 		if (SmsHibernateConstants.SMS_DEV_MODE) {

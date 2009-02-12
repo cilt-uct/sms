@@ -21,12 +21,15 @@ import org.sakaiproject.sms.tool.otp.SmsSystemConfigLocator;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
+import uk.org.ponder.rsf.components.ELReference;
+import uk.org.ponder.rsf.components.UIBoundList;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -130,6 +133,17 @@ public class SmsSystemConfigProducer implements ViewComponentProducer {
 		smsCreditCost.decorators = new DecoratorList(new UITooltipDecorator(
 				UIMessage.make("sms.system.config.sms.credit.cost-tooltip")));
 
+		UIMessage.make(smsSystemForm, "use-site-account", "sms.use.site.account");
+		UIBoundList comboValues = new UIBoundList();
+		comboValues.setValue(new String[] { "true", "false" });
+		UIBoundList comboNames = new UIBoundList();
+		comboNames.setValue(new String[] { "Yes", "No" });
+		UISelect combo = UISelect.make(smsSystemForm,"config-use-site-account");
+		combo.selection = new UIInput();
+		combo.selection.valuebinding = new ELReference(smsSystemConfigOTP + ".useSiteAcc");
+		combo.optionlist = comboValues;
+		combo.optionnames = comboNames;
+		
 		UICommand.make(smsSystemForm, "save",
 				SmsSystemConfigLocator.LOCATOR_NAME + ".save");
 		UICommand.make(smsSystemForm, "cancel", "#");

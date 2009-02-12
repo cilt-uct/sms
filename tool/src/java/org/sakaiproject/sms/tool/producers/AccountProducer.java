@@ -20,6 +20,8 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.otp.SmsAccountLocator;
@@ -56,7 +58,8 @@ public class AccountProducer implements ViewComponentProducer,
 	private BeanGetter ELEvaluator;
 	private MessageFixupHelper messageFixupHelper;
 	private NavBarRenderer navBarRenderer;
-
+	private SmsConfigLogic smsConfigLogic;
+	
 	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
 		this.navBarRenderer = navBarRenderer;
 	}
@@ -91,12 +94,9 @@ public class AccountProducer implements ViewComponentProducer,
 
 		String accountOTP = SmsAccountLocator.LOCATOR_NAME + ".";
 
-		boolean isNew = false;
-
 		IdParams params = (IdParams) viewparams;
 		if (params.id == null || "".equals(params.id)) {
 			accountOTP += SmsUiConstants.NEW_1;
-			isNew = true;
 		} else {
 			accountOTP += params.id;
 		}
@@ -112,14 +112,19 @@ public class AccountProducer implements ViewComponentProducer,
 
 		createAccountEnabledBooleanSelection(accountOTP, form);
 
-		UIMessage.make(form, "sakai-site-id-label",
-				"sms.sms-account.sakai-site-id");
-
-		UIInput.make(form, "sakai-site-id", accountOTP + ".sakaiSiteId");
-
-		UIMessage.make(form, "sakai-user-id-label",
-				"sms.sms-account.sakai-user-id");
-		UIInput.make(form, "sakai-user-id", accountOTP + ".sakaiUserId");
+		SmsConfig systemConfig = smsConfigLogic.getOrCreateSystemSmsConfig();
+		
+		// Only allow for site or user level
+		if (systemConfig.getUseSiteAcc()) {
+			UIMessage.make(form, "sakai-site-id-label",	"sms.sms-account.sakai-site-id");
+			UIInput.make(form, "sakai-site-id", accountOTP + ".sakaiSiteId");
+			form.addParameter(new UIELBinding(accountOTP + ".sakaiUserId", null));
+		} else {
+			UIMessage.make(form, "sakai-user-id-label",	"sms.sms-account.sakai-user-id");
+			UIInput.make(form, "sakai-user-id", accountOTP + ".sakaiUserId");
+			form.addParameter(new UIELBinding(accountOTP + ".sakaiSiteId", null));
+		}
+		
 		UIMessage.make(form, "overdraft-limit-label",
 				"sms.sms-account.overdraft-limit");
 		UIInput.make(form, "overdraft-limit", accountOTP + ".overdraftLimit");
@@ -189,5 +194,9 @@ public class AccountProducer implements ViewComponentProducer,
 	public void setELEvaluator(BeanGetter ELEvaluator) {
 		this.ELEvaluator = ELEvaluator;
 	}
-
+	
+	public void setSmsConfigLogic(SmsConfigLogic smsConfigLogic) {
+		this.smsConfigLogic = smsConfigLogic;
+	}
+	
 }

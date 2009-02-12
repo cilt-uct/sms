@@ -138,6 +138,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 					.setSchedulerInterval(SmsHibernateConstants.SCHEDULER_INTERVAL);
 
 			config.setCreditCost(SmsHibernateConstants.COST_OF_CREDIT);
+			config.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
 		} else {
 			// Setting for each site
 			config.setSakaiToolId("DummyToolId");
@@ -147,8 +148,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 					.setNotificationEmailBilling("notificationBilling@instution.com");
 			config.setNotificationEmailSent("notificationSent@instution.com");
 			config.setPagingSize(SmsHibernateConstants.DEFAULT_PAGE_SIZE);
-			config
-					.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
+
 			config.setSendSmsEnabled(false);
 
 		}
