@@ -252,7 +252,7 @@ public class SmsTask extends BaseModel {
 	@Override
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj, false, SmsTask.class,
-				new String[] { "smsMessages" });
+				new String[] { "smsMessages", "dateToExpire" });
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +42,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	/** The insert message2. */
 	private static SmsMessage insertMessage2;
-	
-	private SmsTaskLogicImpl smsTaskLogic;
+
+	private static SmsTaskLogicImpl smsTaskLogic;
 
 	static {
 
@@ -51,14 +52,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		insertMessage1 = createTestMessage1();
 
 		insertMessage2 = createTestMessage2();
-	}
-	
-	public void onSetup() {
 		smsTaskLogic = new SmsTaskLogicImpl();
 		smsTaskLogic.setExternalLogic(new ExternalLogicStub());
 	}
-	
-	
+
+
+
+
 	private static SmsMessage createTestMessage1() {
 		SmsMessage message = new SmsMessage();
 		message.setMobileNumber("0721998919");
@@ -91,6 +91,12 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		testTask.setMaxTimeToLive(1);
 		testTask.setDelReportTimeoutDuration(1);
 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(testTask.getDateToSend());
+		cal.add(Calendar.SECOND, testTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		testTask.setDateToExpire(cal.getTime());
+
 		testTask.setDeliveryEntityList(Arrays.asList("1234", "1235", "1236"));
 		return testTask;
 	}
@@ -104,7 +110,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -115,7 +121,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms task test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -189,7 +195,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		 * messageLogic.getSmsMessagesWithStatus(null,
 		 * SmsConst_DeliveryStatus.STATUS_PENDING,
 		 * SmsConst_DeliveryStatus.STATUS_INCOMPLETE);
-		 * 
+		 *
 		 * Timestamp t = null; // Get the oldest date to send from the list; for
 		 * (SmsMessage message : messages) { if (t == null) { t =
 		 * message.getSmsTask().getDateToSend(); } if
@@ -242,6 +248,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
 		insertTask.setDelReportTimeoutDuration(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 
 		try {
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
@@ -252,7 +263,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			bean.setDateTo(new Date());
 			bean.setToolName(insertTask.getSakaiToolName());
 			bean.setSender(insertTask.getSenderUserName());
-			
+
 			List<SmsTask> tasks = smsTaskLogic.getPagedSmsTasksForCriteria(bean).getPageResults();
 			assertTrue("Collection returned has no objects", tasks.size() > 0);
 
@@ -287,6 +298,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			insertTask.setSakaiToolName("sakaiToolName");
 			insertTask.setMaxTimeToLive(1);
 			insertTask.setDelReportTimeoutDuration(i);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(insertTask.getDateToSend());
+			cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+			// TODO, DateToExpire must be set from the UI as well
+			insertTask.setDateToExpire(cal.getTime());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
 		}
 
