@@ -45,7 +45,7 @@
 		<property name="dateProcessed" type="timestamp" column="DATE_PROCESSED"
 			not-null="false" />
 		<property name="deliveryGroupName" type="string" column="DELIVERY_GROUP_NAME"
-			not-null="false" length="50" />
+			not-null="false" length="200" />
 		<property name="groupSizeEstimate" type="integer" column="GROUP_SIZE_ESTIMATE"
 			not-null="false" />
 		<property name="groupSizeActual" type="integer" column="GROUP_SIZE_ACTUAL"

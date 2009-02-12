@@ -49,9 +49,9 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -69,7 +69,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		externalLogic = new ExternalLogicStub();
 		smsCoreImpl = new SmsCoreImpl();
 		smsConfigLogic = new SmsConfigLogicImpl();
-		
+
 		smsCoreImpl.setExternalLogic(externalLogic);
 		smsCoreImpl.setSmsConfigLogic(smsConfigLogic);
 		smsSmppImpl = new SmsSmppImpl();
@@ -111,7 +111,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -119,7 +119,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
-		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		SmsConfig config = smsConfigLogic
+				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
+						.getCurrentSiteId());
 		config.setSendSmsEnabled(true);
 		smsConfigLogic.persistSmsConfig(config);
 	}
@@ -130,7 +132,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 *
+	 * 
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -301,7 +303,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
 		}
 
-
 	}
 
 	/**
@@ -371,16 +372,17 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			smsSmppImpl.setLogLevel(Level.ALL);
 			smsSmppImpl.getSession().setMessageReceiverListener(null);
 			SmsTask statusUpdateTask = smsCoreImpl.getPreliminaryTask(
-					"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask", new Date(
-							System.currentTimeMillis()),
+					"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask",
+					new Date(System.currentTimeMillis()),
 					"TestTimeoutAndMessageStatusUpdate-StatusUpdateTask",
 					externalLogic.getCurrentSiteId(), null, externalLogic
 							.getCurrentUserId());
-			statusUpdateTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+			statusUpdateTask
+					.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 			statusUpdateTask.setAttemptCount(0);
 			statusUpdateTask.setDateProcessed(new Date());
-			statusUpdateTask.setSmsMessagesOnTask(smsCoreImpl
-					.generateSmsMessages(statusUpdateTask));
+			statusUpdateTask.setSmsMessagesOnTask(externalLogic
+					.getSakaiGroupMembers(statusUpdateTask, true));
 			statusUpdateTask.setSmsAccountId(smsAccount.getId());
 			// statusUpdateTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 			smsCoreImpl.calculateEstimatedGroupSize(statusUpdateTask);
@@ -389,7 +391,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			} catch (SmsTaskValidationException e1) {
 				fail(e1.getErrorMessagesAsBlock());
 			}
-			smsSmppImpl.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
+			smsSmppImpl
+					.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
 
 			assertEquals(true, statusUpdateTask.getMessagesWithStatus(
 					SmsConst_DeliveryStatus.STATUS_PENDING).size() == 0);
@@ -400,8 +403,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 							.getCurrentSiteId(), null, externalLogic
 							.getCurrentUserId());
 			timeOutTask.setDelReportTimeoutDuration(60);
-			timeOutTask.setSmsMessagesOnTask(smsCoreImpl
-					.generateSmsMessages(timeOutTask));
+			timeOutTask.setSmsMessagesOnTask(externalLogic
+					.getSakaiGroupMembers(timeOutTask, true));
 			timeOutTask.setSmsAccountId(smsAccount.getId());
 			smsCoreImpl.calculateEstimatedGroupSize(timeOutTask);
 			try {
@@ -652,16 +655,18 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		assertEquals(new Integer(3), toTest.getGroupSizeEstimate());
 
 	}
-	
+
 	public void testSmsSendDisabled() {
-		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		SmsConfig config = smsConfigLogic
+				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
+						.getCurrentSiteId());
 		config.setSendSmsEnabled(false);
 		smsConfigLogic.persistSmsConfig(config);
-		
+
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
-		
+
 		try {
 			smsCoreImpl.insertTask(insertTask);
 			fail("SmsSendDisabledException shoud be thrown");
@@ -672,12 +677,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		} catch (SmsSendDisabledException e) {
 			assertNotNull(e);
 		}
-		
+
 		// test shouldn't be dependant on eachother
 		// we really must find time to fix it
 		config.setSendSmsEnabled(true);
 		smsConfigLogic.persistSmsConfig(config);
 	}
-	
 
 }

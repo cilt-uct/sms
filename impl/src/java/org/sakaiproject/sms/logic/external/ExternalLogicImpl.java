@@ -19,6 +19,8 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
@@ -26,10 +28,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.UserDirectoryService;
@@ -179,16 +184,80 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return mobileNumberHelper.getUserMobileNumber(userId);
 	}
 
-	/**
-	 * @see {@link ExternalLogic#getGroupMemberCount(String)}
-	 */
-	public int getGroupMemberCount(String reference) {
-		System.out.println(reference);
-		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(reference);
-		if (group == null) {
-			return 15; // for testing
+	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
+			String entityReference, boolean getMobileNumbers) {
+		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+		// TODO: here must must figure out if the reference is an Authz group,
+		// role, or list of users
+		Set members = new HashSet<Object>();
+		// Session newsession = SessionManager.startSession();
+		// SessionManager.setCurrentSession(newsession);
+		// // inject this session with new user values
+		// User user = UserDirectoryService.getUserByEid(userid);
+		// newsession.setUserEid(userid);
+		// newsession.setUserId(user.getId());
+
+		Object obj = entityBroker.fetchEntity(entityReference);
+		if (obj instanceof AuthzGroup) {
+			AuthzGroup group = (AuthzGroup) entityBroker
+					.fetchEntity(entityReference);
+			members.addAll(group.getMembers());
 		}
-		return group.getMembers().size();
+		log.info("Getting group members for : " + entityReference + " (size = "
+				+ members.size() + ")");
+		for (Object oObject : members) {
+			SmsMessage message = new SmsMessage();
+			if (oObject instanceof Member) {
+				message.setSakaiUserId(((Member) oObject).getUserId());
+			} else {
+				message.setSakaiUserId("*"); // for testing
+			}
+			if (getMobileNumbers) {
+				String mobileNumber = getSakaiMobileNumber(message
+						.getSakaiUserId());
+				if (mobileNumber == null) {
+					mobileNumber = "9999999"; // for testing
+					// TODO, user must not be added to list of mobile number is
+					// empty
+				}
+				message.setMobileNumber(getSakaiMobileNumber(message
+						.getSakaiUserId()));
+			}
+			message.setSmsTask(smsTask);
+			messages.add(message);
+		}
+		return messages;
+	}
+
+	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
+			boolean getMobileNumbers) {
+		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+		if (smsTask.getDeliveryEntityList() != null) {
+			// list of references to groups, roles etc.
+			for (String reference : smsTask.getDeliveryEntityList()) {
+				messages.addAll(getSakaiEntityMembersAsMessages(smsTask,
+						reference, getMobileNumbers));
+			}
+		} else if (smsTask.getDeliveryGroupId() != null) {
+			// a single group reference
+			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
+					.getDeliveryGroupId(), getMobileNumbers));
+
+		} else if (smsTask.getDeliveryMobileNumbersSet() != null) {
+			// a list of mobile numbers, not necessarily from sakai users
+			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
+				SmsMessage message = new SmsMessage();
+				message.setMobileNumber(mobileNumber);
+				message.setSmsTask(smsTask);
+				messages.add(message);
+			}
+		} else if (smsTask.getDeliveryUserId() != null) {
+			// a single sakai user id, for incoming messages
+			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
+					.getDeliveryUserId(), getMobileNumbers));
+		}
+		return messages;
+
 	}
 
 	public String getSakaiUserDisplayName(String userId) {

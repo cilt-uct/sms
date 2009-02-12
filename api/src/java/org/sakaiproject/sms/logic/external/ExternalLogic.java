@@ -18,6 +18,11 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.Set;
+
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
+
 /**
  * Interface to logic which is external to SMS
  */
@@ -107,13 +112,14 @@ public interface ExternalLogic {
 			String message);
 
 	/**
-	 * Get current number of members in a specific group
+	 * Return the actual list of message constructed for each user in the group
 	 * 
+	 * @param smsTask
 	 * @param reference
-	 *            entity reference of group
-	 * @return an integer with current number of members in group
+	 * @return
 	 */
-	public int getGroupMemberCount(String reference);
+	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
+			boolean getMobileNumbers);
 
 	/**
 	 *return the friendly display name of a specific user

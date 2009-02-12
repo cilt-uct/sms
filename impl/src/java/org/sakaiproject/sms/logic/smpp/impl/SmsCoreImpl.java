@@ -20,7 +20,6 @@ package org.sakaiproject.sms.logic.smpp.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,24 +75,14 @@ public class SmsCoreImpl implements SmsCore {
 
 	public SmsTask calculateEstimatedGroupSize(SmsTask smsTask) {
 		int groupSize = 0;
-
-		if (smsTask.getDeliveryEntityList() != null) {
-			for (String reference : smsTask.getDeliveryEntityList()) {
-				groupSize += externalLogic.getGroupMemberCount(reference);
-			}
-		} else if (smsTask.getDeliveryGroupId() != null) {
-			groupSize += externalLogic.getGroupMemberCount(smsTask
-					.getDeliveryGroupId());
-		} else if (smsTask.getDeliveryMobileNumbersSet() != null) {
-			groupSize += smsTask.getDeliveryMobileNumbersSet().size();
-		} else if (smsTask.getDeliveryUserId() != null) {
-			groupSize = 1;
-		}
-
+		Set<SmsMessage> messages = externalLogic.getSakaiGroupMembers(smsTask,
+				false);
+		groupSize = messages.size();
 		smsTask.setGroupSizeEstimate(groupSize);
+		// one sms always costs one credit
 		smsTask.setCreditEstimate(groupSize);
 		smsTask.setCostEstimate(smsBilling.convertCreditsToAmount(groupSize)
-				.doubleValue());// TODO Change to Float?
+				.doubleValue());
 		return smsTask;
 	}
 
@@ -105,11 +94,11 @@ public class SmsCoreImpl implements SmsCore {
 	 * @return
 	 */
 	private SmsTask calculateActualGroupSize(SmsTask smsTask) {
-		smsTask.setSmsMessagesOnTask(this.generateSmsMessages(smsTask));
-		smsTask.setGroupSizeActual(smsTask.getSmsMessages().size());
-
+		Set<SmsMessage> messages = externalLogic.getSakaiGroupMembers(smsTask,
+				true);
+		smsTask.setSmsMessagesOnTask(messages);
+		smsTask.setGroupSizeActual(messages.size());
 		return smsTask;
-
 	}
 
 	/*
@@ -120,52 +109,6 @@ public class SmsCoreImpl implements SmsCore {
 	public void setLoggingLevel(Level level) {
 		LOG.setLevel(level);
 
-	}
-
-	/**
-	 * /** For now we just generate the list. Will get it from Sakai later on.
-	 * So we generate a random number of users with random mobile numbers.
-	 * 
-	 * @param smsTask
-	 * @return
-	 */
-	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
-		Set<SmsMessage> messages = new HashSet<SmsMessage>();
-
-		String[] users;
-		int numberOfMessages = (int) Math.round(Math.random() * 100);
-
-		users = new String[100];
-
-		String[] celnumbers = new String[100];
-		for (int i = 0; i < users.length; i++) {
-
-			users[i] = "SakaiUser" + i;
-
-			celnumbers[i] = "+2773"
-					+ (int) Math.round(Math.random() * 10000000);
-		}
-		for (int i = 0; i < numberOfMessages; i++) {
-
-			SmsMessage message = new SmsMessage();
-			message.setMobileNumber(celnumbers[(int) Math
-					.round(Math.random() * 99)]);
-
-			message.setSakaiUserId(users[(int) Math.round(Math.random() * 99)]);
-
-			message.setSmsTask(smsTask);
-			messages.add(message);
-		}
-		return messages;
-	}
-
-	/**
-	 * Get the group list from Sakai, dummy data for now.
-	 */
-
-	public Set<SmsMessage> generateSmsMessages(SmsTask smsTask) {
-		return generateDummySmsMessages(smsTask);
-		// TODO must make a Sakai call here
 	}
 
 	public SmsTask getNextSmsTask() {

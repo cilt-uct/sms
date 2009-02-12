@@ -18,9 +18,13 @@
 package org.sakaiproject.sms.logic.stubs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
@@ -101,4 +105,38 @@ public class ExternalLogicStub implements ExternalLogic {
 		return "louis@psybergate.com";
 	}
 
+	/**
+	 * So when running in jetty we generate a random number of users with random
+	 * mobile numbers. * @param smsTask
+	 * 
+	 * @return
+	 */
+	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
+		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+
+		String[] users;
+		int numberOfMessages = (int) Math.round(Math.random() * 100);
+		users = new String[100];
+		String[] celnumbers = new String[100];
+		for (int i = 0; i < users.length; i++) {
+			users[i] = "SakaiUser" + i;
+			celnumbers[i] = "+2773"
+					+ (int) Math.round(Math.random() * 10000000);
+		}
+		for (int i = 0; i < numberOfMessages; i++) {
+			SmsMessage message = new SmsMessage();
+			message.setMobileNumber(celnumbers[(int) Math
+					.round(Math.random() * 99)]);
+			message.setSakaiUserId(users[(int) Math.round(Math.random() * 99)]);
+			message.setSmsTask(smsTask);
+			messages.add(message);
+		}
+		return messages;
+	}
+
+	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
+			boolean getMobileNumbers) {
+		return this.generateDummySmsMessages(smsTask);
+
+	}
 }

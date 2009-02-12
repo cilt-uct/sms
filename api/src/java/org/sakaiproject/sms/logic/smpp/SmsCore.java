@@ -37,14 +37,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
  * @created 12-Nov-2008
  */
 public interface SmsCore {
-	/**
-	 * Get the group list from Sakai and remove users with invalid/empty mobile
-	 * numbers or opted out profiles.
-	 * 
-	 * @param smsTask
-	 * @return
-	 */
-	public Set generateSmsMessages(SmsTask smsTask);
 
 	/**
 	 * Find the next sms task to process from the task queue. Determine tasks
