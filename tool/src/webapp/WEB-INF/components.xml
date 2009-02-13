@@ -20,7 +20,9 @@
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	</bean>
 
-	<bean id="org.sakaiproject.sms.api.SmsBilling" class="org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl" />
+	<bean id="org.sakaiproject.sms.api.SmsBilling" class="org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl" >
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsSmpp" class="org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl"
 		init-method="init">

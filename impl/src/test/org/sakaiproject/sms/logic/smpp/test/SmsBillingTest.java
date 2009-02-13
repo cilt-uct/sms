@@ -24,11 +24,13 @@ import java.util.List;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
@@ -49,6 +51,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 	static {
 		smsBillingImpl = new SmsBillingImpl();
+		smsBillingImpl.setExternalLogic(new ExternalLogicStub());
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
 
@@ -98,6 +101,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
@@ -233,14 +237,14 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		insertTestTransactionsForAccount(smsAccount);
 
 		assertTrue(smsAccount.exists());
+		assertEquals(smsAccount.getCredits().longValue(), (new Float(10f / SmsHibernateConstants.COST_OF_CREDIT)).longValue());
 
 		List<SmsTransaction> transactions = HibernateLogicFactory
 				.getTransactionLogic().getSmsTransactionsForAccountId(
 						smsAccount.getId());
 
 		assertNotNull(transactions);
-		assertTrue(transactions.size() > 0);
-
+		assertEquals(10, transactions.size());
 		smsBillingImpl.recalculateAccountBalance(smsAccount.getId());
 
 		SmsAccount recalculatedAccount = HibernateLogicFactory
@@ -299,6 +303,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
+		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
@@ -343,6 +348,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		smsTask.setGroupSizeActual(0);
+		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
@@ -398,6 +404,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
+		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
@@ -448,6 +455,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
+		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
 		SmsMessage smsMessage = new SmsMessage();
@@ -497,6 +505,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
+		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.debitAccount(smsAccount.getId(), smsBillingImpl.convertAmountToCredits(1000f));
@@ -508,6 +517,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				retAccount.getCredits()) > origionalAccountBalance);
 		assertTrue(smsBillingImpl.convertCreditsToAmount(
 				retAccount.getCredits()) == 1000f);
+		
 	}
 
 	// ///////////////////////////////////////

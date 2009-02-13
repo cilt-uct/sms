@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -41,6 +42,12 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
  */
 public class SmsBillingImpl implements SmsBilling {
 
+	private ExternalLogic externalLogic;
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 	/**
 	 * Debit an account by the supplied amount of credits.
 	 *
@@ -60,7 +67,7 @@ public class SmsBillingImpl implements SmsBilling {
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(0);
 		smsTransaction.setCreditBalance(((creditsToDebit)));
-		smsTransaction.setSakaiUserId(account.getSakaiUserId());
+		smsTransaction.setSakaiUserId(externalLogic.getCurrentUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
 
