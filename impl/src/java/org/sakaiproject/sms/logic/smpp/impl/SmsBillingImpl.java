@@ -324,12 +324,12 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 * Credits account for a message that came in late.
+	 * Debit account for a message that came in late.
 	 *
 	 * @param smsTask
 	 * @return true, if successful
 	 */
-	public boolean creditLateMessage(SmsMessage smsMessage) {
+	public boolean debitLateMessage(SmsMessage smsMessage) {
 		SmsTask smsTask = smsMessage.getSmsTask();
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());

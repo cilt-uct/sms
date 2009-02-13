@@ -357,7 +357,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 */
 	public void insertLateMessageTransaction(SmsTransaction smsTransaction) {
 		insertTransaction(smsTransaction,
-				SmsConst_Billing.TRANS_CREDIT_LATE_MESSAGE);
+				SmsConst_Billing.TRANS_DEBIT_LATE_MESSAGE);
 	}
 
 	/**

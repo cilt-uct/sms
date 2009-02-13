@@ -520,7 +520,7 @@ public class SmsCoreImpl implements SmsCore {
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 				HibernateLogicFactory.getTaskLogic()
 						.incrementMessagesDelivered(smsMessage.getSmsTask());
-				smsBilling.creditLateMessage(smsMessage);
+				smsBilling.debitLateMessage(smsMessage);
 			}
 			HibernateLogicFactory.getMessageLogic().persistSmsMessage(
 					smsMessage);

@@ -101,7 +101,7 @@ public class SmsBillingStub implements SmsBilling {
 		return sufficientCredits;
 	}
 
-	public boolean creditLateMessage(SmsMessage smsMessage) {
+	public boolean debitLateMessage(SmsMessage smsMessage) {
 		// TODO Auto-generated method stub
 		return false;
 	}

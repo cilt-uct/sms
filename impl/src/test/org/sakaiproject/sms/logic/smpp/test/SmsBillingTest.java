@@ -428,7 +428,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test credit late message.
 	 */
-	public void testCreditLateMessage() {
+	public void testDebitLateMessage() {
 		float origionalAccountBalance = 100;
 		int creditEstimate = 50;
 
@@ -466,7 +466,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 		smsMessage.setSmsTask(smsTask);
 
-		smsBillingImpl.creditLateMessage(smsMessage);
+		smsBillingImpl.debitLateMessage(smsMessage);
 		// Check the account balance was deducted from
 		SmsAccount retAccount = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsAccount.getId());

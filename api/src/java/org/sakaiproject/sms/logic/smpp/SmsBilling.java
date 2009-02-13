@@ -236,11 +236,11 @@ public interface SmsBilling {
 	public boolean settleCreditDifference(SmsTask smsTask);
 
 	/**
-	 * Credits account for a message that came in late.
+	 * Debit account for a message that came in late.
 	 *
 	 * @param smsMessage
 	 * @return
 	 */
-	public boolean creditLateMessage(SmsMessage smsMessage);
+	public boolean debitLateMessage(SmsMessage smsMessage);
 
 }
