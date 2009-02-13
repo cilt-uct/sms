@@ -1,5 +1,5 @@
 /***********************************************************************************
- * DebitAccountBean.java
+ * CreditAccountBean.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
 package org.sakaiproject.sms.tool.beans;
 
 /**
- * Simple bean to wrap up a request scoped debit action
+ * Simple bean to wrap up a request scoped credit action
  */
-public class DebitAccountBean {
+public class CreditAccountBean {
 
 	private Long accountId;
-	private Long creditsToDebit;
+	private Long creditsToCredit;
 
 	public Long getAccountId() {
 		return accountId;
@@ -33,12 +33,12 @@ public class DebitAccountBean {
 		this.accountId = accountId;
 	}
 
-	public Long getCreditsToDebit() {
-		return creditsToDebit;
+	public Long getCreditsToCredit() {
+		return creditsToCredit;
 
 	}
 
-	public void setCreditsToDebit(Long creditsToDebit) {
-		this.creditsToDebit = creditsToDebit;
+	public void setCreditsToCredit(Long creditsToCredit) {
+		this.creditsToCredit = creditsToCredit;
 	}
 }

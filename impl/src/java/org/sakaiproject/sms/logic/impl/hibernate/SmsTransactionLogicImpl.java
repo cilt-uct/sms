@@ -361,15 +361,15 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	}
 
 	/**
-	 * Insert transaction to debit an account
+	 * Insert transaction to credit an account
 	 * <p>
 	 * This will also update the related account balance.
 	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
-	public void insertDebitAccountTransaction(SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction, SmsConst_Billing.TRANS_DEBIT_ACCOUNT);
+	public void insertCreditAccountTransaction(SmsTransaction smsTransaction) {
+		insertTransaction(smsTransaction, SmsConst_Billing.TRANS_CREDIT_ACCOUNT);
 	}
 
 	/**

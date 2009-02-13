@@ -2,11 +2,11 @@ package org.sakaiproject.sms.tool.validators;
 
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.tool.beans.DebitAccountBean;
+import org.sakaiproject.sms.tool.beans.CreditAccountBean;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-public class DebitAccountValidator implements Validator {
+public class CreditAccountValidator implements Validator {
 
 	private SmsAccountLogic smsAccountLogic;
 
@@ -16,14 +16,14 @@ public class DebitAccountValidator implements Validator {
 
 	@SuppressWarnings("unchecked")
 	public boolean supports(Class clazz) {
-		if (DebitAccountBean.class.equals(clazz.getClass())) {
+		if (CreditAccountBean.class.equals(clazz.getClass())) {
 			return true;
 		}
 		return false;
 	}
 
 	public void validate(Object target, Errors errors) {
-		DebitAccountBean account = (DebitAccountBean) target;
+		CreditAccountBean account = (CreditAccountBean) target;
 
 		if (account.getAccountId() != null) {
 			// check account exists
@@ -31,17 +31,17 @@ public class DebitAccountValidator implements Validator {
 					.getAccountId());
 
 			if (smsAccount == null) {
-				errors.reject("sms.debit.account.errors.no.account");
+				errors.reject("sms.credit.account.errors.no.account");
 			}
 		} else {
 			errors.reject("sms.errors.accountId.empty");
 		}
 
-		if (account.getCreditsToDebit() == null) {
-			errors.reject("sms.errors.creditsToDebit.invalid");
-		} else if (account.getCreditsToDebit() < 0) {
-			errors.rejectValue("creditsToDebit",
-					"sms.errors.creditsToDebit.empty");
+		if (account.getCreditsToCredit() == null) {
+			errors.reject("sms.errors.creditsToCredit.invalid");
+		} else if (account.getCreditsToCredit() < 0) {
+			errors.rejectValue("creditsToCredit",
+					"sms.errors.creditsToCredit.empty");
 		} else {
 
 		}

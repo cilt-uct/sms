@@ -8,7 +8,7 @@
   <bean id="searchTaskList" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
   <bean id="searchTransactionLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
   <bean id="searchMessageLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
-  <bean id="debitAccountBean" class="org.sakaiproject.sms.tool.beans.DebitAccountBean"/>	
+  <bean id="creditAccountBean" class="org.sakaiproject.sms.tool.beans.CreditAccountBean"/>	
   
   <!--  Renderers -->
   <bean id="taskListCriteriaRenderer" class="org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer">
@@ -55,7 +55,7 @@
 	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
   
-  <bean class="org.sakaiproject.sms.tool.producers.DebitAccountProducer">
+  <bean class="org.sakaiproject.sms.tool.producers.CreditAccountProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
@@ -130,8 +130,8 @@
   	<property name="messages" ref="targettedMessageList"/>
   </bean>
   
-  <bean id="debitAccountActionBean" class="org.sakaiproject.sms.tool.beans.DebitAccountActionBean">
-  	<property name="debitAccountBean" ref="debitAccountBean"/>
+  <bean id="creditAccountActionBean" class="org.sakaiproject.sms.tool.beans.CreditAccountActionBean">
+  	<property name="creditAccountBean" ref="creditAccountBean"/>
   	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
   	<property name="messages" ref="targettedMessageList"/>
   </bean>

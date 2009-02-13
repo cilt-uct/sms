@@ -49,16 +49,16 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 * Debit an account by the supplied amount of credits.
+	 * Credit an account by the supplied amount of credits.
 	 *
 	 * @param accountId
-	 * @param creditsToDebit
+	 * @param creditsToCredit
 	 */
-	public void debitAccount(Long accountId, long creditsToDebit) {
+	public void creditAccount(Long accountId, long creditsToCredit) {
 
-		if (creditsToDebit < 0) {
+		if (creditsToCredit < 0) {
 			throw new RuntimeException(
-					"The amount of credits supplied to debit an account must be positive");
+					"The amount of credits supplied to credit an account must be positive");
 		}
 
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
@@ -66,13 +66,13 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setCreditBalance(((creditsToDebit)));
+		smsTransaction.setCreditBalance(creditsToCredit);
 		smsTransaction.setSakaiUserId(externalLogic.getCurrentUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
 
 		HibernateLogicFactory.getTransactionLogic()
-				.insertDebitAccountTransaction(smsTransaction);
+				.insertCreditAccountTransaction(smsTransaction);
 	}
 
 	/**

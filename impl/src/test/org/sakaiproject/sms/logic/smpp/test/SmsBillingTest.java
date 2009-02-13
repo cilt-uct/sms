@@ -476,9 +476,9 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * Test debit account.
+	 * Test credit account.
 	 */
-	public void testDebitAccount() {
+	public void testCreditAccount() {
 		float origionalAccountBalance = 0;
 		int creditEstimate = 50;
 
@@ -508,7 +508,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setDateToExpire(new Date());
 		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 
-		smsBillingImpl.debitAccount(smsAccount.getId(), smsBillingImpl.convertAmountToCredits(1000f));
+		smsBillingImpl.creditAccount(smsAccount.getId(), smsBillingImpl.convertAmountToCredits(1000f));
 		// Check the account balance was deducted from
 		SmsAccount retAccount = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsAccount.getId());

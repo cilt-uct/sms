@@ -112,7 +112,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
 
 		HibernateLogicFactory.getTransactionLogic()
-				.insertDebitAccountTransaction(smsTransaction);
+				.insertCreditAccountTransaction(smsTransaction);
 		assertTrue("Object not persisted", smsTransaction.exists());
 
 		// Check the record was created on the DB... an id will be assigned.

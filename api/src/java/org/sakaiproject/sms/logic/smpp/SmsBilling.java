@@ -37,12 +37,12 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 public interface SmsBilling {
 
 	/**
-	 * Debit an account by the supplied amount of credits
+	 * Credit an account by the supplied amount of credits
 	 *
 	 * @param accountId
-	 * @param creditsToDebit
+	 * @param creditsToCredit
 	 */
-	public void debitAccount(Long accountId, long creditsToDebit);
+	public void creditAccount(Long accountId, long creditsToCredit);
 
 	/**
 	 * Add extra credits to the specific account by making an entry into

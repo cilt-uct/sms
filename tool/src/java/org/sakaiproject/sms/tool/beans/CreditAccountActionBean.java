@@ -7,11 +7,11 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
-public class DebitAccountActionBean {
+public class CreditAccountActionBean {
 
-	private static Log LOG = LogFactory.getLog(DebitAccountActionBean.class);
+	private static Log LOG = LogFactory.getLog(CreditAccountActionBean.class);
 
-	private DebitAccountBean debitAccountBean;
+	private CreditAccountBean creditAccountBean;
 	private SmsBilling smsBilling;
 	private TargettedMessageList messages;;
 
@@ -20,17 +20,17 @@ public class DebitAccountActionBean {
 		this.messages = messages;
 	}
 
-	public void setDebitAccountBean(DebitAccountBean debitAccountBean) {
-		this.debitAccountBean = debitAccountBean;
+	public void setCreditAccountBean(CreditAccountBean creditAccountBean) {
+		this.creditAccountBean = creditAccountBean;
 	}
 
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
 	}
 
-	public void debitAccount(){
+	public void creditAccount(){
 		try{
-			smsBilling.debitAccount(debitAccountBean.getAccountId(), debitAccountBean.getCreditsToDebit());
+			smsBilling.creditAccount(creditAccountBean.getAccountId(), creditAccountBean.getCreditsToCredit());
 		}
 		catch (Exception e) {
 
@@ -42,7 +42,7 @@ public class DebitAccountActionBean {
 
 		}
 		messages.addMessage(new TargettedMessage(
-				"sms.debit.account.success", null,
+				"sms.credit.account.success", null,
 				TargettedMessage.SEVERITY_INFO));
 	}
 }

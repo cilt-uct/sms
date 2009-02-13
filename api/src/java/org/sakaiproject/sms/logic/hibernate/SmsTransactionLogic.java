@@ -143,14 +143,14 @@ public interface SmsTransactionLogic {
 	public void insertLateMessageTransaction(SmsTransaction smsTransaction);
 
 	/**
-	 * Insert transaction to debit an account
+	 * Insert transaction to credit an account
 	 * <p>
 	 * This will also update the related account balance.
 	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
-	public void insertDebitAccountTransaction(SmsTransaction smsTransaction);
+	public void insertCreditAccountTransaction(SmsTransaction smsTransaction);
 
 	/**
 	 * Gets all the related transaction for the specified account id.

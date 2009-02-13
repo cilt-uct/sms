@@ -32,7 +32,7 @@ public class SmsBillingStub implements SmsBilling {
 		return null;
 	}
 
-	public void debitAccount(Long arg0, long arg1) {
+	public void creditAccount(Long arg0, long arg1) {
 		// TODO Auto-generated method stub
 
 	}

@@ -12,9 +12,9 @@ import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
-public class DebitAccountProducer implements ViewComponentProducer {
+public class CreditAccountProducer implements ViewComponentProducer {
 
-	public static final String VIEW_ID = "debit_account";
+	public static final String VIEW_ID = "credit_account";
 
 	private MessageFixupHelper messageFixupHelper;
 	private NavBarRenderer navBarRenderer;
@@ -42,21 +42,21 @@ public class DebitAccountProducer implements ViewComponentProducer {
 		init();
 		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
-		UIMessage.make(tofill, "page-title", "sms.debit.account.title");
-		UIMessage.make(tofill, "sms-debit-account-heading",
-				"sms.debit.account.title");
+		UIMessage.make(tofill, "page-title", "sms.credit.account.title");
+		UIMessage.make(tofill, "sms-credit-account-heading",
+				"sms.credit.account.title");
 
-		UIForm form = UIForm.make(tofill, "debit-account-form");
+		UIForm form = UIForm.make(tofill, "credit-account-form");
 
-		UIMessage.make(form, "account-id-label", "sms.debit.account.id");
-		UIInput.make(form, "account-id-input", "#{debitAccountBean.accountId}");
+		UIMessage.make(form, "account-id-label", "sms.credit.account.id");
+		UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}");
 
 		UIMessage
-				.make(form, "account-amount-label", "sms.debit.account.amount");
+				.make(form, "account-amount-label", "sms.credit.account.amount");
 
 		UIInput.make(form, "account-amount-input",
-				"#{debitAccountBean.creditsToDebit}");
+				"#{creditAccountBean.creditsToCredit}");
 		UICommand.make(form, "save-btn",
-				"#{debitAccountActionBean.debitAccount}");
+				"#{creditAccountActionBean.creditAccount}");
 	}
 }
