@@ -9,7 +9,9 @@ function getToday(){
 
 function checkNumbers(input){
 	var fossil = document.getElementsByName(input.id + '-fossil')[0];
-	if (fossil.value == 'istring#{searchMessageLog.number}') {
+	var check = fossil.value.substring(0,33); // Don't want to check value part as well
+	if (check == 'istring#{searchMessageLog.number}') {
+		// This is a mobile number, allow +
 		input.value = input.value.replace(/[^0-9/+]/g, '');
 	} else {
 		input.value = input.value.replace(/[^0-9]/g, '');
