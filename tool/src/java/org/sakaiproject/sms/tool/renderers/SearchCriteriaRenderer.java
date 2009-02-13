@@ -111,15 +111,14 @@ public class SearchCriteriaRenderer {
 			UIInput.make(searchForm, "id", createSearchELString("number"));
 
 		// No Tool name search criteria
-		if (labelDropDown.indexOf("Type") == -1) {
+		if (labelDropDown.indexOf("Type") == -1 && labelDropDown.indexOf("Message") == -1) {
 			UIOutput.make(searchForm, "tool-name-label", "Tool Name:");
 			UIInput.make(searchForm, "tool-name",
 					createSearchELString("toolName"));
 		}
 
 		// No sender Transaction log
-		if ((labelDropDown.indexOf("Task") != -1)
-				|| (labelDropDown.indexOf("Message") != -1))
+		if (labelDropDown.indexOf("Task") != -1)
 			createSender(searchForm);
 
 		UICommand

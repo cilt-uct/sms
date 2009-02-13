@@ -234,13 +234,6 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 						.getTaskId())));
 			}
 
-			// Sakai tool name
-			if (searchBean.getToolName() != null
-					&& !searchBean.getToolName().trim().equals("")) {
-				crit.add(Restrictions.ilike("smsTask.sakaiToolName", searchBean
-						.getToolName(), MatchMode.ANYWHERE));
-			}
-
 			// Date to send start
 			if (searchBean.getDateFrom() != null) {
 				Date date = DateUtil.getDateFromStartDateString(searchBean

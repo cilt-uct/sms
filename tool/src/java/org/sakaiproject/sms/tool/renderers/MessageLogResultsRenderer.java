@@ -90,18 +90,6 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 					"smsTask.id",
 					"sms.message-log-search-results.account.task.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-group:", sortViewParams,
-					"smsTask.deliveryGroupId",
-					"sms.message-log-search-results.account.group");
-			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-tool-name:", sortViewParams,
-					"smsTask.sakaiToolName",
-					"sms.message-log-search-results.account.tool.name");
-			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-sender:", sortViewParams,
-					"smsTask.senderUserName",
-					"sms.message-log-search-results.account.sender");
-			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-receiver:", sortViewParams,
 					"smsTask.deliveryGroupName",
 					"sms.message-log-search-results.account.reciever");
@@ -126,12 +114,6 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 						.safeToString(smsMessage.getId()));
 				UIOutput.make(row, "row-data-task-id", NullHandling
 						.safeToString(smsMessage.getSmsTask().getId()));				
-				UIOutput.make(row, "row-data-group", NullHandling
-						.safeToString(smsMessage.getSmsTask().getDeliveryGroupId()));
-				UIOutput.make(row, "row-data-tool-name", NullHandling
-						.safeToString(smsMessage.getSmsTask().getSakaiToolName()));
-				UIOutput.make(row, "row-data-sender", NullHandling
-						.safeToString(smsMessage.getSmsTask().getSenderUserName()));
 				UIOutput.make(row, "row-data-receiver", NullHandling
 						.safeToString(smsMessage.getSakaiUserId()));
 				UIOutput.make(row, "row-data-mobile-number", NullHandling
