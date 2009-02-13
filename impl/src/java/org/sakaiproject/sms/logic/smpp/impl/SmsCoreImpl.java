@@ -239,7 +239,7 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 		// we set the date again due to time laps between getPreliminaryTask and
-		// insertask
+		// insertTask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		// We do this because if there the invalid values in the task then the
 		// checkSufficientCredits() will throw unexpected exceptions. Check for
@@ -289,7 +289,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_EXPIRE);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+					SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED);
 			smsBilling.cancelPendingRequest(smsTask.getId());
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			return;
@@ -325,7 +325,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_FAIL);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+					SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED);
 			smsTask.setFailReason((MessageCatalog.getMessage(
 					"messages.taskRetryFailure", String.valueOf(systemConfig
 							.getSmsRetryMaxCount()))));
@@ -364,9 +364,10 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	public boolean sendNotificationEmail(String toAddress, String subject,
-			String body) {
+	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
+			String subject, String body) {
 		// TODO Call sakai service to send the email
+		externalLogic.sendEmail(smsTask, toAddress, subject, body);
 		return true;
 	}
 
@@ -427,12 +428,12 @@ public class SmsCoreImpl implements SmsCore {
 			toAddress = config.getNotificationEmailSent();
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_FAILED)) {
+				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectFailed", smsTask.getId()
+					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
-			body = MessageCatalog.getMessage("messages.notificationBodyFailed",
-					creditsRequired, creditsAvailable);
+			body = MessageCatalog
+					.getMessage("messages.notificationBodyExpired");
 			toAddress = config.getNotificationEmail();
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED)) {
@@ -462,7 +463,7 @@ public class SmsCoreImpl implements SmsCore {
 				return false;
 			}
 		}
-		return sendNotificationEmail(toAddress, subject, body);
+		return sendNotificationEmail(smsTask, toAddress, subject, body);
 
 	}
 

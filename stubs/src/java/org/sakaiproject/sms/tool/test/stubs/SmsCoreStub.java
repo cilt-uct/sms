@@ -90,7 +90,8 @@ public class SmsCoreStub implements SmsCore {
 
 	}
 
-	public boolean sendNotificationEmail(String arg0, String arg1, String arg2) {
+	public boolean sendNotificationEmail(SmsTask smsTask, String arg0,
+			String arg1, String arg2) {
 		// TODO Auto-generated method stub
 		return false;
 	}

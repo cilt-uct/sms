@@ -80,36 +80,23 @@ public interface ExternalLogic {
 	public String getSakaiMobileNumber(String userID);
 
 	/**
-	 * Send e-mails to users ids
+	 * Send e-mail to array of e-mail addresses.
 	 * 
 	 * @param from
 	 *            from address to be used
-	 * @param toUserIds
-	 *            array of sakai user ids
 	 * @param subject
 	 *            subject of e-mail
 	 * @param message
 	 *            message of e-mail
+	 * @param smsTask
+	 *            the sms task
+	 * @param emails
+	 *            the emails
+	 * 
 	 * @return an array of email addresses that this message was sent to
 	 */
-	public String[] sendEmailsToUsers(String from, String[] toUserIds,
+	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
 			String subject, String message);
-
-	/**
-	 * Send e-mail to array of e-mail addresses
-	 * 
-	 * @param from
-	 *            from address to be used
-	 * @param toEmails
-	 *            array of e-mail addresses
-	 * @param subject
-	 *            subject of e-mail
-	 * @param message
-	 *            message of e-mail
-	 * @return an array of email addresses that this message was sent to
-	 */
-	public String[] sendEmails(String from, String[] emails, String subject,
-			String message);
 
 	/**
 	 * Return the actual list of message constructed for each user in the group
@@ -162,5 +149,22 @@ public interface ExternalLogic {
 	 * @return sakaiSiteContactEmail
 	 */
 	public String getSakaiSiteContactEmail();
+
+	/**
+	 * Send email.
+	 * 
+	 * @param smsTask
+	 *            the sms task
+	 * @param toAddress
+	 *            the to address
+	 * @param subject
+	 *            the subject
+	 * @param body
+	 *            the body
+	 * 
+	 * @return true, if successful
+	 */
+	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
+			String body);
 
 }

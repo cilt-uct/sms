@@ -17,15 +17,19 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.validator.EmailValidator;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
@@ -106,7 +110,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
-	
+
 	public void init() {
 		log.debug("init");
 		// register Sakai permissions for this tool
@@ -189,27 +193,29 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * Sets up session for userId if this is anonymous session
 	 */
 	private void setupSession(String userId) {
-		// Get current session (if no session NonPortableSession will be created in default implementation)
+		// Get current session (if no session NonPortableSession will be created
+		// in default implementation)
 		Session session = sessionManager.getCurrentSession();
-		
+
 		// If session is anonymous
 		if (session.getUserId() == null) {
 			session.setUserId(userId);
 			try {
-				session.setUserEid(userDirectoryService.getUser(userId).getEid());
+				session.setUserEid(userDirectoryService.getUser(userId)
+						.getEid());
 			} catch (UserNotDefinedException e) {
 				log.error(e);
 			}
 		}
 	}
-	
+
 	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
 			String entityReference, boolean getMobileNumbers) {
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 		// TODO: here must must figure out if the reference is an Authz group,
 		// role, or list of users
 		Set members = new HashSet<Object>();
-		
+
 		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
 		if (obj instanceof AuthzGroup) {
@@ -288,124 +294,65 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	/**
-	 * @see ExternalLogic#sendEmailsToUsers(String, String[], String, String)
-	 */
-	public String[] sendEmailsToUsers(String from, String[] toUserIds,
-			String subject, String message) {
-		// InternetAddress fromAddress;
-		// try {
-		// fromAddress = new InternetAddress(from);
-		// } catch (AddressException e) {
-		// // cannot recover from this failure
-		// throw new IllegalArgumentException("Invalid from address: " + from,
-		// e);
-		// }
-		//
-		// List<User> l = new ArrayList<User>(); // fill this with users
-		// for (int i = 0; i < toUserIds.length; i++) {
-		// User user = null;
-		// try {
-		// user = userDirectoryService.getUser(toUserIds[i]);
-		// } catch (UserNotDefinedException e) {
-		// log.debug("Cannot find user object by id:" + toUserIds[i]);
-		// try {
-		// user = userDirectoryService.getUserByEid(toUserIds[i]);
-		// } catch (UserNotDefinedException e1) {
-		// log.error(
-		// "Invalid user: Cannot find user object by id or eid:"
-		// + toUserIds[i], e1);
-		// }
-		// }
-		// l.add(user);
-		// }
-		//
-		// // email address validity is checked at entry but value can be null
-		// List<String> toEmails = new ArrayList<String>();
-		// for (ListIterator<User> iterator = l.listIterator();
-		// iterator.hasNext();) {
-		// User u = iterator.next();
-		// if (u.getEmail() == null || "".equals(u.getEmail())) {
-		// iterator.remove();
-		// log.warn("sendEmails: Could not get an email address for "
-		// + u.getDisplayName() + " (" + u.getId() + ")");
-		// } else {
-		// toEmails.add(u.getEmail());
-		// }
-		// }
-		//
-		// if (l == null || l.size() <= 0) {
-		// log
-		// .warn("No users with email addresses found in the provided userIds cannot send email so exiting");
-		// return new String[] {};
-		// }
-
-		// return sendEmails(fromAddress, toEmails, subject, message);
-		return sendEmails(null,
-				new String[] { "1@example.com", "2@example.com" }, subject,
-				message);
-	}
-
-	/**
 	 * @see ExternalLogic#sendEmails(String, String[], String, String)
 	 */
-	public String[] sendEmails(String from, String[] emails, String subject,
-			String message) {
-		// InternetAddress fromAddress;
-		// try {
-		// fromAddress = new InternetAddress(from);
-		// } catch (AddressException e) {
-		// // cannot recover from this failure
-		// throw new IllegalArgumentException("Invalid from address: " + from,
-		// e);
-		// }
-		// List<String> toEmails = new ArrayList<String>();
-		// for (String email : emails) {
-		// if (email != null && !"".equals(email)) {
-		// toEmails.add(email);
-		// }
-		// }
+	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
+			String subject, String message) {
+		InternetAddress fromAddress;
+		try {
+			fromAddress = new InternetAddress(from);
+		} catch (AddressException e) {
+			// cannot recover from this failure
+			throw new IllegalArgumentException("Invalid from address: " + from,
+					e);
+		}
+		List<String> toEmails = new ArrayList<String>();
+		for (String email : emails) {
+			if (email != null && !"".equals(email)) {
+				toEmails.add(email);
+			}
+		}
 
-		// return sendEmails(fromAddress, toEmails, subject, message);
-		return sendEmails(null, Arrays.asList(emails), subject, message);
+		return sendEmails(smsTask, fromAddress, toEmails, subject, message);
+		// return sendEmails(null, Arrays.asList(emails), subject, message);
 	}
 
 	/**
-	 * Actual sending of e-mail
+	 * Actual sending of e-mail via sakai email service
 	 */
-	private String[] sendEmails(InternetAddress fromAddress,
+	private String[] sendEmails(SmsTask smsTask, InternetAddress fromAddress,
 			Collection<String> toEmails, String subject, String message) {
-		// InternetAddress[] replyTo = new InternetAddress[1];
-		// List<InternetAddress> listAddresses = new
-		// ArrayList<InternetAddress>();
-		// EmailValidator emailValidator = EmailValidator.getInstance();
-		//
-		// for (Iterator<String> it = toEmails.iterator(); it.hasNext();) {
-		// String email = it.next();
-		// try {
-		// if (emailValidator.isValid(email)) {
-		// InternetAddress toAddress = new InternetAddress(email);
-		// listAddresses.add(toAddress);
-		// }
-		// } catch (AddressException e) {
-		// log.error("Invalid to address: " + email
-		// + ", cannot send email", e);
-		// }
-		// }
-		//
-		// replyTo[0] = fromAddress;
-		// InternetAddress[] toAddresses = listAddresses
-		// .toArray(new InternetAddress[listAddresses.size()]);
-		// emailService.sendMail(fromAddress, toAddresses, subject, message,
-		// null,
-		// null, null);
-		//
-		// // now we send back the list of people who the email was sent to
-		// String[] addresses = new String[toAddresses.length];
-		// for (int i = 0; i < toAddresses.length; i++) {
-		// addresses[i] = toAddresses[i].getAddress();
-		// }
-		// return addresses;
-		return ((String[]) toEmails.toArray());
+		InternetAddress[] replyTo = new InternetAddress[1];
+		List<InternetAddress> listAddresses = new ArrayList<InternetAddress>();
+		EmailValidator emailValidator = EmailValidator.getInstance();
+
+		for (Iterator<String> it = toEmails.iterator(); it.hasNext();) {
+			String email = it.next();
+			try {
+				if (emailValidator.isValid(email)) {
+					InternetAddress toAddress = new InternetAddress(email);
+					listAddresses.add(toAddress);
+				}
+			} catch (AddressException e) {
+				log.error("Invalid to address: " + email
+						+ ", cannot send email", e);
+			}
+		}
+
+		replyTo[0] = fromAddress;
+		InternetAddress[] toAddresses = listAddresses
+				.toArray(new InternetAddress[listAddresses.size()]);
+		setupSession(smsTask.getSenderUserId());
+		emailService.sendMail(fromAddress, toAddresses, subject, message, null,
+				null, null);
+
+		// now we send back the list of people who the email was sent to
+		String[] addresses = new String[toAddresses.length];
+		for (int i = 0; i < toAddresses.length; i++) {
+			addresses[i] = toAddresses[i].getAddress();
+		}
+		return addresses;
+		// return ((String[]) toEmails.toArray());
 	}
 
 	/*
@@ -450,4 +397,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return null;
 	}
 
+	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
+			String body) {
+
+		String from = "smstesting@sakai";
+		sendEmails(smsTask, from, new String[] { toAddress }, subject, body);
+		return true;
+	}
 }
