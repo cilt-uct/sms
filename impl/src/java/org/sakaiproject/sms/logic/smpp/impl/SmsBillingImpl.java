@@ -43,7 +43,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 public class SmsBillingImpl implements SmsBilling {
 
 	private ExternalLogic externalLogic;
-	
+
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
@@ -65,8 +65,8 @@ public class SmsBillingImpl implements SmsBilling {
 				.getSmsAccount(accountId);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setTransactionCredits(0);
-		smsTransaction.setCreditBalance(creditsToCredit);
+		smsTransaction.setTransactionCredits(new Long(creditsToCredit)
+				.intValue());
 		smsTransaction.setSakaiUserId(externalLogic.getCurrentUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
