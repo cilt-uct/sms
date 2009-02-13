@@ -291,6 +291,8 @@ public class SmsCoreImpl implements SmsCore {
 			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED);
 			smsBilling.cancelPendingRequest(smsTask.getId());
+			smsTask.setFailReason(MessageCatalog
+					.getMessage("messages.taskExpired"));
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
 			return;
 		}
@@ -325,7 +327,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_FAIL);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED);
+					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
 			smsTask.setFailReason((MessageCatalog.getMessage(
 					"messages.taskRetryFailure", String.valueOf(systemConfig
 							.getSmsRetryMaxCount()))));
@@ -388,8 +390,10 @@ public class SmsCoreImpl implements SmsCore {
 		String body = null;
 		String toAddress = null;
 
-		SmsConfig config = HibernateLogicFactory.getConfigLogic()
+		SmsConfig configSite = HibernateLogicFactory.getConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId());
+		SmsConfig configSystem = HibernateLogicFactory.getConfigLogic()
+				.getOrCreateSystemSmsConfig();
 		// Get the balance available to calculate the available credit.
 		SmsAccount account = HibernateLogicFactory.getAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
@@ -416,7 +420,7 @@ public class SmsCoreImpl implements SmsCore {
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", creditsRequired,
 					creditsAvailable);
-			toAddress = config.getNotificationEmail();
+			toAddress = configSite.getNotificationEmail();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_SENT)) {
@@ -425,7 +429,7 @@ public class SmsCoreImpl implements SmsCore {
 							.toString());
 			body = MessageCatalog.getMessage("messages.notificationBodySent",
 					creditsRequired, creditsAvailable);
-			toAddress = config.getNotificationEmailSent();
+			toAddress = configSite.getNotificationEmailSent();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED)) {
@@ -434,7 +438,7 @@ public class SmsCoreImpl implements SmsCore {
 							.toString());
 			body = MessageCatalog
 					.getMessage("messages.notificationBodyExpired");
-			toAddress = config.getNotificationEmail();
+			toAddress = configSite.getNotificationEmail();
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED)) {
 			subject = MessageCatalog.getMessage(
@@ -443,7 +447,25 @@ public class SmsCoreImpl implements SmsCore {
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyCompleted", creditsRequired,
 					creditsAvailable);
-			toAddress = config.getNotificationEmail();
+			toAddress = configSite.getNotificationEmail();
+		} else if (taskMessageType
+				.equals(SmsHibernateConstants.TASK_NOTIFICATION_ABORTED)) {
+			subject = MessageCatalog.getMessage(
+					"messages.notificationSubjectAborted", smsTask.getId()
+							.toString());
+			body = MessageCatalog.getMessage(
+					"messages.notificationBodyAborted", smsTask
+							.getSenderUserName());
+			toAddress = configSite.getNotificationEmail();
+		} else if (taskMessageType
+				.equals(SmsHibernateConstants.TASK_NOTIFICATION_FAILED)) {
+			subject = MessageCatalog.getMessage(
+					"messages.notificationSubjectFailed", smsTask.getId()
+							.toString());
+			body = MessageCatalog.getMessage("messages.notificationBodyFailed",
+					String.valueOf(configSystem.getSmsRetryMaxCount()));
+			toAddress = configSite.getNotificationEmail();
+
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS)) {
 			subject = MessageCatalog
@@ -541,8 +563,11 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusForMessages(
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_ABORT);
+			smsTask.setFailReason(MessageCatalog
+					.getMessage("messages.taskAborted"));
 			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
-
+			sendEmailNotification(smsTask,
+					SmsHibernateConstants.TASK_NOTIFICATION_ABORTED);
 		}
 
 	}

@@ -152,7 +152,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	// for testing purposes when running jetty
 	private void sendEmailViaSmtpServer(String toAddress, String subject,
 			String body) {
-		String host = "143.160.209.540";
+		String host = "143.160.209.54";
 		String from = "it3lmb@nwu.ac.za";
 
 		// Get system properties

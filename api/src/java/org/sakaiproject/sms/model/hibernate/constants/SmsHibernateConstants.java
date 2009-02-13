@@ -131,7 +131,7 @@ public class SmsHibernateConstants {
 	 */
 	public static final int DEL_REPORT_TIMEOUT_DURATION = 1800;
 
-	/** The Constant for task notification failed */
+	/** The Constant for task notification expired. */
 	public static final int TASK_NOTIFICATION_EXPIRED = 1;
 
 	/** The Constant for task notification sent */
@@ -145,6 +145,12 @@ public class SmsHibernateConstants {
 
 	/** The Constant for task notification started */
 	public static final int TASK_INSUFFICIENT_CREDITS = 5;
+
+	/** The Constant TASK_NOTIFICATION_ABORTED. */
+	public static final int TASK_NOTIFICATION_ABORTED = 6;
+
+	/** The Constant TASK_NOTIFICATION_FAILED, after all retry attempts. */
+	public static final int TASK_NOTIFICATION_FAILED = 7;
 
 	/** The smsc_id is used to uniquely identify the smsc. */
 	public static final String SMSC_ID = "1";
