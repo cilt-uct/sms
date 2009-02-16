@@ -22,7 +22,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -45,6 +47,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
+
 	}
 
 	public SmppAPITest() {
@@ -56,7 +59,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
@@ -67,7 +70,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 	/**
 	 * This is an helper method to insert a dummy smsTask into the Database. The
 	 * sakaiID is used to identify the temp task.
-	 * 
+	 *
 	 * @param sakaiID
 	 * @param status
 	 * @param dateToSend
@@ -90,7 +93,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setDateProcessed(new Date());
 		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 		return insertTask;
 	}
 
@@ -174,7 +177,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		SmsTask insertTask1update = HibernateLogicFactory.getTaskLogic()
+		SmsTask insertTask1update = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask.getId());
 		assertEquals(true, insertTask1update.getMessagesWithSmscStatus(
 				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
@@ -207,11 +210,11 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		SmsTask insertTask1update = HibernateLogicFactory.getTaskLogic()
+		SmsTask insertTask1update =hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask1.getId());
 		assertEquals(true, insertTask1update.getMessagesWithSmscStatus(
 				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
-		HibernateLogicFactory.getTaskLogic().deleteSmsTask(insertTask1update);
+		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask1update);
 
 	}
 }

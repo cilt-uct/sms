@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-  
-  <!-- Binding  Beans -->  
-  <bean id="searchTaskList" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
-  <bean id="searchTransactionLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
-  <bean id="searchMessageLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>	
-  <bean id="creditAccountBean" class="org.sakaiproject.sms.tool.beans.CreditAccountBean"/>	
-  
+
+  <!-- Binding  Beans -->
+  <bean id="searchTaskList" class="org.sakaiproject.sms.bean.SearchFilterBean"/>
+  <bean id="searchTransactionLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>
+  <bean id="searchMessageLog" class="org.sakaiproject.sms.bean.SearchFilterBean"/>
+  <bean id="creditAccountBean" class="org.sakaiproject.sms.tool.beans.CreditAccountBean"/>
+
   <!--  Renderers -->
   <bean id="taskListCriteriaRenderer" class="org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer">
 	<property name="labelID" value="Mobile Number:"/>
@@ -18,35 +18,35 @@
   	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
-	
+
   <bean id="transactionLogCriteriaRenderer" class="org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer">
   	<property name="labelID" value="Account Number:"/>
-  	<property name="labelDropDown" value="Type:"/>  
+  	<property name="labelDropDown" value="Type:"/>
   	<property name="searchBeanName" value="searchTransactionLog"/>
   	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
-  
+
   <bean id="messageLogCriteriaRenderer" class="org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer">
     <property name="labelID" value="Mobile Number:"/>
   	<property name="labelDropDown" value="Message Status:"/>
   	<property name="searchBeanName" value="searchMessageLog"/>
   	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   	<property name="ELEvaluator" ref="ELEvaluator" />
-  </bean>	
-  
-  <bean id="taskListSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.TaskListResultsRenderer">  
-  	 <property name="smsTaskLogic" ref="smsTaskLogic"/>
   </bean>
-  
-  <bean id="transactionLogSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.TransactionLogResultsRenderer">  
-  	 <property name="smsTransactionLogic" ref="smsTransactionLogic"/> 
+
+  <bean id="taskListSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.TaskListResultsRenderer">
+  	 <property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
   </bean>
-  
-  <bean id="messageLogSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.MessageLogResultsRenderer">  
-  	 <property name="smsMessageLogic" ref="smsMessageLogic"/>
+
+  <bean id="transactionLogSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.TransactionLogResultsRenderer">
+  	 <property name="smsTransactionLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic"/>
   </bean>
-  
+
+  <bean id="messageLogSearchResultsRenderer" class="org.sakaiproject.sms.tool.renderers.MessageLogResultsRenderer">
+  	 <property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"/>
+  </bean>
+
   <bean id="navBarRenderer" class="org.sakaiproject.sms.tool.renderers.NavBarRenderer" />
 
   <!--  Producers -->
@@ -54,7 +54,7 @@
 	<property name="navBarRenderer" ref="navBarRenderer" />
 	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.CreditAccountProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
@@ -64,51 +64,51 @@
 	<property name="accountHelper" ref="accountHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.HelperProducer">
  	<property name="accountHelper" ref="accountHelper" />
  	<property name="smsTaskLocator" ref="SmsTaskLocator" />
  	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer">
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.SmsSystemConfigProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
-  											  
+
   <bean class="org.sakaiproject.sms.tool.producers.TaskListPopupProducer" >
-  	<property name="smsTaskLogic" ref="smsTaskLogic"/>
+  	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.AccountProducer" >
   	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   	<property name="ELEvaluator" ref="ELEvaluator" />
   	<property name="messageFixupHelper" ref="messageFixupHelper" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
-  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
+  	<property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic"/>
   </bean>
-  
+
   <bean class="org.sakaiproject.sms.tool.producers.BillingAdminProducer" >
-  	<property name="smsAccountLogic" ref="SmsAccountLogic" />
+  	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
-  </bean>	
-  
+  </bean>
+
   <bean id="taskListProducer" class="org.sakaiproject.sms.tool.producers.TaskListProducer">
-  	<property name="searchCriteriaRenderer" ref="taskListCriteriaRenderer"/>  
+  	<property name="searchCriteriaRenderer" ref="taskListCriteriaRenderer"/>
   	<property name="searchResultsRenderer" ref="taskListSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchTaskList"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
-   
+
   <bean id="transactionLogProducer" class="org.sakaiproject.sms.tool.producers.TransactionLogProducer">
-  	<property name="searchCriteriaRenderer" ref="transactionLogCriteriaRenderer"/>  
+  	<property name="searchCriteriaRenderer" ref="transactionLogCriteriaRenderer"/>
   	<property name="searchResultsRenderer" ref="transactionLogSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchTransactionLog"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
@@ -116,28 +116,28 @@
   </bean>
 
   <bean id="messageLogProducer" class="org.sakaiproject.sms.tool.producers.MessageLogProducer">
-  	<property name="searchCriteriaRenderer" ref="messageLogCriteriaRenderer"/>  
+  	<property name="searchCriteriaRenderer" ref="messageLogCriteriaRenderer"/>
   	<property name="searchResultsRenderer" ref="messageLogSearchResultsRenderer"/>
   	<property name="searchFilterBean" ref="searchMessageLog"/>
   	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
-  
+
   <bean id="permissionDeniedProducer" class="org.sakaiproject.sms.tool.producers.PermissionDeniedProducer" />
-  
-  <!--  Action Beans -->  
+
+  <!--  Action Beans -->
   <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">
   	<property name="smsService" ref="org.sakaiproject.sms.api.SmsService" />
   	<property name="messages" ref="targettedMessageList"/>
   </bean>
-  
+
   <bean id="creditAccountActionBean" class="org.sakaiproject.sms.tool.beans.CreditAccountActionBean">
   	<property name="creditAccountBean" ref="creditAccountBean"/>
   	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
   	<property name="messages" ref="targettedMessageList"/>
   </bean>
-  
-  
+
+
   <bean id="csvExportBean" class="org.sakaiproject.sms.tool.reporting.CsvExportBean">
   	<property name="sakaiDateFormat" ref="sakaiDateFormat"/>
   </bean>
@@ -150,10 +150,10 @@
 
   <bean id="smsSiteConfigActionBean" class="org.sakaiproject.sms.tool.beans.SmsSiteConfigActionBean">
   	 <property name="smsConfigLocator" ref="SmsConfigLocator"/>
-  	 <property name="smsConfigLogic" ref="smsConfigLogic"/>
+  	 <property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic"/>
   	 <property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
-  
+
   <bean id="HelperActionBean" class="org.sakaiproject.sms.tool.beans.HelperActionBean" >
   	<property name="smsTaskLocator" ref="SmsTaskLocator" />
   	<property name="smsService" ref="org.sakaiproject.sms.api.SmsService" />
@@ -161,48 +161,48 @@
   	<property name="messages" ref="targettedMessageList"/>
   	<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling"/>
   </bean>
-  
+
   <!-- Helpers -->
   <bean id="accountHelper" class="org.sakaiproject.sms.tool.util.SmsAccountHelper">
     <property name="ELEvaluator" ref="ELEvaluator" />
-	<property name="smsAccountLogic" ref="SmsAccountLogic" />
+	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
   </bean>
-  
+
   <bean id="messageFixupHelper" class="org.sakaiproject.sms.tool.util.MessageFixupHelper">
   	<property name="messages" ref="targettedMessageList" />
   </bean>
-   	
+
   <!-- Locators -->
   <bean id="SmsMessageLocator" class="org.sakaiproject.sms.tool.otp.SmsMessageLocator" >
-  	<property name="smsMessageLogic" ref="smsMessageLogic" />
+  	<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic" />
   </bean>
-  
+
   <bean id="SmsConfigLocator" class="org.sakaiproject.sms.tool.otp.SmsConfigLocator">
-  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
+  	<property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic"/>
   </bean>
-  
+
   <bean id="SmsSystemConfigLocator" class="org.sakaiproject.sms.tool.otp.SmsSystemConfigLocator">
-  	<property name="smsConfigLogic" ref="smsConfigLogic"/>
+  	<property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic"/>
   </bean>
-  
+
    <bean id="SmsAccountLocator" class="org.sakaiproject.sms.tool.otp.SmsAccountLocator">
-  	<property name="smsAccountLogic" ref="SmsAccountLogic"/>
+  	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"/>
   	<property name="messages" ref="targettedMessageList" />
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
-  
+
   <bean id="SmsTaskLocator" class="org.sakaiproject.sms.tool.otp.SmsTaskLocator">
     	<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore"/>
-    	<property name="smsTaskLogic" ref="smsTaskLogic" />
+    	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic" />
     	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
-  
+
   <!-- Handler Hook -->
   <bean id="reportHandlerHook" class="org.sakaiproject.sms.tool.reporting.ReportHandlerHook">
   	<property name="viewparams" ref="viewParameters" />
   	<property name="response" ref="httpServletResponse" />
   	<property name="csvExportBean" ref="csvExportBean" />
-  </bean>	
+  </bean>
 
   <bean id="nullableFieldDateTransit" parent="beanExploder">
     <property name="factory">
@@ -214,12 +214,21 @@
       </bean>
     </property>
   </bean>
-  
-  <bean id="myFieldDateInputEvolver" 
-     class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver" singleton="false">
+
+  <bean id="myFieldDateInputEvolver"
+   class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver" singleton="false">
     <property name="JSEmitter" ref="dateSymbolJSEmitter" />
     <property name="requestBeanGetter" ref="ELEvaluator" />
     <property name="transitBase" value="nullableFieldDateTransit" />
   </bean>
-  
+
+    <bean id="HibernateLogicLocator"
+		class="org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator">
+		<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic" />
+		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
+		<property name="smsTransactionLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" />
+		<property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic" />
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+		<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic" />
+	</bean>
 </beans>

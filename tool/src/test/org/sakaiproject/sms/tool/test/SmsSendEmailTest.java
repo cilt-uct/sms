@@ -25,7 +25,8 @@ public class SmsSendEmailTest extends TestCase {
 		if (!skipTest) {
 			SmsCoreImpl smsCore = new SmsCoreImpl();
 			smsCore.smsBilling = new SmsBillingImpl();
-			smsCore.setExternalLogic(new ExternalLogicStub());
+			smsCore.getHibernateLogicLocator().setExternalLogic(
+					(new ExternalLogicStub()));
 			SmsTask task = smsCore.getPreliminaryTestTask();
 			externalLogic.sendEmail(task, "it3lmb@nwu.ac.za", "testing..",
 					"working!");

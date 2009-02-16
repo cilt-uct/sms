@@ -47,9 +47,6 @@ public class SmsTransaction extends BaseModel {
 	/** The sakai user id. This is the user who request the sms task. */
 	private String sakaiUserId;
 
-
-
-
 	/** The transaction credits. */
 	private Integer transactionCredits;
 
@@ -75,9 +72,9 @@ public class SmsTransaction extends BaseModel {
 	/**
 	 * Instantiates a new sms transaction.
 	 */
-	public SmsTransaction(long credits, String sakaiUserId
-			, Integer transactionCredits,
-			Date transactionDate, String transactionTypeCode) {
+	public SmsTransaction(long credits, String sakaiUserId,
+			Integer transactionCredits, Date transactionDate,
+			String transactionTypeCode) {
 		super();
 		this.creditBalance = credits;
 		this.sakaiUserId = sakaiUserId;
@@ -183,8 +180,6 @@ public class SmsTransaction extends BaseModel {
 		this.smsAccount = smsAccount;
 	}
 
-
-
 	/**
 	 * Gets the sms task id.
 	 *
@@ -204,12 +199,12 @@ public class SmsTransaction extends BaseModel {
 		this.smsTaskId = smsTaskId;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (creditBalance ^ (creditBalance >>> 32));
+		result = prime * result
+				+ ((creditBalance == null) ? 0 : creditBalance.hashCode());
 		result = prime * result
 				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
 		result = prime * result
@@ -231,10 +226,13 @@ public class SmsTransaction extends BaseModel {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!(obj instanceof SmsTransaction))
+		if (obj == null)
 			return false;
 		SmsTransaction other = (SmsTransaction) obj;
-		if (creditBalance != other.creditBalance)
+		if (creditBalance == null) {
+			if (other.creditBalance != null)
+				return false;
+		} else if (!creditBalance.equals(other.creditBalance))
 			return false;
 		if (sakaiUserId == null) {
 			if (other.sakaiUserId != null)
@@ -271,7 +269,5 @@ public class SmsTransaction extends BaseModel {
 	public void setCreditBalance(Long creditBalance) {
 		this.creditBalance = creditBalance;
 	}
-
-
 
 }

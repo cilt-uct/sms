@@ -18,7 +18,7 @@
 
 package org.sakaiproject.sms.logic.smpp.impl;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -41,9 +41,20 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	}
 
+	private HibernateLogicLocator hibernateLogicLocator=null;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
 	public void init() {
 		Assert.notNull(smsCore);
-		smsConfig = HibernateLogicFactory.getConfigLogic()
+		smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		smsSchedulerThread = new SmsSchedulerThread();
 		System.out.println("Init of SmsScheduler complete");

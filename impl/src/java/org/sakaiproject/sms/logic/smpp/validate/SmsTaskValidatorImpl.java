@@ -19,9 +19,7 @@ package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.ArrayList;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
-import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
@@ -34,7 +32,17 @@ import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
  * @version 1.0
  * @created 12-Jan-2009
  */
-public class TaskValidator {
+public class SmsTaskValidatorImpl implements SmsTaskValidator {
+
+	private SmsBilling smsBilling;
+
+	public SmsBilling getSmsBilling() {
+		return smsBilling;
+	}
+
+	public void setSmsBilling(SmsBilling smsBilling) {
+		this.smsBilling = smsBilling;
+	}
 
 	/**
 	 * Check sufficient credits.
@@ -44,11 +52,11 @@ public class TaskValidator {
 	 *
 	 * @return the array list< string>
 	 */
-	public static ArrayList<String> checkSufficientCredits(SmsTask smsTask) {
+	public ArrayList<String> checkSufficientCredits(SmsTask smsTask) {
 		ArrayList<String> errors = new ArrayList<String>();
 		// check for sufficient balance
-		SmsBillingImpl billing = new SmsBillingImpl();
-		boolean sufficientCredits = billing.checkSufficientCredits(smsTask
+		;
+		boolean sufficientCredits = smsBilling.checkSufficientCredits(smsTask
 				.getSmsAccountId(), smsTask.getCreditEstimate());
 		if (!sufficientCredits) {
 			errors.add(ValidationConstants.INSUFFICIENT_CREDIT);
@@ -64,7 +72,7 @@ public class TaskValidator {
 	 *
 	 * @return the array list< string>
 	 */
-	public static ArrayList<String> validateInsertTask(SmsTask smsTask) {
+	public ArrayList<String> validateInsertTask(SmsTask smsTask) {
 		// called by getPrelimTask()
 		ArrayList<String> errors = new ArrayList<String>();
 
@@ -80,12 +88,6 @@ public class TaskValidator {
 		// Check account id
 		if (smsTask.getSmsAccountId() == null) {
 			errors.add(ValidationConstants.TASK_ACCOUNT_EMPTY);
-		} else {
-			SmsAccount account = HibernateLogicFactory.getAccountLogic()
-					.getSmsAccount(smsTask.getSmsAccountId());
-			if (account == null) {
-				errors.add(ValidationConstants.TASK_ACCOUNT_INVALID);
-			}
 		}
 
 		// Check date created

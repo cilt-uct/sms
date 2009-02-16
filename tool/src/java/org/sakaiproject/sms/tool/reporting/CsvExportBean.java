@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
 import org.sakaiproject.sms.tool.producers.MessageLogProducer;
 import org.sakaiproject.sms.tool.producers.TaskListProducer;
@@ -44,6 +44,17 @@ public class CsvExportBean {
 	private static Log log = LogFactory.getLog(CsvExportBean.class);
 	private final Map<String, CsvExportStrategy> csvExporters = new TreeMap<String, CsvExportStrategy>();
 	private SakaiDateFormat sakaiDateFormat;
+
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
 
 	public void setSakaiDateFormat(SakaiDateFormat dateFormat) {
 		this.sakaiDateFormat = dateFormat;
@@ -145,7 +156,7 @@ public class CsvExportBean {
 		@Override
 		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
 				throws SmsSearchException {
-			return HibernateLogicFactory.getTaskLogic()
+			return hibernateLogicLocator.getSmsTaskLogic()
 					.getAllSmsTasksForCriteria(searchFilterBean);
 		}
 
@@ -170,7 +181,7 @@ public class CsvExportBean {
 		@Override
 		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
 				throws SmsSearchException {
-			return HibernateLogicFactory.getMessageLogic()
+			return hibernateLogicLocator.getSmsMessageLogic()
 					.getAllSmsMessagesForCriteria(searchFilterBean);
 		}
 
@@ -184,9 +195,8 @@ public class CsvExportBean {
 			CsvExportStrategy {
 
 		private final String[] transactionLogColumns = new String[] { "id",
-				"credits", "sakaiUserId",
-				"transactionCredits", "transactionDate", "transactionTypeCode",
-				"smsTaskId" };
+				"credits", "sakaiUserId", "transactionCredits",
+				"transactionDate", "transactionTypeCode", "smsTaskId" };
 
 		@Override
 		public String[] getCsvColumns() {
@@ -196,7 +206,7 @@ public class CsvExportBean {
 		@Override
 		public List<?> getCriteriaResults(SearchFilterBean searchFilterBean)
 				throws SmsSearchException {
-			return HibernateLogicFactory.getTransactionLogic()
+			return hibernateLogicLocator.getSmsTransactionLogic()
 					.getAllSmsTransactionsForCriteria(searchFilterBean);
 		}
 

@@ -4,235 +4,260 @@
 
 <beans>
 
-   <!-- add sakai application scope bean definitions -->
-   <!-- TODO: Change to use Sakai packaging method  -->
-   <import resource="components.xml" />
+	<!-- add sakai application scope bean definitions -->
+	<!-- TODO: Change to use Sakai packaging method  -->
+	<import resource="components.xml" />
 
-   <!-- handles configuration of internationalization messages -->
-   <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
-      <property name="messageSource">
-         <bean class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-            <property name="basename">
-               <value>WEB-INF/bundle/messages</value>
-            </property>
-            <property name="cacheSeconds">
-               <value>10</value>
-            </property>
-         </bean>
-      </property>
-      <property name="localeGetter" ref="requestLocaleProxy" />
-   </bean>
+	<!-- handles configuration of internationalization messages -->
+	<bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
+		<property name="messageSource">
+			<bean
+				class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+				<property name="basename">
+					<value>WEB-INF/bundle/messages</value>
+				</property>
+				<property name="cacheSeconds">
+					<value>10</value>
+				</property>
+			</bean>
+		</property>
+		<property name="localeGetter" ref="requestLocaleProxy" />
+	</bean>
 
-   <bean id="templateResolverStrategy"
-     class="org.sakaiproject.sms.tool.rsf.SmsTemplateResolverStrategy">
+	<bean id="templateResolverStrategy"
+		class="org.sakaiproject.sms.tool.rsf.SmsTemplateResolverStrategy">
 
-     <property name="baseDirectory" ref="defaultTemplatePath" />
-     <property name="consumerInfo" ref="consumerInfoProxy" />
- 	 <property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
-   </bean>
+		<property name="baseDirectory" ref="defaultTemplatePath" />
+		<property name="consumerInfo" ref="consumerInfoProxy" />
+		<property name="externalLogic"
+			ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
 
-  <bean id="messageTemplateContributor" parent="templateContributorParent">
-  	<property name="baseDirectory" value="content/component-templates/" />
-  	<property name="templateNames" value="Messages,SearchCriteriaRenderer,SearchResultsRenderer,SortHeader,TablePagerRenderer, navbar" />
-  </bean>
+	<bean id="messageTemplateContributor" parent="templateContributorParent">
+		<property name="baseDirectory" value="content/component-templates/" />
+		<property name="templateNames"
+			value="Messages,SearchCriteriaRenderer,SearchResultsRenderer,SortHeader,TablePagerRenderer, navbar" />
+	</bean>
 
-  <!-- Define the bean roots from the request scope file that are accessible
-    via incoming request URL -->
-  <bean parent="requestAddressibleParent">
-    <property name="value" value="searchTaskList, searchTransactionLog, searchMessageLog, smsConfig,
+	<!--
+		Define the bean roots from the request scope file that are accessible
+		via incoming request URL
+	-->
+	<bean parent="requestAddressibleParent">
+		<property name="value"
+			value="searchTaskList, searchTransactionLog, searchMessageLog, smsConfig,
     smsSiteConfigActionBean, HelperActionBean, SmsTestActionBean, SmsMessageLocator, SmsConfigLocator,
     SmsSystemConfigLocator, csvExportBean, SmsAccountLocator, SmsTaskLocator, nullableFieldDateTransit,
-    creditAccountBean, creditAccountActionBean, destroyScope, AbortTaskActionBean"/>
-  </bean>
+    creditAccountBean, creditAccountActionBean, destroyScope, AbortTaskActionBean" />
+	</bean>
 
-  <!-- The beans which will be preserved across a flow via simple instance copying -->
-  <bean parent="copyPreservingParent">
-    <property name="value" value="SmsMessageLocator, SmsConfigLocator, SmsTaskLocator, SmsSystemConfigLocator"/>
-  </bean>
+	<!--
+		The beans which will be preserved across a flow via simple instance
+		copying
+	-->
+	<bean parent="copyPreservingParent">
+		<property name="value"
+			value="SmsMessageLocator, SmsConfigLocator, SmsTaskLocator, SmsSystemConfigLocator" />
+	</bean>
 
-  <bean id="searchScope" parent="beanScopeParent">
-    <property name="copyPreservingBeans" value="searchTaskList, searchTransactionLog, searchMessageLog"/>
-  </bean>
+	<bean id="searchScope" parent="beanScopeParent">
+		<property name="copyPreservingBeans"
+			value="searchTaskList, searchTransactionLog, searchMessageLog" />
+	</bean>
 
-   <!--  Validators -->
-  <bean id="smsMessageGuard" parent="writeGuardParent">
-     <property name="guardedPath" value="SmsMessageLocator.*"/>
-	 <property name="guard">
-	 	<bean class="org.sakaiproject.sms.tool.validators.SmsMessageValidator" />
-	 </property>
-  </bean>
+	<!--  Validators -->
+	<bean id="smsMessageGuard" parent="writeGuardParent">
+		<property name="guardedPath" value="SmsMessageLocator.*" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.SmsMessageValidator" />
+		</property>
+	</bean>
 
-  <bean id="smsConfigGaurd" parent="writeGuardParent">
-  	<property name="guardedPath" value="SmsConfigLocator.*"/>
-	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsConfigValidator" /></property>
-  </bean>
+	<bean id="smsConfigGaurd" parent="writeGuardParent">
+		<property name="guardedPath" value="SmsConfigLocator.*" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.SmsConfigValidator" />
+		</property>
+	</bean>
 
-  <bean id="smsAccountGuard" parent="writeGuardParent">
- 	<property name="guardedPath" value="SmsAccountLocator.*" />
- 	<property name="guard">
- 		<bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator" >
- 			<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
- 		</bean>
- 	</property>
-  </bean>
+	<bean id="smsAccountGuard" parent="writeGuardParent">
+		<property name="guardedPath" value="SmsAccountLocator.*" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.SmsAccountValidator">
+				<property name="externalLogic"
+					ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+			</bean>
+		</property>
+	</bean>
 
-  <bean id="smsTaskGuard" parent="writeGuardParent">
- 	<property name="guardedPath" value="SmsTaskLocator.*" />
- 	<property name="guard"><bean class="org.sakaiproject.sms.tool.validators.SmsTaskValidator" /></property>
-  </bean>
-
-  <bean id="creditAccountGuard" parent="writeGuardParent">
- 	<property name="guardedPath" value="creditAccountBean"/>
- 	<property name="guard">
- 		<bean class="org.sakaiproject.sms.tool.validators.CreditAccountValidator">
- 			<property name="smsAccountLogic" ref="SmsAccountLogic"/>
-   		</bean>
-   </property>
-  </bean>
-
-  <!-- Data Converters for Long values -->
-  <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="creditAccountBean.creditsToCredit" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="creditsToCredit" />
-			<property name="numberClass" value="java.lang.Long" />
-		</bean>
-	</property>
-  </bean>
-
-  <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="creditAccountBean.accountId" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="accountId" />
-			<property name="numberClass" value="java.lang.Long" />
-		</bean>
-	</property>
-  </bean>
+	<bean id="smsTaskGuard" parent="writeGuardParent">
+		<property name="guardedPath" value="SmsTaskLocator.*" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.SmsTaskValidator">
+				<property name="smsTaskValidator"
+					ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
+			</bean>
 
 
-  <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsAccountLocator.*.credits" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="credits" />
-			<property name="numberClass" value="java.lang.Long" />
-		</bean>
-	</property>
-  </bean>
 
-  <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsAccountLocator.*.overdraftLimit" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="overdraftLimit" />
-			<property name="numberClass" value="java.lang.Long" />
-		</bean>
-	</property>
- </bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.creditCost" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="creditCost" />
-			<property name="numberClass" value="java.lang.Float" />
-		</bean>
-	</property>
- </bean>
+	<bean id="creditAccountGuard" parent="writeGuardParent">
+		<property name="guardedPath" value="creditAccountBean" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.CreditAccountValidator">
+				<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.schedulerInterval" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="schedulerInterval" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
+	<!-- Data Converters for Long values -->
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="creditAccountBean.creditsToCredit" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="creditsToCredit" />
+				<property name="numberClass" value="java.lang.Long" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.delReportTimeoutDuration" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="delReportTimeoutDuration" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="creditAccountBean.accountId" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="accountId" />
+				<property name="numberClass" value="java.lang.Long" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryMaxCount" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="smsRetryMaxCount" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryScheduleInterval" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="smsRetryScheduleInterval" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsAccountLocator.*.credits" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="credits" />
+				<property name="numberClass" value="java.lang.Long" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsSystemConfigLocator.*.smsTaskMaxLifeTime" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="smsTaskMaxLifeTime" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsAccountLocator.*.overdraftLimit" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="overdraftLimit" />
+				<property name="numberClass" value="java.lang.Long" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsConfigLocator.*.pagingSize" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
-			<property name="field" value="pagingSize" />
-			<property name="numberClass" value="java.lang.Integer" />
-		</bean>
-	</property>
- </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsSystemConfigLocator.*.creditCost" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="creditCost" />
+				<property name="numberClass" value="java.lang.Float" />
+			</bean>
+		</property>
+	</bean>
 
- <bean class="uk.org.ponder.mapping.DataConverter">
-	<property name="targetPath" value="SmsTaskLocator.*.messageBody" />
-	<property name="converter">
-		<bean class="org.sakaiproject.sms.tool.util.MsgBodyEditorFactory" />
-	</property>
- </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsSystemConfigLocator.*.schedulerInterval" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="schedulerInterval" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
 
- <bean id="sakaiDateFormat" class="org.sakaiproject.sms.tool.util.SakaiDateFormat"/>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath"
+			value="SmsSystemConfigLocator.*.delReportTimeoutDuration" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="delReportTimeoutDuration" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
 
-  <!--
-	Override this definition from RSF-evolvers, to reflect the fact we are
-	serving the RSF components templates from our own webapp (as provided
-	using the "partial WAR" build strategy
-  -->
-  <bean id="componentsTemplateResourceBase" class="java.lang.String">
-	<constructor-arg value="/" />
-  </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsSystemConfigLocator.*.smsRetryMaxCount" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="smsRetryMaxCount" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
 
-  <!-- View Params for Downloadable content -->
-  <bean parent="viewParamsRegistrarParent">
-    <property name="viewID" value="downloadCsv" />
-    <property name="viewParamsClass" value="org.sakaiproject.sms.tool.params.DownloadReportViewParams" />
-  </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath"
+			value="SmsSystemConfigLocator.*.smsRetryScheduleInterval" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="smsRetryScheduleInterval" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
 
-  <!-- Custom request cycle for downloads -->
-  <bean parent="handlerHookParent">
-    <property name="value">
-      <bean parent="RSACBridgeProxy">
-        <property name="targetBeanName" value="reportHandlerHook" />
-      </bean>
-    </property>
-  </bean>
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsSystemConfigLocator.*.smsTaskMaxLifeTime" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="smsTaskMaxLifeTime" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsConfigLocator.*.pagingSize" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="pagingSize" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsTaskLocator.*.messageBody" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.MsgBodyEditorFactory" />
+		</property>
+	</bean>
+
+	<bean id="sakaiDateFormat" class="org.sakaiproject.sms.tool.util.SakaiDateFormat" />
+
+	<!--
+		Override this definition from RSF-evolvers, to reflect the fact we are
+		serving the RSF components templates from our own webapp (as provided
+		using the "partial WAR" build strategy
+	-->
+	<bean id="componentsTemplateResourceBase" class="java.lang.String">
+		<constructor-arg value="/" />
+	</bean>
+
+	<!-- View Params for Downloadable content -->
+	<bean parent="viewParamsRegistrarParent">
+		<property name="viewID" value="downloadCsv" />
+		<property name="viewParamsClass"
+			value="org.sakaiproject.sms.tool.params.DownloadReportViewParams" />
+	</bean>
+
+	<!-- Custom request cycle for downloads -->
+	<bean parent="handlerHookParent">
+		<property name="value">
+			<bean parent="RSACBridgeProxy">
+				<property name="targetBeanName" value="reportHandlerHook" />
+			</bean>
+		</property>
+	</bean>
 
 </beans>

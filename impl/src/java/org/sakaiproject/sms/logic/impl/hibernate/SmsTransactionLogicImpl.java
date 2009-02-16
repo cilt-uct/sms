@@ -41,14 +41,13 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.model.hibernate.factory.SmsTransactionFactory;
 import org.sakaiproject.sms.util.DateUtil;
 import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * The data service will handle all sms Transaction database transactions for
  * the sms tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
@@ -62,18 +61,18 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 		this.externalLogic = externalLogic;
 	}
 
-	/**
-	 * Persist a transaction to when a task fails
-	 * 
-	 * @param smsTask
-	 * @throws SmsAccountNotFoundException
-	 */
-	public void cancelTransaction(Long smsTaskId, Long smsAccountId)
-			throws SmsAccountNotFoundException {
-		SmsTransaction smsTransaction = SmsTransactionFactory.createCancelTask(
-				smsTaskId, smsAccountId);
-		persist(smsTransaction);
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
 	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
+
 
 	// /**
 	// * Persist a transaction to reserve credits for a sms sending
@@ -96,7 +95,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * <p>
 	 * Use LogicFactory.java to get instances of logic classes.
 	 */
-	protected SmsTransactionLogicImpl() {
+	public SmsTransactionLogicImpl() {
 
 	}
 
@@ -109,7 +108,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	/**
 	 * Gets a SmsTransaction entity for the given id
-	 * 
+	 *
 	 * @param Long
 	 *            sms transaction id
 	 * @return sms congiguration
@@ -120,7 +119,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	/**
 	 * Gets all the sms transaction records
-	 * 
+	 *
 	 * @return List of SmsTransaction objects
 	 */
 	public List<SmsTransaction> getAllSmsTransactions() {
@@ -132,7 +131,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	/**
 	 * Gets a list of all SmsTransaction objects for the specified search
 	 * criteria
-	 * 
+	 *
 	 * @param search
 	 *            Bean containing the search criteria
 	 * @return List of SmsTransactions
@@ -147,7 +146,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -214,14 +213,11 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 				crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
 						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
 			}
-			
-			// Task Id
-			if (searchBean.getTaskId() != null
+if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
 				crit.add(Restrictions.like("smsTaskId", new Long(searchBean
 						.getTaskId())));
 			}
-
 			crit.setMaxResults(SmsHibernateConstants.READ_LIMIT);
 
 		} catch (ParseException e) {
@@ -235,7 +231,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	}
 
 	private int getPageSize() {
-		SmsConfig smsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
 		if (smsConfig == null)
@@ -246,10 +242,10 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	/**
 	 * Gets all the related transaction for the specified account id.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
-	 * 
+	 *
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForAccountId(Long accountId) {
@@ -265,10 +261,10 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	/**
 	 * Gets all the related transaction for the specified task id.
-	 * 
+	 *
 	 * @param accountId
 	 *            the account id
-	 * 
+	 *
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForTaskId(Long taskId) {
@@ -285,10 +281,10 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	/**
 	 * Gets transaction that will be used to create to populate a new
 	 * transaction to cancel this one.
-	 * 
+	 *
 	 * @param taskId
 	 *            the task id
-	 * 
+	 *
 	 * @return the cancel sms transaction for task
 	 */
 	public SmsTransaction getCancelSmsTransactionForTask(Long taskId) {
@@ -318,7 +314,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * Insert reserve transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -331,7 +327,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * Insert settle transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -344,7 +340,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * Insert cancel pending request transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -357,7 +353,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * Insert transaction for a late message.
 	 * <p>
 	 * This will also update the related account balance.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -370,7 +366,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * Insert transaction to credit an account
 	 * <p>
 	 * This will also update the related account balance.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -380,7 +376,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	/**
 	 * Insert transaction.
-	 * 
+	 *
 	 * @param smsTransaction
 	 *            the sms transaction
 	 * @param transactionType
@@ -388,7 +384,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 */
 	private void insertTransaction(SmsTransaction smsTransaction,
 			String transactionType) {
-		SmsAccount account = HibernateLogicFactory.getAccountLogic()
+		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTransaction.getSmsAccount().getId());
 		smsTransaction.setTransactionTypeCode(transactionType);
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
@@ -396,7 +392,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 		account.setCredits(account.getCredits()
 				+ smsTransaction.getTransactionCredits());
 		smsTransaction.setCreditBalance(account.getCredits());
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 		persist(smsTransaction);
 	}

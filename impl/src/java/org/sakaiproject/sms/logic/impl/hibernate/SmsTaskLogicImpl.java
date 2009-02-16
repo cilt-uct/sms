@@ -46,7 +46,7 @@ import org.sakaiproject.sms.util.HibernateUtil;
 /**
  * The data service will handle all sms task database transactions for the sms
  * tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008
@@ -59,6 +59,17 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 		this.externalLogic = externalLogic;
 	}
 
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -68,7 +79,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets a SmsTask entity for the given id
-	 * 
+	 *
 	 * @param Long
 	 *            sms task id
 	 * @return sms task
@@ -79,7 +90,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets all the sms task records
-	 * 
+	 *
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
@@ -92,10 +103,10 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * This method will persists the given object.
-	 * 
+	 *
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updated on the DB.
-	 * 
+	 *
 	 * @param sms
 	 *            task to be persisted
 	 */
@@ -105,7 +116,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets the next sms task to be processed.
-	 * 
+	 *
 	 * @return next sms task
 	 */
 	public SmsTask getNextSmsTask() {
@@ -135,7 +146,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	/**
 	 * Returns a list of SmsTask objects with messages that have the specified
 	 * status code(s)
-	 * 
+	 *
 	 * @param message
 	 *            status code(s)
 	 * @return List of SmsTask objetcs
@@ -168,7 +179,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Gets a all search results for the specified search criteria
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -181,7 +192,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 * 
+	 *
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -265,7 +276,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	}
 
 	private int getPageSize() {
-		SmsConfig smsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
 		if (smsConfig == null)
@@ -276,7 +287,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Increments the total messages processed on a task by one.
-	 * 
+	 *
 	 * @param smsTask
 	 */
 	public void incrementMessagesProcessed(SmsTask smsTask) {
@@ -291,7 +302,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	/**
 	 * Increments the total messages delivered on a task by one.
-	 * 
+	 *
 	 * @param smsTask
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask) {

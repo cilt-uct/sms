@@ -61,6 +61,17 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 		this.externalLogic = externalLogic;
 	}
 
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -134,7 +145,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		smsTask.setDateToExpire(cal.getTime());
 
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		SmsMessage smsMessage = new SmsMessage();
 		smsMessage.setSmsTask(smsTask);
@@ -171,7 +182,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	}
 
 	private int getPageSize() {
-		SmsConfig smsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
 		if (smsConfig == null)

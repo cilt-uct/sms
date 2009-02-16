@@ -25,8 +25,12 @@ import java.util.TreeSet;
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
@@ -49,9 +53,9 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -60,22 +64,18 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsAccount smsAccount = null;
 	static ExternalLogic externalLogic = null;
-	static SmsConfigLogicImpl smsConfigLogic = null;
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
 
 	static {
-		externalLogic = new ExternalLogicStub();
+		externalLogic = hibernateLogicLocator.getExternalLogic();
 		smsCoreImpl = new SmsCoreImpl();
-		smsConfigLogic = new SmsConfigLogicImpl();
 
-		smsCoreImpl.setExternalLogic(externalLogic);
-		smsCoreImpl.setSmsConfigLogic(smsConfigLogic);
 		smsSmppImpl = new SmsSmppImpl();
 
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
-		smsCoreImpl.setExternalLogic(new ExternalLogicStub());
+
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
@@ -111,19 +111,20 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
-		SmsConfig config = smsConfigLogic
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
+		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
 						.getCurrentSiteId());
 		config.setSendSmsEnabled(true);
-		smsConfigLogic.persistSmsConfig(config);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
 	}
 
 	/**
@@ -132,7 +133,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 * 
+	 *
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -181,16 +182,16 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 			smsTask1.setDateCreated(DateUtil.getCurrentDate());
 			smsTask1.setSmsAccountId(smsAccount.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask1);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask1);
 			smsTask2.setDateCreated(DateUtil.getCurrentDate());
 			smsTask2.setSmsAccountId(smsAccount.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask2);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask2);
 			smsTask3.setDateCreated(DateUtil.getCurrentDate());
 			smsTask3.setSmsAccountId(smsAccount.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask3);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask3);
 			smsTask4.setDateCreated(DateUtil.getCurrentDate());
 			smsTask4.setSmsAccountId(smsAccount.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask4);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask4);
 
 			assertEquals(true, smsTask1.getId().equals(
 					smsCoreImpl.getNextSmsTask().getId()));
@@ -211,13 +212,13 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				e.printStackTrace();
 			}
 
-			SmsTask smsTask1Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask1Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask1.getId());
-			SmsTask smsTask2Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask2Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask2.getId());
-			SmsTask smsTask3Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask3Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask3.getId());
-			SmsTask smsTask4Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask4Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask4.getId());
 
 			assertEquals(true, smsTask1Update.getMessagesWithSmscStatus(
@@ -265,10 +266,10 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			smsTask1.setMaxTimeToLive(60);
 			smsTask1.setSmsAccountId(smsAccount.getId());
 			smsTask1.setDateCreated(DateUtil.getCurrentDate());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask1);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask1);
 			smsTask2.setDateCreated(DateUtil.getCurrentDate());
 			smsTask2.setSmsAccountId(smsAccount.getId());
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask2);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask2);
 
 			assertEquals(true, smsTask1.getId().equals(
 					smsCoreImpl.getNextSmsTask().getId()));
@@ -285,9 +286,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				e.printStackTrace();
 			}
 
-			SmsTask smsTask1Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask1Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask1.getId());
-			SmsTask smsTask2Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask2Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask2.getId());
 
 			assertEquals(true, smsTask1Update.getMessagesWithSmscStatus(
@@ -321,7 +322,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		smsTask.setSmsAccountId(smsAccount.getId());
 
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(0);
@@ -336,7 +337,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				e.printStackTrace();
 			}
 		}
-		SmsTask smsTaskUpdate = HibernateLogicFactory.getTaskLogic()
+		SmsTask smsTaskUpdate = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(smsTask.getId());
 		assertEquals(true, smsTaskUpdate.getStatusCode().equals(
 				SmsConst_DeliveryStatus.STATUS_FAIL));
@@ -345,14 +346,14 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				SmsConst_DeliveryStatus.STATUS_FAIL).size() == (smsTask
 				.getSmsMessages().size()));
 
-		HibernateLogicFactory.getTaskLogic().deleteSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
 		LOG.info("Reconnecting to server after fail test ");
 		smsSmppImpl.connectToGateway();
 	}
 
 	public void testProcessIncomingMessage() {
 		smsSmppImpl.connectToGateway();
-		SmsMessage smsMessage = HibernateLogicFactory.getMessageLogic()
+		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getNewTestSmsMessageInstance("Mobile number", "Message body");
 		smsCoreImpl.processIncomingMessage(smsMessage);
 	}
@@ -420,7 +421,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				e.printStackTrace();
 			}
 			smsCoreImpl.processTimedOutDeliveryReports();
-			SmsTask smsTask3Update = HibernateLogicFactory.getTaskLogic()
+			SmsTask smsTask3Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(timeOutTask.getId());
 
 			Set<SmsMessage> smsMessages = smsTask3Update.getSmsMessages();
@@ -459,7 +460,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setDelReportTimeoutDuration(60);
 		smsCoreImpl.calculateEstimatedGroupSize(insertTask);
 
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 
 		SmsMessage insertMessage1 = new SmsMessage();
 		insertMessage1.setMobileNumber("0721998919");
@@ -471,7 +472,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.DELIVERED);
 		insertMessage1.setSmsTask(insertTask);
 
-		HibernateLogicFactory.getMessageLogic().persistSmsMessage(
+		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 				insertMessage1);
 
 		SmsMessage insertMessage2 = new SmsMessage();
@@ -484,19 +485,19 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.REJECTED);
 		insertMessage2.setSmsTask(insertTask);
 
-		HibernateLogicFactory.getMessageLogic().persistSmsMessage(
+		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 				insertMessage2);
 
 		smsCoreImpl.processVeryLateDeliveryReports();
 
-		SmsMessage insertMessage2Update = HibernateLogicFactory
-				.getMessageLogic().getSmsMessage(insertMessage2.getId());
+		SmsMessage insertMessage2Update = hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessage(insertMessage2.getId());
 
 		assertEquals(insertMessage2Update.getStatusCode().equals(
 				SmsConst_DeliveryStatus.STATUS_FAIL), true);
 
-		SmsMessage insertMessage1Update = HibernateLogicFactory
-				.getMessageLogic().getSmsMessage(insertMessage1.getId());
+		SmsMessage insertMessage1Update = hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessage(insertMessage1.getId());
 
 		assertEquals(insertMessage1Update.getStatusCode().equals(
 				SmsConst_DeliveryStatus.STATUS_DELIVERED), true);
@@ -514,7 +515,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		account.setCredits(0L);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
@@ -556,7 +557,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(5000.00f));
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 		SmsTask insertTask = new SmsTask();
 		insertTask.setMessageTypeId(1);
@@ -610,7 +611,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
 		smsCoreImpl.calculateEstimatedGroupSize(insertTask);
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 
 		try {
 			smsCoreImpl.abortPendingTask(insertTask.getId());
@@ -618,7 +619,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 			e.printStackTrace();
 		}
-		SmsTask insertTaskUpdate = HibernateLogicFactory.getTaskLogic()
+		SmsTask insertTaskUpdate = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask.getId());
 
 		assertEquals(insertTaskUpdate.getStatusCode(),
@@ -657,11 +658,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	}
 
 	public void testSmsSendDisabled() {
-		SmsConfig config = smsConfigLogic
+		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
 						.getCurrentSiteId());
 		config.setSendSmsEnabled(false);
-		smsConfigLogic.persistSmsConfig(config);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
 
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
@@ -681,7 +682,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		// test shouldn't be dependant on eachother
 		// we really must find time to fix it
 		config.setSendSmsEnabled(true);
-		smsConfigLogic.persistSmsConfig(config);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
 	}
 
 }

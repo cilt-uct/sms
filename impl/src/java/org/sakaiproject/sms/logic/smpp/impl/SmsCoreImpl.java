@@ -26,10 +26,9 @@ import java.util.Set;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -37,7 +36,8 @@ import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
-import org.sakaiproject.sms.logic.smpp.validate.TaskValidator;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -49,24 +49,33 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
-	private ExternalLogic externalLogic;
+	private SmsTaskValidator smsTaskValidator;
 
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
+	public SmsTaskValidator getSmsTaskValidator() {
+		return smsTaskValidator;
 	}
 
-	private SmsConfigLogic smsConfigLogic;
+	public void setSmsTaskValidator(SmsTaskValidator smsTaskValidator) {
+		this.smsTaskValidator = smsTaskValidator;
+	}
 
-	public void setSmsConfigLogic(SmsConfigLogic smsConfigLogic) {
-		this.smsConfigLogic = smsConfigLogic;
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
 	public SmsSmpp smsSmpp = null;
@@ -75,8 +84,8 @@ public class SmsCoreImpl implements SmsCore {
 
 	public SmsTask calculateEstimatedGroupSize(SmsTask smsTask) {
 		int groupSize = 0;
-		Set<SmsMessage> messages = externalLogic.getSakaiGroupMembers(smsTask,
-				false);
+		Set<SmsMessage> messages = hibernateLogicLocator.getExternalLogic()
+				.getSakaiGroupMembers(smsTask, false);
 		groupSize = messages.size();
 		smsTask.setGroupSizeEstimate(groupSize);
 		// one sms always costs one credit
@@ -89,13 +98,13 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
 	private SmsTask calculateActualGroupSize(SmsTask smsTask) {
-		Set<SmsMessage> messages = externalLogic.getSakaiGroupMembers(smsTask,
-				true);
+		Set<SmsMessage> messages = hibernateLogicLocator.getExternalLogic()
+				.getSakaiGroupMembers(smsTask, true);
 		smsTask.setSmsMessagesOnTask(messages);
 		smsTask.setGroupSizeActual(messages.size());
 		return smsTask;
@@ -103,7 +112,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -112,7 +121,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public SmsTask getNextSmsTask() {
-		return HibernateLogicFactory.getTaskLogic().getNextSmsTask();
+		return hibernateLogicLocator.getSmsTaskLogic().getNextSmsTask();
 
 	}
 
@@ -159,9 +168,9 @@ public class SmsCoreImpl implements SmsCore {
 			String sakaiToolId, String sakaiSenderID,
 			List<String> deliveryEntityList) {
 
-		SmsConfig siteConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		SmsConfig systemConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 
 		SmsTask smsTask = new SmsTask();
@@ -176,7 +185,7 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setSakaiSiteId(sakaiSiteID);
 		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_OUTGOING);
 		smsTask.setSakaiToolId(sakaiToolId);
-		smsTask.setSenderUserName(externalLogic
+		smsTask.setSenderUserName(hibernateLogicLocator.getExternalLogic()
 				.getSakaiUserDisplayName(sakaiSenderID));
 		smsTask.setSenderUserId(sakaiSenderID);
 		smsTask.setDeliveryGroupName(deliverGroupId);
@@ -215,17 +224,19 @@ public class SmsCoreImpl implements SmsCore {
 			throws SmsTaskValidationException, SmsSendDeniedException,
 			SmsSendDisabledException {
 
-		if (!externalLogic.isUserAllowedInLocation(smsTask.getSenderUserId(),
-				ExternalLogic.SMS_SEND, smsTask.getSakaiSiteId())) {
+		if (!hibernateLogicLocator.getExternalLogic().isUserAllowedInLocation(
+				smsTask.getSenderUserId(), ExternalLogic.SMS_SEND,
+				smsTask.getSakaiSiteId())) {
 			throw new SmsSendDeniedException();
 		}
-		if (!smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(
-				smsTask.getSakaiSiteId()).isSendSmsEnabled()) {
+		if (!hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
+				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException();
 		}
 
 		ArrayList<String> errors = new ArrayList<String>();
-		errors.addAll(TaskValidator.validateInsertTask(smsTask));
+		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {
 			// Do not persist, just throw exception
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
@@ -239,13 +250,13 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 		// we set the date again due to time laps between getPreliminaryTask and
-		// insertTask
+		// insertask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		// We do this because if there the invalid values in the task then the
 		// checkSufficientCredits() will throw unexpected exceptions. Check for
 		// sufficient credit only if the task is valid
 		errors.clear();
-		errors.addAll(TaskValidator.checkSufficientCredits(smsTask));
+		errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask));
 		if (errors.size() > 0) {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
@@ -260,7 +271,7 @@ public class SmsCoreImpl implements SmsCore {
 					+ ": " + validationException.getErrorMessagesAsBlock());
 			throw validationException;
 		}
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		smsBilling.reserveCredits(smsTask);
 		tryProcessTaskRealTime(smsTask);
 		return smsTask;
@@ -271,14 +282,15 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public synchronized void processNextTask() {
-		SmsTask smsTask = HibernateLogicFactory.getTaskLogic().getNextSmsTask();
+		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getNextSmsTask();
 		if (smsTask != null) {
 			this.processTask(smsTask);
 		}
 	}
 
 	public void processTask(SmsTask smsTask) {
-		SmsConfig systemConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		smsTask.setDateProcessed(new Date());
 		smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
@@ -289,25 +301,25 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_PENDING,
 					SmsConst_DeliveryStatus.STATUS_EXPIRE);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED);
+					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
 			smsBilling.cancelPendingRequest(smsTask.getId());
 			smsTask.setFailReason(MessageCatalog
 					.getMessage("messages.taskExpired"));
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			return;
 		}
 
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 			if (smsTask.getAttemptCount() <= 1) {
 				calculateActualGroupSize(smsTask);
-				HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			}
 			String submissionStatus = smsSmpp
 					.sendMessagesToGateway(smsTask
 							.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
-			smsTask = HibernateLogicFactory.getTaskLogic().getSmsTask(
+			smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 					smsTask.getId());
 			smsTask.setStatusCode(submissionStatus);
 
@@ -333,12 +345,12 @@ public class SmsCoreImpl implements SmsCore {
 							.getSmsRetryMaxCount()))));
 			smsBilling.cancelPendingRequest(smsTask.getId());
 		}
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 	}
 
 	public void processTimedOutDeliveryReports() {
-		List<SmsMessage> smsMessages = HibernateLogicFactory.getMessageLogic()
-				.getSmsMessagesWithStatus(null,
+		List<SmsMessage> smsMessages = hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessagesWithStatus(null,
 						SmsConst_DeliveryStatus.STATUS_SENT);
 
 		if (smsMessages != null) {
@@ -353,9 +365,9 @@ public class SmsCoreImpl implements SmsCore {
 					if (cal.getTime().before(new Date())) {
 						message
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
-						HibernateLogicFactory.getMessageLogic()
+						hibernateLogicLocator.getSmsMessageLogic()
 								.persistSmsMessage(message);
-						HibernateLogicFactory.getTaskLogic()
+						hibernateLogicLocator.getSmsTaskLogic()
 								.incrementMessagesProcessed(
 										message.getSmsTask());
 					}
@@ -369,18 +381,19 @@ public class SmsCoreImpl implements SmsCore {
 	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
 			String subject, String body) {
 		// TODO Call sakai service to send the email
-		externalLogic.sendEmail(smsTask, toAddress, subject, body);
+		hibernateLogicLocator.getExternalLogic().sendEmail(smsTask, toAddress,
+				subject, body);
 		return true;
 	}
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -390,12 +403,12 @@ public class SmsCoreImpl implements SmsCore {
 		String body = null;
 		String toAddress = null;
 
-		SmsConfig configSite = HibernateLogicFactory.getConfigLogic()
+		SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId());
-		SmsConfig configSystem = HibernateLogicFactory.getConfigLogic()
+		SmsConfig configSystem = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		// Get the balance available to calculate the available credit.
-		SmsAccount account = HibernateLogicFactory.getAccountLogic()
+		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
 			return false;
@@ -479,7 +492,8 @@ public class SmsCoreImpl implements SmsCore {
 
 			if (toAddress == null || toAddress.length() == 0) {
 
-				toAddress = externalLogic.getSakaiSiteContactEmail();
+				toAddress = hibernateLogicLocator.getExternalLogic()
+						.getSakaiSiteContactEmail();
 			}
 			if (toAddress == null || toAddress.length() == 0) {
 				return false;
@@ -507,7 +521,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void checkAndSetTasksCompleted() {
 
-		List<SmsTask> smsTasks = HibernateLogicFactory.getTaskLogic()
+		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
 				.checkAndSetTasksCompleted();
 
 		for (SmsTask smsTask : smsTasks) {
@@ -520,7 +534,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	private void checkOverdraft(SmsTask smsTask) {
-		SmsAccount account = HibernateLogicFactory.getAccountLogic()
+		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if ((account.getCredits()) < (-1 * account.getOverdraftLimit())) {
 			sendEmailNotification(smsTask,
@@ -530,7 +544,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processVeryLateDeliveryReports() {
-		List<SmsMessage> messages = HibernateLogicFactory.getMessageLogic()
+		List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessagesWithStatus(null,
 						SmsConst_DeliveryStatus.STATUS_LATE);
 
@@ -541,11 +555,11 @@ public class SmsCoreImpl implements SmsCore {
 			} else {
 				smsMessage
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-				HibernateLogicFactory.getTaskLogic()
+				hibernateLogicLocator.getSmsTaskLogic()
 						.incrementMessagesDelivered(smsMessage.getSmsTask());
 				smsBilling.debitLateMessage(smsMessage);
 			}
-			HibernateLogicFactory.getMessageLogic().persistSmsMessage(
+			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 					smsMessage);
 		}
 
@@ -553,7 +567,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void abortPendingTask(Long smsTaskID)
 			throws SmsTaskNotFoundException {
-		SmsTask smsTask = HibernateLogicFactory.getTaskLogic().getSmsTask(
+		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				smsTaskID);
 		if (smsTask == null) {
 			throw new SmsTaskNotFoundException();
@@ -565,7 +579,7 @@ public class SmsCoreImpl implements SmsCore {
 					SmsConst_DeliveryStatus.STATUS_ABORT);
 			smsTask.setFailReason(MessageCatalog
 					.getMessage("messages.taskAborted"));
-			HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_ABORTED);
 		}

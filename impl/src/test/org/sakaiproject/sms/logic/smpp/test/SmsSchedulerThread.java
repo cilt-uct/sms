@@ -24,7 +24,8 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
@@ -52,7 +53,7 @@ public class SmsSchedulerThread extends TestRunnable {
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsSchedulerThread.class);
-
+	private static HibernateLogicLocator hibernateLogicLocator = new HibernateLogicLocator();
 	/** The session name. */
 	private final String sessionName;
 
@@ -65,11 +66,10 @@ public class SmsSchedulerThread extends TestRunnable {
 	 */
 	public SmsSchedulerThread(String sessionName) {
 		externalLogic = new ExternalLogicStub();
-
+		hibernateLogicLocator.setSmsAccountLogic(new SmsAccountLogicImpl());
 		this.sessionName = sessionName;
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
-		smsCoreImpl.setExternalLogic(externalLogic);
 		smsSmppImpl = new SmsSmppImpl();
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
 		smsSmppImpl.init();
@@ -87,7 +87,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountnamej");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 	}
 
 	/**

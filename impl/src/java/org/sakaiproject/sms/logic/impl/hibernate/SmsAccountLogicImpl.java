@@ -45,13 +45,19 @@ import org.sakaiproject.sms.util.HibernateUtil;
  */
 public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 
-	/**
-	 * Leave this as protected to try and prevent the random instantiation of
-	 * this class.
-	 * <p>
-	 * Use LogicFactory.java to get instances of logic classes.
-	 */
-	protected SmsAccountLogicImpl() {
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
+
+	public  SmsAccountLogicImpl() {
 
 	}
 
@@ -161,7 +167,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		smsAccount.setAccountName("TestAccountName");
 		smsAccount.setAccountEnabled(true);
 		try {
-			HibernateLogicFactory.getAccountLogic().persistSmsAccount(
+			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					smsAccount);
 		} catch (Exception e) {
 
@@ -190,7 +196,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	 *
 	 */
 	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
-		SmsConfig config = HibernateLogicFactory.getConfigLogic()
+		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
 		SmsAccount account = null;
@@ -286,12 +292,12 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	public void recalculateAccountBalance(Long accountId, SmsAccount account) {
 		// Use account instead of id?
 		if (account == null) {
-			account = HibernateLogicFactory.getAccountLogic().getSmsAccount(
+			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 					accountId);
 		}
 
-		List<SmsTransaction> transactions = HibernateLogicFactory
-				.getTransactionLogic().getSmsTransactionsForAccountId(
+		List<SmsTransaction> transactions = hibernateLogicLocator
+				.getSmsTransactionLogic().getSmsTransactionsForAccountId(
 						account.getId());
 
 		// Sort by transaction date

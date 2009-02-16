@@ -1,17 +1,17 @@
 /***********************************************************************************
  * SmsSampleDataLoad.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -23,7 +23,9 @@ import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -33,15 +35,14 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
  * Use the application to insert test data into the database. Increase the value
  * of NUMBER_OF_REPETITIONS if you want to test the performance of the UI,
  * especially paging in the grids.
- * 
- * 
+ *
+ *
  */
 public class SmsSampleDataLoad {
 
 	public static final int NUMBER_OF_REPETITIONS = 20;
 
-	private SmsTransactionLogic smsTransactionLogic = HibernateLogicFactory
-			.getTransactionLogic();
+	private static HibernateLogicLocator hibernateLogicLocator = new HibernateLogicLocator();
 
 	private SampleSmsTaskFactory taskFactory;
 	private SampleSmsMessageFactory messageFactory;
@@ -57,21 +58,25 @@ public class SmsSampleDataLoad {
 	}
 
 	public SmsSampleDataLoad() {
+
 		super();
+		hibernateLogicLocator.setSmsAccountLogic(new SmsAccountLogicImpl());
+		hibernateLogicLocator
+				.setSmsTransactionLogic(new SmsTransactionLogicImpl());
 	}
 
 	private void persistSmsTransactions() {
-		smsTransactionLogic = HibernateLogicFactory.getTransactionLogic();
-		deleteSmsAccounts(HibernateLogicFactory.getAccountLogic());
-		deleteSmsTransactions(smsTransactionLogic);
+
+		deleteSmsAccounts(hibernateLogicLocator.getSmsAccountLogic());
+		deleteSmsTransactions(hibernateLogicLocator.getSmsTransactionLogic());
 
 		testSMSTransactionFactory = new SampleSmsTransactionFactory();
 		System.out.println("Inserting SmsAccounts:");
 
-		persistsSmsAccounts(HibernateLogicFactory.getAccountLogic());
+		persistsSmsAccounts(hibernateLogicLocator.getSmsAccountLogic());
 
-		List<SmsAccount> persistedSmsAccounts = HibernateLogicFactory
-				.getAccountLogic().getAllSmsAccounts();
+		List<SmsAccount> persistedSmsAccounts = hibernateLogicLocator
+				.getSmsAccountLogic().getAllSmsAccounts();
 
 		System.out.println("Inserting SmsTransactions:");
 
@@ -84,7 +89,8 @@ public class SmsSampleDataLoad {
 
 				smsTransaction.setSmsAccount(persistedSmsAccounts.get(0));
 				smsTransaction.setSmsTaskId(new Long(index + 1));
-				smsTransactionLogic.insertReserveTransaction(smsTransaction);
+				hibernateLogicLocator.getSmsTransactionLogic()
+						.insertReserveTransaction(smsTransaction);
 				index++;
 			}
 			testSMSTransactionFactory.refreshList();
@@ -95,8 +101,8 @@ public class SmsSampleDataLoad {
 		taskFactory = new SampleSmsTaskFactory();
 		messageFactory = new SampleSmsMessageFactory();
 
-		deleteSmsTasks(HibernateLogicFactory.getTaskLogic());
-		deleteSmsMessages(HibernateLogicFactory.getMessageLogic());
+		deleteSmsTasks(hibernateLogicLocator.getSmsTaskLogic());
+		deleteSmsMessages(hibernateLogicLocator.getSmsMessageLogic());
 
 		System.out.println("Inserting SmsMessages and Tasks:");
 
@@ -107,13 +113,13 @@ public class SmsSampleDataLoad {
 			List<SmsTask> smsTasks = taskFactory.getAllTestSmsTasks();
 
 			for (SmsTask smsTask : smsTasks) {
-				HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			}
 
 			int index = 0;
 			for (SmsMessage smsMessage : smsMessages) {
 				smsMessage.setSmsTask(smsTasks.get(index));
-				HibernateLogicFactory.getMessageLogic().persistSmsMessage(
+				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 						smsMessage);
 				index++;
 			}

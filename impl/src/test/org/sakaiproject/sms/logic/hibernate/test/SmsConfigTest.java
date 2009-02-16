@@ -3,7 +3,8 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.List;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
@@ -16,8 +17,9 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	/** The insert sms config. */
 	private static SmsConfig insertSmsConfig;
-	
+
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
+
 
 	static {
 		insertSmsConfig = new SmsConfig();
@@ -29,7 +31,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -46,7 +48,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms config test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -58,7 +60,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test insert sms config.
 	 */
 	public void testInsertSmsConfig() {
-		HibernateLogicFactory.getConfigLogic()
+		hibernateLogicLocator.getSmsConfigLogic()
 				.persistSmsConfig(insertSmsConfig);
 		// Check the record was created on the DB... an id will be assigned.
 		assertTrue("Object not persisted", insertSmsConfig.exists());
@@ -68,7 +70,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test get sms config by id.
 	 */
 	public void testGetSmsConfigById() {
-		SmsConfig getSmsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig getSmsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getSmsConfig(insertSmsConfig.getId());
 		assertTrue("Object not persisted", insertSmsConfig.exists());
 		assertNotNull(getSmsConfig);
@@ -81,11 +83,11 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test update sms config.
 	 */
 	public void testUpdateSmsConfig() {
-		SmsConfig smsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getSmsConfig(insertSmsConfig.getId());
 		smsConfig.setSakaiSiteId("newSakaiSiteId");
-		HibernateLogicFactory.getConfigLogic().persistSmsConfig(smsConfig);
-		smsConfig = HibernateLogicFactory.getConfigLogic().getSmsConfig(
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(smsConfig);
+		smsConfig = hibernateLogicLocator.getSmsConfigLogic().getSmsConfig(
 				insertSmsConfig.getId());
 		assertEquals("newSakaiSiteId", smsConfig.getSakaiSiteId());
 	}
@@ -94,7 +96,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test get sms configs.
 	 */
 	public void testGetSmsConfigs() {
-		List<SmsConfig> confs = HibernateLogicFactory.getConfigLogic()
+		List<SmsConfig> confs = hibernateLogicLocator.getSmsConfigLogic()
 				.getAllSmsConfig();
 		assertNotNull("Returned collection is null", confs);
 		assertTrue("No records returned", confs.size() > 0);
@@ -111,17 +113,17 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 		insertSmsConfig.setSakaiToolId("testGetSmsConfigBySakiaSiteId");
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
-		HibernateLogicFactory.getConfigLogic()
+		hibernateLogicLocator.getSmsConfigLogic()
 				.persistSmsConfig(insertSmsConfig);
 		assertTrue("Object not created correctly", insertSmsConfig.exists());
 
 		try {
-			SmsConfig conf = HibernateLogicFactory.getConfigLogic()
+			SmsConfig conf = hibernateLogicLocator.getSmsConfigLogic()
 					.getOrCreateSmsConfigBySakaiSiteId(testId);
 			assertNotNull("Object not found", conf);
 			assertEquals("Incorrect object returned", conf, insertSmsConfig);
 		} finally {
-			HibernateLogicFactory.getConfigLogic().deleteSmsConfig(
+			hibernateLogicLocator.getSmsConfigLogic().deleteSmsConfig(
 					insertSmsConfig);
 		}
 	}
@@ -137,22 +139,22 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 		insertSmsConfig.setSakaiToolId(testId);
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
-		HibernateLogicFactory.getConfigLogic()
+		hibernateLogicLocator.getSmsConfigLogic()
 				.persistSmsConfig(insertSmsConfig);
 		assertTrue("Object not created correctly", insertSmsConfig.exists());
 
 		try {
-			SmsConfig conf = HibernateLogicFactory.getConfigLogic()
+			SmsConfig conf = hibernateLogicLocator.getSmsConfigLogic()
 					.getSmsConfigBySakaiToolId(testId);
 			assertNotNull("Object not found", conf);
 			assertEquals("Incorrect object returned", conf, insertSmsConfig);
 
-			conf = HibernateLogicFactory.getConfigLogic()
+			conf = hibernateLogicLocator.getSmsConfigLogic()
 					.getSmsConfigBySakaiToolId("SomeOtherId");
 			assertNull("No object should be found", conf);
 
 		} finally {
-			HibernateLogicFactory.getConfigLogic().deleteSmsConfig(
+			hibernateLogicLocator.getSmsConfigLogic().deleteSmsConfig(
 					insertSmsConfig);
 		}
 	}
@@ -161,7 +163,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test delete sms config.
 	 */
 	public void testFindByIdDevMode() {
-		SmsConfig getSmsConfig = HibernateLogicFactory.getConfigLogic()
+		SmsConfig getSmsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
 		assertNotNull(getSmsConfig);
@@ -172,8 +174,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test delete sms config.
 	 */
 	public void testDeleteSmsConfig() {
-		HibernateLogicFactory.getConfigLogic().deleteSmsConfig(insertSmsConfig);
-		SmsConfig getSmsConfig = HibernateLogicFactory.getConfigLogic()
+		hibernateLogicLocator.getSmsConfigLogic().deleteSmsConfig(insertSmsConfig);
+		SmsConfig getSmsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getSmsConfig(insertSmsConfig.getId());
 		assertNull(getSmsConfig);
 		assertNull("Object not removed", getSmsConfig);

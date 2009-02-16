@@ -5,7 +5,8 @@ import java.util.Date;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
@@ -40,11 +41,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			.getLogger(SmsCoreTest.class);
 
 	static {
+
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
-		smsConfigLogic = new SmsConfigLogicImpl();
-		
-		smsCoreImpl.setSmsConfigLogic(smsConfigLogic);
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
@@ -65,7 +64,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
-		SmsConfig config = smsConfigLogic.getOrCreateSmsConfigBySakaiSiteId(externalLogic.getCurrentSiteId());
+		SmsConfig config = smsConfigLogic
+				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
+						.getCurrentSiteId());
 		config.setSendSmsEnabled(true);
 		smsConfigLogic.persistSmsConfig(config);
 	}
@@ -75,24 +76,22 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 * tasks remain after 1 min.
 	 */
 	public void testTaskProcessing() {
-		smsCoreImpl.setExternalLogic(externalLogic);
+
 		SmsAccount smsAccount = new SmsAccount();
-		smsAccount
-				.setSakaiUserId(externalLogic.getCurrentUserId());
-		smsAccount
-				.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
+		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 		Calendar now = Calendar.getInstance();
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
-				now.getTimeInMillis()), "smsTask3",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask3", externalLogic
+				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
@@ -108,9 +107,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
-				now.getTimeInMillis()), "smsTask2MessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask2MessageBody", externalLogic
+				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
 		try {
@@ -125,9 +123,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 		now.add(Calendar.MINUTE, -3);
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
-				now.getTimeInMillis()), "smsTask1MessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask1MessageBody", externalLogic
+				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
 		smsTask1.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		try {
@@ -145,7 +142,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 
 			e.printStackTrace();
-		} 
+		}
 		assertTrue(smsCoreImpl.getNextSmsTask() == null);
 	}
 

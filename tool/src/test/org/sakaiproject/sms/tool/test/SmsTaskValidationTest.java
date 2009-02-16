@@ -20,9 +20,10 @@ package org.sakaiproject.sms.tool.test;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -75,8 +76,11 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 		// Inject the required impl's into core impl for testing
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
-		smsCoreImpl.smsBilling = new SmsBillingImpl();
-		smsCoreImpl.setExternalLogic(new ExternalLogicStub());
+		SmsBillingImpl smsBilling = new SmsBillingImpl();
+		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.smsBilling = smsBilling;
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");
@@ -85,9 +89,11 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 		validator = new SmsTaskValidator();
+
+		validator.setSmsTaskValidator(new SmsTaskValidatorImpl());
 		msg = new SmsMessage();
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
 
@@ -111,7 +117,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 	@Override
 	public void tearDown() {
-		HibernateLogicFactory.getAccountLogic().deleteSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(account);
 	}
 
 	/**
@@ -124,12 +130,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		validator.validate(smsTask, errors);
 		assertFalse(errors.hasGlobalErrors());
 
-		// account does not exist
-		smsTask.setSmsAccountId(0l);
-		validator.validate(smsTask, errors);
-		assertTrue(errors.hasGlobalErrors());
-		assertEquals(ValidationConstants.TASK_ACCOUNT_INVALID, errors
-				.getGlobalError().getCode());
 	}
 
 	/**

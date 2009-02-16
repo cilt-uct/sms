@@ -24,7 +24,8 @@ import java.util.Set;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
@@ -56,8 +57,11 @@ public class SmppThread extends TestRunnable {
 
 	private static SmsAccount smsAccount = null;
 
+	private static HibernateLogicLocator hibernateLogicLocator = null;
+
 	static {
 		HibernateUtil.createSchema();
+
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());
 		smsAccount.setSakaiSiteId("smsSiteId" + Math.random());
@@ -66,7 +70,7 @@ public class SmppThread extends TestRunnable {
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 	}
 
 	/**
@@ -114,7 +118,7 @@ public class SmppThread extends TestRunnable {
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setSmsAccountId(smsAccount.getId());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 		return insertTask;
 	}
 
@@ -139,7 +143,7 @@ public class SmppThread extends TestRunnable {
 			messages.add(message);
 		}
 		insertTask.setSmsMessagesOnTask(messages);
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 		smsCoreImpl.processTask(insertTask);
 		LOG.info(sessionName + ": sent " + insertTask.getMessagesProcessed()
 				+ " to gateway");
@@ -155,7 +159,7 @@ public class SmppThread extends TestRunnable {
 		while (waitForDeliveries) {
 
 			Thread.sleep(1000);
-			updatedSmsTask = HibernateLogicFactory.getTaskLogic().getSmsTask(
+			updatedSmsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 					insertTask.getId());
 			reportsRemainingAfterSleep = updatedSmsTask
 					.getMessagesWithSmscStatus(

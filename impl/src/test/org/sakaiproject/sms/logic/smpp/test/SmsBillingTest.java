@@ -18,19 +18,20 @@
 package org.sakaiproject.sms.logic.smpp.test;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
-import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.HibernateUtil;
 
@@ -49,16 +50,21 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/** The account. */
 	public static SmsAccount account;
 
+	private static HibernateLogicLocator hibernateLogicLocator;
+
+
 	static {
+		hibernateLogicLocator = new HibernateLogicLocator();
+		hibernateLogicLocator.setSmsAccountLogic(new SmsAccountLogicImpl());
+		hibernateLogicLocator.setSmsTransactionLogic(new SmsTransactionLogicImpl());
 		smsBillingImpl = new SmsBillingImpl();
-		smsBillingImpl.setExternalLogic(new ExternalLogicStub());
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
 
 		account = new SmsAccount();
 		account.setSakaiSiteId("121112322");
 		account.setMessageTypeCode("");
-		account.setCredits(smsBillingImpl.convertAmountToCredits(10f));
+		account.setCredits(10L);
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
@@ -101,11 +107,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	@Override
 	public void testOnetimeSetup() {
 		HibernateUtil.setTestConfiguration(true);
 		HibernateUtil.createSchema();
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
+
 	}
 
 	/**
@@ -162,7 +168,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
 		assertFalse("Expected insufficient credit", sufficientCredits);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		sufficientCredits = smsBillingImpl.checkSufficientCredits(account
 				.getId(), creditsRequired);
 		assertTrue("Expected insufficient credit", !sufficientCredits);
@@ -175,7 +181,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		int creditsRequired = 1;
 		account.setCredits(smsBillingImpl.convertAmountToCredits((10f)));
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		SmsMessage msg = new SmsMessage();
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -197,7 +203,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		assertTrue("Expected sufficient credit", sufficientCredits);
 
 		account.setCredits((smsBillingImpl.convertAmountToCredits(-10f)));
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(account);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		boolean insufficientCredits = !smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
 		assertTrue("Expected insufficient credit", insufficientCredits);
@@ -230,45 +236,27 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("1");
 		smsAccount.setMessageTypeCode("1");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits((smsBillingImpl.convertAmountToCredits((10f))));
+		smsAccount.setCredits(10L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 		insertTestTransactionsForAccount(smsAccount);
 
 		assertTrue(smsAccount.exists());
-		assertEquals(smsAccount.getCredits().longValue(), (new Float(10f / SmsHibernateConstants.COST_OF_CREDIT)).longValue());
 
-		List<SmsTransaction> transactions = HibernateLogicFactory
-				.getTransactionLogic().getSmsTransactionsForAccountId(
+		List<SmsTransaction> transactions = hibernateLogicLocator
+				.getSmsTransactionLogic().getSmsTransactionsForAccountId(
 						smsAccount.getId());
 
 		assertNotNull(transactions);
-		assertEquals(10, transactions.size());
+		assertTrue(transactions.size() > 0);
+
 		smsBillingImpl.recalculateAccountBalance(smsAccount.getId());
 
-		SmsAccount recalculatedAccount = HibernateLogicFactory
-				.getAccountLogic().getSmsAccount(smsAccount.getId());
+		SmsAccount recalculatedAccount = hibernateLogicLocator
+				.getSmsAccountLogic().getSmsAccount(smsAccount.getId());
 		assertNotNull(recalculatedAccount);
-		assertTrue(recalculatedAccount.getCredits() == 0);
-	}
-
-	/**
-	 * Test recalculate account balances.
-	 */
-	public void testRecalculateAccountBalances() {
-		// Recalculate all the account balances
-		smsBillingImpl.recalculateAccountBalances();
-		List<SmsAccount> smsAccounts = HibernateLogicFactory.getAccountLogic()
-				.getAllSmsAccounts();
-		assertNotNull(smsAccounts);
-		assertTrue(smsAccounts.size() > 0);
-		for (SmsAccount account : smsAccounts) {
-			// We know that the only accounts exist are the ones created in this
-			// test case
-			// and they should all have a balance of 0 after recalculation.
-			assertTrue(account.getCredits() == 0);
-		}
+		assertTrue(recalculatedAccount.getCredits() == 650);
 	}
 
 	/**
@@ -288,7 +276,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(origionalAccBalance));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -303,12 +291,15 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
-		smsTask.setDateToExpire(new Date());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
 
-		smsAccount = HibernateLogicFactory.getAccountLogic().getSmsAccount(
+		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 		assertNotNull(smsAccount);
 
@@ -332,7 +323,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(origionalAccBalance));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -348,12 +339,15 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		smsTask.setGroupSizeActual(0);
-		smsTask.setDateToExpire(new Date());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
 
-		smsAccount = HibernateLogicFactory.getAccountLogic().getSmsAccount(
+		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 		assertNotNull(smsAccount);
 
@@ -363,7 +357,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		smsBillingImpl.settleCreditDifference(smsTask);
 
-		smsAccount = HibernateLogicFactory.getAccountLogic().getSmsAccount(
+		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 
 		// Account balance was returnd to origional state since the actual
@@ -377,7 +371,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 * Test cancel pending request.
 	 */
 	public void testCancelPendingRequest() {
-		float origionalAccountBalance = 100;
+		Long origionalCreditBalance = 100L;
 		int creditEstimate = 50;
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -385,11 +379,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("4");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl
-				.convertAmountToCredits(origionalAccountBalance));
+		smsAccount.setCredits(origionalCreditBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -404,25 +397,26 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
-		smsTask.setDateToExpire(new Date());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		smsBillingImpl.reserveCredits(smsTask);
 
 		// Check the credits have been reserved.
-		SmsAccount retAccount = HibernateLogicFactory.getAccountLogic()
+		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(retAccount
-				.getCredits()) < origionalAccountBalance);
+		assertTrue(retAccount.getCredits() < origionalCreditBalance);
 
 		smsBillingImpl.cancelPendingRequest(smsTask.getId());
 		// Check the credits have been reserved.
-		retAccount = HibernateLogicFactory.getAccountLogic().getSmsAccount(
+		retAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(
-				retAccount.getCredits()).equals(origionalAccountBalance));
+		assertTrue(retAccount.getCredits().equals(origionalCreditBalance));
 	}
 
 	/**
@@ -437,10 +431,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("5");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(origionalAccountBalance));
+		smsAccount.setCredits(smsBillingImpl
+				.convertAmountToCredits(origionalAccountBalance));
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -455,8 +450,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
-		smsTask.setDateToExpire(new Date());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 		SmsMessage smsMessage = new SmsMessage();
 		smsMessage.setMobileNumber("0721998919");
@@ -468,56 +466,35 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		smsBillingImpl.debitLateMessage(smsMessage);
 		// Check the account balance was deducted from
-		SmsAccount retAccount = HibernateLogicFactory.getAccountLogic()
+		SmsAccount retAccount =hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(
-				retAccount.getCredits()) < origionalAccountBalance);
+		assertTrue(smsBillingImpl.convertCreditsToAmount(retAccount
+				.getCredits()) < origionalAccountBalance);
 	}
 
 	/**
-	 * Test credit account.
+	 * Test debit account.
 	 */
 	public void testCreditAccount() {
-		float origionalAccountBalance = 0;
-		int creditEstimate = 50;
+		Long origionalCreditBalance = 0L;
 
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("6");
 		smsAccount.setSakaiSiteId("6");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl.convertAmountToCredits(origionalAccountBalance));
+		smsAccount.setCredits(origionalCreditBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		HibernateLogicFactory.getAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
 
-		SmsTask smsTask = new SmsTask();
-		smsTask.setSakaiSiteId("sakaiSiteId");
-		smsTask.setSenderUserName("sakaiUserId");
-		smsTask.setSmsAccountId(smsAccount.getId());
-		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
-		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
-		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
-		smsTask.setSenderUserName("senderUserName");
-		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
-		smsTask.setCreditEstimate(creditEstimate);
-		smsTask.setDateToExpire(new Date());
-		HibernateLogicFactory.getTaskLogic().persistSmsTask(smsTask);
-
-		smsBillingImpl.creditAccount(smsAccount.getId(), smsBillingImpl.convertAmountToCredits(1000f));
-		// Check the account balance was deducted from
-		SmsAccount retAccount = HibernateLogicFactory.getAccountLogic()
+		smsBillingImpl.creditAccount(smsAccount.getId(),100L);
+		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(
-				retAccount.getCredits()) > origionalAccountBalance);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(
-				retAccount.getCredits()) == 1000f);
-		
+		assertTrue(retAccount.getCredits() > origionalCreditBalance);
+		assertTrue(retAccount.getCredits() == 100L);
 	}
 
 	// ///////////////////////////////////////
@@ -537,7 +514,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		int g = 10000;
 		for (int i = 0; i < 10; i++) {
 			SmsTransaction smsTransaction = new SmsTransaction();
-			smsTransaction.setCreditBalance(smsBillingImpl.convertAmountToCredits((1.32f)));
+			smsTransaction.setCreditBalance(10L);
 			smsTransaction.setSakaiUserId("sakaiUserId" + i);
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()
@@ -547,7 +524,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 			smsTransaction.setSmsAccount(smsAccount);
 			smsTransaction.setSmsTaskId(1L);
 			g += 1000;
-			HibernateLogicFactory.getTransactionLogic()
+			hibernateLogicLocator.getSmsTransactionLogic()
 					.insertReserveTransaction(smsTransaction);
 		}
 	}

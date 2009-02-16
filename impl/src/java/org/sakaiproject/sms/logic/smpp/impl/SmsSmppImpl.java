@@ -61,7 +61,7 @@ import org.jsmpp.session.SessionStateListener;
 import org.jsmpp.util.AbsoluteTimeFormatter;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
 import org.jsmpp.util.TimeFormatter;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicFactory;
+import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -100,6 +100,22 @@ public class SmsSmppImpl implements SmsSmpp {
 	private int transactionTimer;
 	private int sendingDelay;
 	private static final boolean ALLOW_PROCESS_REMOTELY = false;
+
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
+
+
+
+
 
 	// provides access to the session for the units.
 	public SMPPSession getSession() {
@@ -174,8 +190,8 @@ public class SmsSmppImpl implements SmsSmpp {
 							+ deliverSm.getSourceAddr() + " to "
 							+ deliverSm.getDestAddress() + " : "
 							+ deliveryReceipt);
-					SmsMessage smsMessage = HibernateLogicFactory
-							.getMessageLogic().getSmsMessageBySmscMessageId(
+					SmsMessage smsMessage = hibernateLogicLocator
+							.getSmsMessageLogic().getSmsMessageBySmscMessageId(
 									deliveryReceipt.getId(),
 									SmsHibernateConstants.SMSC_ID);
 					if (smsMessage == null) {
@@ -183,8 +199,8 @@ public class SmsSmppImpl implements SmsSmpp {
 							LOG.warn("SMSC_DEL_RECEIPT retry " + i
 									+ " out of 5 for messageSmscID"
 									+ deliveryReceipt.getId());
-							smsMessage = HibernateLogicFactory
-									.getMessageLogic()
+							smsMessage = hibernateLogicLocator
+									.getSmsMessageLogic()
 									.getSmsMessageBySmscMessageId(
 											deliveryReceipt.getId(),
 											SmsHibernateConstants.SMSC_ID);
@@ -221,15 +237,15 @@ public class SmsSmppImpl implements SmsSmpp {
 							} else {
 								smsMessage
 										.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-								HibernateLogicFactory.getTaskLogic()
+								hibernateLogicLocator.getSmsTaskLogic()
 								.incrementMessagesDelivered(
 										smsMessage.getSmsTask());
 							}
 						}
-						HibernateLogicFactory.getTaskLogic()
+						hibernateLogicLocator.getSmsTaskLogic()
 								.incrementMessagesProcessed(
 										smsMessage.getSmsTask());
-						HibernateLogicFactory.getMessageLogic()
+						hibernateLogicLocator.getSmsMessageLogic()
 								.persistSmsMessage(smsMessage);
 
 					} else {
@@ -639,7 +655,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.error(e);
 
 		}
-		HibernateLogicFactory.getMessageLogic().persistSmsMessage(message);
+		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(message);
 		return message;
 	}
 
