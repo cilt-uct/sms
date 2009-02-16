@@ -27,14 +27,12 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class SmsSystemConfigProducer implements ViewComponentProducer {
@@ -75,9 +73,6 @@ public class SmsSystemConfigProducer implements ViewComponentProducer {
 
 		UIMessage.make(tofill, "page-title", "sms.system.config.title");
 		UIMessage.make(tofill, "page-heading", "sms.system.config.title");
-
-		UIInternalLink.make(tofill, "site-settings", new SimpleViewParameters(
-				SmsSiteConfigProducer.VIEW_ID));
 
 		UIForm smsSystemForm = UIForm.make(tofill, "sms-system-config-form");
 

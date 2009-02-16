@@ -33,7 +33,6 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UISelect;
 import uk.org.ponder.rsf.components.decorators.DecoratorList;
@@ -83,9 +82,6 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 
 		String smsConfigOTP = SmsConfigLocator.LOCATOR_NAME + "."
 				+ externalLogic.getCurrentSiteId();
-
-		UIInternalLink.make(tofill, "system-settings",
-				new SimpleViewParameters(SmsSystemConfigProducer.VIEW_ID));
 
 		UIMessage.make(tofill, "page-title", "sms.site.config.title");
 		UIForm smsSiteConfigform = UIForm.make(tofill, "sms-site-config-form");
