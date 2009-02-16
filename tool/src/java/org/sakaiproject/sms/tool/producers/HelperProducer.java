@@ -26,6 +26,7 @@ import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.util.SmsAccountHelper;
 
+import uk.org.ponder.beanutil.BeanGetter;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
@@ -48,6 +49,7 @@ public class HelperProducer implements ViewComponentProducer,
 
 	private SmsAccountHelper accountHelper;
 	private SmsTaskLocator smsTaskLocator;
+	private BeanGetter ELEvaluator;
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -57,66 +59,70 @@ public class HelperProducer implements ViewComponentProducer,
 
 		UIMessage.make(tofill, "page-title", "sms.helper.title");
 		UIMessage.make(tofill, "sms-helper-heading", "sms.helper.heading");
-		UIForm form = UIForm.make(tofill, "helper-form");
-
-		UIMessage.make(form, "message-body-label", "sms.helper.message-body");
-		UIInput messageBody = UIInput.make(form, "message-body", smsTaskOTP
-				+ ".messageBody");
-		messageBody.mustapply = true;
-
-		UIMessage.make(form, "chars-remaining-label",
-				"sms.helper.chars-remaining");
-		UIInput charsRemaining = UIInput.make(form, "chars-remaining", null,
-				Integer.toString(SmsHibernateConstants.MAX_SMS_LENGTH));
-		// Disables the characters remaining input
-		charsRemaining.decorate(new UIDisabledDecorator());
-
-		if (smsTaskLocator.containsNew()) {
-			UICommand.make(form, "action-button", UIMessage
-					.make("sms.general.save"), "HelperActionBean.save");
+		
+		if (ELEvaluator.getBean(smsTaskOTP) == null) { // Prelim task is Null (probably account not found)
+			UIMessage.make(tofill, "invalid-account-msg", "sms.helper.invalid-account-msg");
 		} else {
-			UICommand.make(form, "action-button", UIMessage
-					.make("sms.general.continue"),
-					"HelperActionBean.doContinue");
+			UIForm form = UIForm.make(tofill, "helper-form");
+
+			UIMessage.make(form, "message-body-label", "sms.helper.message-body");
+			UIInput messageBody = UIInput.make(form, "message-body", smsTaskOTP
+					+ ".messageBody");
+			messageBody.mustapply = true;
+
+			UIMessage.make(form, "chars-remaining-label",
+					"sms.helper.chars-remaining");
+			UIInput charsRemaining = UIInput.make(form, "chars-remaining", null,
+					Integer.toString(SmsHibernateConstants.MAX_SMS_LENGTH));
+			// Disables the characters remaining input
+			charsRemaining.decorate(new UIDisabledDecorator());
+
+			if (smsTaskLocator.containsNew()) {
+				UICommand.make(form, "action-button", UIMessage
+						.make("sms.general.save"), "HelperActionBean.save");
+			} else {
+				UICommand.make(form, "action-button", UIMessage
+						.make("sms.general.continue"),
+						"HelperActionBean.doContinue");
+			}
+			UICommand.make(form, "cancel-button", UIMessage
+					.make("sms.general.cancel"));
+
+			UIMessage.make(form, "estimated-group-size-label",
+					"sms.helper.estimated-group-size");
+			UIInput groupSize = UIInput.make(form, "estimated-group-size",
+					smsTaskOTP + ".groupSizeEstimate");
+			groupSize.decorate(new UIDisabledDecorator());
+			groupSize.fossilize = false;
+
+			UIMessage.make(form, "account-credits-label",
+					"sms.helper.account-credits");
+			SmsAccount account = accountHelper.retrieveAccount(smsTaskOTP
+					+ ".smsAccountId");
+			UIInput accountCredits = UIInput.make(form, "account-credits", null,
+					(account.getCredits() != null) ? account.getCredits()
+							.toString() : "0");
+			accountCredits.decorate(new UIDisabledDecorator());
+			accountCredits.fossilize = false;
+
+			UIMessage.make(form, "estimated-credits-label",
+					"sms.helper.estimated-credits");
+			UIInput estimatedCost = UIInput.make(form, "estimated-credits",
+					smsTaskOTP + ".groupSizeEstimate");
+			estimatedCost.decorate(new UIDisabledDecorator());
+			estimatedCost.fossilize = false;
+
+			UIInitBlock
+					.make(
+							tofill,
+							"init-msg-body-change",
+							"initMsgBodyChange",
+							new Object[] {
+									messageBody,
+									charsRemaining,
+									Integer
+									.toString(SmsHibernateConstants.MAX_SMS_LENGTH) });			
 		}
-		UICommand.make(form, "cancel-button", UIMessage
-				.make("sms.general.cancel"));
-
-		UIMessage.make(form, "estimated-group-size-label",
-				"sms.helper.estimated-group-size");
-		UIInput groupSize = UIInput.make(form, "estimated-group-size",
-				smsTaskOTP + ".groupSizeEstimate");
-		groupSize.decorate(new UIDisabledDecorator());
-		groupSize.fossilize = false;
-
-		UIMessage.make(form, "account-credits-label",
-				"sms.helper.account-credits");
-		SmsAccount account = accountHelper.retrieveAccount(smsTaskOTP
-				+ ".smsAccountId");
-		UIInput accountCredits = UIInput.make(form, "account-credits", null,
-				(account.getCredits() != null) ? account.getCredits()
-						.toString() : "0");
-		accountCredits.decorate(new UIDisabledDecorator());
-		accountCredits.fossilize = false;
-
-		UIMessage.make(form, "estimated-credits-label",
-				"sms.helper.estimated-credits");
-		UIInput estimatedCost = UIInput.make(form, "estimated-credits",
-				smsTaskOTP + ".groupSizeEstimate");
-		estimatedCost.decorate(new UIDisabledDecorator());
-		estimatedCost.fossilize = false;
-
-		UIInitBlock
-				.make(
-						tofill,
-						"init-msg-body-change",
-						"initMsgBodyChange",
-						new Object[] {
-								messageBody,
-								charsRemaining,
-								Integer
-										.toString(SmsHibernateConstants.MAX_SMS_LENGTH) });
-
 	}
 
 	public String getViewID() {
@@ -146,6 +152,10 @@ public class HelperProducer implements ViewComponentProducer,
 
 	public void setSmsTaskLocator(SmsTaskLocator smsTaskLocator) {
 		this.smsTaskLocator = smsTaskLocator;
+	}
+	
+	public void setELEvaluator(BeanGetter ELEvaluator) {
+		this.ELEvaluator = ELEvaluator;
 	}
 
 }

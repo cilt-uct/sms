@@ -169,7 +169,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setSmsAccountId(smsBilling.getAccountID(sakaiSiteID,
 					sakaiSenderID));
 		} catch (SmsAccountNotFoundException e) {
-			e.printStackTrace();
+			LOG.error(e);
 			return null;
 		}
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);

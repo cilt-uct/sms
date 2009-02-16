@@ -68,6 +68,7 @@
   <bean class="org.sakaiproject.sms.tool.producers.HelperProducer">
  	<property name="accountHelper" ref="accountHelper" />
  	<property name="smsTaskLocator" ref="SmsTaskLocator" />
+ 	<property name="ELEvaluator" ref="ELEvaluator" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer">
