@@ -214,6 +214,13 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 				crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
 						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
 			}
+			
+			// Task Id
+			if (searchBean.getTaskId() != null
+					&& !"".equals(searchBean.getTaskId().trim())) {
+				crit.add(Restrictions.like("smsTaskId", new Long(searchBean
+						.getTaskId())));
+			}
 
 			crit.setMaxResults(SmsHibernateConstants.READ_LIMIT);
 

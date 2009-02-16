@@ -96,6 +96,10 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 					"smsAccount",
 					"sms.transaction-log-search-results.account.no");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
+					"tableheader-transaction-task-id:", sortViewParams,
+					"smsTaskId",
+					"sms.transaction-log-search-results.task.id");
+			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-transaction-type", sortViewParams,
 					"transactionTypeCode",
 					"sms.transaction-log-search-results.trans.type");
@@ -121,6 +125,8 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 						.safeToString(smsTransaction.getId()));
 				UIOutput.make(row, "row-data-account-number", NullHandling
 						.safeToString(smsTransaction.getSmsAccount().getId()));
+				UIOutput.make(row, "row-data-task-id", NullHandling
+						.safeToString(smsTransaction.getSmsTaskId()));
 				UIOutput.make(row, "row-data-transaction-type", NullHandling
 						.safeToString(smsTransaction.getTransactionTypeCode()));
 				UIOutput.make(row, "row-data-transaction-date", NullHandling

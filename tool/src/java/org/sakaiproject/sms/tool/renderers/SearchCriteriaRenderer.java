@@ -97,8 +97,8 @@ public class SearchCriteriaRenderer {
 				+ "." + "dateTo");
 		dateEvolver.evolveDateInput(dateTo);
 
-		// Task ID field only on message log
-		if (labelDropDown.indexOf("Message") != -1) {
+		// Task ID field on message log + Transaction
+		if (labelDropDown.indexOf("Message") != -1 || labelDropDown.indexOf("Type") != -1) {
 			UIMessage.make(searchForm, "task-id-label", "sms.search.task-id");
 			UIInput.make(searchForm, "task-id", createSearchELString("taskId"));
 		}
