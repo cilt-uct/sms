@@ -55,7 +55,7 @@ public class SmsHibernateConstants {
 	/**
 	 * Used to indicate if the system is running in development mode.
 	 */
-	public static boolean SMS_DEV_MODE = true;
+	public static boolean SMS_DEV_MODE = false;
 
 	/**
 	 * The Sakai site id used to store global system settings

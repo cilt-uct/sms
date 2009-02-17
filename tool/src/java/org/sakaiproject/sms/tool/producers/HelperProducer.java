@@ -60,6 +60,9 @@ public class HelperProducer implements ViewComponentProducer,
 		UIMessage.make(tofill, "page-title", "sms.helper.title");
 		UIMessage.make(tofill, "sms-helper-heading", "sms.helper.heading");
 		
+		// check if locator has new 1 value before EL are evaluated 
+		boolean containsNewPreEval = smsTaskLocator.containsNew();
+		
 		if (ELEvaluator.getBean(smsTaskOTP) == null) { // Prelim task is Null (probably account not found)
 			UIMessage.make(tofill, "invalid-account-msg", "sms.helper.invalid-account-msg");
 		} else {
@@ -77,7 +80,7 @@ public class HelperProducer implements ViewComponentProducer,
 			// Disables the characters remaining input
 			charsRemaining.decorate(new UIDisabledDecorator());
 
-			if (smsTaskLocator.containsNew()) {
+			if (containsNewPreEval) {
 				UICommand.make(form, "action-button", UIMessage
 						.make("sms.general.save"), "HelperActionBean.save");
 			} else {
