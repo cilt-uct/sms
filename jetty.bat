@@ -5,9 +5,9 @@ cd tool
 
 rem make sure the new xml files is newer that that in the jar, also they will be overwritten
 touch test-resources\web.xml
-touch test-resources\components.xml
+touch test-resources\external.xml
 
 copy test-resources\web.xml target\sms_ui\WEB-INF\web.xml /y
-copy test-resources\components.xml target\sms_ui\WEB-INF\components.xml /y 
+copy test-resources\external.xml target\sms_ui\WEB-INF\external.xml /y 
 
 mvn -o -Dmaven.test.skip=true jetty:run-exploded

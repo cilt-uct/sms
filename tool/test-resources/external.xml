@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!--
+		create an external logic bean which abstracts out the Sakai bits
+	-->
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"
+		class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub" />
+
+</beans>

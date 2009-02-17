@@ -140,6 +140,7 @@
 
   <bean id="csvExportBean" class="org.sakaiproject.sms.tool.reporting.CsvExportBean">
   	<property name="sakaiDateFormat" ref="sakaiDateFormat"/>
+  	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator" />
   </bean>
 
   <bean id="SmsTestActionBean" class="org.sakaiproject.sms.tool.beans.SmsTestActionBean">
@@ -222,13 +223,4 @@
     <property name="transitBase" value="nullableFieldDateTransit" />
   </bean>
 
-    <bean id="HibernateLogicLocator"
-		class="org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator">
-		<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic" />
-		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
-		<property name="smsTransactionLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" />
-		<property name="smsConfigLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic" />
-		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
-		<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic" />
-	</bean>
 </beans>

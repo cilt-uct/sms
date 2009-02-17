@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
+		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+		<property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
+		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
+		<property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
+		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+		<property name="mobileNumberHelper">
+			<bean class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
+				<property name="profileManager" ref="org.sakaiproject.api.app.profile.ProfileManager" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>
