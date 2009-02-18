@@ -8,10 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.capabilities.CollectionResolvable;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
-import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.smpp.SmsService;
@@ -20,7 +19,7 @@ import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
-public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, RESTful {
+public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful {
 
 	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
 	
