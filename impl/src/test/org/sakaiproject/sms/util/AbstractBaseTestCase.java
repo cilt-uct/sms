@@ -17,14 +17,15 @@
  **********************************************************************************/
 package org.sakaiproject.sms.util;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import junit.framework.TestCase;
+
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
-
-import junit.framework.TestCase;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -42,32 +43,41 @@ import junit.framework.TestCase;
 public abstract class AbstractBaseTestCase extends TestCase {
 
 	public static HibernateLogicLocator hibernateLogicLocator;
-
+	public static TestHibernateUtil hibernateUtil;
+	
 	// Tells HibernateUtil to use the test configuration files
 	static {
-		HibernateUtil.setTestConfiguration(true);
 		hibernateLogicLocator = new HibernateLogicLocator();
-
+		hibernateUtil = new TestHibernateUtil();
+		hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
-
+		smsAccountLogicImpl.setHibernateUtil(hibernateUtil);
+		
+		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
+		
 		SmsTaskLogicImpl smsTaskLogicImpl = new SmsTaskLogicImpl();
-
+		smsTaskLogicImpl.setHibernateUtil(hibernateUtil);
+		smsTaskLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
 		hibernateLogicLocator.setSmsTaskLogic(smsTaskLogicImpl);
 
 		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
-
-		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
-
+		smsConfigLogicImpl.setHibernateUtil(hibernateUtil);
 		hibernateLogicLocator.setSmsConfigLogic((smsConfigLogicImpl));
 
 		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
 		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsMessageLogicImpl.setHibernateUtil(hibernateUtil);
 		hibernateLogicLocator.setSmsMessageLogic(smsMessageLogicImpl);
 
 		SmsTransactionLogicImpl smsTransactionLogicImpl = new SmsTransactionLogicImpl();
 		smsTransactionLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsTransactionLogicImpl.setHibernateUtil(hibernateUtil);
 		hibernateLogicLocator.setSmsTransactionLogic(smsTransactionLogicImpl);
+		
+		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 	}
 
 	/**

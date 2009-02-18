@@ -4,10 +4,6 @@
 
 <beans>
 
-	<!-- add sakai application scope bean definitions -->
-	<!-- TODO: Change to use Sakai packaging method  -->
-	<import resource="components.xml" />
-
 	<!-- handles configuration of internationalization messages -->
 	<bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
 		<property name="messageSource">

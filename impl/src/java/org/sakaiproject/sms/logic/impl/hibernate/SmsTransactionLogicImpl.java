@@ -33,8 +33,8 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -42,7 +42,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.DateUtil;
-import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * The data service will handle all sms Transaction database transactions for
@@ -72,33 +71,6 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
-
-
-	// /**
-	// * Persist a transaction to reserve credits for a sms sending
-	// *
-	// * @param smsTaskId
-	// * @param smsAccountId
-	// * @param credits
-	// * @throws SmsAccountNotFoundException
-	// */
-	// public void reserveCredits(Long smsTaskId, Long smsAccountId,
-	// Integer credits) throws SmsAccountNotFoundException {
-	// SmsTransaction smsTransaction = SmsTransactionFactory
-	// .createReserveCreditsTask(smsTaskId, smsAccountId, credits);
-	// persist(smsTransaction);
-	// }
-
-	/**
-	 * Leave this as protected to try and prevent the random instantiation of
-	 * this class.
-	 * <p>
-	 * Use LogicFactory.java to get instances of logic classes.
-	 */
-	public SmsTransactionLogicImpl() {
-
-	}
-
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -123,7 +95,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * @return List of SmsTransaction objects
 	 */
 	public List<SmsTransaction> getAllSmsTransactions() {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s.createQuery("from SmsTransaction");
 		return query.list();
 	}
@@ -167,7 +139,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	private List<SmsTransaction> getSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		Criteria crit = HibernateUtil.getSession().createCriteria(
+		Criteria crit = hibernateUtil.getSession().createCriteria(
 				SmsTransaction.class).createAlias("smsAccount", "smsAccount");
 
 		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
@@ -213,7 +185,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 				crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
 						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
 			}
-if (searchBean.getTaskId() != null
+			if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
 				crit.add(Restrictions.like("smsTaskId", new Long(searchBean
 						.getTaskId())));
@@ -226,7 +198,7 @@ if (searchBean.getTaskId() != null
 			throw new SmsSearchException(e);
 		}
 		transactions = crit.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return transactions;
 	}
 
@@ -249,13 +221,13 @@ if (searchBean.getTaskId() != null
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForAccountId(Long accountId) {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
 		Query query = s
 				.createQuery("from SmsTransaction transaction where transaction.smsAccount.id = :accountId");
 		query.setParameter("accountId", accountId);
 		transactions = query.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return transactions;
 	}
 
@@ -268,13 +240,13 @@ if (searchBean.getTaskId() != null
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForTaskId(Long taskId) {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
 		Query query = s
 				.createQuery("from SmsTransaction transaction where transaction.smsTaskId = :taskId");
 		query.setParameter("smsTaskId", taskId);
 		transactions = query.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return transactions;
 	}
 
@@ -288,7 +260,7 @@ if (searchBean.getTaskId() != null
 	 * @return the cancel sms transaction for task
 	 */
 	public SmsTransaction getCancelSmsTransactionForTask(Long taskId) {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 
 		StringBuilder hql = new StringBuilder();
 		hql
@@ -302,7 +274,7 @@ if (searchBean.getTaskId() != null
 		query.setParameter("transactionTypeCode",
 				SmsConst_Billing.TRANS_RESERVE_CREDITS);
 		List<SmsTransaction> transactions = query.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 
 		if (transactions != null && transactions.size() > 0) {
 			return transactions.get(0);

@@ -24,7 +24,7 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
@@ -76,6 +76,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
+		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		LOG.setLevel(Level.ALL);
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsSchedulerImpl.init();

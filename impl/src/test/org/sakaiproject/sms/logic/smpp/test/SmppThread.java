@@ -24,8 +24,7 @@ import java.util.Set;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
@@ -34,7 +33,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmppSession. Used in the threading test.
@@ -60,7 +59,7 @@ public class SmppThread extends TestRunnable {
 	private static HibernateLogicLocator hibernateLogicLocator = null;
 
 	static {
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());

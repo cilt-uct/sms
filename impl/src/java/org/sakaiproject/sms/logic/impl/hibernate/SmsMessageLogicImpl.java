@@ -35,6 +35,7 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -43,7 +44,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.DateUtil;
-import org.sakaiproject.sms.util.HibernateUtil;
 
 /**
  * The data service will handle all sms Message database transactions for the
@@ -85,7 +85,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	 * @return List of SmsMessage objects
 	 */
 	public List<SmsMessage> getAllSmsMessages() {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s.createQuery("from SmsMessage");
 		List<SmsMessage> messages = query.list();
 		return messages;
@@ -211,7 +211,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	 */
 	public SmsMessage getSmsMessageBySmscMessageId(String smscMessageId,
 			String smscID) {
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s
 				.createQuery("from SmsMessage mes where mes.smscMessageId = :smscMessageId and mes.smscId = :smscID");
 		query.setParameter("smscMessageId", smscMessageId, Hibernate.STRING);
@@ -225,7 +225,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	private List<SmsMessage> getSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		Criteria crit = HibernateUtil.getSession().createCriteria(
+		Criteria crit = hibernateUtil.getSession().createCriteria(
 				SmsMessage.class).createAlias("smsTask", "smsTask");
 
 		log.debug(searchBean.toString());
@@ -289,7 +289,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 		}
 
 		messages = crit.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return messages;
 	}
 
@@ -322,7 +322,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 			log.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 					+ hql.toString());
-			Query query = HibernateUtil.getSession()
+			Query query = hibernateUtil.getSession()
 					.createQuery(hql.toString());
 			query
 					.setParameterList("statusCodes", statusCodes,
@@ -331,7 +331,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 				query.setParameter("smsTaskId", smsTaskId);
 			}
 			messages = query.list();
-			HibernateUtil.closeSession();
+			hibernateUtil.closeSession();
 
 		}
 		return messages;

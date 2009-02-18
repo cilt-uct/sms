@@ -23,7 +23,7 @@ import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * This unit test will create 2 separate but concurrent connections (sessions)
@@ -75,9 +75,9 @@ public class SmppThreadingTest extends AbstractBaseTestCase {
 	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/**

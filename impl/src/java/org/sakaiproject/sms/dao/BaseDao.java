@@ -15,7 +15,13 @@ import org.sakaiproject.sms.util.HibernateUtil;
  * @created 24-Nov-2008
  */
 abstract public class BaseDao {
-
+	
+	protected HibernateUtil hibernateUtil;
+	
+	public void setHibernateUtil(HibernateUtil hibernateUtil) {
+		this.hibernateUtil = hibernateUtil;
+	}
+	
 	/**
 	 * Persists the given instance to the database. The save or update operation
 	 * is done over a transaction. In case of any errors the transaction is
@@ -28,16 +34,16 @@ abstract public class BaseDao {
 	 *                database
 	 */
 	protected void persist(BaseModel object) throws HibernateException {
-		Session session = HibernateUtil.getSession();
+		Session session = hibernateUtil.getSession();
 		try {
-			HibernateUtil.beginTransaction();
+			hibernateUtil.beginTransaction();
 			session.saveOrUpdate(object);
-			HibernateUtil.commitTransaction();
+			hibernateUtil.commitTransaction();
 		} catch (HibernateException e) {
-			HibernateUtil.rollbackTransaction();
+			hibernateUtil.rollbackTransaction();
 			throw e;
 		} finally {
-			HibernateUtil.closeSession();
+			hibernateUtil.closeSession();
 		}
 	}
 
@@ -49,16 +55,16 @@ abstract public class BaseDao {
 	 *                database
 	 */
 	protected void delete(Object object) throws HibernateException {
-		Session session = HibernateUtil.getSession();
+		Session session = hibernateUtil.getSession();
 		try {
-			HibernateUtil.beginTransaction();
+			hibernateUtil.beginTransaction();
 			session.delete(object);
-			HibernateUtil.commitTransaction();
+			hibernateUtil.commitTransaction();
 		} catch (HibernateException e) {
-			HibernateUtil.rollbackTransaction();
+			hibernateUtil.rollbackTransaction();
 			throw e;
 		} finally {
-			HibernateUtil.closeSession();
+			hibernateUtil.closeSession();
 		}
 	}
 
@@ -71,7 +77,7 @@ abstract public class BaseDao {
 	 *                if any error occurs during database shutdown.
 	 */
 	protected void dbShutdown() throws HibernateException {
-		Session session = HibernateUtil.getSession();
+		Session session = hibernateUtil.getSession();
 		session.createSQLQuery("SHUTDOWN").executeUpdate();
 	}
 
@@ -88,13 +94,15 @@ abstract public class BaseDao {
 	protected Object findById(Class className, Long id) {
 		Object obj = null;
 		try {
-			Session session = HibernateUtil.getSession();
+			Session session = hibernateUtil.getSession();
 			obj = session.get(className, id);
 		} catch (ObjectNotFoundException ex) {
 			obj = null;
 		} finally {
-			HibernateUtil.closeSession();
+			hibernateUtil.closeSession();
 		}
 		return obj;
 	}
+	
+	
 }

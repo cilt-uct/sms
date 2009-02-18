@@ -67,6 +67,7 @@
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-api</artifactId>
 			<version>0.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -164,28 +165,12 @@
 		<resources>
 			<resource>
 				<directory>${basedir}/src/resources</directory>
+<!--  TODO: REMOVE PROPERTY FILES -->
+<!--				<excludes>-->
+<!--					<exclude>hibernate.properties</exclude>-->
+<!--					<exclude>hibernate-test.properties</exclude>-->
+<!--				</excludes>-->
 			</resource>
-			<!--			<resource>-->
-			<!--				<directory>${basedir}</directory>-->
-			<!--				<includes>-->
-			<!--					<include>smpp.properties</include>-->
-			<!--					<include>messages_en.properties</include>-->
-			<!--				</includes>-->
-			<!--				<excludes>-->
-			<!--					<exclude>src/*</exclude>-->
-			<!--				</excludes>-->
-			<!--			</resource>-->
-
-
-			<!--			<resource>-->
-			<!--				<directory>${basedir}</directory>-->
-			<!--				<includes>-->
-			<!--					<include>sms.properties</include>-->
-			<!--				</includes>-->
-			<!--				<excludes>-->
-			<!--					<exclude>src/*</exclude>-->
-			<!--				</excludes>-->
-			<!--			</resource>			-->
 			<resource>
 				<directory>${basedir}/../tool/src/webapp/WEB-INF/bundle</directory>
 				<includes>
@@ -196,14 +181,6 @@
 		</resources>
 
 		<testResources>
-			<!--			<testResource>-->
-			<!--				<directory>${basedir}/src/resources</directory>-->
-			<!--				<excludes>-->
-			<!--					<exclude>**/log4j.properties</exclude>-->
-			<!--					 Will be double loded by hbm2ddl otherwise -->
-			<!--					<exclude>**/hibernate-mappings.hbm.xml</exclude>-->
-			<!--				</excludes>-->
-			<!--			</testResource>-->
 			<testResource>
 				<directory>${basedir}/src/resources</directory>
 			</testResource>
@@ -225,18 +202,18 @@
 				<artifactId>hibernate3-maven-plugin</artifactId>
 				<version>2.2-SNAPSHOT</version>
 
-
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>hbm2ddl</goal>
-							<!--<goal>hbm2java</goal>
-						-->
-						</goals>
-					</execution>
-
-				</executions>
+<!---->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>process-classes</phase>-->
+<!--						<goals>-->
+<!--							<goal>hbm2ddl</goal>-->
+<!--							<goal>hbm2java</goal>-->
+<!--						-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!---->
+<!--				</executions>-->
 
 				<configuration>
 					<outputDirectory>

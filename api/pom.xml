@@ -103,14 +103,10 @@
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/src/resources</directory>
 				<includes>
-					<include>smpp.properties</include>
-					<include>messages_en.properties</include>
+					<include>hibernate-mappings.hbm.xml</include>
 				</includes>
-				<excludes>
-					<exclude>src/*</exclude>
-				</excludes>
 			</resource>
 		</resources>
 		<plugins>

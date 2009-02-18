@@ -3,17 +3,12 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmsAccountTest. Do some basic crud functions on the account table.
@@ -33,6 +28,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 
 	static {
+		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
 		insertSmsAccount = new SmsAccount();
 		insertSmsAccount.setSakaiUserId("1");
 		insertSmsAccount.setSakaiSiteId("1");
@@ -86,9 +83,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/**

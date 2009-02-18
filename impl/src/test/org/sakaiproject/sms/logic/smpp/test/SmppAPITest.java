@@ -22,16 +22,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * Test some api function on the smpp api. For example successful connect and
@@ -62,9 +59,9 @@ public class SmppAPITest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/**

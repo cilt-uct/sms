@@ -14,7 +14,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -48,20 +48,27 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	static {
 
 		account = new SmsAccount();
-		account.setSakaiSiteId("sakaiSiteId" + Math.random());
+		account.setSakaiSiteId("sakaiSiteId");
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
 		account.setAccountName("account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 		// Inject the required impl's into core impl for testing
 		smsTaskValidator = new SmsTaskValidatorImpl();
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
-		smsCoreImpl.smsBilling = new SmsBillingImpl();
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
+		SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
+		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.smsBilling = smsBillingImpl;
+		
 		msg = new SmsMessage();
-		// smsTask = new SmsTask();
+		
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
+		smsTask.setSmsAccountId(account.getId());
 		smsTask.setSakaiSiteId("sakaiSiteId");
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
@@ -85,11 +92,10 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
-		smsTask.setSmsAccountId(account.getId());
+	
+		
 	}
 
 	/**

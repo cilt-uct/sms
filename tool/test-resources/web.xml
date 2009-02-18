@@ -21,6 +21,7 @@
 <!--      classpath:conf/sakaiComponents-applicationContext.xml,-->
 <!--	  classpath:conf/sakai-entitybroker-applicationContext.xml,-->
 	  
+	   /WEB-INF/components.xml
 	   /WEB-INF/applicationContext.xml
      </param-value>
   </context-param>

@@ -10,13 +10,12 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
-import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmsMessageTest.
@@ -68,9 +67,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 
-		messageLogic = new SmsMessageLogicImpl();
-		messageLogic.setExternalLogic(new ExternalLogicStub());
-
+		messageLogic = (SmsMessageLogicImpl) hibernateLogicLocator.getSmsMessageLogic();
 	}
 
 
@@ -81,8 +78,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/**

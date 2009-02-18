@@ -140,7 +140,7 @@
 
   <bean id="csvExportBean" class="org.sakaiproject.sms.tool.reporting.CsvExportBean">
   	<property name="sakaiDateFormat" ref="sakaiDateFormat"/>
-  	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator" />
+  	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
   </bean>
 
   <bean id="SmsTestActionBean" class="org.sakaiproject.sms.tool.beans.SmsTestActionBean">

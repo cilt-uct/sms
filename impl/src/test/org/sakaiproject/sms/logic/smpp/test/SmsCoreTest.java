@@ -25,19 +25,12 @@ import java.util.TreeSet;
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
-import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -47,7 +40,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatu
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.DateUtil;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * This test also send messages to the smpp simulator but it check the specific
@@ -74,12 +67,17 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		smsSmppImpl = new SmsSmppImpl();
 
-		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
+		SmsBillingImpl  smsBilling = new SmsBillingImpl();
+		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.setSmsBilling(smsBilling);
 
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		LOG.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
@@ -116,8 +114,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()

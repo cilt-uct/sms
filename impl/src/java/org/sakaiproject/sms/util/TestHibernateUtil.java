@@ -44,24 +44,16 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
  * @version 1.0
  * @created 24-Nov-2008
  */
-public class HibernateUtil {
+public class TestHibernateUtil implements HibernateUtil {
 
 	/**
-	 * Hibernate mappings file name.
-	 * 
-	 * private static final String HIB_MAPPINGS_FILE_NAME =
-	 * "/hibernate-mappings.hbm.xml";
+	 * Properties filename
 	 */
+	private static String propertiesFile;
 
-	/**
-	 * Hibernate configuration file name.
-	 */
-	private static final String HIB_PROPERTIES_FILE_NAME = "/hibernate.properties";
-
-	/**
-	 * The Constant HIB_TEST_PROPERTIES_FILE_NAME.
-	 */
-	private static final String HIB_TEST_PROPERTIES_FILE_NAME = "/hibernate-test.properties";
+	public void setPropertiesFile(String propertiesFile) {
+		TestHibernateUtil.propertiesFile = "/" + propertiesFile;
+	}
 
 	/**
 	 * Location of hibernate.cfg.xml file.
@@ -86,7 +78,7 @@ public class HibernateUtil {
 	/** The test configuration. */
 	private static boolean testConfiguration = false;
 
-	private static Log LOG = LogFactory.getLog(HibernateUtil.class);
+	private static Log LOG = LogFactory.getLog(TestHibernateUtil.class);
 
 	/**
 	 * Loads the given properties file from the classpath.
@@ -104,7 +96,7 @@ public class HibernateUtil {
 	private static Properties loadPropertiesFromClasspath(String file)
 			throws IOException {
 		Properties properties = new Properties();
-		properties.load(HibernateUtil.class.getResourceAsStream(file));
+		properties.load(TestHibernateUtil.class.getResourceAsStream(file));
 
 		return properties;
 	}
@@ -125,11 +117,7 @@ public class HibernateUtil {
 		configuration.configure(CONFIG_FILE_LOCATION);
 		// load hibernate propeties
 		Properties properties = null;
-		if (testConfiguration) {
-			properties = loadPropertiesFromClasspath(HIB_TEST_PROPERTIES_FILE_NAME);
-		} else {
-			properties = loadPropertiesFromClasspath(HIB_PROPERTIES_FILE_NAME);
-		}
+		properties = loadPropertiesFromClasspath(propertiesFile);
 		configuration.setProperties(properties);
 
 		return configuration;
@@ -181,7 +169,7 @@ public class HibernateUtil {
 	 * @return the hibernate session for the current thread
 	 * 
 	 */
-	public static Session getSession() {
+	public Session getSession() {
 		Session s = threadSession.get();
 		try {
 			if (s == null) {
@@ -216,7 +204,7 @@ public class HibernateUtil {
 		}
 	}
 
-	public static void closeSession() {
+	public void closeSession() {
 		try {
 			Session s = threadSession.get();
 			threadSession.set(null);
@@ -227,16 +215,6 @@ public class HibernateUtil {
 			LOG.error("HibernateException: " + ex);
 		}
 
-	}
-
-	/**
-	 * Sets the test configuration.
-	 * 
-	 * @param testConfiguration
-	 *            the new test configuration
-	 */
-	public static void setTestConfiguration(boolean testConfiguration) {
-		HibernateUtil.testConfiguration = testConfiguration;
 	}
 
 	/**
@@ -259,7 +237,7 @@ public class HibernateUtil {
 	 * Start a new database transaction.
 	 * 
 	 */
-	public static void beginTransaction() {
+	public void beginTransaction() {
 		Transaction tx = threadTransaction.get();
 		try {
 			if (tx == null) {
@@ -274,7 +252,7 @@ public class HibernateUtil {
 	/**
 	 * Commit the database transaction.
 	 */
-	public static void commitTransaction() {
+	public void commitTransaction() {
 		Transaction tx = threadTransaction.get();
 		try {
 			if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()) {
@@ -290,7 +268,7 @@ public class HibernateUtil {
 	/**
 	 * Rollback the database transaction.
 	 */
-	public static void rollbackTransaction() {
+	public void rollbackTransaction() {
 		Transaction tx = threadTransaction.get();
 		try {
 			threadTransaction.set(null);
@@ -304,36 +282,8 @@ public class HibernateUtil {
 		}
 	}
 
-	/**
-	 * Reconnects a Hibernate Session to the current Thread.
-	 * 
-	 * @param session
-	 *            The Hibernate Session to be reconnected.
-	 */
-	public static void reconnect(Session session) {
-		try {
-			session.reconnect();
-			threadSession.set(session);
-		} catch (HibernateException ex) {
-			LOG.error("HibernateException: " + ex);
-		}
-	}
-
-	/**
-	 * Disconnect and return Session from current Thread.
-	 * 
-	 * @return Session the disconnected Session
-	 */
-	public static Session disconnectSession() {
-		Session session = getSession();
-		try {
-			threadSession.set(null);
-			if (session.isConnected() && session.isOpen())
-				session.disconnect();
-		} catch (HibernateException ex) {
-			LOG.error("HibernateException: " + ex);
-		}
-		return session;
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		TestHibernateUtil.sessionFactory = sessionFactory;
 	}
 
 }

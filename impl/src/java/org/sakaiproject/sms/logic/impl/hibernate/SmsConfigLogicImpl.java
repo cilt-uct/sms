@@ -27,7 +27,7 @@ import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.util.HibernateUtil;
+
 
 /**
  * The data service will handle all sms config database transactions for the sms
@@ -64,10 +64,10 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 	 */
 	public List<SmsConfig> getAllSmsConfig() {
 		List<SmsConfig> configs = new ArrayList<SmsConfig>();
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s.createQuery("from SmsConfig");
 		configs = query.list();
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return configs;
 	}
 
@@ -96,7 +96,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 			String sakaiSiteId) {
 		List<SmsConfig> configs = new ArrayList<SmsConfig>();
 		SmsConfig config = null;
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s
 				.createQuery("from SmsConfig conf where conf.sakaiSiteId = :id");
 		query.setParameter("id", sakaiSiteId);
@@ -104,7 +104,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 		if (configs.size() == 1) {
 			config = configs.get(0);
 		}
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		if (config == null) {
 			config = createDefaultSmsConfig(sakaiSiteId);
 			persistSmsConfig(config);
@@ -169,7 +169,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 	public SmsConfig getSmsConfigBySakaiToolId(String id) {
 		List<SmsConfig> configs = new ArrayList<SmsConfig>();
 		SmsConfig config = null;
-		Session s = HibernateUtil.getSession();
+		Session s = hibernateUtil.getSession();
 		Query query = s
 				.createQuery("from SmsConfig conf where conf.sakaiToolId = :id");
 		query.setParameter("id", id);
@@ -177,7 +177,7 @@ public class SmsConfigLogicImpl extends SmsDao implements SmsConfigLogic {
 		if (configs.size() == 1) {
 			config = configs.get(0);
 		}
-		HibernateUtil.closeSession();
+		hibernateUtil.closeSession();
 		return config;
 	}
 

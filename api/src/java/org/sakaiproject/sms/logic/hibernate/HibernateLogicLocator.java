@@ -16,14 +16,9 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.logic.impl.hibernate;
+package org.sakaiproject.sms.logic.hibernate;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 
 /**
  * Factory class that is used to get instances of the logic classes.

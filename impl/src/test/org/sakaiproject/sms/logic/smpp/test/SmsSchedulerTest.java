@@ -5,8 +5,6 @@ import java.util.Date;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
@@ -15,12 +13,13 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * SmsScheduler Junit.This class will test various scheduling related scenarios.
@@ -42,15 +41,29 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 	static {
 
+		smsConfigLogic = (SmsConfigLogicImpl) hibernateLogicLocator.getSmsConfigLogic();
+			
 		smsSchedulerImpl = new SmsSchedulerImpl();
+		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
 		smsCoreImpl = new SmsCoreImpl();
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.setLogLevel(Level.WARN);
-		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		
+		SmsBillingImpl smsBilling = new SmsBillingImpl();
+		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.setSmsBilling(smsBilling);
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
+		SmsTaskValidatorImpl taskValidator = new SmsTaskValidatorImpl();
+		taskValidator.setSmsBilling(smsBilling);
+		smsCoreImpl.setSmsTaskValidator(taskValidator);
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
+		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSchedulerImpl.init();
 		LOG.setLevel(Level.WARN);
 	}
@@ -62,8 +75,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 		SmsConfig config = smsConfigLogic
 				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
 						.getCurrentSiteId());

@@ -22,9 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -33,7 +30,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,15 +47,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/** The account. */
 	public static SmsAccount account;
 
-	private static HibernateLogicLocator hibernateLogicLocator;
-
-
 	static {
-		hibernateLogicLocator = new HibernateLogicLocator();
-		hibernateLogicLocator.setSmsAccountLogic(new SmsAccountLogicImpl());
-		hibernateLogicLocator.setSmsTransactionLogic(new SmsTransactionLogicImpl());
 		smsBillingImpl = new SmsBillingImpl();
+		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl = new SmsSmppImpl();
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
 
 		account = new SmsAccount();
@@ -107,9 +100,9 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 
 	}

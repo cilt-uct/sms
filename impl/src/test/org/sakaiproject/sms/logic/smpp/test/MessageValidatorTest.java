@@ -9,7 +9,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -22,7 +22,7 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 	private SmsMessage msg;
 
 	static {
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/** The errors. */

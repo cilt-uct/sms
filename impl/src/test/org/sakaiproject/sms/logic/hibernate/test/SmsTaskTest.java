@@ -10,16 +10,13 @@ import java.util.Set;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.logic.impl.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
-import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -53,8 +50,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		insertMessage1 = createTestMessage1();
 
 		insertMessage2 = createTestMessage2();
-		smsTaskLogic = new SmsTaskLogicImpl();
-		smsTaskLogic.setExternalLogic(new ExternalLogicStub());
+		smsTaskLogic = (SmsTaskLogicImpl) hibernateLogicLocator.getSmsTaskLogic();
 	}
 
 
@@ -116,8 +112,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		HibernateUtil.setTestConfiguration(true);
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 	}
 
 	/**

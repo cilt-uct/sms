@@ -3,7 +3,7 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.sakaiproject.sms.util.HibernateUtil;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * Run all tests.
@@ -16,7 +16,7 @@ public class SmsTestSuite {
 	 * @return the test
 	 */
 	public static Test suite() {
-		HibernateUtil.createSchema();
+		TestHibernateUtil.createSchema();
 		TestSuite suite = new TestSuite(
 				"Test for org.sakaiproject.sms.hibernate.test");
 
