@@ -44,39 +44,43 @@ public abstract class AbstractBaseTestCase extends TestCase {
 
 	public static HibernateLogicLocator hibernateLogicLocator;
 	public static TestHibernateUtil hibernateUtil;
-	
+
 	// Tells HibernateUtil to use the test configuration files
 	static {
 		hibernateLogicLocator = new HibernateLogicLocator();
 		hibernateUtil = new TestHibernateUtil();
 		hibernateUtil.setPropertiesFile("hibernate-test.properties");
-		
+
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsAccountLogicImpl.setHibernateUtil(hibernateUtil);
-		
+
 		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
-		
+
 		SmsTaskLogicImpl smsTaskLogicImpl = new SmsTaskLogicImpl();
 		smsTaskLogicImpl.setHibernateUtil(hibernateUtil);
 		smsTaskLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		
+		smsTaskLogicImpl.setExternalLogic(new ExternalLogicStub());
+
 		hibernateLogicLocator.setSmsTaskLogic(smsTaskLogicImpl);
 
 		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
 		smsConfigLogicImpl.setHibernateUtil(hibernateUtil);
 		hibernateLogicLocator.setSmsConfigLogic((smsConfigLogicImpl));
 
+
 		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
 		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsMessageLogicImpl.setHibernateUtil(hibernateUtil);
+		smsMessageLogicImpl.setExternalLogic(new ExternalLogicStub());
 		hibernateLogicLocator.setSmsMessageLogic(smsMessageLogicImpl);
 
 		SmsTransactionLogicImpl smsTransactionLogicImpl = new SmsTransactionLogicImpl();
 		smsTransactionLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsTransactionLogicImpl.setHibernateUtil(hibernateUtil);
+
 		hibernateLogicLocator.setSmsTransactionLogic(smsTransactionLogicImpl);
-		
+
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 	}
 

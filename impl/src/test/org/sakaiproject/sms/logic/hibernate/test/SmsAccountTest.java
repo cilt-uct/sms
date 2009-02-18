@@ -29,7 +29,6 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	static {
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		
 		insertSmsAccount = new SmsAccount();
 		insertSmsAccount.setSakaiUserId("1");
 		insertSmsAccount.setSakaiSiteId("1");
@@ -83,9 +82,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	@Override
+	 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+	TestHibernateUtil.createSchema();
 	}
 
 	/**

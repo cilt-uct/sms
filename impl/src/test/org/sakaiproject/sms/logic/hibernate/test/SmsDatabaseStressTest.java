@@ -42,9 +42,9 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	@Override
+	 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+			TestHibernateUtil.createSchema();
 	}
 
 	/**

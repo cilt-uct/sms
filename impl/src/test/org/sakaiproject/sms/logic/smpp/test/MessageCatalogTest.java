@@ -23,7 +23,7 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
  * Test case to test the MessageCatelog class functionality
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 15-Jan-2009

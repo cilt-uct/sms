@@ -9,7 +9,6 @@ import java.util.Set;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -30,10 +29,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	/** The insert message2. */
 	private static SmsMessage insertMessage2;
-
-	private static SmsMessageLogicImpl messageLogic;
-
-
 
 	static {
 		insertTask = new SmsTask();
@@ -66,10 +61,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage2.setSmscId(SmsHibernateConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-
-		messageLogic = (SmsMessageLogicImpl) hibernateLogicLocator.getSmsMessageLogic();
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -140,7 +132,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessage(insertMessage1.getId());
 		smsMessage.setSakaiUserId("newSakaiUserId");
-		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(smsMessage);
+		hibernateLogicLocator.getSmsMessageLogic()
+				.persistSmsMessage(smsMessage);
 		smsMessage = hibernateLogicLocator.getSmsMessageLogic().getSmsMessage(
 				insertMessage1.getId());
 		assertEquals("newSakaiUserId", smsMessage.getSakaiUserId());
@@ -190,7 +183,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			bean.setNumber(insertMessage.getMobileNumber());
 			bean.setCurrentPage(1);
 
-			SearchResultContainer<SmsMessage> con = messageLogic.getPagedSmsMessagesForCriteria(bean);
+			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
+					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
 			assertTrue("Collection returned has no objects",
 					messages.size() > 0);
@@ -260,7 +254,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 			bean.setCurrentPage(2);
 
-			SearchResultContainer<SmsMessage> con = messageLogic.getPagedSmsMessagesForCriteria(bean);
+			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
+					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
 			assertTrue("Incorrect collection size returned",
 					messages.size() == SmsHibernateConstants.DEFAULT_PAGE_SIZE);
@@ -277,7 +272,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				bean.setCurrentPage(pages + 1);
 			}
 
-			con = messageLogic
+			con = hibernateLogicLocator.getSmsMessageLogic()
 					.getPagedSmsMessagesForCriteria(bean);
 			messages = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert
@@ -378,8 +373,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	public void testDeleteSmsMessage() {
 		// Delete the associated task too
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
-		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				insertTask.getId());
+		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(insertTask.getId());
 		assertNull("Object not removed", getSmsTask);
 	}
 

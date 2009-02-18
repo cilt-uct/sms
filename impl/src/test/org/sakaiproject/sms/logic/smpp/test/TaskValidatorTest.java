@@ -26,7 +26,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/** The sms task. */
 	private static SmsTask smsTask;
 
-	private static  SmsTaskValidatorImpl smsTaskValidator = null;
+	private static SmsTaskValidatorImpl smsTaskValidator = null;
 
 	/** The msg. */
 	private static SmsMessage msg;
@@ -46,7 +46,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	static {
-
+		TestHibernateUtil.createSchema();
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");
 		account.setMessageTypeCode("");
@@ -55,18 +55,16 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
-
 		// Inject the required impl's into core impl for testing
 		smsTaskValidator = new SmsTaskValidatorImpl();
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
-		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		
 		SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsCoreImpl.smsBilling = smsBillingImpl;
-		
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.setSmsBilling(smsBillingImpl);
+
 		msg = new SmsMessage();
-		
+		// smsTask = new SmsTask();
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
 		smsTask.setSmsAccountId(account.getId());
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -92,10 +90,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
 
-	
-		
 	}
 
 	/**
@@ -116,11 +111,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		errors = smsTaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() == 0);
 
-		// account does not exist
-		smsTask.setSmsAccountId(0l);
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertTrue(errors.contains(ValidationConstants.TASK_ACCOUNT_INVALID));
 	}
 
 	/**

@@ -31,6 +31,8 @@ import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -57,27 +59,33 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static SmsCoreImpl smsCoreImpl = null;
 	static SmsAccount smsAccount = null;
 	static ExternalLogic externalLogic = null;
+	static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
+	static SmsConfig SmsConfigImpl = new SmsConfig();
+
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
 
 	static {
+		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
+
 		externalLogic = hibernateLogicLocator.getExternalLogic();
 		smsCoreImpl = new SmsCoreImpl();
-
 		smsSmppImpl = new SmsSmppImpl();
+		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
-		SmsBillingImpl  smsBilling = new SmsBillingImpl();
-		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
-		smsCoreImpl.setSmsBilling(smsBilling);
+		SmsTaskValidatorImpl smsTaskValidator = new SmsTaskValidatorImpl();
+		smsTaskValidator.setSmsBilling(smsBillingImpl);
+		smsCoreImpl.setSmsTaskValidator(smsTaskValidator);
+		smsCoreImpl.setSmsBilling(smsBillingImpl);
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.setSmsBilling(smsBillingImpl);
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
-		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
-		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		LOG.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
@@ -118,8 +126,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
-						.getCurrentSiteId());
+				.getOrCreateSmsConfigBySakaiSiteId(
+						externalLogic.getCurrentSiteId());
 		config.setSendSmsEnabled(true);
 		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
 	}
@@ -253,6 +261,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 							.getCurrentUserId());
 
 			smsTask2.setMaxTimeToLive(300);
+
 			now.add(Calendar.MINUTE, -3);
 			SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask(
 					"TestTaskStatuses-ExpiresTask", new Date(now
@@ -263,6 +272,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			smsTask1.setMaxTimeToLive(60);
 			smsTask1.setSmsAccountId(smsAccount.getId());
 			smsTask1.setDateCreated(DateUtil.getCurrentDate());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(smsTask1.getDateToSend());
+			cal.add(Calendar.SECOND, smsTask1.getMaxTimeToLive());
+			// TODO, DateToExpire must be set from the UI as well
+			smsTask1.setDateToExpire(cal.getTime());
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask1);
 			smsTask2.setDateCreated(DateUtil.getCurrentDate());
 			smsTask2.setSmsAccountId(smsAccount.getId());
@@ -379,6 +393,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 			statusUpdateTask.setAttemptCount(0);
 			statusUpdateTask.setDateProcessed(new Date());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(statusUpdateTask.getDateToSend());
+			cal.add(Calendar.SECOND, statusUpdateTask.getMaxTimeToLive());
+			// TODO, DateToExpire must be set from the UI as well
+			statusUpdateTask.setDateToExpire(cal.getTime());
 			statusUpdateTask.setSmsMessagesOnTask(externalLogic
 					.getSakaiGroupMembers(statusUpdateTask, true));
 			statusUpdateTask.setSmsAccountId(smsAccount.getId());
@@ -455,6 +474,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 		smsCoreImpl.calculateEstimatedGroupSize(insertTask);
 
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
@@ -528,6 +552,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 
 		try {
 			smsCoreImpl.insertTask(insertTask);
@@ -550,8 +579,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("11111");
 		account.setMessageTypeCode("1");
 		account.setOverdraftLimit(1000L);
-		account.setCredits(smsCoreImpl.smsBilling
-				.convertAmountToCredits(5000.00f));
+		account.setCredits(5000L);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -572,6 +600,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
 		insertTask.setDeliveryGroupId("delgrpid");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 
 		try {
 			smsCoreImpl.insertTask(insertTask);
@@ -607,6 +640,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 		smsCoreImpl.calculateEstimatedGroupSize(insertTask);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 
@@ -630,34 +668,12 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	}
 
-	public void testCalculateEstimatedGroupSize() {
-		SmsTask toTest = new SmsTask();
-		toTest.setDeliveryUserId("xxx");
 
-		// Test for single userId
-		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(smsCoreImpl.getSmsBilling().convertCreditsToAmount(1)
-				.doubleValue(), toTest.getCostEstimate());
-		assertEquals(new Integer(1), toTest.getGroupSizeEstimate());
-
-		// Test for Mobile Numbers set
-		toTest.setDeliveryGroupId(null);
-		Set<String> mobileNumbers = new TreeSet<String>();
-		mobileNumbers.add("0831231234");
-		mobileNumbers.add("0821231234");
-		mobileNumbers.add("0841231234");
-		toTest.setDeliveryMobileNumbersSet(mobileNumbers);
-		smsCoreImpl.calculateEstimatedGroupSize(toTest);
-		assertEquals(smsCoreImpl.getSmsBilling().convertCreditsToAmount(3)
-				.doubleValue(), toTest.getCostEstimate());
-		assertEquals(new Integer(3), toTest.getGroupSizeEstimate());
-
-	}
 
 	public void testSmsSendDisabled() {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
-						.getCurrentSiteId());
+				.getOrCreateSmsConfigBySakaiSiteId(
+						externalLogic.getCurrentSiteId());
 		config.setSendSmsEnabled(false);
 		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
 

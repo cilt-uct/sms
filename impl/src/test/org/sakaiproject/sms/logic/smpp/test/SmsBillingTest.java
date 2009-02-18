@@ -114,22 +114,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		int creditsRequired = 11;
 
-		SmsMessage msg = new SmsMessage();
-		SmsTask smsTask = new SmsTask();
-		smsTask.setSakaiSiteId("sakaiSiteId");
-		smsTask.setSmsAccountId(account.getId());
-		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
-		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
-		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
-		smsTask.setSenderUserName("senderUserName");
-		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
-		smsTask.getSmsMessages().add(msg);
-		smsTask.setCreditEstimate(creditsRequired);
-		msg.setSmsTask(smsTask);
-
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
 		assertFalse("Expected insufficient credit", sufficientCredits);
@@ -232,7 +216,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setCredits(10L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 		insertTestTransactionsForAccount(smsAccount);
 
 		assertTrue(smsAccount.exists());
@@ -249,7 +234,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		SmsAccount recalculatedAccount = hibernateLogicLocator
 				.getSmsAccountLogic().getSmsAccount(smsAccount.getId());
 		assertNotNull(recalculatedAccount);
-		assertTrue(recalculatedAccount.getCredits() == 650);
+		assertTrue(recalculatedAccount.getCredits() == 6660);
 	}
 
 	/**
@@ -269,7 +254,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(origionalAccBalance));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -316,7 +302,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(origionalAccBalance));
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -375,7 +362,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setCredits(origionalCreditBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -416,7 +404,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 * Test credit late message.
 	 */
 	public void testDebitLateMessage() {
-		float origionalAccountBalance = 100;
+		Long origionalAccountBalance = 100L;
 		int creditEstimate = 50;
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -424,11 +412,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("5");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl
-				.convertAmountToCredits(origionalAccountBalance));
+		smsAccount.setCredits(origionalAccountBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 		SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId("sakaiSiteId");
@@ -459,11 +447,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		smsBillingImpl.debitLateMessage(smsMessage);
 		// Check the account balance was deducted from
-		SmsAccount retAccount =hibernateLogicLocator.getSmsAccountLogic()
+		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(smsBillingImpl.convertCreditsToAmount(retAccount
-				.getCredits()) < origionalAccountBalance);
+		assertTrue(retAccount.getCredits() < origionalAccountBalance);
 	}
 
 	/**
@@ -480,9 +467,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setCredits(origionalCreditBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
-		smsBillingImpl.creditAccount(smsAccount.getId(),100L);
+		smsBillingImpl.creditAccount(smsAccount.getId(), 100L);
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);

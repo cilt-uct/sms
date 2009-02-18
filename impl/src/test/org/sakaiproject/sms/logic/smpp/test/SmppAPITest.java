@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +45,8 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
+
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
 	}
 
@@ -86,6 +89,12 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		insertTask.setMessageBody("testing1234567");
 		insertTask.setSenderUserName("administrator");
 		insertTask.setMaxTimeToLive(300);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
+
 		insertTask.setDelReportTimeoutDuration(300);
 		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setDateProcessed(new Date());

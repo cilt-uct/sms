@@ -310,7 +310,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		// Calculate balance
 		Long credits = 0l;
 		for (SmsTransaction transaction : transactions) {
-			credits += transaction.getCreditBalance();
+			credits += transaction.getTransactionCredits();
 		}
 		account.setCredits(credits);
 		persistSmsAccount(account);

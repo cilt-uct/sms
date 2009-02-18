@@ -30,7 +30,7 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 
 	/**
 	 * setUp to run before every test. Create SmsMessage + validator + errors
-	 * 
+	 *
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override
@@ -44,7 +44,7 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override

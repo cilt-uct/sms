@@ -55,7 +55,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 
 	/**
-	 * Debit an account by the supplied amount of credits.
+	 * Credits an account by the supplied amount of credits.
 	 *
 	 * @param accountId
 	 * @param creditsToDebit
@@ -71,7 +71,7 @@ public class SmsBillingImpl implements SmsBilling {
 				.getSmsAccount(accountId);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setTransactionCredits(0);
+		smsTransaction.setTransactionCredits(Long.valueOf(creditsToDebit).intValue());
 		smsTransaction.setCreditBalance(((creditsToDebit)));
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
@@ -349,7 +349,7 @@ public class SmsBillingImpl implements SmsBilling {
 		// The juicy bits
 
 		smsTransaction.setCreditBalance((- 1L));
-		smsTransaction.setTransactionCredits(1);
+		smsTransaction.setTransactionCredits(-1);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
@@ -425,6 +425,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 
+		if(origionalTransaction==null){
+			return false;
+		}
+
 		// The juicy bits
 		int transactionCredits = origionalTransaction.getTransactionCredits()
 				* -1;// Reverse the sign cause we are deducting from the account
@@ -438,7 +442,7 @@ public class SmsBillingImpl implements SmsBilling {
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCancelPendingRequestTransaction(smsTransaction);
 
-		return false;
+		return true;
 	}
 
 	/**

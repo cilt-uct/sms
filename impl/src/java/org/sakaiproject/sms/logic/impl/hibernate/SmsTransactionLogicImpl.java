@@ -32,7 +32,6 @@ import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.dao.SmsDao;
-import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
@@ -53,12 +52,6 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsTransactionLogicImpl extends SmsDao implements
 		SmsTransactionLogic {
-
-	private ExternalLogic externalLogic;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -205,7 +198,8 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	private int getPageSize() {
 		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
-						externalLogic.getCurrentSiteId());
+						hibernateLogicLocator.getExternalLogic()
+								.getCurrentSiteId());
 		if (smsConfig == null)
 			return SmsHibernateConstants.DEFAULT_PAGE_SIZE;
 		else

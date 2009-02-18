@@ -26,13 +26,21 @@ import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  *
@@ -45,11 +53,13 @@ public class SmsSchedulerThread extends TestRunnable {
 
 	private SmsCoreImpl smsCoreImpl = null;
 
+	private SmsBillingImpl smsBillingImpl = null;
+
 	private SmsSchedulerImpl smsSchedulerImpl = null;
 
 	private SmsSmppImpl smsSmppImpl = null;
 
-	private final ExternalLogic externalLogic;
+	private final ExternalLogicStub externalLogicStub;
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsSchedulerThread.class);
@@ -65,13 +75,57 @@ public class SmsSchedulerThread extends TestRunnable {
 	 * @param sessionName
 	 */
 	public SmsSchedulerThread(String sessionName) {
-		externalLogic = new ExternalLogicStub();
-		hibernateLogicLocator.setSmsAccountLogic(new SmsAccountLogicImpl());
+		TestHibernateUtil hibernateUtil = new TestHibernateUtil();
+		hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		smsBillingImpl = new SmsBillingImpl();
+		externalLogicStub = new ExternalLogicStub();
+		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
+		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsAccountLogicImpl.setHibernateUtil(hibernateUtil);
+
+		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
+
+		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
+		smsConfigLogicImpl.setHibernateUtil(hibernateUtil);
+		hibernateLogicLocator.setSmsConfigLogic(smsConfigLogicImpl);
+
+		SmsTaskLogicImpl smsTaskLogicImpl = new SmsTaskLogicImpl();
+		smsTaskLogicImpl.setExternalLogic(new ExternalLogicStub());
+		smsTaskLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsTaskLogicImpl.setHibernateUtil(hibernateUtil);
+		hibernateLogicLocator.setSmsTaskLogic(smsTaskLogicImpl);
+		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
+
+		smsMessageLogicImpl.setExternalLogic(new ExternalLogicStub());
+		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsMessageLogicImpl.setHibernateUtil(hibernateUtil);
+		hibernateLogicLocator.setSmsMessageLogic(smsMessageLogicImpl);
+
+		SmsTransactionLogicImpl smsTransactionLogicImpl = new SmsTransactionLogicImpl();
+		smsTransactionLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsTransactionLogicImpl.setHibernateUtil(hibernateUtil);
+
+
+
+		hibernateLogicLocator.setSmsTransactionLogic(smsTransactionLogicImpl);
+		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
+		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(
+						externalLogicStub.getCurrentSiteId());
+		smsConfig.setSendSmsEnabled(true);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(smsConfig);
 		this.sessionName = sessionName;
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
-		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
+		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsCoreImpl.setSmsBilling(smsBillingImpl);
+		SmsTaskValidatorImpl smsTaskValidator = new SmsTaskValidatorImpl();
+		smsTaskValidator.setSmsBilling(smsBillingImpl);
+		smsCoreImpl.setSmsTaskValidator(smsTaskValidator);
+
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
@@ -79,6 +133,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		LOG.setLevel(Level.ALL);
 		smsSmppImpl.setLogLevel(Level.WARN);
+		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSchedulerImpl.init();
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());
@@ -88,7 +143,13 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountnamej");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
+		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(smsAccount.getSakaiSiteId());
+		config.setSendSmsEnabled(true);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
+
 	}
 
 	/**
@@ -103,12 +164,12 @@ public class SmsSchedulerThread extends TestRunnable {
 
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("SmsTask3"
 				+ sessionName, new Date(now.getTimeInMillis()),
-				"-ThreadingTest-SmsTask3MessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				"-ThreadingTest-SmsTask3MessageBody", smsAccount
+						.getSakaiSiteId(), null, externalLogicStub
+						.getCurrentUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
-		smsTask3.setSakaiSiteId(smsAccount.getSakaiSiteId());
+		// smsTask3.setSakaiSiteId(smsAccount.getSakaiSiteId());
 		smsTask3.setDeliveryUserId(smsAccount.getSakaiUserId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
 		smsCoreImpl.insertTask(smsTask3);
@@ -116,11 +177,10 @@ public class SmsSchedulerThread extends TestRunnable {
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("SmsTask2"
 				+ sessionName, new Date(now.getTimeInMillis()),
-				"ThreadingTest-SmsTask2MessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				"ThreadingTest-SmsTask2MessageBody", smsAccount.getSakaiSiteId(), null, externalLogicStub
+						.getCurrentUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
-		smsTask2.setSakaiSiteId(smsAccount.getSakaiSiteId());
+		// smsTask2.setSakaiSiteId(smsAccount.getSakaiSiteId());
 		smsTask2.setDeliveryUserId(smsAccount.getSakaiUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 
@@ -131,12 +191,11 @@ public class SmsSchedulerThread extends TestRunnable {
 
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("SmsTask1"
 				+ sessionName, new Date(now.getTimeInMillis()),
-				"ThreadingTest-SmsTask1MessageBody",
-				externalLogic.getCurrentSiteId(), null,
-				externalLogic.getCurrentUserId());
+				"ThreadingTest-SmsTask1MessageBody", smsAccount.getSakaiSiteId(), null, externalLogicStub
+						.getCurrentUserId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		smsTask1.setSmsAccountId(smsAccount.getId());
-		smsTask1.setSakaiSiteId(smsAccount.getSakaiSiteId());
+		// smsTask1.setSakaiSiteId(smsAccount.getSakaiSiteId());
 		smsTask1.setDeliveryUserId(smsAccount.getSakaiUserId());
 		smsTask1.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.insertTask(smsTask1);

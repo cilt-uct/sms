@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,9 +26,14 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -57,9 +63,9 @@ public class SmppThread extends TestRunnable {
 	private static SmsAccount smsAccount = null;
 
 	private static HibernateLogicLocator hibernateLogicLocator = null;
-
 	static {
-		TestHibernateUtil.createSchema();
+		TestHibernateUtil hibernateUtil = new TestHibernateUtil();
+		hibernateUtil.setPropertiesFile("hibernate-test.properties");
 
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());
@@ -69,7 +75,34 @@ public class SmppThread extends TestRunnable {
 		smsAccount.setCredits(1000L);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(smsAccount);
+		hibernateLogicLocator = new HibernateLogicLocator();
+
+		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
+		smsConfigLogicImpl.setHibernateUtil(hibernateUtil);
+		hibernateLogicLocator.setSmsConfigLogic(smsConfigLogicImpl);
+
+
+		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
+
+		smsMessageLogicImpl.setExternalLogic(new ExternalLogicStub());
+		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsMessageLogicImpl.setHibernateUtil(hibernateUtil);
+
+		SmsTaskLogicImpl smsTaskLogicImpl = new SmsTaskLogicImpl();
+		smsTaskLogicImpl.setExternalLogic(new ExternalLogicStub());
+		smsTaskLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsTaskLogicImpl.setHibernateUtil(hibernateUtil);
+
+		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
+		hibernateLogicLocator.setSmsTaskLogic(smsTaskLogicImpl);
+		hibernateLogicLocator.setSmsMessageLogic(smsMessageLogicImpl);
+		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
+		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsAccountLogicImpl.setHibernateUtil(hibernateUtil);
+
+		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 	}
 
 	/**
@@ -85,6 +118,9 @@ public class SmppThread extends TestRunnable {
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
+
+		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.INFO);
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
@@ -114,6 +150,11 @@ public class SmppThread extends TestRunnable {
 		insertTask.setMaxTimeToLive(300);
 		insertTask.setDelReportTimeoutDuration(300);
 		insertTask.setDateProcessed(new Date());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		// TODO, DateToExpire must be set from the UI as well
+		insertTask.setDateToExpire(cal.getTime());
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 		insertTask.setSmsAccountId(smsAccount.getId());
@@ -158,8 +199,8 @@ public class SmppThread extends TestRunnable {
 		while (waitForDeliveries) {
 
 			Thread.sleep(1000);
-			updatedSmsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-					insertTask.getId());
+			updatedSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+					.getSmsTask(insertTask.getId());
 			reportsRemainingAfterSleep = updatedSmsTask
 					.getMessagesWithSmscStatus(
 							SmsConst_SmscDeliveryStatus.ENROUTE).size();

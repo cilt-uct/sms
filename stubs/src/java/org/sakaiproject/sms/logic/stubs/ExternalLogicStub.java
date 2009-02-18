@@ -37,7 +37,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- * 
+ *
  */
 public class ExternalLogicStub implements ExternalLogic {
 
@@ -111,13 +111,13 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public String getSakaiSiteContactEmail() {
 
-		return "louis@psybergate.com";
+		return "it3es@nwu.ac.za";
 	}
 
 	/**
 	 * So when running in jetty we generate a random number of users with random
 	 * mobile numbers. * @param smsTask
-	 * 
+	 *
 	 * @return
 	 */
 	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {

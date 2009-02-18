@@ -24,7 +24,7 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms account test.
-	 * 
+	 *
 	 * @param name
 	 *            the name
 	 */
@@ -34,7 +34,7 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
