@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar" />
 	<classpathentry kind="src" path="api/src/java"/>
 	<classpathentry kind="src" path="impl/src/java"/>
 	<classpathentry kind="src" path="pack/src/webapp/WEB-INF"/>
@@ -17,7 +18,7 @@
 	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/generic-dao/0.9.8/generic-dao-0.9.8.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.4/ponderutilcore-1.2.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.2/j-servletutil-1.2.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.4/j-servletutil-1.2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/RSFComponents-evolvers/0.7.4/RSFComponents-evolvers-0.7.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/rsfutil/0.7.4/rsfutil-0.7.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.2/junit-3.8.2.jar"/>
