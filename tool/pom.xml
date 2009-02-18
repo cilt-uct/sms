@@ -83,6 +83,13 @@
 			<version>${log4j.version}</version>
 		</dependency>
 
+		<!-- To avoid to copying jar to shared/lib -->
+		<dependency>
+			<groupId>com.google.code</groupId>
+			<artifactId>jsmpp</artifactId>
+			<version>${jsmpp.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
