@@ -3,3 +3,20 @@
   color:#3333FF; 
   text-decoration: underline;
 }
+.addItem {
+background:transparent url(../images/add.png) no-repeat scroll left center;
+padding-left:2em;
+}
+/*skinned sortable header */
+.headerSortUp a {
+	background-image: url(/library/image/sakai/sortdescending.gif);
+	background-repeat: no-repeat;
+	background-position: 90% center;
+	padding-right: 25px;
+}
+.headerSortDown a {
+	background-image: url(/library/image/sakai/sortascending.gif);
+	background-repeat: no-repeat;
+	background-position: 90% center;
+	padding-right: 25px;
+}
