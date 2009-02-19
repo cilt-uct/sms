@@ -39,6 +39,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 				.convertAmountToCredits(5000.00f));
 		insertSmsAccount.setAccountName("accountName");
 		insertSmsAccount.setAccountEnabled(true);
+		insertSmsAccount.setMessageTypeCode("SO");
 
 		insertSmsTransaction1 = new SmsTransaction();
 		insertSmsTransaction1.setCreditBalance(smsBillingImpl
