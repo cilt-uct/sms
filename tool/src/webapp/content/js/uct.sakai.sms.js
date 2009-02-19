@@ -37,20 +37,6 @@
          */
     };
     //
-    // private function for debugging
-    //
-    function log($obj) {
-        if (window.console && window.console.log) {
-            //window.console.log('toString: ' + $obj.toString());
-            //window.console.log('Size: ' + $obj.size());
-            window.console.log('obj: ' + $obj);
-        }
-        else {
-            alert($obj);
-        }
-    }
-    ;
-    //
     // define and expose our format function
     //
     $.fn.SMS.get = {
@@ -176,6 +162,10 @@
     //
 
     /**
+     * Private variables
+     */
+
+    /**
      *  Method used to retrieve full people list
      */
 
@@ -229,6 +219,21 @@
     };
 
     function returnThis(d){ log(d) ; return d;}
+//
+    // Debugging
+    //
+    function log($obj) {
+        if (window.console && window.console.log) {
+            //window.console.log('toString: ' + $obj.toString());
+            //window.console.log('Size: ' + $obj.size());
+            window.console.log('obj: ' + $obj);
+        }
+        else {
+            alert($obj);
+        }
+    }
+    ;
+
 
 
 })(jQuery);
