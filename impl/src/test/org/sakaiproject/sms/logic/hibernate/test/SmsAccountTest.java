@@ -109,7 +109,12 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		assertTrue("Object not persisted", insertSmsAccount.exists());
 
 		SmsAccount newSmsAccount = new SmsAccount();
-		newSmsAccount.setSakaiSiteId("1");
+		newSmsAccount.setSakaiSiteId(insertSmsAccount.getSakaiSiteId());
+		newSmsAccount.setMessageTypeCode("SO");
+		newSmsAccount.setAccountName(insertSmsAccount.getAccountName());
+		newSmsAccount.setCredits(insertSmsAccount.getCredits());
+		newSmsAccount.setStartdate(insertSmsAccount.getStartdate());
+		newSmsAccount.setAccountEnabled(true);
 
 		try {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
@@ -130,8 +135,13 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		assertTrue("Object not persisted", insertSmsAccount.exists());
 
 		SmsAccount newSmsAccount = new SmsAccount();
-		newSmsAccount.setSakaiUserId("1");
-
+		newSmsAccount.setSakaiUserId(insertSmsAccount.getSakaiUserId());
+		newSmsAccount.setAccountName(insertSmsAccount.getAccountName());
+		newSmsAccount.setMessageTypeCode("SO");
+		newSmsAccount.setCredits(insertSmsAccount.getCredits());
+		newSmsAccount.setStartdate(insertSmsAccount.getStartdate());
+		newSmsAccount.setAccountEnabled(true);
+		
 		try {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					newSmsAccount);
