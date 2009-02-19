@@ -28,7 +28,6 @@
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" 
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl">
 		<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
 	</bean>
 	

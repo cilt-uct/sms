@@ -15,6 +15,7 @@
 
    <bean id="org.sakaiproject.sms.util.HibernateUtil" class="org.sakaiproject.sms.util.HibernateUtilImpl">
       <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+      <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
    </bean>
 
 </beans>

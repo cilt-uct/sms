@@ -5,7 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class HibernateUtilImpl implements HibernateUtil {
 	
@@ -13,33 +16,35 @@ public class HibernateUtilImpl implements HibernateUtil {
 
 	private SessionFactory sessionFactory;
 	
+	private PlatformTransactionManager transactionManager;
+	
 	/**
 	 * Container for thread-scoped sessions.
 	 */
 	private final static ThreadLocal<Session> threadSession = new ThreadLocal<Session>();
 	
-	private final static ThreadLocal<Transaction> threadTransaction = new ThreadLocal<Transaction>();
+	private final static ThreadLocal<TransactionStatus> threadTransactionStatus = new ThreadLocal<TransactionStatus>();
 	
 	public void beginTransaction() {
-		Transaction tx = threadTransaction.get();
-		if (tx == null) {
-			tx = getSession().beginTransaction();
-			threadTransaction.set(tx);
+		TransactionStatus ts = threadTransactionStatus.get();
+		if (ts == null) {
+			TransactionStatus trans = transactionManager.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED));
+			threadTransactionStatus.set(trans);	
 		}
+		
 	}
 
 	public void commitTransaction() {
-		Transaction tx = threadTransaction.get();
+		TransactionStatus ts = threadTransactionStatus.get();
 		try {
-			if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()) {
-				tx.commit();
+			if (ts != null && !ts.isCompleted() && !ts.isRollbackOnly()) {
+				transactionManager.commit(ts);
 			}
-			threadTransaction.set(null);
+			threadTransactionStatus.set(null);
 		} catch (HibernateException ex) {
 			rollbackTransaction();
 			LOG.error("HibernateException: " + ex);
 		}
-
 	}
 
 	public Session getSession() {
@@ -49,14 +54,15 @@ public class HibernateUtilImpl implements HibernateUtil {
 			threadSession.set(s);
 		}
 		return s;
+	
 	}
 
 	public void rollbackTransaction() {
-		Transaction tx = threadTransaction.get();
+		TransactionStatus ts = threadTransactionStatus.get();
 		try {
-			threadTransaction.set(null);
-			if (tx != null && !tx.wasCommitted() && !tx.wasRolledBack()) {
-				tx.rollback();
+			threadTransactionStatus.set(null);
+			if (ts != null && !ts.isCompleted()) {
+				ts.setRollbackOnly();
 			}
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
@@ -67,6 +73,10 @@ public class HibernateUtilImpl implements HibernateUtil {
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
 	}
 
 	public void closeSession() {

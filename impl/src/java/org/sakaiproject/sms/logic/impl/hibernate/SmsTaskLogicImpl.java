@@ -330,7 +330,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
 						Hibernate.STRING);
 		List<SmsTask> smsTasks = selectQuery.list();
-
+		
 		String hql = "update SmsTask  set STATUS_CODE =:doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus";
 		Query updateQuery = hibernateUtil.getSession().createQuery(
 				hql.toString());
