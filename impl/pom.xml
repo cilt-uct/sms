@@ -202,18 +202,18 @@
 				<artifactId>hibernate3-maven-plugin</artifactId>
 				<version>2.2-SNAPSHOT</version>
 
-<!---->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<phase>process-classes</phase>-->
-<!--						<goals>-->
-<!--							<goal>hbm2ddl</goal>-->
+
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+						<goal>hbm2ddl</goal>
 <!--							<goal>hbm2java</goal>-->
-<!--						-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!---->
-<!--				</executions>-->
+
+						</goals>
+					</execution>
+
+				</executions>
 
 				<configuration>
 					<outputDirectory>
