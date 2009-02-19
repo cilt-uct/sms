@@ -4,8 +4,16 @@
   text-decoration: underline;
 }
 .addItem {
-background:transparent url(../images/add.png) no-repeat scroll left center;
+background:transparent url(/library/image/silk/add.png) no-repeat scroll left center;
 padding-left:2em;
+}
+.schedule {
+background:transparent url(/library/image/silk/time_add.png) no-repeat scroll left center;
+padding-left:1.5em;
+}
+.exipry {
+background:transparent url(/library/image/silk/time_delete.png) no-repeat scroll left center;
+padding-left:1.5em;
 }
 /*skinned sortable header */
 .headerSortUp a {

@@ -10,12 +10,14 @@
 <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+<link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+<script type="text/javascript" src="../js/jquery-ui-tabs.date.selectable.effects.1.5.3.min.js"></script>
 <script type="text/javascript" src="../js/uct.sakai.sms.js"></script>
-<script type="text/javascript" src="../js/jquery.tablesorter.js"></script>
 <script type="text/javascript">
         $(document).ready(function() {
-            //$('a[rel=*getReport]').SMS();
+            $("#smsDatesScheduleDate").datepicker({minDate: 0, maxDate: '+3M +10D'});
+			$("#smsDatesExpiryDate").datepicker({minDate: 0, maxDate: '+3M +10D'});//$('a[rel=*getReport]').SMS();
             $(document).SMS({
                 test: 'Hello!'
         });
@@ -24,55 +26,56 @@
         })
         ;
     </script>
+
+
 <title rsf:id="page-title">Sms Items</title>
 </head>
 <body>
 <div class="portletBody">
-  <div class="navIntraTool"> <a rsf:id="add-item-link" href="AddItem.html">Permissions</a> </div>
-  <a href="create-sms.html">
-  <h3 class="insColor addItem insBak insBorder">Create SMS</h3>
-  </a>
+  <div class="navIntraTool"> <a rsf:id="add-item-link" href="index.html">SMS Home</a><a rsf:id="add-item-link" href="AddItem.html">Permissions</a> </div>
+
+  <h3 class="insColor insBak insBorder">Create SMS</h3>
+
   <div rsf:id="message-for:*" class="alertMessage">
     <ul style="margin:0px;">
       <li>Message for user here</li>
     </ul>
   </div>
+  <form action="" method="POST">
+  <div> Your message:</div>
+  <textarea name="smsMessage" cols="50" rows="7" ></textarea>
+  <div><a href="#"><h3 class="addItem">Add recipients</h3></a> <br />
+</div>
   <div id="reportConsole" class="timeCells">
     <div>Credits remaining: <span class="breadCrumb" id="creditsAvail">100 credits</span></div>
     <div> Estimated value: <span class="breadCrumb" id="valueAvail">R100.00</span></div>
     <div>To purchase SMS credits, please email <a href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a></div>
   </div>
-  <br />
-  <table class="listHier lines" id="reportTable">
-    <thead>
-      <tr>
-        <th width="38%"><a href="#">SMS</a></th>
-        <th width="5%"><a href="#">Status</a></th>
-        <th width="13%"><a href="#">Author</a></th>
-        <th width="23%"><a href="#">Date/Time</a></th>
-        <th width="12%"><a href="#">Recipients</a></th>
-        <th width="9%"><a href="#">Credits</a></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr rsf:id="item-row:">
-        <td rel="title"><a href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
-        <td rel="status"><img src="../images/calx.gif" width="17" height="13" alt="" /></td>
-        <td rel="author"> oe Bloggs </td>
-        <td rel="date"> Sep 15, 2006 1:26 AM </td>
-        <td rel="recipients">9 of 15</td>
-        <td rel="credits">34</td>
-      </tr>
-      <tr rsf:id="item-row:">
-        <td rel="title"><a href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
-        <td rel="status"><img src="../images/calx.gif" width="17" height="13" alt="" /></td>
-        <td rel="author"> Joe Bloggs </td>
-        <td rel="date"> Sep 15, 2006 1:26 AM </td>
-        <td rel="recipients">0 of 15</td>
-        <td rel="credits">34</td>
-      </tr>
-    </tbody>
-  </table>
+  
+  <div id="smsDates">
+    <div id="smsDatesSchedule">
+      <h4 class="schedule">Schedule for a later date/time</h4>
+      
+      <div name="date"><input type="text" id="smsDatesScheduleDate"/></div>
+    </div>
+    <div id="smsDatesExpiry">
+      <h4 class="exipry">Set expiry date/time</h4>
+      
+      <div name="date"><input type="text" id="smsDatesExpiryDate"/></div>
+    </div>
+    
+    
+  </div>
+  <div class="copyMe">
+    <label>
+    <input type="checkbox" name="notifyMe" id="notifyMe" />
+    Notify me by email when delivery is complete</label>
+  </div>
+    <div class="act">
+    <input type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" />
+    <input type="submit" value="cancel" />
+  </div>
+  </form>
 </div>
 </body>
 </html>
