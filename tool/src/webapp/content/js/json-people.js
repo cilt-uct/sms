@@ -7,40 +7,40 @@
     "language": "en",
     "people": [{
         "roles": [{
-            "id": "3635463tv3t",
-            "name": "students"
+            "rid": "3635463tv3t",
+            "rname": "students"
         },
             {
-                "id": "36354546445663tv3t",
-                "name": "tutors"
+                "rid": "36354546445663tv3t",
+                "rname": "tutors"
             },
             {
-                "id": "3635463tv3t",
-                "name": "Lecturers"
+                "rid": "3635463tv3t",
+                "rname": "Lecturers"
             },
             {
-                "id": "3635463tv3t",
-                "name": "Site Owners"
+                "rid": "3635463tv3t",
+                "rname": "Site Owners"
             }
         ],
 
         "groups": [{
-            "id": "3635463tv3t",
-            "name": "Tuts 1"
+            "gid": "3635463tv3t",
+            "gname": "Tuts 1"
         },
             {
-                "id": "36354546445663tv3t",
-                "name": "Tts 2"
+                "gid": "36354546445663tv3t",
+                "gname": "Tts 2"
             }]
         ,
 
         "participants": [{
-            "id": "3635463tv3t",
-            "name": "Tuts 1"
+            "pid": "3635463tv3t",
+            "pname": "Tuts 1"
         },
             {
-                "id": "36354546445663tv3t",
-                "name": "Tts 2"
+                "pid": "36354546445663tv3t",
+                "pname": "Tts 2"
             }]
 
 

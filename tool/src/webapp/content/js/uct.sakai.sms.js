@@ -8,15 +8,20 @@
     // Define class
     //
     $.fn.SMS = function(options) {
+        init($.fn.SMS.settings.initList);
         //log(this);
         //log(options.toSource());
         // build main options before class instantiation
-        var opts = $.extend({}, $.fn.SMS.defaults, options);
+        $.extend({}, $.fn.SMS.defaults, options);
 
         return this.each(function() {
             // log('eref');
             //$.fn.SMS.get.report_table();
-            alert(getEveryoneInSite());
+            setTimeout(function() {
+                log($.fn.SMS.get.people("role").toString())
+            }, 2000);
+            //while(var_getEveryoneInSite == null)
+            //log(var_getEveryoneInSite);
             //return false;
         });
         /* iterate and reformat each matched element
@@ -41,7 +46,7 @@
     //
     $.fn.SMS.get = {
         status_console: function() {
-            $.getJSON($.fn.SMS.defaults.URL_EB_GET_ACC_REPORT, 'parameters', function(data) {
+            $.getJSON($.fn.SMS.settings.URL_EB_GET_ACC_REPORT, 'parameters', function(data) {
                 //Extract Json and populate object
                 $('#reportConsole #creditsAvail').text(data.credits);
                 $('#reportConsole #value').text(data.value);
@@ -55,7 +60,7 @@
             });
         },
         report_table: function() {
-            $.getJSON($.fn.SMS.defaults.URL_EB_GET_ALL_SMSES, function(data) {
+            $.getJSON($.fn.SMS.settings.URL_EB_GET_ALL_SMSES, function(data) {
                 //Extract Json and populate object
                 var cell = $('#reportTable').find('tbody tr:eq(0)').clone();
                 /**
@@ -67,23 +72,23 @@
                     var status_icon;
                     switch (item.status) {
                         case "0":
-                            status_icon = $.fn.SMS.defaults.images.status.completed;
+                            status_icon = $.fn.SMS.settings.images.status.completed;
                             break;
                         case "1":
-                            status_icon = $.fn.SMS.defaults.images.status.failed;
+                            status_icon = $.fn.SMS.settings.images.status.failed;
                             break;
                         case "2":
-                            status_icon = $.fn.SMS.defaults.images.status.scheduled;
+                            status_icon = $.fn.SMS.settings.images.status.scheduled;
                             break;
                         case "3":
-                            status_icon = $.fn.SMS.defaults.images.status.progress;
+                            status_icon = $.fn.SMS.settings.images.status.progress;
                             break;
                         case "4":
-                            status_icon = $.fn.SMS.defaults.images.status.edit;
+                            status_icon = $.fn.SMS.settings.images.status.edit;
                             break;
                     }
                     shadow.find('td[rel=status]').html($("<img/>")
-                            .attr("src", $.fn.SMS.defaults.images.base + status_icon[0])
+                            .attr("src", $.fn.SMS.settings.images.base + status_icon[0])
                             .attr('title', status_icon[1])
                             .attr('alt', status_icon[1])
                             );
@@ -94,30 +99,62 @@
                     $('#reportTable').find('tbody').append(shadow);
                 });
 
-                //sort on date column
+                //sort on date (4th) column
                 $('#reportTable').tablesorter({
                     sortList: [[3,0]]
                 });
 
-                log(getEveryoneInSite());
+                //log(getEveryoneInSite());
 
             });
         },
 
         /**
          * Getters for recipients page
+         * @param filter Search list by {string} variable. Returns a Two Dimensional array
          */
-        people: {
-            byRole: function() {
+        people: function(filter){
+            //log(filter);
+            if(filter != null && (filter == "role" || filter == "group" || filter == "name")){
+            if(var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
+            var query = new Array();
+                switch(filter){
+                    case "role":
+                         $.each(var_getEveryoneInSite.people[0].roles, function(i, item) {
+                                query.push(new Array(item.rname, item.rid));
+                              });
+                        break;
+                case "group":
+                         $.each(var_getEveryoneInSite.people[0].groups, function(i, item) {
+                                query.push(new Array(item.rname, item.rid));
+                            });
+                        break;
+                case "name":
+                         $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
+                                query.push(new Array(item.rname, item.rid));
+                            });
+                        break;
+                }
 
-            },
-            byGroup: function() {
+                //log(query);
+                return query;
+                                /*$.each(query, function(i, item) {
+                    $('#peopleList'+filter).append(
+                            $('li')
+                                    .class('ui-widget-content')
+                                    .attr('id', item.rid)
+                                    .attr('name', item.rname)
+                                    .text(item.rname)
+                                    );
+                });
+                $('#peopleList'+filter).selectable({
+                    selected: function(event, ui) {
+                         //Do something on select eg. Update Selected Recipients list object
 
-            },
-            byName: function(name) {
-
+                    }
+                });
+                */
             }
-
         }
 
 
@@ -125,7 +162,7 @@
     //
     // SMS class defaults
     //
-    $.fn.SMS.defaults = {
+    $.fn.SMS.settings = {
         URL_EB_GET_ALL_SMSES: '/sms-tool/content/js/json.js',
         URL_EB_GET_THIS_SMS: '/direct/',
         URL_EB_GET_ACC_REPORT: '/direct/',
@@ -154,7 +191,19 @@
         lang_strings: {
             report_alert_cost: '',
             report_alert_credits: ''
-        }
+        },
+
+        /**
+         * Initialiser
+         */
+        inited:  false,
+        initList: ({
+            "items": [{
+                "fname": "setEveryoneInSite()",
+                "fdelay": "0"
+            }
+            ]
+        })
 
     };
     //
@@ -165,61 +214,31 @@
      * Private variables
      */
 
+    var var_getEveryoneInSite;     // to hold full people list
+
+
     /**
      *  Method used to retrieve full people list
      */
 
-    var getEveryoneInSite = function() {
-        var t;
-    /*t = {"menu": {
-  "id": "file",
-  "value": "File",
-  "popup": {
-    "menuitem": [
-      {"value": "New", "onclick": "CreateNewDoc()"},
-      {"value": "Open", "onclick": "OpenDoc()"},
-      {"value": "Close", "onclick": "CloseDoc()"}
-    ]
-  }
-}}; */
-        //log(t.menu.value);
-        //$.getJSON($.fn.SMS.defaults.URL_EB_GET_PEOPLE, function(d){log(d); t = d;});
-        $.ajax({
-            url: $.fn.SMS.defaults.URL_EB_GET_PEOPLE,
-            async: true,
-            dataType: "JSON",
-            success: function(data){
-                t = data;
-                alert(t);
-                //return t;
-            }
+    function setEveryoneInSite() {
+        $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE, function(data) {
+            var_getEveryoneInSite = data;
         });
-        //log(t.toSource())
-        //var r = t;
-        if(t != null){
-            return t;
-        }
-        else{
-            //getEveryoneInSite();
-        }
 
-        /*return (
-        //$.get(
-               // $.fn.SMS.defaults.URL_EB_GET_PEOPLE).responseText
-                $.ajax({
-  url: $.fn.SMS.defaults.URL_EB_GET_PEOPLE,
-  async: false,
-                    dataType: 'JSON'
- }).responseText
+    }
+    ;
 
-                )  ;*/
-        //return ((jsonData != null) ? "yes":"no");
-        //log("json "+jsonData);
-        //return true;
-    };
+    function getEveryoneInSite() {
+        return var_getEveryoneInSite;
+    }
 
-    function returnThis(d){ log(d) ; return d;}
-//
+
+    function returnThis(d) {
+        log(d);
+        return d;
+    }
+    //
     // Debugging
     //
     function log($obj) {
@@ -234,6 +253,24 @@
     }
     ;
 
+    /**
+     * @param functionList {JSON Objact} A list of function names to be initialised on application load. Has fname {String} and fdelay {Int} as child values.
+     */
+
+    function init(functionList) {
+        $.each(functionList.items, function(i, item) {
+            if (item.fname != null && item.fdelay != null) {
+                setTimeout(function() {
+                    eval(item.fname)
+                }, parseInt(item.fdelay));
+                $.fn.SMS.settings.inited = true;
+            } else
+            {
+                $.fn.SMS.settings.inited = false;
+            }
+
+        });
+    }
 
 
 })(jQuery);
