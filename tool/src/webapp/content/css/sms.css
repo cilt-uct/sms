@@ -134,3 +134,13 @@ text-align:right;
 /**
 * End Facebox controls
 **/
+
+.tabsNumber{
+	position: absolute;
+	margin-top: -13px;
+	margin-left: -75px;
+	height: 17px;
+	width: 17px;
+	font-size: 18px;
+	font-weight: bold;
+}

@@ -306,7 +306,7 @@
             for (n in map) {
                 var elem = '\
                    <div rel="' + list[i] + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '">\
-                   <label for"peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '"roleName="' + map[n][0] + '" roleId="' + map[n][1] + '">' + map[n][0] + '\
+                   <label for"peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" '+list[i]+'Name="' + map[n][0] + '" '+list[i]+'Id="' + map[n][1] + '">' + map[n][0] + '\
                    </label>\
                    </div></input>\
                    ';
@@ -326,9 +326,8 @@
                                 .hide()
                                 .attr('checked', 'checked');
                         //Save data into selectedRecipientsList
-                        selectedRecipientsList.roles.push(new Array($(this).find('label').attr('roleId'), $(this).find('label').attr('roleName')));
-                        log(selectedRecipientsList.roles.toString());
-                                                    
+                        selectedRecipientsList.roles.push(new Array($(this).find('label').attr('RolesId'), $(this).find('label').attr('RolesName')));
+
                         //Refresh {selectedRecipients} Number on TAB
                         $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
                     },
@@ -338,30 +337,63 @@
                         $(this).find('input')
                                 .show()
                                 .removeAttr('checked');
-                        //log(selectedRecipientsList.roles.toString());
-                        var thisRoleId = $(this).find('label').attr('roleId');
+                        var thisRoleId = $(this).find('label').attr('RolesId');
                         //Remove data from selectedRecipientsList
-                        $.each(selectedRecipientsList.roles, function(i, parent){
-                            //log(selectedRecipientsList.roles.toString());
-                            //log(parent.toString());
-                            if(parent)  {
-                            $.each(parent, function(n, item){
-                                //log(item);
-                                //log(thisRoleId);
-                            if(item == thisRoleId){
-                                //log(i)
-                                selectedRecipientsList.roles.splice(parseInt(i), 1);
-                                log(selectedRecipientsList.roles.toString());
-                                }
-                            });
-                        }
+                        $.each(selectedRecipientsList.roles, function(i, parent) {
+                            if (parent) {
+                                $.each(parent, function(n, item) {
+                                    if (item == thisRoleId) {
+                                        selectedRecipientsList.roles.splice(parseInt(i), 1);
+                                    }
+                                });
+                            }
                         });
-                        //selectedRecipientsList.roles.pop($(this).find('label').attr('roleId'));
                         //Refresh {selectedRecipients} Number on TAB
-                        if(getSelectedRecipientsList.length('roles') > 0)
+                        if (getSelectedRecipientsList.length('roles') > 0)
                             $('#peopleTabsRoles span[rel=recipientsSum]').text(getSelectedRecipientsList.length('roles'));
                         else
                             $('#peopleTabsRoles span[rel=recipientsSum]').fadeOut();
+                    }
+                    );
+        });
+
+        //for the Groups Tab
+        $('#peopleListGroups > div[rel=Groups]').each(function() {
+            $(this).toggle(
+                //Fn for the check event
+                    function() {
+                        $(this).addClass('selectedItem');
+                        $(this).find('input')
+                                .hide()
+                                .attr('checked', 'checked');
+                        //Save data into selectedRecipientsList
+                        selectedRecipientsList.groups.push(new Array($(this).find('label').attr('GroupsId'), $(this).find('label').attr('GroupsName')));
+
+                        //Refresh {selectedRecipients} Number on TAB
+                        $('#peopleTabsGroups span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('groups'));
+                    },
+                //Fn for the UNcheck event
+                    function() {
+                        $(this).removeClass('selectedItem');
+                        $(this).find('input')
+                                .show()
+                                .removeAttr('checked');
+                        var thisRoleId = $(this).find('label').attr('GroupsId');
+                        //Remove data from selectedRecipientsList
+                        $.each(selectedRecipientsList.groups, function(i, parent) {
+                            if (parent) {
+                                $.each(parent, function(n, item) {
+                                    if (item == thisRoleId) {
+                                        selectedRecipientsList.groups.splice(parseInt(i), 1);
+                                    }
+                                });
+                            }
+                        });
+                        //Refresh {selectedRecipients} Number on TAB
+                        if (getSelectedRecipientsList.length('roles') > 0)
+                            $('#peopleTabsGroups span[rel=recipientsSum]').text(getSelectedRecipientsList.length('groups'));
+                        else
+                            $('#peopleTabsGroups span[rel=recipientsSum]').fadeOut();
                     }
                     );
         });
