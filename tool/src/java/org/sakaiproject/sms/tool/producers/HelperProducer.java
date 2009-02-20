@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
@@ -50,6 +51,7 @@ public class HelperProducer implements ViewComponentProducer,
 	private SmsAccountHelper accountHelper;
 	private SmsTaskLocator smsTaskLocator;
 	private BeanGetter ELEvaluator;
+	private ExternalLogic externalLogic;
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -64,7 +66,8 @@ public class HelperProducer implements ViewComponentProducer,
 		boolean containsNewPreEval = smsTaskLocator.containsNew();
 		
 		if (ELEvaluator.getBean(smsTaskOTP) == null) { // Prelim task is Null (probably account not found)
-			UIMessage.make(tofill, "invalid-account-msg", "sms.helper.invalid-account-msg");
+			UIMessage.make(tofill, "invalid-account-msg", "sms.helper.invalid-account-msg",
+							new Object[] { externalLogic.getCurrentSiteId(), externalLogic.getCurrentUserId()});
 		} else {
 			UIForm form = UIForm.make(tofill, "helper-form");
 
@@ -159,6 +162,10 @@ public class HelperProducer implements ViewComponentProducer,
 	
 	public void setELEvaluator(BeanGetter ELEvaluator) {
 		this.ELEvaluator = ELEvaluator;
+	}
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
 
 }
