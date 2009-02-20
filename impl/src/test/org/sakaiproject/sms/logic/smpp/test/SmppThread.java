@@ -64,8 +64,7 @@ public class SmppThread extends TestRunnable {
 
 	private static HibernateLogicLocator hibernateLogicLocator = null;
 	static {
-		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl();
-		hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
 
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());

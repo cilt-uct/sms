@@ -3,13 +3,8 @@
 	"http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-	  <bean id="mySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-	  </bean>
-
-
-	  <bean id="org.sakaiproject.sms.dao.SmsDao" class="org.sakaiproject.sms.dao.StandaloneSmsDaoImpl" init-method="init" >
-      	<property name="propertiesFile" value="hibernate.properties" />
-      	<property name="sessionFactory" ref="mySessionFactory" />
+	  <bean id="org.sakaiproject.sms.dao.SmsDao" class="org.sakaiproject.sms.dao.StandaloneSmsDaoImpl" >
+      	 <constructor-arg index="0" value="hibernate.properties"/>
       </bean>
 
 </beans>

@@ -24,7 +24,6 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
-import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
@@ -40,7 +39,6 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
 /**
  *
@@ -75,8 +73,7 @@ public class SmsSchedulerThread extends TestRunnable {
 	 * @param sessionName
 	 */
 	public SmsSchedulerThread(String sessionName) {
-		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl();
-		hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
 		smsBillingImpl = new SmsBillingImpl();
 		externalLogicStub = new ExternalLogicStub();
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();

@@ -44,8 +44,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsConfigLogic = new SmsConfigLogicImpl();
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
-		hibernateUtil = new StandaloneSmsDaoImpl();
-		hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
 		smsConfigLogic.setSmsDao(hibernateUtil);
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);

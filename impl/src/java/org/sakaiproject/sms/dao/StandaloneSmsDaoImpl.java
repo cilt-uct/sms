@@ -45,8 +45,15 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
  * @created 24-Nov-2008
  */
 public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
-
-	public void init() {
+	
+	public StandaloneSmsDaoImpl(String propertiesFile) {
+		setPropertiesFile(propertiesFile);
+		// Automatically build session factory
+		this.setSessionFactory(buildSessionFactory());
+		init();
+	}
+	
+	protected void init() {
 		List<String> persistentClasses = new ArrayList<String>();
 		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsAccount");
 		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsConfig");
@@ -55,7 +62,6 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsTransaction");
 	
 		super.setPersistentClasses(persistentClasses);
-		setSessionFactory(buildSessionFactory());
 		setTransactionManager(new HibernateTransactionManager(getSessionFactory()));
 	}
 	
@@ -64,7 +70,7 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 	 */
 	private static String propertiesFile;
 
-	public void setPropertiesFile(String propertiesFile) {
+	private void setPropertiesFile(String propertiesFile) {
 		StandaloneSmsDaoImpl.propertiesFile = "/" + propertiesFile;
 
 	}
@@ -154,5 +160,5 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 					+ e.getMessage(), e);
 		}
 	}
-
+	
 }

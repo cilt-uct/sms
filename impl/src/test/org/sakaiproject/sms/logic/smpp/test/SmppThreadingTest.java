@@ -76,8 +76,7 @@ public class SmppThreadingTest extends TestCase {
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
-		 StandaloneSmsDaoImpl hibernateUtil =new StandaloneSmsDaoImpl();
-		 hibernateUtil.setPropertiesFile("hibernate-test.properties");
+		 StandaloneSmsDaoImpl hibernateUtil =new StandaloneSmsDaoImpl("hibernate-test.properties");
 		 hibernateUtil.createSchema();
 	}
 
