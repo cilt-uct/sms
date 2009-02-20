@@ -48,9 +48,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -97,7 +97,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -111,7 +111,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -308,6 +308,22 @@ public class SmsCoreImpl implements SmsCore {
 			return;
 		}
 
+		// we check one last time to make sure there are sufficient credits to
+		// send this messages, but we use the estimated size in this check. We
+		// do not abort of the actual size or higher than the estimate, rather
+		// use the account overdraft for that.
+		ArrayList<String> errors = new ArrayList<String>();
+		errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask));
+		if (errors.size() > 0) {
+			smsTask.setFailReason(MessageCatalog
+					.getMessage("messages.sms.errors.insufficient-credits"));
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			LOG.error(MessageCatalog
+					.getMessage("messages.sms.errors.insufficient-credits"));
+			return;
+		}
+
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
@@ -387,12 +403,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -457,8 +473,9 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationSubjectCompleted", smsTask.getId()
 							.toString());
 			body = MessageCatalog.getMessage(
-					"messages.notificationBodyCompleted", String.valueOf(smsTask.getMessagesProcessed()),
-					String.valueOf(smsTask.getMessagesDelivered()));
+					"messages.notificationBodyCompleted", String
+							.valueOf(smsTask.getMessagesProcessed()), String
+							.valueOf(smsTask.getMessagesDelivered()));
 			toAddress = configSite.getNotificationEmail();
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_ABORTED)) {
