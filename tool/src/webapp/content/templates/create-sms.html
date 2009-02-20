@@ -23,9 +23,7 @@
 		<link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
 <script type="text/javascript">
         $(document).ready(function() {
-          // $("#smsDatesScheduleDate").datepicker({minDate: 0, maxDate: '+3M +10D'});
-			//$("#smsDatesExpiryDate").datepicker({minDate: 0, maxDate: '+3M +10D'});//$('a[rel=*getReport]').SMS();
-            $(document)
+          $(document)
 			.SMS()
 			.bind('reveal.facebox', function(){
 				$.fn.SMS.get.people(); //Populate the people lists ie:roles, groups and individuals
@@ -33,7 +31,9 @@
 			});
             //$.fn.SMS.settings.test = 'hey';
             $("#smsAddRecipients").facebox();
-			//jQuery.facebox('some html');
+			 $("#smsDatesScheduleDate").datepicker({minDate: 0, maxDate: '+3M +10D'});
+			$("#smsDatesExpiryDate").datepicker({minDate: 0, maxDate: '+3M +10D'});//$('a[rel=*getReport]').SMS();
+            //jQuery.facebox('some html');
         })
         ;
     </script>

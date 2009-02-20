@@ -112,7 +112,7 @@
 
         people: function() {
             renderPeople();
-            }
+        }
 
 
     };
@@ -159,10 +159,10 @@
                 "fname": "init_smsBoxCounter()",
                 "fdelay": "0"
             },
-                    {
-                "fname": "setEveryoneInSite()",
-                "fdelay": "1"
-            }
+                {
+                    "fname": "setEveryoneInSite()",
+                    "fdelay": "1"
+                }
             ]
         })
 
@@ -176,7 +176,17 @@
      */
 
     var var_getEveryoneInSite;     // to hold full people list
-    var selectedRecipientsList = new Array() //5 Dimensional Array to hold the Selected Recipients
+    var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
+        roles:
+                new Array()
+        ,
+        groups: new Array()
+        ,
+        names: new Array()
+        ,
+        numbers: new Array()
+
+    }
 
     /**
      *  Method used to retrieve full people list
@@ -195,42 +205,59 @@
     }
 
     var getSelectedRecipientsList = {
-           length: function(dimension){
-
-           },
-            toString: function(){return selectedRecipientsList}
-    }
-/**
-         * Getter for recipients page
-         * @param filter Search list by {string} variable. Returns a Two Dimensional array
-         */
-    function getPeople(filter) {
-            //log(filter);
-            if (filter != null && (filter == "Roles" || filter == "Groups" || filter == "Names")) {
-                if (var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
-                var query = new Array();
-                switch (filter) {
-                    case "Roles":
-                        $.each(var_getEveryoneInSite.people[0].roles, function(i, item) {
-                            query.push(new Array(item.rname, item.rid));
-                        });
-                        break;
-                    case "Groups":
-                        $.each(var_getEveryoneInSite.people[0].groups, function(i, item) {
-                            query.push(new Array(item.gname, item.gid));
-                        });
-                        break;
-                    case "Names":
-                        $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
-                            query.push(new Array(item.pname, item.pid));
-                        });
-                        break;
-                }
-
-                //log(query);
-                return query;
-
+        /*//var filterValues = new Array('length','roles','groups','names','numbers');
+         if(filter){
+         switch(filter){
+         case 'length':
+         return selectedRecipientsList.
+         }
+         }*/
+        length: function(filter) {
+            switch (filter) {
+                case "roles":
+                    return selectedRecipientsList.roles.length;
+                    break;
+                case "groups":
+                    return selectedRecipientsList.groups.length;
+                    break;
+                case "names":
+                    return selectedRecipientsList.names.length;
+                    break;
             }
+        }
+        //toString: function(){return selectedRecipientsList}
+    }
+    /**
+     * Getter for recipients page
+     * @param filter Search list by {string} variable. Returns a Two Dimensional array
+     */
+    function getPeople(filter) {
+        //log(filter);
+        if (filter != null && (filter == "Roles" || filter == "Groups" || filter == "Names")) {
+            if (var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
+            var query = new Array();
+            switch (filter) {
+                case "Roles":
+                    $.each(var_getEveryoneInSite.people[0].roles, function(i, item) {
+                        query.push(new Array(item.rname, item.rid));
+                    });
+                    break;
+                case "Groups":
+                    $.each(var_getEveryoneInSite.people[0].groups, function(i, item) {
+                        query.push(new Array(item.gname, item.gid));
+                    });
+                    break;
+                case "Names":
+                    $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
+                        query.push(new Array(item.pname, item.pid));
+                    });
+                    break;
+            }
+
+            //log(query);
+            return query;
+
+        }
     }
 
     function returnThis(d) {
@@ -278,8 +305,8 @@
             var tag = '#peopleList' + list[i];
             for (n in map) {
                 var elem = '\
-                   <div rel="'+list[i]+'"><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
-                   <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
+                   <div rel="' + list[i] + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '">\
+                   <label for"peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '"roleName="' + map[n][0] + '" roleId="' + map[n][1] + '">' + map[n][0] + '\
                    </label>\
                    </div></input>\
                    ';
@@ -290,62 +317,95 @@
         //Bind checkbox event listeners
 
         //for the Roles Tab
-        $('#peopleListRoles > div[rel=Roles]').each(function(){
+        $('#peopleListRoles > div[rel=Roles]').each(function() {
             $(this).toggle(
-                    //Fn for the check event
-                    function(){
+                //Fn for the check event
+                    function() {
                         $(this).addClass('selectedItem');
                         $(this).find('input')
                                 .hide()
                                 .attr('checked', 'checked');
-
-
-                       //Save data into selectedRecipientsList here
-
+                        //Save data into selectedRecipientsList
+                        selectedRecipientsList.roles.push(new Array($(this).find('label').attr('roleId'), $(this).find('label').attr('roleName')));
+                        log(selectedRecipientsList.roles.toString());
+                                                    
                         //Refresh {selectedRecipients} Number on TAB
-                        
+                        $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
                     },
-                    //Fn for the UNcheck event
-                    function(){
+                //Fn for the UNcheck event
+                    function() {
                         $(this).removeClass('selectedItem');
-                                                $(this).find('input')
-                                                        .show()
-                                                        .removeAttr('checked');
-
+                        $(this).find('input')
+                                .show()
+                                .removeAttr('checked');
+                        //log(selectedRecipientsList.roles.toString());
+                        var thisRoleId = $(this).find('label').attr('roleId');
+                        //Remove data from selectedRecipientsList
+                        $.each(selectedRecipientsList.roles, function(i, parent){
+                            //log(selectedRecipientsList.roles.toString());
+                            //log(parent.toString());
+                            if(parent)  {
+                            $.each(parent, function(n, item){
+                                //log(item);
+                                //log(thisRoleId);
+                            if(item == thisRoleId){
+                                //log(i)
+                                selectedRecipientsList.roles.splice(parseInt(i), 1);
+                                log(selectedRecipientsList.roles.toString());
+                                }
+                            });
+                        }
+                        });
+                        //selectedRecipientsList.roles.pop($(this).find('label').attr('roleId'));
+                        //Refresh {selectedRecipients} Number on TAB
+                        if(getSelectedRecipientsList.length('roles') > 0)
+                            $('#peopleTabsRoles span[rel=recipientsSum]').text(getSelectedRecipientsList.length('roles'));
+                        else
+                            $('#peopleTabsRoles span[rel=recipientsSum]').fadeOut();
                     }
                     );
         });
 
         //for list of individuals in site
         /*var map = getPeople("Names");
-            for (n in map) {
-                var elem = '\
-                   <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
-                   <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
-                   </label>\
-                   </div></input>\
-                   ';
-                $('#peopleListNames').append(elem);
-            }*/
+         for (n in map) {
+         var elem = '\
+         <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
+         <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
+         </label>\
+         </div></input>\
+         ';
+         $('#peopleListNames').append(elem);
+         }*/
 
 
     }
 
-    function init_smsBoxCounter(){
-       //Counter for the SMS Textarea
+    function init_smsBoxCounter() {
+        //Counter for the SMS Textarea
         $("#smsMessage")
-                .change(function(e){$(this).keypress();})
-                .keyup(function(e){$(this).keypress();})
-                .keydown(function(e){$(this).keypress();})
-                .focus(function(e){$(this).keypress();})
-                .click(function(e){$(this).keypress();})
-                .keypress(function(e){
+                .change(function(e) {
+            $(this).keypress();
+        })
+                .keyup(function(e) {
+            $(this).keypress();
+        })
+                .keydown(function(e) {
+            $(this).keypress();
+        })
+                .focus(function(e) {
+            $(this).keypress();
+        })
+                .click(function(e) {
+            $(this).keypress();
+        })
+                .keypress(function(e) {
             var limit = 160;
             var len = $(this).val().length;
-            if(len <= limit && len >= 0){
-             $('#smsBoxCounter').text(limit - len);
-            }else{
-                $(this).val($(this).val().substr(0,limit));
+            if (len <= limit && len >= 0) {
+                $('#smsBoxCounter').text(limit - len);
+            } else {
+                $(this).val($(this).val().substr(0, limit));
             }
         });
     }
