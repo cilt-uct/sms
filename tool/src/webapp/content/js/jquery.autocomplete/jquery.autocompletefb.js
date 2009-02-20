@@ -24,7 +24,7 @@ jQuery.fn.autoCompletefb = function(options)
 		acOptions  : {},
 		foundClass : ".acfb-data",
 		inputClass : ".acfb-input",
-        deleteImage: ""
+        deleteImage: "/library/image/silk/cancel.png"
 	}
 	if(options) jQuery.extend(settings, options);
 	
@@ -71,7 +71,7 @@ jQuery.fn.autoCompletefb = function(options)
 			acfb.removeFind(this);
 		});
 		$(settings.inputClass,tmp).val('').focus();
-
+        $.fn.SMS.set.setSelectedRecipientsListName(d);
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
 	});
 	$(settings.inputClass,tmp).focus();

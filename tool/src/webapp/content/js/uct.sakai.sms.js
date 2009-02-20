@@ -119,7 +119,27 @@
         }
 
 
+
     };
+    $.fn.SMS.set = {
+        setSelectedRecipientsListName: function(array){
+            selectedRecipientsList.names.push(array);
+            log(array.toString());
+            return true;
+        },
+        sliceSelectedRecipientsListName: function(id){
+             $.each(selectedRecipientsList.participants, function(i, parent) {
+                            if (parent) {
+                                $.each(parent, function(n, item) {
+                                    if (item == id) {
+                                        selectedRecipientsList.participants.splice(parseInt(i), 1);
+                                    }
+                                });
+                            }
+                        });
+        }
+    }
+
     //
     // SMS class defaults
     //
