@@ -457,8 +457,8 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationSubjectCompleted", smsTask.getId()
 							.toString());
 			body = MessageCatalog.getMessage(
-					"messages.notificationBodyCompleted", creditsRequired,
-					creditsAvailable);
+					"messages.notificationBodyCompleted", String.valueOf(smsTask.getMessagesProcessed()),
+					String.valueOf(smsTask.getMessagesDelivered()));
 			toAddress = configSite.getNotificationEmail();
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_ABORTED)) {
@@ -498,7 +498,12 @@ public class SmsCoreImpl implements SmsCore {
 				return false;
 			}
 		}
-		return sendNotificationEmail(smsTask, toAddress, subject, body);
+		boolean systemNotification = sendNotificationEmail(smsTask, toAddress,
+				subject, body);
+		boolean ownerNotification = sendNotificationEmail(smsTask, smsTask
+				.getSenderUserId(), subject, body);
+
+		return (systemNotification && ownerNotification);
 
 	}
 
