@@ -156,8 +156,12 @@
         inited:  false,
         initList: ({
             "items": [{
-                "fname": "setEveryoneInSite()",
+                "fname": "init_smsBoxCounter()",
                 "fdelay": "0"
+            },
+                    {
+                "fname": "setEveryoneInSite()",
+                "fdelay": "1"
             }
             ]
         })
@@ -172,7 +176,7 @@
      */
 
     var var_getEveryoneInSite;     // to hold full people list
-
+    var selectedRecipientsList = new Array() //5 Dimensional Array to hold the Selected Recipients
 
     /**
      *  Method used to retrieve full people list
@@ -188,6 +192,13 @@
 
     function getEveryoneInSite() {
         return var_getEveryoneInSite;
+    }
+
+    var getSelectedRecipientsList = {
+           length: function(dimension){
+
+           },
+            toString: function(){return selectedRecipientsList}
     }
 /**
          * Getter for recipients page
@@ -267,7 +278,7 @@
             var tag = '#peopleList' + list[i];
             for (n in map) {
                 var elem = '\
-                   <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
+                   <div rel="'+list[i]+'"><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
                    <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
                    </label>\
                    </div></input>\
@@ -276,8 +287,37 @@
             }
         }
 
+        //Bind checkbox event listeners
+
+        //for the Roles Tab
+        $('#peopleListRoles > div[rel=Roles]').each(function(){
+            $(this).toggle(
+                    //Fn for the check event
+                    function(){
+                        $(this).addClass('selectedItem');
+                        $(this).find('input')
+                                .hide()
+                                .attr('checked', 'checked');
+
+
+                       //Save data into selectedRecipientsList here
+
+                        //Refresh {selectedRecipients} Number on TAB
+                        
+                    },
+                    //Fn for the UNcheck event
+                    function(){
+                        $(this).removeClass('selectedItem');
+                                                $(this).find('input')
+                                                        .show()
+                                                        .removeAttr('checked');
+
+                    }
+                    );
+        });
+
         //for list of individuals in site
-        var map = getPeople("Names");
+        /*var map = getPeople("Names");
             for (n in map) {
                 var elem = '\
                    <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
@@ -286,7 +326,28 @@
                    </div></input>\
                    ';
                 $('#peopleListNames').append(elem);
+            }*/
+
+
+    }
+
+    function init_smsBoxCounter(){
+       //Counter for the SMS Textarea
+        $("#smsMessage")
+                .change(function(e){$(this).keypress();})
+                .keyup(function(e){$(this).keypress();})
+                .keydown(function(e){$(this).keypress();})
+                .focus(function(e){$(this).keypress();})
+                .click(function(e){$(this).keypress();})
+                .keypress(function(e){
+            var limit = 160;
+            var len = $(this).val().length;
+            if(len <= limit && len >= 0){
+             $('#smsBoxCounter').text(limit - len);
+            }else{
+                $(this).val($(this).val().substr(0,limit));
             }
+        });
     }
 
 

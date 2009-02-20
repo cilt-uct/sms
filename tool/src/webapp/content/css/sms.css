@@ -7,6 +7,10 @@
 background:transparent url(/library/image/silk/add.png) no-repeat scroll left center;
 padding-left:2em;
 }
+.selectedItem {
+background:transparent url(/library/image/silk/tick.png) no-repeat scroll left center;
+padding-left:2em;
+}
 .schedule {
 background:transparent url(/library/image/silk/time_add.png) no-repeat scroll left center;
 padding-left:1.5em;
