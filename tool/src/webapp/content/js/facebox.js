@@ -144,7 +144,7 @@
     },
 
     close: function() {
-      $(document).trigger('close.facebox')
+      //$(document).trigger('close.facebox')
       return false
     }
   })
@@ -314,6 +314,7 @@
       hideOverlay()
       $('#facebox .loading').remove()
     })
+    $(document).trigger('afterClose.facebox')
   })
 
 })(jQuery);

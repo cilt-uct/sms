@@ -9,7 +9,7 @@
 			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
 			$('#peopleList').tabs();
 			$("#peopleListNamesSuggest").autoCompletefb({
-					urlLookup:cities,
+					//urlLookup:cities,
 					deleteImage: "../js/jquery.autocomplete/delete.gif"
 				});
 				
@@ -40,11 +40,19 @@
     <div id="peopleListGroups">
     </div>
     <div id="peopleListNames">
-      <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante.</p>
+      <p>{ name: "Peter Pan", to: "peter@pan.de" },
+	{ name: "Molly", to: "molly@yahoo.com" },
+	{ name: "Forneria Marconi", to: "live@japan.jp" },
+	{ name: "Master <em>Sync</em>", to: "205bw@samsung.com" },
+	{ name: "Dr. <strong>Tech</strong> de Log", to: "g15@logitech.com" },
+	{ name: "Don Corleone", to: "don@vegas.com" },
+	{ name: "Mc Chick", to: "info@donalds.org" },
+	{ name: "Donnie Darko", to: "dd@timeshift.info" },
+	{ name: "Quake The Net", to: "webmaster@quakenet.org" },
+	{ name: "Dr. Write", to: "write@writable.com" }
+        ]
+</p>
       <ul id="peopleListNamesSuggest" class="first acfb-holder">
-					<li class="acfb-data"><span>Jackson</span> <img class="p" src="../js/jquery.autocomplete/delete.gif"/></li>
-					<li class="acfb-data"><span>Wadsworth</span> <img class="p" src="../js/jquery.autocomplete/delete.gif"/></li>
-					<li class="acfb-data"><span>Alexandria</span> <img class="p" src="../js/jquery.autocomplete/delete.gif"/></li>
 					<input type="text" class="city acfb-input"/>
 		  </ul>
     </div>
@@ -61,7 +69,7 @@
   </div>
   <div class="act">
     <input type="submit" class="active" disabled="disabled" id="recipientsCmd" value="Continue" />
-    <input type="submit" value="cancel" />
+    <input type="button" value="cancel" class="close"/>
   </div>
 </div>
 </form>

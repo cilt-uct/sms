@@ -18,7 +18,7 @@
             // log('eref');
             //$.fn.SMS.get.report_table();
             //setTimeout(function() {
-            //    log($.fn.SMS.get.people("role").toString())
+             //   log($.fn.SMS.get.peopleByName().toString())
             //}, 2000);
             //while(var_getEveryoneInSite == null)
             //log(var_getEveryoneInSite);
@@ -112,6 +112,10 @@
 
         people: function() {
             renderPeople();
+        },
+
+        peopleByName: function(){
+            return getPeople('Names');
         }
 
 
@@ -249,7 +253,7 @@
                     break;
                 case "Names":
                     $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
-                        query.push(new Array(item.pname, item.pid));
+                        query.push(new Array(item.name, item.to));
                     });
                     break;
             }
@@ -306,7 +310,7 @@
             for (n in map) {
                 var elem = '\
                    <div rel="' + list[i] + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '">\
-                   <label for"peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" '+list[i]+'Name="' + map[n][0] + '" '+list[i]+'Id="' + map[n][1] + '">' + map[n][0] + '\
+                   <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" '+list[i]+'Name="' + map[n][0] + '" '+list[i]+'Id="' + map[n][1] + '">' + map[n][0] + '\
                    </label>\
                    </div></input>\
                    ';
@@ -397,6 +401,33 @@
                     }
                     );
         });
+
+        //Clear selectedRecipientsList on facebox exit
+        $(document).bind('afterClose.facebox', function(){
+             if(selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = new Array();
+            if(selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
+            if(selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
+            if(selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
+ });
+
+        /****Restore Selected Recipients List control items
+         if(selectedRecipientsList.roles.length > 0){
+             $.each(selectedRecipientsList.roles, function(i, parent) {
+                            if (parent) {
+                                $.each(parent, function(n, item) {
+                                    var elem = 'label[rolesId='+item+']';
+                                    if($(elem).length > 0){
+                                        $(elem).parent().find('input')
+                                                .addClass('selectedItem')
+                                                .hide()
+                                                .attr('checked', 'checked');
+                                       // $(elem).parent().triggerHandler('click');
+                                    }
+                                });
+                            }
+                        });
+         }
+         ******/
 
         //for list of individuals in site
         /*var map = getPeople("Names");

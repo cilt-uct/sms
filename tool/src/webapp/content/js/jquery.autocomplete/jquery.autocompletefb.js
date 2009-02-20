@@ -20,7 +20,7 @@ jQuery.fn.autoCompletefb = function(options)
 	var settings = 
 	{
 		ul         : tmp,
-		urlLookup  : [""],
+		urlLookup  : $.fn.SMS.get.peopleByName(),
 		acOptions  : {},
 		foundClass : ".acfb-data",
 		inputClass : ".acfb-input",
@@ -50,6 +50,10 @@ jQuery.fn.autoCompletefb = function(options)
 		removeFind : function(o){
 			$(o).unbind('click').parent().remove();
 			$(settings.inputClass,tmp).focus();
+            if ($('#peopleListNamesSuggest > li').length > 0)
+                            $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
+                        else
+                            $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
 			return tmp.acfb;
 		}
 	}
@@ -61,12 +65,14 @@ jQuery.fn.autoCompletefb = function(options)
 	$(settings.inputClass,tmp).autocomplete(settings.urlLookup,settings.acOptions);
 	$(settings.inputClass,tmp).result(function(e,d,f){
 		var f = settings.foundClass.replace(/\./,'');
-		var v = '<li class="'+f+'"><span>'+d+'</span> <img class="p" src="'+settings.deleteImage+'"/></li>';
+		var v = '<li class="'+f+'"><span>'+d[0]+'</span> <img class="p" src="'+settings.deleteImage+'"/></li>';
 		var x = $(settings.inputClass,tmp).before(v);
 		$('.p',x[0].previousSibling).click(function(){
 			acfb.removeFind(this);
 		});
 		$(settings.inputClass,tmp).val('').focus();
+
+        $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
 	});
 	$(settings.inputClass,tmp).focus();
 	return acfb;
