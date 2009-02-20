@@ -78,7 +78,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms billing test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -88,7 +88,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	@Override
@@ -97,7 +97,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -484,10 +484,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 	/**
 	 * Gets the sms transactions.
-	 *
+	 * 
 	 * @param smsAccount
 	 *            the sms account
-	 *
+	 * 
 	 * @return the sms transactions
 	 */
 	private void insertTestTransactionsForAccount(SmsAccount smsAccount) {
@@ -510,4 +510,21 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		}
 	}
 
+	/**
+	 * Test check sufficient credits when account is enddated
+	 */
+	public void testCheckSufficientCredits_Enddated() {
+
+		int creditsRequired = 11;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.HOUR, -2);
+		account.setEnddate(cal.getTime());
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
+		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
+				account.getId(), creditsRequired);
+		assertFalse("Expected insufficient credit", sufficientCredits);
+		account.setEnddate(null); // restore
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
+	}
 }
