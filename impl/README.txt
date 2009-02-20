@@ -32,6 +32,7 @@ secure location. The important settings are:
 RUNNING THE UNIT TEST
 ============================
 The test can be run from Eclipse or via the command line with: mvn test -Dtest=*
+Also note that SmsHibernateConstants.SMS_DEV_MODE must be set to true when running these test. 
 
 1.  Start up the smpp simulator: 
 1.1 Build the sms_smpp_sim project by running: mvn clean install

@@ -24,7 +24,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
- * Interface to logic which is external to SMS
+ * Interface to logic which is external to SMS.
  */
 public interface ExternalLogic {
 

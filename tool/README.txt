@@ -13,6 +13,7 @@ STARTING UP JETTY
 SMS TEST WINDOW
 ===============
 http://localhost:8080/sms_ui/faces/sms_test
+Note: Not in use anymore.
 The sms test window is used to send a single message to the gateway. It is used to test the smpp service. This window will 
 later be changed to send messages to a Sakai group. When a message is send from the window, the jetty log and 
 the simulator log should be monitored to see the response. The smpp service will report the gateway message id in 
@@ -21,8 +22,9 @@ the debug panel.
 SMS HELPER WINDOW
 =================
 http://localhost:8080/sms_ui/faces/helper
-This is currently a stand-alone rsf window and could be change into a helper window if required.
-The sms helper window is used to insert a sms task into the task table. The scheduler will then pick up the task and process it.  
+This is currently a stand-alone rsf window and could be change into a helper window if required. It demonstrate how to implement SMS 
+in a existing Sakai tool. The sms helper window is used to insert a sms task into the task table. 
+The scheduler will then pick up the task and process it.  
 the debug panel. 
 
 SMS CONFIG WINDOW

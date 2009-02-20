@@ -39,17 +39,13 @@ import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
-/**
- * Implementation of {@link ExternalLogic} with Sakai-specific code commented
- * out for the moment
- * 
- */
 public class ExternalLogicImpl implements ExternalLogic {
 
 	private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
@@ -212,9 +208,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
 			String entityReference, boolean getMobileNumbers) {
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
-		// TODO: here must must figure out if the reference is an Authz group,
-		// role, or list of users
 		Set members = new HashSet<Object>();
+		boolean addMessage;
 
 		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
@@ -223,27 +218,34 @@ public class ExternalLogicImpl implements ExternalLogic {
 					.fetchEntity(entityReference);
 			members.addAll(group.getMembers());
 		}
+		// TODO, resolve other references like roles
 		log.info("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
+			addMessage = true;
 			SmsMessage message = new SmsMessage();
 			if (oObject instanceof Member) {
 				message.setSakaiUserId(((Member) oObject).getUserId());
 			} else {
-				message.setSakaiUserId("*"); // for testing
+				addMessage = false;
 			}
 			if (getMobileNumbers) {
 				String mobileNumber = getSakaiMobileNumber(message
 						.getSakaiUserId());
 				if (mobileNumber == null) {
-					mobileNumber = "9999999"; // for testing
-					// TODO, user must not be added to list of mobile number is
-					// empty
+					if (SmsHibernateConstants.SMS_DEV_MODE) {
+						mobileNumber = "9999999";
+					}
+				}
+				if (mobileNumber == null) {
+					addMessage = false;
 				}
 				message.setMobileNumber(mobileNumber);
 			}
-			message.setSmsTask(smsTask);
-			messages.add(message);
+			if (addMessage) {
+				message.setSmsTask(smsTask);
+				messages.add(message);
+			}
 		}
 		return messages;
 	}
