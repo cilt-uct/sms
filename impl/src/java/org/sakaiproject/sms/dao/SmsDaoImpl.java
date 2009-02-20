@@ -24,10 +24,16 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	
 	private final DefaultTransactionDefinition defaultTransDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
 	
+	private final DefaultTransactionDefinition readOnlyDefaultTransDefinition = new DefaultTransactionDefinition(defaultTransDefinition);
+	
+	public SmsDaoImpl() {
+		readOnlyDefaultTransDefinition.setReadOnly(true);
+	}
+	
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-
+	
 	@Override
 	public void save(Object obj) {
 		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
@@ -55,7 +61,8 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	}
 
 	public List runQuery(String hql, QueryParameter... queryParameters) {
-		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition); 
+		TransactionStatus transaction = transactionManager.getTransaction(readOnlyDefaultTransDefinition); 
+		
 		Query query = buildQuery(hql, queryParameters);
 		List retrieved = query.list();
 		transactionManager.commit(transaction);
