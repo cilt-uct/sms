@@ -1,9 +1,9 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.SmsPropertyReader;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmsAccountTest. Do some basic crud functions on the account table.
@@ -39,7 +39,7 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

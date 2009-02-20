@@ -11,24 +11,24 @@
 	<!-- add sakai application scope bean definitions here -->
 	
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl">
-		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
+		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
 	
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"	class="org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl">
 		<property name="hibernateLogicLocator"	ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
+		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl">
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
+		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
 	
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" 
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl">
 		<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
+		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
 	
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"
@@ -37,7 +37,7 @@
 			ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-		<property name="hibernateUtil" ref = "org.sakaiproject.sms.util.HibernateUtil" />
+		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
 
 	<bean class="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator">

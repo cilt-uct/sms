@@ -4,11 +4,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.hibernate.Session;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class smsHibernateStressTest. We work with many messages to see how the
@@ -44,7 +44,7 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 */
 	 	@Override
 	public void testOnetimeSetup() {
-			TestHibernateUtil.createSchema();
+			StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

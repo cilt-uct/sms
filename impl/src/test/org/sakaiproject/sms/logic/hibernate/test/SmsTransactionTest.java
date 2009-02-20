@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmsTransactionTest.
@@ -42,7 +42,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
 

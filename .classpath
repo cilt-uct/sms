@@ -16,7 +16,7 @@
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga.jar"/>
 	<classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.6/antlr-2.7.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/generic-dao/0.9.8/generic-dao-0.9.8.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/generic-dao/0.9.12/generic-dao-0.9.12.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/ponderutilcore/1.2.4/ponderutilcore-1.2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/j-servletutil/1.2.4/j-servletutil-1.2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/uk/org/ponder/rsfutil/RSFComponents-evolvers/0.7.4/RSFComponents-evolvers-0.7.4.jar"/>
@@ -31,6 +31,7 @@
 	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2/commons-collections-3.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.4/commons-lang-2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-validator/commons-validator/1.3.1/commons-validator-1.3.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.6.1/commons-beanutils-1.6.1.jar"/>
 	<classpathentry kind="var" path="M2_REPO/easymock/easymock/1.2_Java1.3/easymock-1.2_Java1.3.jar"/>
 	<classpathentry kind="var" path="M2_REPO/net/sf/ehcache/ehcache/1.3.0/ehcache-1.3.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
@@ -47,6 +48,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-profile-api/2.6.0RC1-SNAPSHOT/sakai-profile-api-2.6.0RC1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-common-edu-person-api/2.6.0RC1-SNAPSHOT/sakai-common-edu-person-api-2.6.0RC1-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-common-manager-api/2.6.0RC1-SNAPSHOT/sakai-common-manager-api-2.6.0RC1-SNAPSHOT.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/azeckoski/reflectutils/0.9.5/reflectutils-0.9.5.jar"/>
 	<classpathentry kind="src" path="tool/src/java"/>
 	<classpathentry excluding="WEB-INF/bundle/|WEB-INF/bundle/|WEB-INF/|WEB-INF/|WEB-INF/bundle/" kind="src" path="tool/src/webapp"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-utils/1.3.5-SNAPSHOT/entitybroker-utils-1.3.5-SNAPSHOT.jar"/>

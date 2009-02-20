@@ -71,7 +71,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	private class SmsSchedulerThread implements Runnable {
 
 		boolean stopScheduler = false;
-
+		
 		SmsSchedulerThread() {
 			Thread t = new Thread(this);
 			t.start();
@@ -92,7 +92,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 				smsCore.processTimedOutDeliveryReports();
 				smsCore.checkAndSetTasksCompleted();
 				smsCore.processVeryLateDeliveryReports();
-				
+
 				try {
 					Thread.sleep(smsConfig.getSchedulerInterval() * 1000);
 				} catch (InterruptedException e) {

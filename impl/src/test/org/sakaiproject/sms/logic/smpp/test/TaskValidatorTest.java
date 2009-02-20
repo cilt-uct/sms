@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
@@ -14,7 +15,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -46,7 +46,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	static {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");
 		account.setMessageTypeCode("");

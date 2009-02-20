@@ -97,17 +97,6 @@ public interface SmsTaskLogic {
 			SearchFilterBean searchBean) throws SmsSearchException;
 
 	/**
-	 * Gets the sms tasks filtered by one or more message statuses.
-	 *
-	 * @param messageStatusCode
-	 *            the message status code
-	 *
-	 * @return the sms tasks filtered by message status
-	 */
-	public List<SmsTask> getSmsTasksFilteredByMessageStatus(
-			String... messageStatusCode);
-
-	/**
 	 * Increments the total messages processed on a task by one.
 	 *
 	 * @param smsTask

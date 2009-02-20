@@ -22,8 +22,8 @@ import junit.framework.TestSuite;
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * This class will create 2 Sms schedulers.The will run together processing the
@@ -61,7 +61,7 @@ public class SmsSchedulerThreadingTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

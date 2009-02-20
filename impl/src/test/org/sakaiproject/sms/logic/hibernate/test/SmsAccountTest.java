@@ -3,12 +3,12 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmsAccountTest. Do some basic crud functions on the account table.
@@ -85,7 +85,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 */
 	 	@Override
 	public void testOnetimeSetup() {
-	TestHibernateUtil.createSchema();
+	StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Level;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
@@ -42,7 +43,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatu
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.DateUtil;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * This test also send messages to the smpp simulator but it check the specific
@@ -122,7 +122,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()

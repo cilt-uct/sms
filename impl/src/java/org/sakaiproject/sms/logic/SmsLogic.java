@@ -15,23 +15,17 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.dao;
+package org.sakaiproject.sms.logic;
 
 import java.util.Date;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-/**
- * Implementations of any specialized DAO methods from the specialized DAO that
- * allows the developer to extend the functionality of the generic dao package
- * 
- * @author Sakai App Builder -AZ
- */
-public class SmsDao extends BaseDao {
+public class SmsLogic extends BaseLogic {
 
 	static {
-		log = Logger.getLogger(SmsDao.class);
+		log = Logger.getLogger(SmsLogic.class);
 		init();
 	}
 

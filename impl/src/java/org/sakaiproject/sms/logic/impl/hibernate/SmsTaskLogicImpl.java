@@ -25,16 +25,15 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -51,7 +50,8 @@ import org.sakaiproject.sms.util.DateUtil;
  * @version 1.0
  * @created 25-Nov-2008
  */
-public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
+@SuppressWarnings("unchecked")
+public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 	private ExternalLogic externalLogic;
 
@@ -94,10 +94,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery("from SmsTask");
-		List<SmsTask> tasks = query.list();
-		hibernateUtil.closeSession();
+		List<SmsTask> tasks = smsDao.runQuery("from SmsTask");
 		return tasks;
 	}
 
@@ -119,62 +116,25 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	 *
 	 * @return next sms task
 	 */
+	@SuppressWarnings("unchecked")
 	public SmsTask getNextSmsTask() {
 		StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
-		// hql.append(" and task.messageTypeId = (:messageTypeId) ");
 		hql.append(" order by task.dateToSend ");
-		Query query = hibernateUtil.getSession().createQuery(hql.toString());
-		query.setParameter("today", getCurrentDate(), Hibernate.TIMESTAMP);
-		query.setParameterList("statusCodes", new Object[] {
-				SmsConst_DeliveryStatus.STATUS_PENDING,
-				SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
-				SmsConst_DeliveryStatus.STATUS_RETRY }, Hibernate.STRING);
-		// query.setParameter("messageTypeId",SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_SCHEDULED,
-		// Hibernate.INTEGER);
-		log.debug("getNextSmsTask() HQL: " + query.getQueryString());
-		List<SmsTask> tasks = query.list();
-		hibernateUtil.closeSession();
+		List<SmsTask> tasks = smsDao.runQuery(hql.toString(), 
+							   new QueryParameter("today", getCurrentDate(), Hibernate.TIMESTAMP),
+							   new QueryParameter("statusCodes", new Object[] {
+										SmsConst_DeliveryStatus.STATUS_PENDING,
+										SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
+										SmsConst_DeliveryStatus.STATUS_RETRY }, Hibernate.STRING));
+		
+		log.debug("getNextSmsTask() HQL: " + hql);
 		if (tasks != null && tasks.size() > 0) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
 			return tasks.get(0);
 		}
 		return null;
-	}
-
-	/**
-	 * Returns a list of SmsTask objects with messages that have the specified
-	 * status code(s)
-	 *
-	 * @param message
-	 *            status code(s)
-	 * @return List of SmsTask objetcs
-	 * @deprecated Currently no use for this method.
-	 */
-	@Deprecated
-	public List<SmsTask> getSmsTasksFilteredByMessageStatus(
-			String... messageStatusCodes) {
-
-		List<SmsTask> tasks = new ArrayList<SmsTask>();
-
-		// Return empty list if no status codes were passed in
-		if (messageStatusCodes.length > 0) {
-			StringBuilder hql = new StringBuilder();
-			hql.append(" from SmsTask task where task.id in ( ");
-			hql
-					.append(" 	select distinct message.smsTask.id from SmsMessage message where message.statusCode IN (:statusCodes) ) ");
-
-			log.debug("getSmsTasksFilteredByMessageStatus() HQL: "
-					+ hql.toString());
-			Query query = hibernateUtil.getSession()
-					.createQuery(hql.toString());
-			query.setParameterList("statusCodes", messageStatusCodes,
-					Hibernate.STRING);
-			tasks = query.list();
-			hibernateUtil.closeSession();
-		}
-		return tasks;
 	}
 
 	/**
@@ -213,8 +173,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 	private List<SmsTask> getSmsTasksForCriteria(SearchFilterBean searchBean)
 			throws SmsSearchException {
-		Criteria crit = hibernateUtil.getSession()
-				.createCriteria(SmsTask.class);
+		Criteria crit = smsDao.createCriteria(SmsTask.class);
 
 		List<SmsTask> tasks = new ArrayList<SmsTask>();
 
@@ -271,7 +230,6 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 
 		log.debug(crit.toString());
 		tasks = crit.list();
-		hibernateUtil.closeSession();
 		return tasks;
 	}
 
@@ -290,14 +248,11 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	 *
 	 * @param smsTask
 	 */
-	public void incrementMessagesProcessed(SmsTask smsTask) {
+	public synchronized void incrementMessagesProcessed(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_PROCESSED =MESSAGES_PROCESSED+1  where TASK_ID = :smsTaskID";
-		Query query = hibernateUtil.getSession().createQuery(hql.toString());
-		query.setParameter("smsTaskID", smsTask.getId(), Hibernate.LONG);
-		query.executeUpdate();
-		hibernateUtil.closeSession();
-
+		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));
+		
 	}
 
 	/**
@@ -308,11 +263,7 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_DELIVERED =MESSAGES_DELIVERED+1  where TASK_ID = :smsTaskID";
-		Query query = hibernateUtil.getSession().createQuery(hql.toString());
-		query.setParameter("smsTaskID", smsTask.getId(), Hibernate.LONG);
-		query.executeUpdate();
-		hibernateUtil.closeSession();
-
+		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));
 	}
 
 	/**
@@ -321,31 +272,15 @@ public class SmsTaskLogicImpl extends SmsDao implements SmsTaskLogic {
 	 */
 	public List<SmsTask> checkAndSetTasksCompleted() {
 
-		Query selectQuery = hibernateUtil
-				.getSession()
-				.createQuery(
-						"from SmsTask mes where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus");
-		selectQuery
-				.setParameter("smsTaskStatus",
-						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-						Hibernate.STRING);
-		List<SmsTask> smsTasks = selectQuery.list();
+		List<SmsTask> smsTasks = smsDao.runQuery("from SmsTask mes where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus",
+									new QueryParameter("smsTaskStatus",
+											SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
+											Hibernate.STRING));
 		
 		String hql = "update SmsTask  set STATUS_CODE =:doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus";
-		Query updateQuery = hibernateUtil.getSession().createQuery(
-				hql.toString());
-		updateQuery
-				.setParameter("doneStatus",
-						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-						Hibernate.STRING);
-
-		updateQuery
-				.setParameter("smsTaskStatus",
-						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-						Hibernate.STRING);
-
-		updateQuery.executeUpdate();
-		hibernateUtil.closeSession();
+		smsDao.executeUpdate(hql, new QueryParameter("doneStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,Hibernate.STRING),
+										 new QueryParameter("smsTaskStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, Hibernate.STRING));
 		return smsTasks;
 	}
+
 }

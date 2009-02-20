@@ -18,16 +18,15 @@
 
 package org.sakaiproject.sms.logic.impl.hibernate;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.sakaiproject.sms.dao.SmsDao;
+import org.hibernate.Hibernate;
+import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -43,7 +42,8 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
  */
-public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
+@SuppressWarnings("unchecked")
+public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -81,11 +81,7 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 	 * @return List of SmsAccount objects
 	 */
 	public List<SmsAccount> getAllSmsAccounts() {
-		List<SmsAccount> accounts = new ArrayList<SmsAccount>();
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery("from SmsAccount");
-		accounts = query.list();
-		hibernateUtil.closeSession();
+		List<SmsAccount> accounts = smsDao.runQuery("from SmsAccount");
 		return accounts;
 	}
 
@@ -233,16 +229,12 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		hql
 				.append(" from SmsAccount account where (account.enddate is null or account.enddate > :today) ");
 		hql.append(" and (account.sakaiSiteId = :sakaiSiteId)");
-		List<SmsAccount> accounts = new ArrayList<SmsAccount>();
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery(hql.toString());
-		query.setDate("today", new Date());
-		query.setParameter("sakaiSiteId", sakaiSiteId);
-		accounts = query.list();
+		List<SmsAccount> accounts = smsDao.runQuery(hql.toString(), new QueryParameter("sakaiSiteId", sakaiSiteId, Hibernate.STRING),
+																		   new QueryParameter("today", new Date(),Hibernate.DATE));
+		
 		if (accounts != null && accounts.size() > 0) {
 			account = accounts.get(0);
 		}
-		hibernateUtil.closeSession();
 		return account;
 	}
 
@@ -264,16 +256,11 @@ public class SmsAccountLogicImpl extends SmsDao implements SmsAccountLogic {
 		hql
 				.append(" from SmsAccount account where (account.enddate is null or account.enddate > :today) ");
 		hql.append(" and (account.sakaiUserId = :sakaiUserId)");
-		List<SmsAccount> accounts = new ArrayList<SmsAccount>();
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery(hql.toString());
-		query.setDate("today", new Date());
-		query.setParameter("sakaiUserId", sakaiUserId);
-		accounts = query.list();
+		List<SmsAccount> accounts = smsDao.runQuery(hql.toString(), new QueryParameter("today", new Date(),Hibernate.DATE),
+																		   new QueryParameter("sakaiUserId", sakaiUserId, Hibernate.STRING));
 		if (accounts != null && accounts.size() > 0) {
 			account = accounts.get(0);
 		}
-		hibernateUtil.closeSession();
 		return account;
 	}
 

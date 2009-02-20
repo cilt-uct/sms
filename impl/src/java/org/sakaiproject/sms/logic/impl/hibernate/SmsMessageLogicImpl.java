@@ -26,16 +26,15 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -53,7 +52,8 @@ import org.sakaiproject.sms.util.DateUtil;
  * @version 1.0
  * @created 25-Nov-2008
  */
-public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
+@SuppressWarnings("unchecked")
+public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
 	private ExternalLogic externalLogic;
 
@@ -85,9 +85,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	 * @return List of SmsMessage objects
 	 */
 	public List<SmsMessage> getAllSmsMessages() {
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery("from SmsMessage");
-		List<SmsMessage> messages = query.list();
+		List<SmsMessage> messages = smsDao.runQuery("from SmsMessage");
 		return messages;
 	}
 
@@ -211,12 +209,10 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 	 */
 	public SmsMessage getSmsMessageBySmscMessageId(String smscMessageId,
 			String smscID) {
-		Session s = hibernateUtil.getSession();
-		Query query = s
-				.createQuery("from SmsMessage mes where mes.smscMessageId = :smscMessageId and mes.smscId = :smscID");
-		query.setParameter("smscMessageId", smscMessageId, Hibernate.STRING);
-		query.setParameter("smscID", smscID, Hibernate.STRING);
-		List<SmsMessage> messages = query.list();
+		String hql = "from SmsMessage mes where mes.smscMessageId = :smscMessageId and mes.smscId = :smscID";
+		
+		List<SmsMessage> messages = smsDao.runQuery(hql, new QueryParameter("smscMessageId", smscMessageId, Hibernate.STRING),
+																new QueryParameter("smscID", smscID, Hibernate.STRING));
 		if (messages != null && messages.size() > 0) {
 			return messages.get(0);
 		}
@@ -225,7 +221,7 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 	private List<SmsMessage> getSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		Criteria crit = hibernateUtil.getSession().createCriteria(
+		Criteria crit = smsDao.createCriteria(
 				SmsMessage.class).createAlias("smsTask", "smsTask");
 
 		log.debug(searchBean.toString());
@@ -289,7 +285,6 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 		}
 
 		messages = crit.list();
-		hibernateUtil.closeSession();
 		return messages;
 	}
 
@@ -322,17 +317,21 @@ public class SmsMessageLogicImpl extends SmsDao implements SmsMessageLogic {
 
 			log.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 					+ hql.toString());
-			Query query = hibernateUtil.getSession()
-					.createQuery(hql.toString());
-			query
-					.setParameterList("statusCodes", statusCodes,
-							Hibernate.STRING);
+			
+			QueryParameter[] queryParameters;
+			
 			if (smsTaskId != null) {
-				query.setParameter("smsTaskId", smsTaskId);
+				queryParameters = new QueryParameter[2];
+			} else {
+				queryParameters = new QueryParameter[1];
 			}
-			messages = query.list();
-			hibernateUtil.closeSession();
-
+			
+			queryParameters[0] = new QueryParameter("statusCodes", statusCodes,	Hibernate.STRING);
+			
+			if (smsTaskId != null) {
+				queryParameters[1] = new QueryParameter("smsTaskId", smsTaskId, Hibernate.LONG);	
+			}
+			messages = smsDao.runQuery(hql.toString(), queryParameters);
 		}
 		return messages;
 	}

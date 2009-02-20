@@ -2,6 +2,7 @@ package org.sakaiproject.sms.logic.smpp.test;
 
 import java.util.ArrayList;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.validate.MessageValidator;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -9,7 +10,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -22,7 +22,7 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 	private SmsMessage msg;
 
 	static {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/** The errors. */

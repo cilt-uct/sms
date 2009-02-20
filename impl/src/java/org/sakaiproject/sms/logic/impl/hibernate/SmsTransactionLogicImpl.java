@@ -24,15 +24,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.dao.SmsDao;
+import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -50,7 +50,8 @@ import org.sakaiproject.sms.util.DateUtil;
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
  */
-public class SmsTransactionLogicImpl extends SmsDao implements
+@SuppressWarnings("unchecked")
+public class SmsTransactionLogicImpl extends SmsLogic implements
 		SmsTransactionLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator;
@@ -88,9 +89,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * @return List of SmsTransaction objects
 	 */
 	public List<SmsTransaction> getAllSmsTransactions() {
-		Session s = hibernateUtil.getSession();
-		Query query = s.createQuery("from SmsTransaction");
-		return query.list();
+		return smsDao.runQuery("from SmsTransaction");
 	}
 
 	/**
@@ -132,7 +131,7 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 
 	private List<SmsTransaction> getSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		Criteria crit = hibernateUtil.getSession().createCriteria(
+		Criteria crit = smsDao.createCriteria(
 				SmsTransaction.class).createAlias("smsAccount", "smsAccount");
 
 		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
@@ -191,7 +190,6 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 			throw new SmsSearchException(e);
 		}
 		transactions = crit.list();
-		hibernateUtil.closeSession();
 		return transactions;
 	}
 
@@ -215,13 +213,8 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForAccountId(Long accountId) {
-		Session s = hibernateUtil.getSession();
-		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
-		Query query = s
-				.createQuery("from SmsTransaction transaction where transaction.smsAccount.id = :accountId");
-		query.setParameter("accountId", accountId);
-		transactions = query.list();
-		hibernateUtil.closeSession();
+		String hql = "from SmsTransaction transaction where transaction.smsAccount.id = :accountId";
+		List<SmsTransaction> transactions = smsDao.runQuery(hql, new QueryParameter("accountId", accountId, Hibernate.LONG));
 		return transactions;
 	}
 
@@ -234,13 +227,8 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForTaskId(Long taskId) {
-		Session s = hibernateUtil.getSession();
-		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
-		Query query = s
-				.createQuery("from SmsTransaction transaction where transaction.smsTaskId = :taskId");
-		query.setParameter("smsTaskId", taskId);
-		transactions = query.list();
-		hibernateUtil.closeSession();
+		String hql = "from SmsTransaction transaction where transaction.smsTaskId = :taskId";
+		List<SmsTransaction> transactions = smsDao.runQuery(hql, new QueryParameter("smsTaskId", taskId, Hibernate.LONG));
 		return transactions;
 	}
 
@@ -254,8 +242,6 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 	 * @return the cancel sms transaction for task
 	 */
 	public SmsTransaction getCancelSmsTransactionForTask(Long taskId) {
-		Session s = hibernateUtil.getSession();
-
 		StringBuilder hql = new StringBuilder();
 		hql
 				.append(" from SmsTransaction transaction where transaction.smsTaskId = :taskId ");
@@ -263,12 +249,10 @@ public class SmsTransactionLogicImpl extends SmsDao implements
 				.append(" and transaction.transactionTypeCode = :transactionTypeCode ");
 		hql.append(" order by transaction.transactionDate desc ");
 
-		Query query = s.createQuery(hql.toString());
-		query.setParameter("taskId", taskId);
-		query.setParameter("transactionTypeCode",
-				SmsConst_Billing.TRANS_RESERVE_CREDITS);
-		List<SmsTransaction> transactions = query.list();
-		hibernateUtil.closeSession();
+		List<SmsTransaction> transactions = 
+			smsDao.runQuery(hql.toString(), 
+									new QueryParameter("taskId", taskId, Hibernate.LONG),
+									new QueryParameter("transactionTypeCode", SmsConst_Billing.TRANS_RESERVE_CREDITS,Hibernate.STRING));
 
 		if (transactions != null && transactions.size() > 0) {
 			return transactions.get(0);

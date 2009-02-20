@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.sakaiproject.sms.util.TestHibernateUtil;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 
 /**
  * This unit test will create 2 separate but concurrent connections (sessions)
@@ -76,7 +76,7 @@ public class SmppThreadingTest extends TestCase {
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
-		 TestHibernateUtil hibernateUtil =new TestHibernateUtil();
+		 StandaloneSmsDaoImpl hibernateUtil =new StandaloneSmsDaoImpl();
 		 hibernateUtil.setPropertiesFile("hibernate-test.properties");
 		 hibernateUtil.createSchema();
 	}

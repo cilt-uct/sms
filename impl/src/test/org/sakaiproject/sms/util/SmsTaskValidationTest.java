@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
@@ -56,7 +57,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 	static {
-		TestHibernateUtil.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/** The account. */

@@ -13,9 +13,18 @@
         </constructor-arg>
     </bean>
 
-   <bean id="org.sakaiproject.sms.util.HibernateUtil" class="org.sakaiproject.sms.util.HibernateUtilImpl">
+   <bean id="org.sakaiproject.sms.dao.SmsDao" class="org.sakaiproject.sms.dao.SmsDaoImpl">
       <property name="sessionFactory" ref="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
       <property name="transactionManager" ref="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
-   </bean>
+      <property name="persistentClasses">
+         <list>
+            <value>org.sakaiproject.sms.model.hibernate.SmsAccount</value>
+            <value>org.sakaiproject.sms.model.hibernate.SmsConfig</value>
+			<value>org.sakaiproject.sms.model.hibernate.SmsMessage</value>
+            <value>org.sakaiproject.sms.model.hibernate.SmsTask</value>
+            <value>org.sakaiproject.sms.model.hibernate.SmsTransaction</value>
+         </list>
+        </property>
+    </bean>
 
 </beans>

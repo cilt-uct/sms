@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Level;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
@@ -19,7 +20,6 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * SmsScheduler Junit.This class will test various scheduling related scenarios.
@@ -34,7 +34,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	static SmsSchedulerImpl smsSchedulerImpl = null;
 	static SmsSmppImpl smsSmppImpl = null;
 	static SmsConfigLogicImpl smsConfigLogic = null;
-	static TestHibernateUtil hibernateUtil =null;
+	static StandaloneSmsDaoImpl hibernateUtil =null;
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
@@ -44,9 +44,9 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsConfigLogic = new SmsConfigLogicImpl();
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
-		hibernateUtil = new TestHibernateUtil();
+		hibernateUtil = new StandaloneSmsDaoImpl();
 		hibernateUtil.setPropertiesFile("hibernate-test.properties");
-		smsConfigLogic.setHibernateUtil(hibernateUtil);
+		smsConfigLogic.setSmsDao(hibernateUtil);
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsCoreImpl = new SmsCoreImpl();

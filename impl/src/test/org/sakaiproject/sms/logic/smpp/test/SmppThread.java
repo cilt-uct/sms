@@ -25,6 +25,7 @@ import java.util.Set;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
+import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
@@ -39,7 +40,6 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.util.TestHibernateUtil;
 
 /**
  * The Class SmppSession. Used in the threading test.
@@ -64,7 +64,7 @@ public class SmppThread extends TestRunnable {
 
 	private static HibernateLogicLocator hibernateLogicLocator = null;
 	static {
-		TestHibernateUtil hibernateUtil = new TestHibernateUtil();
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl();
 		hibernateUtil.setPropertiesFile("hibernate-test.properties");
 
 		smsAccount = new SmsAccount();
@@ -78,7 +78,7 @@ public class SmppThread extends TestRunnable {
 		hibernateLogicLocator = new HibernateLogicLocator();
 
 		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
-		smsConfigLogicImpl.setHibernateUtil(hibernateUtil);
+		smsConfigLogicImpl.setSmsDao(hibernateUtil);
 		hibernateLogicLocator.setSmsConfigLogic(smsConfigLogicImpl);
 
 
@@ -86,19 +86,19 @@ public class SmppThread extends TestRunnable {
 
 		smsMessageLogicImpl.setExternalLogic(new ExternalLogicStub());
 		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsMessageLogicImpl.setHibernateUtil(hibernateUtil);
+		smsMessageLogicImpl.setSmsDao(hibernateUtil);
 
 		SmsTaskLogicImpl smsTaskLogicImpl = new SmsTaskLogicImpl();
 		smsTaskLogicImpl.setExternalLogic(new ExternalLogicStub());
 		smsTaskLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsTaskLogicImpl.setHibernateUtil(hibernateUtil);
+		smsTaskLogicImpl.setSmsDao(hibernateUtil);
 
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 		hibernateLogicLocator.setSmsTaskLogic(smsTaskLogicImpl);
 		hibernateLogicLocator.setSmsMessageLogic(smsMessageLogicImpl);
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsAccountLogicImpl.setHibernateUtil(hibernateUtil);
+		smsAccountLogicImpl.setSmsDao(hibernateUtil);
 
 		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
 		hibernateLogicLocator.getSmsAccountLogic()
