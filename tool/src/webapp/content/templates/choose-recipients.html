@@ -3,55 +3,57 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
 <head>
-<link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
-<link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
-          media="all"/>
 <title rsf:id="page-title">Sms Items</title>
+<script type="text/javascript">
+       // $(document).ready(function() {
+			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
+			$('#peopleList').tabs();
+			
+       // });
+    </script>
+
 </head>
 <body>
 <div class="portletBody">
-<h3 class="insColor insBak insBorder">Choose Recipients</h3>
-<div rsf:id="message-for:*" class="alertMessage">
-  <ul style="margin:0px;">
-    <li>Message for user here</li>
-  </ul>
-</div>
+<h3 class="insColor clear insBak insBorder">Choose Recipients</h3>
+<div class="alertMessage" style="display:none">
+    <ul style="margin:0px;">
+      <li>Message for user here</li>
+    </ul>
+  </div>
 <form>
 <div id="people">
   <div id="peopleList">
     <ul>
-      <li><a href="#tabs-role" id="peopleTabsRole">Select by role</a></li>
-      <li><a href="#tabs-group" id="peopleTabsGroup">Select by group</a></li>
-      <li><a href="#tabs-individuals" id="peopleTabsIndividuals">Individuals</a></li>
-      <li><a href="#tabs-numbers" id="peopleTabsNumbers">Numbers</a></li>
+      <li><a href="#peopleListRoles" id="peopleTabsRoles">Select by role</a></li>
+      <li><a href="#peopleListGroups" id="peopleTabsGroups">Select by group</a></li>
+      <li><a href="#peopleListNames" id="peopleTabsNames">Individuals</a></li>
+      <li><a href="#peopleListNumbers" id="peopleTabsNumbers">Numbers</a></li>
     </ul>
-    <ul id="peopleListRole">
-      <li>Students</li>
-      <li>Tutors</li>
-    </ul>
-    <ul id="peopleListGroup">
-      <li>Grp One</li>
-      <li>Group three</li>
-      <li>Group 5</li>
-      <li>Group 6</li>
-    </ul>
-    <div id="peopleListIndividuals">
+    <div id="peopleListRoles">
+    </div>
+    <div id="peopleListGroups">
+    </div>
+    <div id="peopleListNames">
       <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
     </div>
     <div id="peopleListNumbers">
-      <textarea name="peopleListNumbersBox" cols="45" rows="10"></textarea>
+    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </p>
+      <textarea name="peopleListNumbersBox" cols="40" rows="7"></textarea>
     </div>
   </div>
-  <div class="copyMe">
+  <div class="clear">
     <label>
     <input type="checkbox" name="copyMe" id="copyMe" />
     Send me a copy</label>
   </div>
   <div class="act">
     <input type="submit" class="active" disabled="disabled" id="recipientsCmd" value="Continue" />
+    <input type="submit" value="cancel" />
   </div>
 </div>
 </form>
+<hr width="465" noshade="noshade" class="loginform" />
 </div>
 </body>
 </html>

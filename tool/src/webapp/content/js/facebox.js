@@ -79,8 +79,8 @@
     settings: {
       opacity      : 0,
       overlay      : true,
-      loadingImage : '/facebox/loading.gif',
-      closeImage   : '/facebox/closelabel.gif',
+      loadingImage : '/library/image/sakai/s.gif',
+      closeImage   : '/library/image/sakai/cross.png',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
       faceboxHtml  : '\
     <div id="facebox" style="display:none;"> \
@@ -93,14 +93,14 @@
             <tr> \
               <td class="b"/> \
               <td class="body"> \
-                <div class="content"> \
-                </div> \
                 <div class="footer"> \
                   <a href="#" class="close"> \
-                    <img src="/facebox/closelabel.gif" title="close" class="close_image" /> \
+                    <img src="/library/image/sakai/cross.png" title="close" class="close_image" /> \
                   </a> \
                 </div> \
-              </td> \
+        <div class="content"> \
+                </div> \
+               </td> \
               <td class="b"/> \
             </tr> \
             <tr> \

@@ -17,9 +17,9 @@
         return this.each(function() {
             // log('eref');
             //$.fn.SMS.get.report_table();
-            setTimeout(function() {
-                log($.fn.SMS.get.people("role").toString())
-            }, 2000);
+            //setTimeout(function() {
+            //    log($.fn.SMS.get.people("role").toString())
+            //}, 2000);
             //while(var_getEveryoneInSite == null)
             //log(var_getEveryoneInSite);
             //return false;
@@ -109,53 +109,10 @@
             });
         },
 
-        /**
-         * Getters for recipients page
-         * @param filter Search list by {string} variable. Returns a Two Dimensional array
-         */
-        people: function(filter){
-            //log(filter);
-            if(filter != null && (filter == "role" || filter == "group" || filter == "name")){
-            if(var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
-            var query = new Array();
-                switch(filter){
-                    case "role":
-                         $.each(var_getEveryoneInSite.people[0].roles, function(i, item) {
-                                query.push(new Array(item.rname, item.rid));
-                              });
-                        break;
-                case "group":
-                         $.each(var_getEveryoneInSite.people[0].groups, function(i, item) {
-                                query.push(new Array(item.rname, item.rid));
-                            });
-                        break;
-                case "name":
-                         $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
-                                query.push(new Array(item.rname, item.rid));
-                            });
-                        break;
-                }
 
-                //log(query);
-                return query;
-                                /*$.each(query, function(i, item) {
-                    $('#peopleList'+filter).append(
-                            $('li')
-                                    .class('ui-widget-content')
-                                    .attr('id', item.rid)
-                                    .attr('name', item.rname)
-                                    .text(item.rname)
-                                    );
-                });
-                $('#peopleList'+filter).selectable({
-                    selected: function(event, ui) {
-                         //Do something on select eg. Update Selected Recipients list object
-
-                    }
-                });
-                */
+        people: function() {
+            renderPeople();
             }
-        }
 
 
     };
@@ -232,7 +189,38 @@
     function getEveryoneInSite() {
         return var_getEveryoneInSite;
     }
+/**
+         * Getter for recipients page
+         * @param filter Search list by {string} variable. Returns a Two Dimensional array
+         */
+    function getPeople(filter) {
+            //log(filter);
+            if (filter != null && (filter == "Roles" || filter == "Groups" || filter == "Names")) {
+                if (var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
+                var query = new Array();
+                switch (filter) {
+                    case "Roles":
+                        $.each(var_getEveryoneInSite.people[0].roles, function(i, item) {
+                            query.push(new Array(item.rname, item.rid));
+                        });
+                        break;
+                    case "Groups":
+                        $.each(var_getEveryoneInSite.people[0].groups, function(i, item) {
+                            query.push(new Array(item.gname, item.gid));
+                        });
+                        break;
+                    case "Names":
+                        $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
+                            query.push(new Array(item.pname, item.pid));
+                        });
+                        break;
+                }
 
+                //log(query);
+                return query;
+
+            }
+    }
 
     function returnThis(d) {
         log(d);
@@ -270,6 +258,35 @@
             }
 
         });
+    }
+
+    function renderPeople() {
+        var list = new Array("Roles", "Groups");
+        for (i in list) {
+            var map = getPeople(list[i]);
+            var tag = '#peopleList' + list[i];
+            for (n in map) {
+                var elem = '\
+                   <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
+                   <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
+                   </label>\
+                   </div></input>\
+                   ';
+                $(tag).append(elem);
+            }
+        }
+
+        //for list of individuals in site
+        var map = getPeople("Names");
+            for (n in map) {
+                var elem = '\
+                   <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
+                   <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
+                   </label>\
+                   </div></input>\
+                   ';
+                $('#peopleListNames').append(elem);
+            }
     }
 
 

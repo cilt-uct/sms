@@ -9,20 +9,25 @@
 <link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
 <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
           media="all"/>
-<link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+<link rel="stylesheet" href="../css/Sms.css" type="text/css"/>
 <link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
 <script type="text/javascript" src="../js/jquery-ui-tabs.date.selectable.effects.1.5.3.min.js"></script>
 <script type="text/javascript" src="../js/uct.sakai.sms.js"></script>
+<script type="text/javascript" src="../js/facebox.js"></script>
 <script type="text/javascript">
         $(document).ready(function() {
-            $("#smsDatesScheduleDate").datepicker({minDate: 0, maxDate: '+3M +10D'});
+           $("#smsDatesScheduleDate").datepicker({minDate: 0, maxDate: '+3M +10D'});
 			$("#smsDatesExpiryDate").datepicker({minDate: 0, maxDate: '+3M +10D'});//$('a[rel=*getReport]').SMS();
-            $(document).SMS({
-                test: 'Hello!'
-        });
-            $.fn.SMS.settings.test = 'hey';
-            
+            $(document)
+			.SMS()
+			.bind('reveal.facebox', function(){
+				$.fn.SMS.get.people(); //Populate the people lists ie:roles, groups and individuals
+			
+			});
+            //$.fn.SMS.settings.test = 'hey';
+            $("#smsAddRecipients").facebox();
+			//jQuery.facebox('some html');
         })
         ;
     </script>
@@ -44,7 +49,7 @@
   <form action="" method="POST">
   <div> Your message:</div>
   <textarea name="smsMessage" cols="50" rows="7" ></textarea>
-  <div><a href="#"><h3 class="addItem">Add recipients</h3></a> <br />
+  <div><a href="choose-recipients.html" rel="" id="smsAddRecipients"><h3 class="addItem">Add recipients</h3></a> <br />
 </div>
   <div id="reportConsole" class="timeCells">
     <div>Credits remaining: <span class="breadCrumb" id="creditsAvail">100 credits</span></div>
