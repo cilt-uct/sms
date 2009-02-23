@@ -448,6 +448,7 @@ public class SmsCoreImpl implements SmsCore {
 					smsTask.getId().toString());
 			body = MessageCatalog.getMessage(
 					"messages.notificationOverdraftLimitExceeded", String
+							.valueOf(account.getCredits()), String
 							.valueOf(account.getOverdraftLimit()));
 
 		}
