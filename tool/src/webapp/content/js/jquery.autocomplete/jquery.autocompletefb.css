@@ -71,7 +71,7 @@ ul.acfb-holder {
 	margin  : 0; 
 	padding : 4px 5px 0; 
 	border  : 1px solid #999; 
-	height  : auto !important; 
+	/*height  : auto !important;*/ 
 	height  : 1%; 
 	overflow: hidden; 
 	font    : 11px "Lucida Grande", "Verdana"; 

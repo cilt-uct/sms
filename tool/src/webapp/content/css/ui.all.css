@@ -114,7 +114,7 @@
 	border: 1px solid #77d5f7;
 	background: #fcfdfd url(../images/jquery-images/fcfdfd_40x100_textures_06_inset_hard_100.png) 0 bottom repeat-x;
 	color: #222222;
-	padding: 1.5em 1.7em;	
+	padding: 0.7em;	
 }
 .ui-tabs-hide {
 	display: none;/* for accessible hiding: position: absolute; left: -99999999px*/;

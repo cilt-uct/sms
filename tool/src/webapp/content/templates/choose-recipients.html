@@ -8,14 +8,10 @@
        // $(document).ready(function() {
 			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
 			$('#peopleList').tabs();
-			$("#peopleListNamesSuggest").autoCompletefb({
-					//urlLookup:cities,
-					deleteImage: "../js/jquery.autocomplete/delete.gif"
-				});
+			$("#peopleListNamesSuggest").autoCompletefb();
 				
        // });
     </script>
-
 </head>
 <body>
 <div class="portletBody">
@@ -40,17 +36,7 @@
     <div id="peopleListGroups">
     </div>
     <div id="peopleListNames">
-      <p>{ name: "Peter Pan", to: "peter@pan.de" },
-	{ name: "Molly", to: "molly@yahoo.com" },
-	{ name: "Forneria Marconi", to: "live@japan.jp" },
-	{ name: "Master <em>Sync</em>", to: "205bw@samsung.com" },
-	{ name: "Dr. <strong>Tech</strong> de Log", to: "g15@logitech.com" },
-	{ name: "Don Corleone", to: "don@vegas.com" },
-	{ name: "Mc Chick", to: "info@donalds.org" },
-	{ name: "Donnie Darko", to: "dd@timeshift.info" },
-	{ name: "Quake The Net", to: "webmaster@quakenet.org" },
-	{ name: "Dr. Write", to: "write@writable.com" }
-        ]
+      <p>Mauris eleifend est et turpis. Duis id erat.
 </p>
       <ul id="peopleListNamesSuggest" class="first acfb-holder">
 					<input type="text" class="city acfb-input"/>
@@ -59,9 +45,18 @@
     <div id="peopleListNumbers">
     <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </p>
       
-      <textarea id="peopleListNumbersBox" name="peopleListNumbersBox" cols="40" rows="5" maxlength="5"></textarea>
-      <div id="peopleListNumbersLog" style="display:none"></div>
-      <div><a href="#" id="checkNumbers">Check numbers</a>  |  <a href="#" id="showNumbers" style="display:none">Show the valid numbers</a></div>
+      <table width="100%" border="0" cellspacing="5" cellpadding="5">
+  <tr>
+    <td><div id="numbersInvalid" style="display:none">Correct these numbers:</div></td>
+    <td><div id="numbersValid" style="display:none">These numbers are fine:</div></td>
+  </tr>
+  <tr>
+    <td valign="top"><textarea id="peopleListNumbersBox" name="peopleListNumbersBox" cols="25" rows="5"></textarea></td>
+    <td valign="top"><ul id="peopleListNumbersBox2"></ul></td>
+  </tr>
+</table>
+      <h3 id="peopleListNumbersLog" style="display:none"></h3>
+      <div><a href="#" id="checkNumbers">Check numbers</a></div>
     </div>
   </div>
   <div class="clear">

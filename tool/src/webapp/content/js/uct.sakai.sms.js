@@ -157,6 +157,7 @@
         images: {
             base: '/library/image/silk/',
             busy: 'spinner.gif',
+            deleteAutocompleteImage: '../js/jquery.autocomplete/delete.gif',
             status: {
                 completed: ['tick.png', 'Completed'],
                 failed: ['cancel.png','Failed'],
@@ -343,27 +344,27 @@
         //Bind checkbox event listeners
 
         //for the Roles Tab
-        $('#peopleListRoles > div[rel=Roles]').each(function() {
+        $('#peopleListRoles > div[rel=Roles] input').each(function() {
             $(this).toggle(
                 //Fn for the check event
                     function() {
-                        $(this).addClass('selectedItem');
-                        $(this).find('input')
-                                .hide()
-                                .attr('checked', 'checked');
+                        //$(this).addClass('selectedItem');
+                        $(this)
+                                //.hide()
+                                .attr('checked', 'true');
                         //Save data into selectedRecipientsList
-                        selectedRecipientsList.roles.push(new Array($(this).find('label').attr('RolesId'), $(this).find('label').attr('RolesName')));
+                        selectedRecipientsList.roles.push(new Array($(this).parent().find('label').attr('RolesId'), $(this).parent().find('label').attr('RolesName')));
 
                         //Refresh {selectedRecipients} Number on TAB
                         $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
                     },
                 //Fn for the UNcheck event
                     function() {
-                        $(this).removeClass('selectedItem');
-                        $(this).find('input')
-                                .show()
-                                .removeAttr('checked');
-                        var thisRoleId = $(this).find('label').attr('RolesId');
+                       // $(this).removeClass('selectedItem');
+                        //$(this)
+                                //.show()
+                                //.removeAttr('checked');
+                        var thisRoleId = $(this).parent().find('label').attr('RolesId');
                         //Remove data from selectedRecipientsList
                         $.each(selectedRecipientsList.roles, function(i, parent) {
                             if (parent) {
@@ -384,27 +385,27 @@
         });
 
         //for the Groups Tab
-        $('#peopleListGroups > div[rel=Groups]').each(function() {
+        $('#peopleListGroups > div[rel=Groups] input').each(function() {
             $(this).toggle(
                 //Fn for the check event
                     function() {
-                        $(this).addClass('selectedItem');
-                        $(this).find('input')
-                                .hide()
-                                .attr('checked', 'checked');
+                        //$(this).addClass('selectedItem');
+                        //$(this)
+                                //.hide()
+                                //.attr('checked', 'checked');
                         //Save data into selectedRecipientsList
-                        selectedRecipientsList.groups.push(new Array($(this).find('label').attr('GroupsId'), $(this).find('label').attr('GroupsName')));
+                        selectedRecipientsList.groups.push(new Array($(this).parent().find('label').attr('GroupsId'), $(this).parent().find('label').attr('GroupsName')));
 
                         //Refresh {selectedRecipients} Number on TAB
                         $('#peopleTabsGroups span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('groups'));
                     },
                 //Fn for the UNcheck event
                     function() {
-                        $(this).removeClass('selectedItem');
-                        $(this).find('input')
-                                .show()
-                                .removeAttr('checked');
-                        var thisRoleId = $(this).find('label').attr('GroupsId');
+                        //$(this).removeClass('selectedItem');
+                        //$(this)
+                                //.show()
+                                //.removeAttr('checked');
+                        var thisRoleId = $(this).parent().find('label').attr('GroupsId');
                         //Remove data from selectedRecipientsList
                         $.each(selectedRecipientsList.groups, function(i, parent) {
                             if (parent) {
@@ -436,6 +437,7 @@
 
         $('#checkNumbers').bind('click', function() {
             var that = $('#peopleListNumbersBox');
+            var that2 = $('#peopleListNumbersBox2');
             if (that.val()) {
                 var numbers = that.val().split("\n");
                 var nums_invalid = new Array();
@@ -444,36 +446,71 @@
                     var num = item.split(' ').join('');
                     if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
                         selectedRecipientsList.numbers.push(new Array(item));
-                        //numbers.splice(item,1);
-                        //log("Valid " + item);
-                    } else {
+                        } else {
                         nums_invalid.push(item);
-                        //log("INvalid " + item);
-                    }
+                     }
 
                 });
-                if (getSelectedRecipientsList.length('numbers') > 0) {
-                                //Log report on valid numbers
-                $('#peopleListNumbersLog')
-                        .slideDown()
-                        .addClass('messageError')
-                        .html('\
-                    You have '+getSelectedRecipientsList.length('numbers')+' valid numbers.\
-                    <br /> \
-                    \
-                    \
-                  ');
-                $('#checkNumbers').text("Check new/edited numbers again");
-                //Refresh {selectedRecipients} Number on TAB
-                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('numbers'));
-                    that.val(nums_invalid.toString().split(',').join('\n'));
-                    that.addClass('messageError');
-                }else
-                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
+
+
+
+                    //Log report on valid numbers
+                   showSelectedNumbersInDOM();
+                    that
+                            .addClass('messageEr ror')
+                            .val(nums_invalid.toString().split(',').join('\n'));
+                    var temp = "";
+                    $.each(selectedRecipientsList.numbers, function(i, item) {
+                        temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
+                    });
+                    that2
+                            .show()
+                            .css({
+                                border: 'none',
+                                height: '100px',
+                                overflow: 'auto',
+                                width: '180px'
+                                })
+                            .addClass('acfb-holder')
+                            .html(temp);
+                    $("#numbersValid").fadeIn().effect("highlight", 'slow');
+                    $("#numbersInvalid").fadeIn().effect("highlight", 'slow');
+                    //bind delete image event
+                    that2.find('li img.numberDel').bind('click', function(){
+                        var tempText = $(this).parent().find('span').text();
+                        $.each(selectedRecipientsList.numbers, function(i, item) {
+                            if(item && item == tempText){
+                            selectedRecipientsList.numbers.splice(i, 1);
+                            }
+                        });
+                        $(this).parent().fadeOut(function(){$(this).remove();});
+                        showSelectedNumbersInDOM();
+                        log(selectedRecipientsList.numbers.toString());
+                    });
             }
             that.focus();
             return false;
         });
+
+        function showSelectedNumbersInDOM(){
+           if (getSelectedRecipientsList.length('numbers') > 0) {
+                    //Log report on valid numbers
+                    $('#peopleListNumbersLog')
+                            .slideDown()
+                            .addClass('')
+                            .html('\
+                    You have ' + getSelectedRecipientsList.length('numbers') + ' valid numbers.\
+                    <br /> \
+                    \
+                    \
+                  ');
+                    $('#checkNumbers').text("Check new/edited numbers again");
+                    //Refresh {selectedRecipients} Number on TAB
+                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('numbers'));
+               } else
+                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
+
+        }
 
         /****Restore Selected Recipients List control items
          if(selectedRecipientsList.roles.length > 0){
