@@ -19,6 +19,8 @@ package org.sakaiproject.sms.logic.parser.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.sms.logic.parser.ParsedMessage;
@@ -85,12 +87,41 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		}
 	}
 
-	public boolean toolMatchCommand(String sakaiToolId, String smsCommand) {
+	public String toolMatchCommand(String sakaiToolId, String smsCommand) {
 		if (sakaiToolId == null || smsCommand == null) {
-			return false;
+			return "";
 		}
-			
-		return toolCommandsMapping.get(sakaiToolId.toUpperCase()).contains(smsCommand.toUpperCase());
+		String toolKey = sakaiToolId.toUpperCase();
+		String smsCommandKey = smsCommand.toUpperCase();
+		
+		if (!toolCommandsMapping.containsKey(toolKey)) {
+			toolKey = getClosestMatch(toolKey, toolCommandsMapping.keySet());
+		}	
+		
+		if (!toolCommandsMapping.get(toolKey).contains(smsCommandKey)) {
+			smsCommandKey = getClosestMatch(smsCommandKey, toolCommandsMapping.get(toolKey));
+		}
+				
+		//toolCommandsMapping.get(sakaiToolId.toUpperCase()).contains(smsCommand.toUpperCase())
+		return smsCommandKey;	
+	}
+
+	// Use Levenshtein distance to find closest match
+	private String getClosestMatch(String supplied, Set<String> keySet) {
+		int minDistance = Integer.MAX_VALUE;
+		String closestMatch = supplied;
+		
+		Iterator<String> iterator = keySet.iterator();
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+			int strDistance = StringUtils.getLevenshteinDistance(supplied, key);
+			if (strDistance < minDistance) {
+				closestMatch = key;
+				minDistance = strDistance;
+			}
+		}
+		
+		return closestMatch;
 	}
 
 	public void toolProcessCommand(String sakaiToolId, String command,

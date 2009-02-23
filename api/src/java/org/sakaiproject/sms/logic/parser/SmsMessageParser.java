@@ -72,8 +72,8 @@ public interface SmsMessageParser {
 	 * @param smsCommand
 	 *            the sms command
 	 */
-	// CHANGED TO JUST RETURN BOOLEAN FOR TESTING AT THE MOMENT
-	public boolean toolMatchCommand(String sakaiToolId, String smsCommand);
+	// CHANGED TO JUST RETURN STRING FOR TESTING AT THE MOMENT
+	public String toolMatchCommand(String sakaiToolId, String smsCommand);
 
 	
 	/**

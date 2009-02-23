@@ -30,17 +30,30 @@ public class CommandRegisterTest extends TestCase {
 	
 	public void testRegisterCommands() {
 		parser.toolRegisterCommands("toolid1", new String[] {"save", "copy", "delete"});
-		assertTrue(parser.toolMatchCommand("toolid1", "save"));
-		assertTrue(parser.toolMatchCommand("toolid1", "copy"));
-		assertTrue(parser.toolMatchCommand("toolid1", "delete"));
-		assertFalse(parser.toolMatchCommand("toolid1", "someting"));
+		assertEquals("SAVE", parser.toolMatchCommand("toolid1", "save"));
+		assertEquals("COPY", parser.toolMatchCommand("toolid1", "copy"));
+		assertEquals("DELETE", parser.toolMatchCommand("toolid1", "delete"));
+		assertFalse(parser.toolMatchCommand("toolid1", "someting").equals("SOMETHING"));
 	}
 	
 	public void testDuplicateReplace() {
 		parser.toolRegisterCommands("toolid1", new String[] {"save", "copy", "delete"});
 		parser.toolRegisterCommands("toolid1", new String[] {"something"});
-		assertFalse(parser.toolMatchCommand("toolid1", "save"));
-		assertTrue(parser.toolMatchCommand("toolid1", "something"));
+		assertFalse(parser.toolMatchCommand("toolid1", "save").equals("SAVE"));
+		assertFalse(parser.toolMatchCommand("toolid1", "copy").equals("COPY"));
+		assertFalse(parser.toolMatchCommand("toolid1", "delete").equals("DELETE"));		
+		assertTrue(parser.toolMatchCommand("toolid1", "something").equals("SOMETHING"));
 	}
+	
+	public void testMatchToolTypo() {
+		parser.toolRegisterCommands("toolid1", new String[] {"save", "copy", "delete"});
+		assertEquals("SAVE", parser.toolMatchCommand("toolid", "save"));
+	}
+	
+	public void testMatchCommandTypo() {
+		parser.toolRegisterCommands("toolid1", new String[] {"save", "copy", "delete"});
+		assertEquals("SAVE", parser.toolMatchCommand("toolid1", "savve"));
+	}
+	
 	
 }
