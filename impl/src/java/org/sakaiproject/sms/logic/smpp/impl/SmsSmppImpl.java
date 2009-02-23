@@ -380,7 +380,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	public void init() {
-		LOG.setLevel(Level.ALL);
 		LOG.info("SmsSmpp implementation is starting up");
 		loadPropertiesFile();
 		loadProperties();
