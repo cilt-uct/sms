@@ -352,13 +352,14 @@ public class SmsCoreImpl implements SmsCore {
 			}
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		} catch (Exception e) {
-			LOG.error(e.toString());
+			LOG.error(e.getStackTrace().toString());
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION);
+					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION, e
+							.getStackTrace().toString());
 
 		}
 
@@ -414,6 +415,19 @@ public class SmsCoreImpl implements SmsCore {
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
 			Integer taskMessageType) {
+		return sendEmailNotification(smsTask, taskMessageType, "");
+	}
+
+	/**
+	 * Send a email notification out.
+	 *
+	 * @param smsTask
+	 * @param taskMessageType
+	 * @param additionInformation
+	 * @return
+	 */
+	private boolean sendEmailNotification(SmsTask smsTask,
+			Integer taskMessageType, String additionInformation) {
 
 		String subject = null;
 		String body = null;
@@ -463,7 +477,7 @@ public class SmsCoreImpl implements SmsCore {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectException", smsTask.getId()
 							.toString());
-			body = smsTask.getFailReason();
+			body = additionInformation;
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
