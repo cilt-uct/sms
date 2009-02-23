@@ -15,7 +15,9 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.smpp;
+package org.sakaiproject.sms.logic.parser;
+
+import org.sakaiproject.sms.logic.parser.exception.ParseException;
 
 /**
  * This Class will handle all validation and parsing of MO(Mobile Originating)
@@ -32,10 +34,10 @@ package org.sakaiproject.sms.logic.smpp;
 public interface SmsMessageParser {
 
 	/**
-	 * Parses the message general. Try to figure out the sakai site and user.
+	 * Parses the text of the message. Try to figure out the sakai site and user.
 	 * Usually called from the Sakai Sms service itself.
 	 */
-	public void parseMessageGeneral();
+	public ParsedMessage parseMessage(String msgText) throws ParseException;
 
 	/**
 	 * Check for valid pin, sakai site code, mobile number etc. Usually called
@@ -52,7 +54,7 @@ public interface SmsMessageParser {
 	 * @param validCommands
 	 *            the valid commands for eg. POST READ HELP
 	 */
-	public void toolRegisterCommandList(String sakaiToolId,
+	public void toolRegisterCommands(String sakaiToolId,
 			String[] validCommands);
 
 	/**
@@ -70,8 +72,10 @@ public interface SmsMessageParser {
 	 * @param smsCommand
 	 *            the sms command
 	 */
-	public void toolMatchCommand(String sakaiToolId, String smsCommand);
+	// CHANGED TO JUST RETURN BOOLEAN FOR TESTING AT THE MOMENT
+	public boolean toolMatchCommand(String sakaiToolId, String smsCommand);
 
+	
 	/**
 	 * The specific tool must override this method and use its own logic to
 	 * process the command.
