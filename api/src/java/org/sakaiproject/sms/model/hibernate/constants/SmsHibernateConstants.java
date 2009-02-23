@@ -152,6 +152,9 @@ public class SmsHibernateConstants {
 	/** The Constant TASK_NOTIFICATION_FAILED, after all retry attempts. */
 	public static final int TASK_NOTIFICATION_FAILED = 7;
 
+	/** The Constant TASK_NOTIFICATION_EXCEPTION, default exception notification. */
+	public static final int TASK_NOTIFICATION_EXCEPTION = 8;
+
 	/** The Constant for smsAccount ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED. */
 	public static final int ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED = 8;
 

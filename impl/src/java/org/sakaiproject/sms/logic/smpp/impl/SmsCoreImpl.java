@@ -289,62 +289,77 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processTask(SmsTask smsTask) {
-		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSystemSmsConfig();
-		smsTask.setDateProcessed(new Date());
-		smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
+		try {
+			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
+					.getOrCreateSystemSmsConfig();
+			smsTask.setDateProcessed(new Date());
+			smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
 
-		if (smsTask.getDateToExpire().before(new Date())) {
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_EXPIRE);
-			smsTask.setStatusForMessages(
-					SmsConst_DeliveryStatus.STATUS_PENDING,
-					SmsConst_DeliveryStatus.STATUS_EXPIRE);
-			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
-			smsBilling.cancelPendingRequest(smsTask.getId());
-			smsTask.setFailReason(MessageCatalog
-					.getMessage("messages.taskExpired"));
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			return;
-		}
-
-		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
-			if (smsTask.getAttemptCount() <= 1) {
-				calculateActualGroupSize(smsTask);
+			if (smsTask.getDateToExpire().before(new Date())) {
+				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_EXPIRE);
+				smsTask.setStatusForMessages(
+						SmsConst_DeliveryStatus.STATUS_PENDING,
+						SmsConst_DeliveryStatus.STATUS_EXPIRE);
+				sendEmailNotification(smsTask,
+						SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+				smsBilling.cancelPendingRequest(smsTask.getId());
+				smsTask.setFailReason(MessageCatalog
+						.getMessage("messages.taskExpired"));
 				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			}
-			String submissionStatus = smsSmpp
-					.sendMessagesToGateway(smsTask
-							.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
-			smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-					smsTask.getId());
-			smsTask.setStatusCode(submissionStatus);
-
-			if (smsTask.getStatusCode().equals(
-					SmsConst_DeliveryStatus.STATUS_INCOMPLETE)
-					|| smsTask.getStatusCode().equals(
-							SmsConst_DeliveryStatus.STATUS_RETRY)) {
-				Calendar now = Calendar.getInstance();
-				now.add(Calendar.SECOND, +(systemConfig
-						.getSmsRetryScheduleInterval()));
-				smsTask.rescheduleDateToSend(new Date(now.getTimeInMillis()));
+				return;
 			}
 
-		} else {
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
+				if (smsTask.getAttemptCount() <= 1) {
+					calculateActualGroupSize(smsTask);
+					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
+							smsTask);
+				}
+				String submissionStatus = smsSmpp
+						.sendMessagesToGateway(smsTask
+								.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
+				smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
+						smsTask.getId());
+				smsTask.setStatusCode(submissionStatus);
+
+				if (smsTask.getStatusCode().equals(
+						SmsConst_DeliveryStatus.STATUS_INCOMPLETE)
+						|| smsTask.getStatusCode().equals(
+								SmsConst_DeliveryStatus.STATUS_RETRY)) {
+					Calendar now = Calendar.getInstance();
+					now.add(Calendar.SECOND, +(systemConfig
+							.getSmsRetryScheduleInterval()));
+					smsTask
+							.rescheduleDateToSend(new Date(now
+									.getTimeInMillis()));
+				}
+
+			} else {
+				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+				smsTask.setStatusForMessages(
+						SmsConst_DeliveryStatus.STATUS_PENDING,
+						SmsConst_DeliveryStatus.STATUS_FAIL);
+				sendEmailNotification(smsTask,
+						SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+				smsTask.setFailReason((MessageCatalog.getMessage(
+						"messages.taskRetryFailure", String
+								.valueOf(systemConfig.getSmsRetryMaxCount()))));
+				smsBilling.cancelPendingRequest(smsTask.getId());
+			}
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+		} catch (Exception e) {
+			LOG.error(e.toString());
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-			smsTask.setStatusForMessages(
-					SmsConst_DeliveryStatus.STATUS_PENDING,
-					SmsConst_DeliveryStatus.STATUS_FAIL);
+			smsTask.setFailReason(e.toString());
+			smsBilling.settleCreditDifference(smsTask);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
-			smsTask.setFailReason((MessageCatalog.getMessage(
-					"messages.taskRetryFailure", String.valueOf(systemConfig
-							.getSmsRetryMaxCount()))));
-			smsBilling.cancelPendingRequest(smsTask.getId());
+					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION);
+
 		}
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
 	}
 
 	public void processTimedOutDeliveryReports() {
@@ -442,14 +457,22 @@ public class SmsCoreImpl implements SmsCore {
 					creditsRequired, creditsAvailable);
 
 		} else if (taskMessageType
+				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION)) {
+			subject = MessageCatalog.getMessage(
+					"messages.notificationSubjectException", smsTask.getId()
+							.toString());
+			body = smsTask.getFailReason();
+
+		} else if (taskMessageType
 				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectOverdraftLimitExceeded",
 					smsTask.getId().toString());
 			body = MessageCatalog.getMessage(
 					"messages.notificationOverdraftLimitExceeded", String
-							.valueOf(account.getCredits()), String
-							.valueOf((-1)*(account.getOverdraftLimit()+account.getCredits())));
+							.valueOf(account.getCredits()), String.valueOf((-1)
+							* (account.getOverdraftLimit() + account
+									.getCredits())));
 
 		}
 
