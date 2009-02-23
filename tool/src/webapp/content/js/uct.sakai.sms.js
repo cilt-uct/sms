@@ -18,7 +18,7 @@
             // log('eref');
             //$.fn.SMS.get.report_table();
             //setTimeout(function() {
-             //   log($.fn.SMS.get.peopleByName().toString())
+            //   log($.fn.SMS.get.peopleByName().toString())
             //}, 2000);
             //while(var_getEveryoneInSite == null)
             //log(var_getEveryoneInSite);
@@ -114,7 +114,7 @@
             renderPeople();
         },
 
-        peopleByName: function(){
+        peopleByName: function() {
             return getPeople('Names');
         }
 
@@ -122,21 +122,20 @@
 
     };
     $.fn.SMS.set = {
-        setSelectedRecipientsListName: function(array){
+        setSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names.push(array);
-            log(array.toString());
             return true;
         },
-        sliceSelectedRecipientsListName: function(id){
-             $.each(selectedRecipientsList.participants, function(i, parent) {
-                            if (parent) {
-                                $.each(parent, function(n, item) {
-                                    if (item == id) {
-                                        selectedRecipientsList.participants.splice(parseInt(i), 1);
-                                    }
-                                });
-                            }
-                        });
+        sliceSelectedRecipientsListName: function(id) {
+            $.each(selectedRecipientsList.names, function(i, parent) {
+                if (parent) {
+                    $.each(parent, function(n, item) {
+                        if (item == id) {
+                            selectedRecipientsList.names.splice(parseInt(i), 1);
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -247,6 +246,9 @@
                 case "names":
                     return selectedRecipientsList.names.length;
                     break;
+                case "numbers":
+                    return selectedRecipientsList.numbers.length;
+                    break;
             }
         }
         //toString: function(){return selectedRecipientsList}
@@ -330,7 +332,7 @@
             for (n in map) {
                 var elem = '\
                    <div rel="' + list[i] + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '">\
-                   <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" '+list[i]+'Name="' + map[n][0] + '" '+list[i]+'Id="' + map[n][1] + '">' + map[n][0] + '\
+                   <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + list[i] + 'Name="' + map[n][0] + '" ' + list[i] + 'Id="' + map[n][1] + '">' + map[n][0] + '\
                    </label>\
                    </div></input>\
                    ';
@@ -423,29 +425,72 @@
         });
 
         //Clear selectedRecipientsList on facebox exit
-        $(document).bind('afterClose.facebox', function(){
-             if(selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = new Array();
-            if(selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
-            if(selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
-            if(selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
- });
+        $(document).bind('afterClose.facebox', function() {
+            if (selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = new Array();
+            if (selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
+            if (selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
+            if (selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
+        });
+
+        //Events for the Numbers textarea
+
+        $('#checkNumbers').bind('click', function() {
+            var that = $('#peopleListNumbersBox');
+            if (that.val()) {
+                var numbers = that.val().split("\n");
+                var nums_invalid = new Array();
+
+                $.each(numbers, function(i, item) {
+                    var num = item.split(' ').join('');
+                    if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
+                        selectedRecipientsList.numbers.push(new Array(item));
+                        //numbers.splice(item,1);
+                        //log("Valid " + item);
+                    } else {
+                        nums_invalid.push(item);
+                        //log("INvalid " + item);
+                    }
+
+                });
+                if (getSelectedRecipientsList.length('numbers') > 0) {
+                                //Log report on valid numbers
+                $('#peopleListNumbersLog')
+                        .slideDown()
+                        .addClass('messageError')
+                        .html('\
+                    You have '+getSelectedRecipientsList.length('numbers')+' valid numbers.\
+                    <br /> \
+                    \
+                    \
+                  ');
+                $('#checkNumbers').text("Check new/edited numbers again");
+                //Refresh {selectedRecipients} Number on TAB
+                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('numbers'));
+                    that.val(nums_invalid.toString().split(',').join('\n'));
+                    that.addClass('messageError');
+                }else
+                    $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
+            }
+            that.focus();
+            return false;
+        });
 
         /****Restore Selected Recipients List control items
          if(selectedRecipientsList.roles.length > 0){
-             $.each(selectedRecipientsList.roles, function(i, parent) {
-                            if (parent) {
-                                $.each(parent, function(n, item) {
-                                    var elem = 'label[rolesId='+item+']';
-                                    if($(elem).length > 0){
-                                        $(elem).parent().find('input')
-                                                .addClass('selectedItem')
-                                                .hide()
-                                                .attr('checked', 'checked');
-                                       // $(elem).parent().triggerHandler('click');
-                                    }
-                                });
-                            }
-                        });
+         $.each(selectedRecipientsList.roles, function(i, parent) {
+         if (parent) {
+         $.each(parent, function(n, item) {
+         var elem = 'label[rolesId='+item+']';
+         if($(elem).length > 0){
+         $(elem).parent().find('input')
+         .addClass('selectedItem')
+         .hide()
+         .attr('checked', 'checked');
+         // $(elem).parent().triggerHandler('click');
+         }
+         });
+         }
+         });
          }
          ******/
 

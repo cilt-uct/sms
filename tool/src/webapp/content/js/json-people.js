@@ -44,16 +44,16 @@
             }]*/
 
      participants: [
-	{ name: "Peter Pan", to: "peter@pan.de" },
-	{ name: "Molly", to: "molly@yahoo.com" },
-	{ name: "Forneria Marconi", to: "live@japan.jp" },
-	{ name: "Master <em>Sync</em>", to: "205bw@samsung.com" },
-	{ name: "Dr. <strong>Tech</strong> de Log", to: "g15@logitech.com" },
-	{ name: "Don Corleone", to: "don@vegas.com" },
-	{ name: "Mc Chick", to: "info@donalds.org" },
-	{ name: "Donnie Darko", to: "dd@timeshift.info" },
-	{ name: "Quake The Net", to: "webmaster@quakenet.org" },
-	{ name: "Dr. Write", to: "write@writable.com" }
+	{ name: "Peter Pan", to: "073 466 6575" },
+	{ name: "Molly", to: "34543 53    553 534 " },
+	{ name: "Forneria Marconi", to: "3453534 5 3434 534 " },
+	{ name: "Master ", to: "565447464 46" },
+	{ name: "Dr. de Log", to: "+33 356333 3 33" },
+	{ name: "Don Corleone", to: "6765 765 75765 5" },
+	{ name: "Mc Chick", to: "6575676 77 7567" },
+	{ name: "Donnie Darko", to: "5675 7565 577" },
+	{ name: "Quake The Net", to: "6767 77777777775 6" },
+	{ name: "Dr. Write", to: "5675 757 575567" }
         ]
 
     }]
