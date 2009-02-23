@@ -242,5 +242,53 @@ public interface SmsBilling {
 	 * @return
 	 */
 	public boolean debitLateMessage(SmsMessage smsMessage);
+	
+	/**
+	 * Retrieve code for reserving credits
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getReserveCreditsCode();
+	
+	/**
+	 * Retrieve code for settling difference
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getSettleDifferenceCode();
+	
+	/**
+	 * Retrieve code for cancel reserve
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getCancelReserveCode();
+	
+	/**
+	 * Retrieve code for cancel
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getCancelCode();
+	
+	/**
+	 * Retrieve code for credit account
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getCreditAccountCode();
+	
+	/**
+	 * Retrieve code for debit late message
+	 * (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getDebitLateMessageCode();
 
 }

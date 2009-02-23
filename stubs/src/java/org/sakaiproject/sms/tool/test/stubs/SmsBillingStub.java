@@ -111,4 +111,28 @@ public class SmsBillingStub implements SmsBilling {
 		return false;
 	}
 
+	public String getCancelCode() {
+		return "TCAN";
+	}
+
+	public String getCancelReserveCode() {
+		return "RCAN";
+	}
+
+	public String getCreditAccountCode() {
+		return  "CRED";
+	}
+
+	public String getDebitLateMessageCode() {
+		return  "LATE";
+	}
+
+	public String getReserveCreditsCode() {
+		return "RES";
+	}
+
+	public String getSettleDifferenceCode() {
+		return "RSET";
+	}
+
 }

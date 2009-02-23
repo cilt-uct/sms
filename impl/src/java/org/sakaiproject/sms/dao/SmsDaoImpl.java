@@ -39,12 +39,14 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
 		try {
 			super.save(obj);
+			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
 			transactionManager.rollback(transaction);
+		} catch (Exception e) {
+			LOG.error("Exception: " + e);
+			transactionManager.rollback(transaction);
 		}
-		
-		transactionManager.commit(transaction);
 	}
 
 	@Override
@@ -52,12 +54,14 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
 		try {
 			super.delete(obj);
+			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
 			transactionManager.rollback(transaction);
+		} catch (Exception e) {
+			LOG.error("Exception: " + e);
+			transactionManager.rollback(transaction);
 		}
-		transactionManager.commit(transaction);
-		
 	}
 
 	public List runQuery(String hql, QueryParameter... queryParameters) {
@@ -75,11 +79,15 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		try {
 			Query query = buildQuery(hql, queryParameters);
 			affected = query.executeUpdate();
+			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
 			transactionManager.rollback(transaction);
+		} catch (Exception e) {
+			LOG.error("Exception: " + e);
+			transactionManager.rollback(transaction);
 		}
-		transactionManager.commit(transaction);
+		
 		return affected;
 	}
 	

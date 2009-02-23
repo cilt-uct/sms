@@ -17,10 +17,16 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.impl;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -40,7 +46,12 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
  * @created 12-Dec-2008
  */
 public class SmsBillingImpl implements SmsBilling {
-
+	
+	// Transaction Type properties
+	private final Properties properties = new Properties();
+	
+	private static Logger LOG = Logger.getLogger(SmsBillingImpl.class);
+	
 	private HibernateLogicLocator hibernateLogicLocator;
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
@@ -52,6 +63,22 @@ public class SmsBillingImpl implements SmsBilling {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
+	public void init() {
+		try {
+			InputStream is = this.getClass().getResourceAsStream(
+					"/transaction_codes.properties");
+			if (is != null) {
+				properties.load(is);
+			} else {
+				properties.load((new FileInputStream("transaction_codes.properties")));
+			}
+		} catch (FileNotFoundException e) {
+			LOG.error(e);
+		} catch (IOException e) {
+			LOG.error(e);
+		}
+	}
+	
 	/**
 	 * Credits an account by the supplied amount of credits.
 	 *
@@ -75,6 +102,7 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
+		smsTransaction.setSakaiUserId(hibernateLogicLocator.getExternalLogic().getCurrentUserId());
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
@@ -475,6 +503,30 @@ public class SmsBillingImpl implements SmsBilling {
 				smsTransaction);
 
 		return true;
+	}
+
+	public String getCancelCode() {
+		return properties.getProperty("TRANS_CANCEL", "TCAN").substring(0,5);
+	}
+
+	public String getCancelReserveCode() {
+		return properties.getProperty("TRANS_CANCEL_RESERVE", "RCAN").substring(0,5);
+	}
+
+	public String getCreditAccountCode() {
+		return properties.getProperty("TRANS_CREDIT_ACCOUNT", "CRED").substring(0,5);
+	}
+
+	public String getDebitLateMessageCode() {
+		return properties.getProperty("TRANS_DEBIT_LATE_MESSAGE", "LATE").substring(0,5);
+	}
+
+	public String getReserveCreditsCode() {
+		return properties.getProperty("TRANS_RESERVE_CREDITS", "RES").substring(0,5);
+	}
+
+	public String getSettleDifferenceCode() {
+		return properties.getProperty("TRANS_SETTLE_DIFFERENCE", "RSET").substring(0,5);
 	}
 
 }

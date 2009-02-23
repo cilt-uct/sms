@@ -9,7 +9,6 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
@@ -18,12 +17,13 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  */
 public class SmsTransactionTest extends AbstractBaseTestCase {
 
-	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
+	private final static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 
 	/**
 	 * Instantiates a new sms transaction test.
 	 */
 	public SmsTransactionTest() {
+
 	}
 
 	/**
@@ -41,11 +41,10 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	 *
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
+	@Override
 	public void testOnetimeSetup() {
 		StandaloneSmsDaoImpl.createSchema();
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
-
-
 	}
 
 	/**
@@ -224,7 +223,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 			smsTransaction.setTransactionDate(new Date(System
 					.currentTimeMillis()));
 			smsTransaction
-					.setTransactionTypeCode(SmsConst_Billing.TRANS_RESERVE_CREDITS);
+					.setTransactionTypeCode(smsBilling.getReserveCreditsCode());
 			smsTransaction.setTransactionCredits(i);
 
 			smsTransaction.setSmsAccount(smsAccount);
@@ -239,7 +238,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 			bean.setNumber(smsAccount.getId().toString());
 			bean.setDateFrom(new Date());
 			bean.setDateTo(new Date());
-			bean.setTransactionType(SmsConst_Billing.TRANS_RESERVE_CREDITS);
+			bean.setTransactionType(smsBilling.getReserveCreditsCode());
 			bean.setSender("sakaiUserId");
 
 			bean.setCurrentPage(2);
@@ -428,7 +427,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsTransaction.setSakaiUserId("sakaiUserId");
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction
-				.setTransactionTypeCode(SmsConst_Billing.TRANS_RESERVE_CREDITS);
+				.setTransactionTypeCode(smsBilling.getReserveCreditsCode());
 		smsTransaction.setTransactionCredits(100);
 		smsTransaction.setSmsTaskId(123L);
 		smsTransaction.setSmsAccount(smsAccount);

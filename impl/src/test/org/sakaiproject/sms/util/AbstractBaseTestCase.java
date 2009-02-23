@@ -26,6 +26,7 @@ import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
+import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 
 // TODO: Auto-generated Javadoc
@@ -45,12 +46,15 @@ public abstract class AbstractBaseTestCase extends TestCase {
 
 	public static HibernateLogicLocator hibernateLogicLocator;
 	public static StandaloneSmsDaoImpl smsDao;
-
+	public static SmsBillingImpl smsBilling;
+	
 	// Tells HibernateUtil to use the test configuration files
 	static {
 		hibernateLogicLocator = new HibernateLogicLocator();
 		smsDao = new StandaloneSmsDaoImpl("hibernate-test.properties");
-
+		smsBilling = new SmsBillingImpl();
+		smsBilling.init();
+		
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsAccountLogicImpl.setSmsDao(smsDao);
@@ -78,6 +82,7 @@ public abstract class AbstractBaseTestCase extends TestCase {
 		SmsTransactionLogicImpl smsTransactionLogicImpl = new SmsTransactionLogicImpl();
 		smsTransactionLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsTransactionLogicImpl.setSmsDao(smsDao);
+		smsTransactionLogicImpl.setSmsBilling(smsBilling);
 
 		hibernateLogicLocator.setSmsTransactionLogic(smsTransactionLogicImpl);
 

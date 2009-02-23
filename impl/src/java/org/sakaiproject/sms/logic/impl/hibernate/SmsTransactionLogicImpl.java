@@ -35,10 +35,10 @@ import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_Billing;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
@@ -55,7 +55,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		SmsTransactionLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator;
-
+		
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
 	}
@@ -64,7 +64,13 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-
+	
+	private SmsBilling smsBilling;
+	
+	public void setSmsBilling(SmsBilling smsBilling) {
+		this.smsBilling = smsBilling;
+	}
+ 
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -252,7 +258,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		List<SmsTransaction> transactions = 
 			smsDao.runQuery(hql.toString(), 
 									new QueryParameter("taskId", taskId, Hibernate.LONG),
-									new QueryParameter("transactionTypeCode", SmsConst_Billing.TRANS_RESERVE_CREDITS,Hibernate.STRING));
+									new QueryParameter("transactionTypeCode", smsBilling.getReserveCreditsCode(),Hibernate.STRING));
 
 		if (transactions != null && transactions.size() > 0) {
 			return transactions.get(0);
@@ -270,7 +276,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 */
 	public void insertReserveTransaction(SmsTransaction smsTransaction) {
 		insertTransaction(smsTransaction,
-				SmsConst_Billing.TRANS_RESERVE_CREDITS);
+				smsBilling.getReserveCreditsCode());
 	}
 
 	/**
@@ -283,7 +289,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 */
 	public void insertSettleTransaction(SmsTransaction smsTransaction) {
 		insertTransaction(smsTransaction,
-				SmsConst_Billing.TRANS_SETTLE_DIFFERENCE);
+				smsBilling.getSettleDifferenceCode());
 	}
 
 	/**
@@ -296,7 +302,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 */
 	public void insertCancelPendingRequestTransaction(
 			SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction, SmsConst_Billing.TRANS_CANCEL_RESERVE);
+		insertTransaction(smsTransaction, smsBilling.getCancelReserveCode());
 	}
 
 	/**
@@ -309,7 +315,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 */
 	public void insertLateMessageTransaction(SmsTransaction smsTransaction) {
 		insertTransaction(smsTransaction,
-				SmsConst_Billing.TRANS_DEBIT_LATE_MESSAGE);
+				smsBilling.getDebitLateMessageCode());
 	}
 
 	/**
@@ -321,7 +327,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 *            the sms transaction
 	 */
 	public void insertCreditAccountTransaction(SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction, SmsConst_Billing.TRANS_CREDIT_ACCOUNT);
+		insertTransaction(smsTransaction, smsBilling.getCreditAccountCode());
 	}
 
 	/**
