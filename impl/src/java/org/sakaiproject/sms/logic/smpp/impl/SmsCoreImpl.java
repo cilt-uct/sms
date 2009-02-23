@@ -48,9 +48,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -97,7 +97,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -111,7 +111,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -317,6 +317,8 @@ public class SmsCoreImpl implements SmsCore {
 					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
 							smsTask);
 				}
+				// ========================== Do the actual sending to the
+				// gateway
 				String submissionStatus = smsSmpp
 						.sendMessagesToGateway(smsTask
 								.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
@@ -402,12 +404,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
