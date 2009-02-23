@@ -26,21 +26,23 @@ import java.util.Set;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- *
+ * 
  */
 public class ExternalLogicStub implements ExternalLogic {
 
+	private static Log log = LogFactory.getLog(ExternalLogicStub.class);
 	/**
 	 * The default sakai_userId to be used in development mode.
 	 */
@@ -117,7 +119,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	/**
 	 * So when running in jetty we generate a random number of users with random
 	 * mobile numbers. * @param smsTask
-	 *
+	 * 
 	 * @return
 	 */
 	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
@@ -149,12 +151,14 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	}
 
-	// for testing purposes when running jetty
+	// for testing purposes when running sms in jetty
 	private void sendEmailViaSmtpServer(String toAddress, String subject,
 			String body) {
 		String host = "127.0.0.1";
 		String from = "it3lmb@nwu.ac.za";
 
+		log.debug("Sending email to:" + toAddress + " subject:" + subject
+				+ " body:" + body);
 		// Get system properties
 		Properties properties = System.getProperties();
 
@@ -172,7 +176,7 @@ public class ExternalLogicStub implements ExternalLogic {
 					toAddress));
 			message.setSubject(subject);
 			message.setText(body);
-			Transport.send(message);
+			// Transport.send(message); disable email in jetty deployments
 		} catch (AddressException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
