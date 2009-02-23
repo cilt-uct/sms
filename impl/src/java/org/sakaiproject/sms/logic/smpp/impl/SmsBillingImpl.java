@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
@@ -506,27 +507,27 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	public String getCancelCode() {
-		return properties.getProperty("TRANS_CANCEL", "TCAN").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_CANCEL", "TCAN"), 5);
 	}
 
 	public String getCancelReserveCode() {
-		return properties.getProperty("TRANS_CANCEL_RESERVE", "RCAN").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_CANCEL_RESERVE", "RCAN"), 5);
 	}
 
 	public String getCreditAccountCode() {
-		return properties.getProperty("TRANS_CREDIT_ACCOUNT", "CRED").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_CREDIT_ACCOUNT", "CRED"), 5);
 	}
 
 	public String getDebitLateMessageCode() {
-		return properties.getProperty("TRANS_DEBIT_LATE_MESSAGE", "LATE").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_DEBIT_LATE_MESSAGE", "LATE"), 5);
 	}
 
 	public String getReserveCreditsCode() {
-		return properties.getProperty("TRANS_RESERVE_CREDITS", "RES").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_RESERVE_CREDITS", "RES"), 5);
 	}
 
 	public String getSettleDifferenceCode() {
-		return properties.getProperty("TRANS_SETTLE_DIFFERENCE", "RSET").substring(0,5);
+		return StringUtils.left(properties.getProperty("TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
 	}
 
 }

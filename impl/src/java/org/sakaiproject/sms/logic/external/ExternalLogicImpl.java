@@ -219,8 +219,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
 		if (obj instanceof AuthzGroup) {
-			AuthzGroup group = (AuthzGroup) entityBroker
-					.fetchEntity(entityReference);
+			AuthzGroup group = (AuthzGroup) obj;
 			members.addAll(group.getMembers());
 		}
 		log.info("Getting group members for : " + entityReference + " (size = "
