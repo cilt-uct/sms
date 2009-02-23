@@ -109,6 +109,11 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		// account exists
 		smsTask.setSmsAccountId(account.getId());
 		errors = smsTaskValidator.validateInsertTask(smsTask);
+
+		for (int i = 0; i < errors.size(); i++) {
+
+			System.out.println(errors.get(i));
+		}
 		assertTrue(errors.size() == 0);
 
 	}

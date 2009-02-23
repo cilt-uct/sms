@@ -111,6 +111,14 @@ public class SmsSiteConfigProducer implements ViewComponentProducer,
 				"sms.site.config.paging.size");
 		UIInput pagingSizeInput = UIInput.make(smsSiteConfigform,
 				"sms-config-paging-size", smsConfigOTP + ".pagingSize");
+
+		UIMessage.make(smsSiteConfigform, "overdraftLimit",
+				"sms.site.config.overdraftLimit");
+		UIInput overdraftLimitInput = UIInput.make(smsSiteConfigform,
+				"sms-config-overdraftLimit", smsConfigOTP + ".overdraftLimit");
+		overdraftLimitInput.decorators = new DecoratorList(new UITooltipDecorator(
+				UIMessage.make("sms.site.config.overdraftLimit-tooltip")));
+
 		pagingSizeInput.decorators = new DecoratorList(new UITooltipDecorator(
 				UIMessage.make("sms.site.config.paging.size-tooltip")));
 

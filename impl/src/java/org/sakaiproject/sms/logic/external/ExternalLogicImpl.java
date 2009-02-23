@@ -39,13 +39,17 @@ import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
+/**
+ * Implementation of {@link ExternalLogic} with Sakai-specific code commented
+ * out for the moment
+ *
+ */
 public class ExternalLogicImpl implements ExternalLogic {
 
 	private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
@@ -123,7 +127,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
 	 */
 	public String getCurrentSiteId() {
@@ -132,7 +136,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
 	 */
@@ -208,8 +212,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
 			String entityReference, boolean getMobileNumbers) {
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+		// TODO: here must must figure out if the reference is an Authz group,
+		// role, or list of users
 		Set members = new HashSet<Object>();
-		boolean addMessage;
 
 		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
@@ -218,34 +223,27 @@ public class ExternalLogicImpl implements ExternalLogic {
 					.fetchEntity(entityReference);
 			members.addAll(group.getMembers());
 		}
-		// TODO, resolve other references like roles
 		log.info("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
-			addMessage = true;
 			SmsMessage message = new SmsMessage();
 			if (oObject instanceof Member) {
 				message.setSakaiUserId(((Member) oObject).getUserId());
 			} else {
-				addMessage = false;
+				message.setSakaiUserId("*"); // for testing
 			}
 			if (getMobileNumbers) {
 				String mobileNumber = getSakaiMobileNumber(message
 						.getSakaiUserId());
 				if (mobileNumber == null) {
-					if (SmsHibernateConstants.SMS_DEV_MODE) {
-						mobileNumber = "9999999";
-					}
-				}
-				if (mobileNumber == null) {
-					addMessage = false;
+					mobileNumber = "9999999"; // for testing
+					// TODO, user must not be added to list of mobile number is
+					// empty
 				}
 				message.setMobileNumber(mobileNumber);
 			}
-			if (addMessage) {
-				message.setSmsTask(smsTask);
-				messages.add(message);
-			}
+			message.setSmsTask(smsTask);
+			messages.add(message);
 		}
 		return messages;
 	}
@@ -359,7 +357,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
 	 */
@@ -405,5 +403,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String from = "smstesting@sakai";
 		sendEmails(smsTask, from, new String[] { toAddress }, subject, body);
 		return true;
+	}
+
+	public String getSakaiEmailAddressForUserId(String userId) {
+		try {
+			return userDirectoryService.getUser(userId).getEmail();
+		} catch (UserNotDefinedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}return null;
+
 	}
 }

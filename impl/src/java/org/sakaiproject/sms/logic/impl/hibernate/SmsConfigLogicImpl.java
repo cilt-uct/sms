@@ -27,11 +27,10 @@ import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 
-
 /**
  * The data service will handle all sms config database transactions for the sms
  * tool in Sakai.
- * 
+ *
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
@@ -48,7 +47,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 
 	/**
 	 * Gets a SmsConfig entity for the given id
-	 * 
+	 *
 	 * @param Long
 	 *            sms configuration id
 	 * @return sms congiguration
@@ -59,7 +58,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 
 	/**
 	 * Gets all the sms configuration records
-	 * 
+	 *
 	 * @return List of SmsConfig objects
 	 */
 	public List<SmsConfig> getAllSmsConfig() {
@@ -69,10 +68,10 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 
 	/**
 	 * This method will persists the given object.
-	 * 
+	 *
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updates on the DB.
-	 * 
+	 *
 	 * @param sms
 	 *            confuguration to be persisted
 	 */
@@ -83,9 +82,9 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	/**
 	 * Gets the sms config by sakai site id. If no entry can be found for the
 	 * specified site, then a site config is created with default values.
-	 * 
+	 *
 	 * @param sakaiSiteId
-	 * 
+	 *
 	 * @return the sms config by sakai site id
 	 */
 	public synchronized SmsConfig getOrCreateSmsConfigBySakaiSiteId(
@@ -130,10 +129,13 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 					.setSchedulerInterval(SmsHibernateConstants.SCHEDULER_INTERVAL);
 
 			config.setCreditCost(SmsHibernateConstants.COST_OF_CREDIT);
-			config.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
+
+			config
+					.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
 		} else {
 			// Setting for each site
 			config.setSakaiToolId("DummyToolId");
+			config.setOverdraftLimit(SmsHibernateConstants.OVERDRAFT_LIMIT);
 			config
 					.setNotificationEmail(SmsHibernateConstants.NOTIFICATION_EMAIL);
 			config
@@ -152,10 +154,10 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 
 	/**
 	 * Gets the sms config by sakai tool id.
-	 * 
+	 *
 	 * @param id
 	 *            the id
-	 * 
+	 *
 	 * @return the sms config by sakai tool id
 	 */
 	public SmsConfig getSmsConfigBySakaiToolId(String id) {

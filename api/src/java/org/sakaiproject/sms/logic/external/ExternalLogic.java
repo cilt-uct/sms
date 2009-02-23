@@ -36,7 +36,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Check if this user has super admin access
-	 * 
+	 *
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @return true if the user has admin access, false otherwise
@@ -56,7 +56,7 @@ public interface ExternalLogic {
 	/**
 	 * Check if a user has a specified permission within a context, primarily a
 	 * convenience method and passthrough
-	 * 
+	 *
 	 * @param userId
 	 *            the internal user id (not username)
 	 * @param permission
@@ -71,17 +71,17 @@ public interface ExternalLogic {
 
 	/**
 	 * Retrieves mobile number for user
-	 * 
+	 *
 	 * @param userID
 	 *            the internal user id (not username)
-	 * 
+	 *
 	 * @return mobile number for user
 	 */
 	public String getSakaiMobileNumber(String userID);
 
 	/**
 	 * Send e-mail to array of e-mail addresses.
-	 * 
+	 *
 	 * @param from
 	 *            from address to be used
 	 * @param subject
@@ -92,7 +92,7 @@ public interface ExternalLogic {
 	 *            the sms task
 	 * @param emails
 	 *            the emails
-	 * 
+	 *
 	 * @return an array of email addresses that this message was sent to
 	 */
 	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
@@ -100,7 +100,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Return the actual list of message constructed for each user in the group
-	 * 
+	 *
 	 * @param smsTask
 	 * @param reference
 	 * @return
@@ -110,24 +110,36 @@ public interface ExternalLogic {
 
 	/**
 	 *return the friendly display name of a specific user
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
 	public String getSakaiUserDisplayName(String userId);
 
+
+
+	/**
+	 *returns the email address of the specific user
+	 *
+	 * @param userId
+	 * @return
+	 */
+	public String getSakaiEmailAddressForUserId(String userId);
+
+
+
 	/**
 	 * Get the display id for the current user.
-	 * 
+	 *
 	 * @return display id
-	 * 
+	 *
 	 */
 
 	public String getCurrentUserDisplayId();
 
 	/**
 	 * Check if id supplied is a valid site id
-	 * 
+	 *
 	 * @param siteId
 	 *            Unique id of a site
 	 * @return true if valid, false otherwise
@@ -136,7 +148,7 @@ public interface ExternalLogic {
 
 	/**
 	 * Check if id supplied is a valid user id
-	 * 
+	 *
 	 * @param userId
 	 *            Unique id of a user
 	 * @return true if valid, false otherwise
@@ -145,14 +157,14 @@ public interface ExternalLogic {
 
 	/**
 	 * Get the sakai contacts email.
-	 * 
+	 *
 	 * @return sakaiSiteContactEmail
 	 */
 	public String getSakaiSiteContactEmail();
 
 	/**
 	 * Send email.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param toAddress
@@ -161,7 +173,7 @@ public interface ExternalLogic {
 	 *            the subject
 	 * @param body
 	 *            the body
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,

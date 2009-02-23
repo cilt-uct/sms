@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -48,11 +49,12 @@ public class SmsAccountLocator implements BeanLocator {
 
 	private TargettedMessageList messages;
 
-	private ExternalLogic externalLogic;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
+
+	private HibernateLogicLocator hibernateLogicLocator = null;
 
 	public Object locateBean(String name) {
 		SmsAccount togo = delivered.get(name);
@@ -60,8 +62,11 @@ public class SmsAccountLocator implements BeanLocator {
 			if (name.startsWith(NEW_PREFIX)) {
 				togo = new SmsAccount();
 				togo.setCredits(SmsHibernateConstants.INITIAL_CREDITS);
-				togo
-						.setSakaiSiteId(externalLogic.getCurrentSiteId());
+				togo.setSakaiSiteId(hibernateLogicLocator.getExternalLogic()
+						.getCurrentSiteId());
+				togo.setOverdraftLimit(hibernateLogicLocator
+						.getSmsConfigLogic().getOrCreateSmsConfigBySakaiSiteId(
+								togo.getSakaiSiteId()).getOverdraftLimit());
 			} else {
 				togo = smsAccountLogic.getSmsAccount(Long.parseLong(name));
 			}

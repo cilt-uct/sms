@@ -23,7 +23,7 @@ package org.sakaiproject.sms.model.hibernate;
  * Some site specific configuration info for the sms tool. Configuration info
  * could also be set up for a specific tool in a specific site or sytem whide by
  * leaving some fields empty.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -70,6 +70,9 @@ public class SmsConfig extends BaseModel {
 	/** Sets the interval for the scheduler. */
 	private Integer schedulerInterval;
 
+	/** Some accounts will be allowed to have a overdraft limit. */
+	private Long overdraftLimit;
+
 	/**
 	 * The maximum amount of minutes to wait for a delivery report for each
 	 * message. If a message exceeds this time, it will be marked as failed.
@@ -111,7 +114,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the notification email.
-	 * 
+	 *
 	 * @return the notification email
 	 */
 	public String getNotificationEmail() {
@@ -120,7 +123,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sakai site id.
-	 * 
+	 *
 	 * @return the sakai site id
 	 */
 	public String getSakaiSiteId() {
@@ -129,7 +132,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sakai tool id.
-	 * 
+	 *
 	 * @return the sakai tool id
 	 */
 	public String getSakaiToolId() {
@@ -140,7 +143,7 @@ public class SmsConfig extends BaseModel {
 	 * Gets the sms enabled.
 	 * <p>
 	 * NB: Used only by Hibernate
-	 * 
+	 *
 	 * @return the sms enabled
 	 */
 	private String getSmsEnabled() {
@@ -149,7 +152,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the notification email.
-	 * 
+	 *
 	 * @param notificationEmail
 	 *            the new notification email
 	 */
@@ -159,7 +162,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sakai site id.
-	 * 
+	 *
 	 * @param sakaiSiteId
 	 *            the new sakai site id
 	 */
@@ -169,7 +172,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sakai tool id.
-	 * 
+	 *
 	 * @param sakaiToolId
 	 *            the new sakai tool id
 	 */
@@ -181,7 +184,7 @@ public class SmsConfig extends BaseModel {
 	 * Sets sms enabled/disabled.
 	 * <p>
 	 * NB: Used only by Hibernate
-	 * 
+	 *
 	 * @param smsEnabled
 	 *            the new sms enabled/disabled
 	 */
@@ -191,7 +194,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sms enabled.
-	 * 
+	 *
 	 * @param smsEnabled
 	 *            the new sms enabled
 	 */
@@ -201,7 +204,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sms enabled.
-	 * 
+	 *
 	 * @return the sms enabled
 	 */
 	public Boolean isSendSmsEnabled() {
@@ -213,7 +216,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sms retry max count.
-	 * 
+	 *
 	 * @return the sms retry max count
 	 */
 	public Integer getSmsRetryMaxCount() {
@@ -222,7 +225,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sms retry max count.
-	 * 
+	 *
 	 * @param smsRetryMaxCount
 	 *            the new sms retry max count
 	 */
@@ -232,7 +235,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sms retry schedule interval.
-	 * 
+	 *
 	 * @return the sms retry schedule interval
 	 */
 	public Integer getSmsRetryScheduleInterval() {
@@ -241,7 +244,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sms retry schedule interval.
-	 * 
+	 *
 	 * @param smsRetryScheduleInterval
 	 *            the new sms retry schedule interval
 	 */
@@ -251,7 +254,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the sms task max life time.
-	 * 
+	 *
 	 * @return the sms task max life time
 	 */
 	public Integer getSmsTaskMaxLifeTime() {
@@ -260,7 +263,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the sms task max life time.
-	 * 
+	 *
 	 * @param smsTaskMaxLifeTime
 	 *            the new sms task max life time
 	 */
@@ -270,7 +273,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the notification email billing.
-	 * 
+	 *
 	 * @return the notification email billing
 	 */
 	public String getNotificationEmailBilling() {
@@ -279,7 +282,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the notification email billing.
-	 * 
+	 *
 	 * @param notificationEmailBilling
 	 *            the new notification email billing
 	 */
@@ -289,7 +292,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the notification email sent.
-	 * 
+	 *
 	 * @return the notification email sent
 	 */
 	public String getNotificationEmailSent() {
@@ -298,7 +301,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the notification email sent.
-	 * 
+	 *
 	 * @param notificationEmailSent
 	 *            the new notification email sent
 	 */
@@ -308,7 +311,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the paging size.
-	 * 
+	 *
 	 * @return the paging size
 	 */
 	public Integer getPagingSize() {
@@ -317,7 +320,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the paging size.
-	 * 
+	 *
 	 * @param pagingSize
 	 *            the new paging size
 	 */
@@ -462,7 +465,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Gets the credit cost.
-	 * 
+	 *
 	 * @return the credit cost
 	 */
 	public Float getCreditCost() {
@@ -471,7 +474,7 @@ public class SmsConfig extends BaseModel {
 
 	/**
 	 * Sets the credit cost.
-	 * 
+	 *
 	 * @param creditCost
 	 *            the new credit cost
 	 */
@@ -479,4 +482,11 @@ public class SmsConfig extends BaseModel {
 		this.creditCost = creditCost;
 	}
 
+	public Long getOverdraftLimit() {
+		return overdraftLimit;
+	}
+
+	public void setOverdraftLimit(Long overdraftLimit) {
+		this.overdraftLimit = overdraftLimit;
+	}
 }

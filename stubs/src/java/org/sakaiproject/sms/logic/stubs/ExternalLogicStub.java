@@ -110,8 +110,8 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String getSakaiSiteContactEmail() {
+		return "louis@nwu.ac.za";
 
-		return "it3es@nwu.ac.za";
 	}
 
 	/**
@@ -186,5 +186,9 @@ public class ExternalLogicStub implements ExternalLogic {
 			String body) {
 		sendEmailViaSmtpServer(toAddress, subject, body);
 		return true;
+	}
+
+	public String getSakaiEmailAddressForUserId(String userId) {
+		return "it3es@nwu.ac.za";
 	}
 }

@@ -48,9 +48,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -97,7 +97,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -111,7 +111,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -308,22 +308,6 @@ public class SmsCoreImpl implements SmsCore {
 			return;
 		}
 
-		// we check one last time to make sure there are sufficient credits to
-		// send this messages, but we use the estimated size in this check. We
-		// do not abort of the actual size or higher than the estimate, rather
-		// use the account overdraft for that.
-		ArrayList<String> errors = new ArrayList<String>();
-		errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask));
-		if (errors.size() > 0) {
-			smsTask.setFailReason(MessageCatalog
-					.getMessage("messages.sms.errors.insufficient-credits"));
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			LOG.error(MessageCatalog
-					.getMessage("messages.sms.errors.insufficient-credits"));
-			return;
-		}
-
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
@@ -403,12 +387,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -439,7 +423,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		String creditsAvailable = credits + "";
 		String creditsRequired = smsTask.getCreditEstimate() + "";
-
+		toAddress = configSite.getNotificationEmail();
 		if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
@@ -448,7 +432,6 @@ public class SmsCoreImpl implements SmsCore {
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", creditsRequired,
 					creditsAvailable);
-			toAddress = configSite.getNotificationEmail();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_SENT)) {
@@ -457,16 +440,28 @@ public class SmsCoreImpl implements SmsCore {
 							.toString());
 			body = MessageCatalog.getMessage("messages.notificationBodySent",
 					creditsRequired, creditsAvailable);
-			toAddress = configSite.getNotificationEmailSent();
 
 		} else if (taskMessageType
+				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
+			subject = MessageCatalog.getMessage(
+					"messages.notificationSubjectOverdraftLimitExceeded",
+					smsTask.getId().toString());
+			body = MessageCatalog.getMessage(
+					"messages.notificationOverdraftLimitExceeded", String
+							.valueOf(account.getCredits()), String
+							.valueOf(account.getOverdraftLimit()
+									+ (-1*account.getCredits())));
+
+		}
+
+		else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
 			body = MessageCatalog
 					.getMessage("messages.notificationBodyExpired");
-			toAddress = configSite.getNotificationEmail();
+
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED)) {
 			subject = MessageCatalog.getMessage(
@@ -476,7 +471,7 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationBodyCompleted", String
 							.valueOf(smsTask.getMessagesProcessed()), String
 							.valueOf(smsTask.getMessagesDelivered()));
-			toAddress = configSite.getNotificationEmail();
+
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_ABORTED)) {
 			subject = MessageCatalog.getMessage(
@@ -485,7 +480,7 @@ public class SmsCoreImpl implements SmsCore {
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyAborted", smsTask
 							.getSenderUserName());
-			toAddress = configSite.getNotificationEmail();
+
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_NOTIFICATION_FAILED)) {
 			subject = MessageCatalog.getMessage(
@@ -493,7 +488,6 @@ public class SmsCoreImpl implements SmsCore {
 							.toString());
 			body = MessageCatalog.getMessage("messages.notificationBodyFailed",
 					String.valueOf(configSystem.getSmsRetryMaxCount()));
-			toAddress = configSite.getNotificationEmail();
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS)) {
@@ -504,8 +498,6 @@ public class SmsCoreImpl implements SmsCore {
 							.valueOf(account.getOverdraftLimit()), String
 							.valueOf(account.getOverdraftLimit()
 									+ account.getCredits()));
-			toAddress = account.getNotificationEmail();
-
 			if (toAddress == null || toAddress.length() == 0) {
 
 				toAddress = hibernateLogicLocator.getExternalLogic()
@@ -517,8 +509,10 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		boolean systemNotification = sendNotificationEmail(smsTask, toAddress,
 				subject, body);
-		boolean ownerNotification = sendNotificationEmail(smsTask, smsTask
-				.getSenderUserId(), subject, body);
+		boolean ownerNotification = sendNotificationEmail(smsTask,
+				hibernateLogicLocator.getExternalLogic()
+						.getSakaiEmailAddressForUserId(
+								smsTask.getSenderUserId()), subject, body);
 
 		return (systemNotification && ownerNotification);
 
@@ -550,8 +544,8 @@ public class SmsCoreImpl implements SmsCore {
 			checkOverdraft(smsTask);
 			sendEmailNotification(smsTask,
 					SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
-		}
 
+		}
 	}
 
 	private void checkOverdraft(SmsTask smsTask) {
@@ -559,7 +553,7 @@ public class SmsCoreImpl implements SmsCore {
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if ((account.getCredits()) < (-1 * account.getOverdraftLimit())) {
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS);
+					SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
 		}
 
 	}

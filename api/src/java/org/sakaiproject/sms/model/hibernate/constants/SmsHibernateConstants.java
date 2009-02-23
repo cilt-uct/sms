@@ -19,7 +19,7 @@ package org.sakaiproject.sms.model.hibernate.constants;
 
 /**
  * Constants class for the sms hibernate project
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 08-Dec-2008
@@ -104,7 +104,7 @@ public class SmsHibernateConstants {
 	/**
 	 * The default overdraft limit
 	 */
-	public static final Long OVERDRAFT_LIMIT = 10L;
+	public static final Long OVERDRAFT_LIMIT = 1000L;
 
 	/**
 	 * The default initial balance for an account
@@ -151,6 +151,9 @@ public class SmsHibernateConstants {
 
 	/** The Constant TASK_NOTIFICATION_FAILED, after all retry attempts. */
 	public static final int TASK_NOTIFICATION_FAILED = 7;
+
+	/** The Constant for smsAccount ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED. */
+	public static final int ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED = 8;
 
 	/** The smsc_id is used to uniquely identify the smsc. */
 	public static final String SMSC_ID = "1";
