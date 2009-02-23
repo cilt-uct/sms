@@ -17,6 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -277,7 +279,12 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processIncomingMessage(SmsMessage smsMessage) {
-		// TODO For phase 2
+		SmsTask smsTask = getPreliminaryTask("/site/"
+				+ hibernateLogicLocator.getExternalLogic().getCurrentSiteId(),
+				new Date(), "", hibernateLogicLocator.getExternalLogic()
+						.getCurrentSiteId(), "", hibernateLogicLocator
+						.getExternalLogic().getCurrentUserId());
+
 	}
 
 	public synchronized void processNextTask() {
@@ -352,17 +359,23 @@ public class SmsCoreImpl implements SmsCore {
 			}
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		} catch (Exception e) {
-			LOG.error(e.getStackTrace().toString());
+			LOG.error(getExceptionStackTraceAsString(e));
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION, e
-							.getStackTrace().toString());
+					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION,
+					getExceptionStackTraceAsString(e));
 
 		}
 
+	}
+
+	private String getExceptionStackTraceAsString(Exception exception) {
+		StringWriter sw = new StringWriter();
+		exception.printStackTrace(new PrintWriter(sw));
+		return sw.toString();
 	}
 
 	public void processTimedOutDeliveryReports() {
