@@ -61,13 +61,19 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		// Make required calls to our external logic
 	}
 
-	public void ToolRegisterCommandList(String sakaiToolId,
+	public void toolRegisterCommandList(String sakaiToolId,
 			String[] validCommands) {
 		// Add sakaiToolId and validCommands to a hash map, make sure a second
 		// call to this method does not insert duplicates.
 	}
 
-	public void ToolMatchCommand(String sakaiToolId, String smsCommand) {
+	public void toolMatchCommand(String sakaiToolId, String smsCommand) {
+	}
+
+	public void toolProcessCommand(String sakaiToolId, String command,
+			String commandSuffix) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public SmsTask getSmsTask() {

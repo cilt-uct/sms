@@ -52,7 +52,7 @@ public interface SmsMessageParser {
 	 * @param validCommands
 	 *            the valid commands for eg. POST READ HELP
 	 */
-	public void ToolRegisterCommandList(String sakaiToolId,
+	public void toolRegisterCommandList(String sakaiToolId,
 			String[] validCommands);
 
 	/**
@@ -70,6 +70,19 @@ public interface SmsMessageParser {
 	 * @param smsCommand
 	 *            the sms command
 	 */
-	public void ToolMatchCommand(String sakaiToolId, String smsCommand);
+	public void toolMatchCommand(String sakaiToolId, String smsCommand);
 
+	/**
+	 * The specific tool must override this method and use its own logic to
+	 * process the command.
+	 * 
+	 * @param sakaiToolId
+	 *            the sakai tool id
+	 * @param command
+	 *            the command
+	 * @param commandSuffix
+	 *            the command suffix, the optional string following the command
+	 */
+	public void toolProcessCommand(String sakaiToolId, String command,
+			String commandSuffix);
 }
