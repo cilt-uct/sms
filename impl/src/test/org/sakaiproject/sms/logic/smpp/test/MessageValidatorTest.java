@@ -21,10 +21,6 @@ public class MessageValidatorTest extends AbstractBaseTestCase {
 	/** The msg. */
 	private SmsMessage msg;
 
-	static {
-		StandaloneSmsDaoImpl.createSchema();
-	}
-
 	/** The errors. */
 	ArrayList<String> errors = new ArrayList<String>();
 

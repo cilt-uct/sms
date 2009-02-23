@@ -25,6 +25,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
@@ -61,7 +62,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static ExternalLogic externalLogic = null;
 	static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 	static SmsConfig SmsConfigImpl = new SmsConfig();
-
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
@@ -403,6 +403,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			statusUpdateTask.setSmsAccountId(smsAccount.getId());
 			// statusUpdateTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
 			smsCoreImpl.calculateEstimatedGroupSize(statusUpdateTask);
+			SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
+					.getSmsAccount(statusUpdateTask.getSmsAccountId());
+			smsAccount.setCredits(1000L);
+			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
+					smsAccount);
 			try {
 				smsCoreImpl.insertTask(statusUpdateTask);
 			} catch (SmsTaskValidationException e1) {
@@ -667,8 +672,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		}
 
 	}
-
-
 
 	public void testSmsSendDisabled() {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()

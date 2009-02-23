@@ -56,9 +56,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
-	static {
-		StandaloneSmsDaoImpl.createSchema();
-	}
+
 
 	/** The account. */
 	private SmsAccount account;
@@ -70,7 +68,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void setUp() {
-
+		StandaloneSmsDaoImpl.createSchema();
 		// Inject the required impl's into core impl for testing
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
 		SmsBillingImpl smsBilling = new SmsBillingImpl();

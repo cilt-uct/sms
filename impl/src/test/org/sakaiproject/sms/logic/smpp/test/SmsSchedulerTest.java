@@ -41,6 +41,17 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			.getLogger(SmsCoreTest.class);
 
 	static {
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	 */
+	@Override
+	public void testOnetimeSetup() {
+
 		smsConfigLogic = new SmsConfigLogicImpl();
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
@@ -63,17 +74,6 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
 		smsSchedulerImpl.init();
 		LOG.setLevel(Level.WARN);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-
-
 		SmsConfig config = smsConfigLogic
 				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
 						.getCurrentSiteId());

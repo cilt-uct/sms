@@ -39,13 +39,13 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	ArrayList<String> errors = new ArrayList<String>();
 
-	/**
-	 * setUp to run before every test. Create SmsMessage + TaskValidator +
-	 * errors
+	/*
+	 * (non-Javadoc)
 	 *
-	 * @see junit.framework.TestCase#setUp()
+	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	static {
+	@Override
+	public void testOnetimeSetup() {
 		StandaloneSmsDaoImpl.createSchema();
 		account = new SmsAccount();
 		account.setSakaiSiteId("sakaiSiteId");
@@ -80,17 +80,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		smsTask.setCreditEstimate(5);
 		smsTask.setDeliveryGroupId("delGrpId");
 		msg.setSmsTask(smsTask);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-
 	}
 
 	/**
@@ -114,7 +103,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 			System.out.println(errors.get(i));
 		}
-		assertTrue(errors.size() == 0);
+		assertTrue(errors.size() == 1);
 
 	}
 
