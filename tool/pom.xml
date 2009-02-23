@@ -247,18 +247,11 @@
 								<exclude>**/log4j.properties</exclude>
 							</excludes>
 						</resource>
-						<resource>
-							<directory>${basedir}/src/webapp/WEB-INF/</directory>
-							<targetPath>WEB-INF/classes</targetPath>
-							<includes>
-								<include>**/log4j.properties</include>
-							</includes>
-						</resource>
 					</webResources>
 					<systemProperties>
 						<systemProperty>
 							<name>log4j.configuration</name>
-							<value>${basedir}/src/webapp/WEB-INF/log4j.properties</value>
+							<value>${basedir}/src/webapp/WEB-INF/classes/log4j.properties</value>
 						</systemProperty>
 					</systemProperties>
 				</configuration>
@@ -270,7 +263,15 @@
 				<configuration>
 					<contextPath>${project.build.finalName}</contextPath>
 					<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
-
+					
+					<systemProperties>
+          			  	<systemProperty>
+          			    	<name>log4j.configuration</name>
+           			    	<value>file:./target/${project.build.finalName}/WEB-INF/classes/log4j.properties</value>
+        			    </systemProperty>
+            		</systemProperties>
+							
+					
 					<configuration>
 						<webApp>${basedir}/target/${project.build.finalName}</webApp>
 					</configuration>

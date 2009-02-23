@@ -29,13 +29,6 @@ public interface SmsSmpp {
 	public void disconnectGateWay();
 
 	/**
-	 * Enables or disables the debug Information
-	 * 
-	 * @param debug
-	 */
-	public void enableDebugInformation(boolean debug);
-
-	/**
 	 * Return the status of this connection to the gateway.
 	 */
 	public boolean getConnectionStatus();

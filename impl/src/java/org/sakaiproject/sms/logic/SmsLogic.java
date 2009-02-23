@@ -19,18 +19,12 @@ package org.sakaiproject.sms.logic;
 
 import java.util.Date;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 public class SmsLogic extends BaseLogic {
 
-	static {
-		log = Logger.getLogger(SmsLogic.class);
-		init();
-	}
-
 	/** The log. */
-	protected static Logger log;
+	protected static Logger log = Logger.getLogger(SmsLogic.class);
 
 	/**
 	 * Gets the current Date.
@@ -41,11 +35,4 @@ public class SmsLogic extends BaseLogic {
 		return new Date(System.currentTimeMillis());
 	}
 
-	/**
-	 * Inits the.
-	 */
-	public static void init() {
-		log.setLevel(Level.ALL);
-		log.debug("init");
-	}
 }

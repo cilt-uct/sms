@@ -353,19 +353,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	/**
-	 * Enables or disables the debug Information
-	 *
-	 * @param debug
-	 */
-	public void enableDebugInformation(boolean debug) {
-		if (debug) {
-			LOG.setLevel(Level.ALL);
-		} else {
-			LOG.setLevel(Level.OFF);
-		}
-	}
-
-	/**
 	 * Return the status of this connection to the gateway.
 	 */
 	public boolean getConnectionStatus() {

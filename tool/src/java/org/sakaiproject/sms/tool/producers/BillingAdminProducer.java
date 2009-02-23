@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.producers;
 import java.text.NumberFormat;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
@@ -40,7 +41,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	private SmsAccountLogic smsAccountLogic;
 	private NavBarRenderer navBarRenderer;
-
+	
+	private static Logger log = Logger.getLogger(BillingAdminProducer.class);
+	
 	/**
 	 * @see uk.org.ponder.rsf.view.ComponentProducer#fillComponents(uk.org.ponder.rsf.components.UIContainer,
 	 *      uk.org.ponder.rsf.viewstate.ViewParameters,
