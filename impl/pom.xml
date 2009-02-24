@@ -168,12 +168,6 @@
 			<version>2.0.8</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.code</groupId>
-			<artifactId>jsmpp</artifactId>
-			<version>${jsmpp.version}</version>
-		</dependency>
-
 		<!-- generic DAO -->
 		<dependency>
 			<groupId>org.sakaiproject</groupId>
