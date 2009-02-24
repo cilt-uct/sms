@@ -32,6 +32,8 @@
 			not-null="true" />
 		<property name="messageBody" type="string" column="MESSAGE_BODY"
 			not-null="true" length="200" />
+		<property name="messageReplyBody" type="string" column="MESSAGE_REPLY_BODY"
+			not-null="false" length="200" />
 		<property name="sakaiToolName" type="string" column="SAKAI_TOOL_NAME"
 			not-null="false" length="50" />
 		<property name="sakaiToolId" type="string" column="SAKAI_TOOL_ID"

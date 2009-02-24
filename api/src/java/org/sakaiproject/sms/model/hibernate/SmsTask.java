@@ -89,6 +89,9 @@ public class SmsTask extends BaseModel {
 	/** The message body. Already validated for character set, length etc. */
 	private String messageBody;
 
+	/** The message body. Already validated for character set, length etc. */
+	private String messageReplyBody;
+
 	/** Type of task, only SO (system originating) for now. */
 	private Integer messageTypeId;
 
@@ -983,4 +986,11 @@ public class SmsTask extends BaseModel {
 		this.messagesDelivered = messagesDelivered;
 	}
 
+	public String getMessageReplyBody() {
+		return messageReplyBody;
+	}
+
+	public void setMessageReplyBody(String messageReplyBody) {
+		this.messageReplyBody = messageReplyBody;
+	}
 }

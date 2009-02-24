@@ -9,11 +9,11 @@
     <import resource="sakai-hibernate.xml" />
 
 	<!-- add sakai application scope bean definitions here -->
-	
+
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsConfigLogic" class="org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl">
 		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
-	
+
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"	class="org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl">
 		<property name="hibernateLogicLocator"	ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
@@ -24,15 +24,15 @@
 		<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
 	</bean>
-	
-	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" 
+
+	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic"
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl">
 		<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 		<property name="smsDao" ref = "org.sakaiproject.sms.dao.SmsDao" />
-		
+
 	</bean>
-	
+
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl">
 		<property name="externalLogic"
@@ -66,6 +66,7 @@
 		init-method="init">
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsCore" class="org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl"
@@ -75,6 +76,10 @@
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
+		<property name="smsMessageParser" ref="org.sakaiproject.sms.logic.incoming.SmsMessageParser" />
+
+	</bean>
+		<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser" class="org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl">
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsScheduler" class="org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl"
@@ -93,6 +98,6 @@
 			<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
 
 	</bean>
-	
+
 	<import resource="external.xml" />
 </beans>

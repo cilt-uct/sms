@@ -24,11 +24,11 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
  * messages Tool specific parsing and validation will be done from the tool
  * itself. The first line of the Sms may contain a sakai user pin. A typical
  * command might be: QNA SITE1 POST The message to post
- * 
+ *
  * To use this class: (1) instantiate with a SmsTask, (2) call
  * parseMessageGeneral (3) call validateMessageGeneral
- * 
- * 
+ *
+ *
  * @author wilhelm@psybergate.co.za, louis@psybergate.co.za
  */
 public interface SmsMessageParser {
@@ -43,5 +43,6 @@ public interface SmsMessageParser {
 	 * Check for valid pin, sakai site code, mobile number etc. Usually called
 	 * from the Sakai Sms service itself.
 	 */
-	public void validateMessageGeneral();
+	public boolean validateMessageGeneral(String smsMessagebody,
+			String mobileNumber);
 }

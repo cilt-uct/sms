@@ -27,7 +27,7 @@ import org.sakaiproject.sms.util.DateUtil;
  * A single sms message. One or more messages is linked to a sms task. When a
  * task is future dated (e.q.: send message x to group x and date z). It's
  * messages will only be inserted on the date the task must execute.
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 26-Nov-2008
@@ -90,7 +90,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Instantiates a new sms message. For testing of SMPP service.
-	 * 
+	 *
 	 * @param mobileNumber
 	 *            the mobile number
 	 * @param messageBody
@@ -105,7 +105,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the date delivered.
-	 * 
+	 *
 	 * @return the date delivered
 	 */
 	public Date getDateDelivered() {
@@ -114,7 +114,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the debug info.
-	 * 
+	 *
 	 * @return the debug info
 	 */
 	public String getDebugInfo() {
@@ -123,7 +123,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the message body.
-	 * 
+	 *
 	 * @return the message body
 	 */
 	public String getMessageBody() {
@@ -131,8 +131,17 @@ public class SmsMessage extends BaseModel {
 	}
 
 	/**
+	 * Gets the message reply body.
+	 *
+	 * @return the message body
+	 */
+	public String getMessageReplyBody() {
+		return smsTask.getMessageReplyBody();
+	}
+
+	/**
 	 * Gets the mobile number.
-	 * 
+	 *
 	 * @return the mobile number
 	 */
 	public String getMobileNumber() {
@@ -141,7 +150,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the sakai user id.
-	 * 
+	 *
 	 * @return the sakai user id
 	 */
 	public String getSakaiUserId() {
@@ -150,7 +159,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the smsc Message id.
-	 * 
+	 *
 	 * @return the smsc Message id
 	 */
 	public String getSmscMessageId() {
@@ -159,7 +168,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the sms task.
-	 * 
+	 *
 	 * @return the sms task
 	 */
 	public SmsTask getSmsTask() {
@@ -168,7 +177,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the status code.
-	 * 
+	 *
 	 * @return the status code
 	 */
 	public String getStatusCode() {
@@ -177,7 +186,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Checks if submit to gateway was successful.
-	 * 
+	 *
 	 * @return true, if is submit result
 	 */
 	public boolean isSubmitResult() {
@@ -186,7 +195,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the date delivered.
-	 * 
+	 *
 	 * @param dateDelivered
 	 *            the new date delivered
 	 */
@@ -196,7 +205,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the debug info.
-	 * 
+	 *
 	 * @param debugInfo
 	 *            the new debug info
 	 */
@@ -210,7 +219,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the message body.
-	 * 
+	 *
 	 * @return the message body
 	 */
 	public void setMessageBody(String messageBody) {
@@ -218,8 +227,17 @@ public class SmsMessage extends BaseModel {
 	}
 
 	/**
+	 * Sets the message body.
+	 *
+	 * @return the message reply body
+	 */
+	public void setMessageReplyBody(String messageReplyBody) {
+		smsTask.setMessageReplyBody(messageReplyBody);
+	}
+
+	/**
 	 * Sets the mobile number.
-	 * 
+	 *
 	 * @param mobileNumber
 	 *            the new mobile number
 	 */
@@ -229,7 +247,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the sakai user id.
-	 * 
+	 *
 	 * @param sakaiUserId
 	 *            the new sakai user id
 	 */
@@ -239,7 +257,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the smsc id.
-	 * 
+	 *
 	 * @param smscMessageId
 	 *            the new smsc Message id
 	 */
@@ -249,7 +267,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the sms task.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the new sms task
 	 */
@@ -259,7 +277,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the status code.
-	 * 
+	 *
 	 * @param statusCode
 	 *            the new status code
 	 */
@@ -269,7 +287,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the submit result.
-	 * 
+	 *
 	 * @param submitResult
 	 *            the new submit result
 	 */
@@ -294,7 +312,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Gets the smsc id.
-	 * 
+	 *
 	 * @return the smsc id
 	 */
 	public String getSmscId() {
@@ -303,7 +321,7 @@ public class SmsMessage extends BaseModel {
 
 	/**
 	 * Sets the smsc id.
-	 * 
+	 *
 	 * @param smscId
 	 *            the new smsc id
 	 */

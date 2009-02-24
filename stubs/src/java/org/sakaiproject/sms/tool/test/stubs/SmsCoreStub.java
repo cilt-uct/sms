@@ -65,7 +65,7 @@ public class SmsCoreStub implements SmsCore {
 		return arg0;
 	}
 
-	public void processIncomingMessage(SmsMessage arg0) {
+	public void processIncomingMessage(String arg0,String arg1) {
 		// TODO Auto-generated method stub
 
 	}

@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,9 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
+import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
+import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -57,6 +61,16 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
+
+	private SmsMessageParser smsMessageParser;
+
+	public SmsMessageParser getSmsMessageParser() {
+		return smsMessageParser;
+	}
+
+	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
+		this.smsMessageParser = smsMessageParser;
+	}
 
 	private SmsTaskValidator smsTaskValidator;
 
@@ -209,6 +223,18 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
+	public SmsTask getPreliminaryMOTask(String mobilenumber,
+			String SakaiUserId, Date dateToSend, String sakaiSiteID,
+			String sakaiToolId, String sakaiSenderID) {
+		Set<String> number = new HashSet<String>();
+		number.add(mobilenumber);
+		SmsTask smsTask = getPreliminaryTask(dateToSend, "",sakaiSiteID,  sakaiToolId,  sakaiSenderID,	number) ;
+		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
+		smsTask.setGroupSizeEstimate(1);
+		smsTask.setGroupSizeActual(1);
+		return smsTask;
+	}
+
 	public SmsBilling getSmsBilling() {
 		return smsBilling;
 	}
@@ -278,12 +304,37 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
-	public void processIncomingMessage(SmsMessage smsMessage) {
-		SmsTask smsTask = getPreliminaryTask("/site/"
-				+ hibernateLogicLocator.getExternalLogic().getCurrentSiteId(),
-				new Date(), "", hibernateLogicLocator.getExternalLogic()
-						.getCurrentSiteId(), "", hibernateLogicLocator
-						.getExternalLogic().getCurrentUserId());
+	public void processIncomingMessage(String smsMessagebody,
+			String mobileNumber) {
+
+		String smsMessageReplybody="DUMMMY VALUE";
+		if( !smsMessageParser.validateMessageGeneral(smsMessagebody,mobileNumber)){
+			// TODO added a propper validation reason.
+			smsMessageReplybody="Message invalid ";
+		}
+
+		ParsedMessage parsedMessage = null;
+		try {
+			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
+		} catch (ParseException e) {
+			// TODO added a propper validation reason.
+			smsMessageReplybody="Message invalid ";
+		}
+
+		SmsMessage smsMessage = new SmsMessage(mobileNumber, smsMessageReplybody);
+		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
+				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
+				parsedMessage.getTool(), "*");
+
+		smsMessage.setSmsTask(smsTask);
+		smsMessage.setSakaiUserId(parsedMessage.getUserID());
+		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
+		smsMessage.setMessageReplyBody(smsMessageReplybody);// TODO do a real call te get the smsMessageReplybody
+		smsMessage.setMessageBody(smsMessagebody);
+		smsMessages.add(smsMessage);
+		smsTask.setSmsMessagesOnTask(smsMessages);
+
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 	}
 
@@ -319,7 +370,8 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
-				if (smsTask.getAttemptCount() <= 1) {
+				if ((!smsTask.getMessageTypeId().equals(SmsHibernateConstants.MESSAGE_TYPE_INCOMING)
+						&& smsTask.getAttemptCount() <= 1)) {
 					calculateActualGroupSize(smsTask);
 					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
 							smsTask);

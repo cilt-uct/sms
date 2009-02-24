@@ -25,7 +25,7 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 public class SmsMessageParserImpl implements SmsMessageParser {
 
 	private static final String DELIMITERS = " \t\r\n\f";
-	
+
 	/**
 	 * Parses the message general. Try to figure out the sakai site and user.
 	 */
@@ -33,36 +33,36 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
-		
+
 		String[] params = StringUtils.split(msgText, DELIMITERS, 4);
-		
+
 		// Must at lease contain tool + site + command
 		if (params.length < 3) {
-			throw new ParseException("Invalid number of tokens: " + params.length);
+			throw new ParseException("Invalid number of tokens: "
+					+ params.length);
 		}
-		
-		if (params.length == 3) {
-			return new ParsedMessage(params[0], params[1], params[2]);
-		} else {
+
+		if (params.length == 4) {
 			return new ParsedMessage(params[0], params[1], params[2], params[3]);
+		} else {
+			return new ParsedMessage(params[0], params[1], params[2],
+					params[3], params[4]);
 		}
-		
+
 	}
 
 	/**
 	 * Check for valid pin, sakai site code, mobile number etc.
 	 */
-	public void validateMessageGeneral() {
-		// Make required calls to our external logic
+	public boolean validateMessageGeneral(String smsMessagebody,
+			String mobileNumber) {
+		return true;
 	}
-
-
 
 	public void toolProcessCommand(String sakaiToolId, String command,
 			String commandSuffix) {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+
 }

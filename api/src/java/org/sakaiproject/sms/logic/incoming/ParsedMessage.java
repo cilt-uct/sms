@@ -18,24 +18,32 @@
 package org.sakaiproject.sms.logic.incoming;
 
 public class ParsedMessage {
-	
+
 	private final String tool;
 	private final String site;
 	private final String command;
 	private final String body;
-	
-	public ParsedMessage(String tool, String site, String command) {
+	private final String userID;
+
+	public ParsedMessage(String tool, String site, String command, String userID) {
 		this.tool = tool;
 		this.site = site;
 		this.command = command;
 		this.body = null;
+		this.userID = userID;
 	}
-	
-	public ParsedMessage(String tool, String site, String command, String body) {
+
+	public ParsedMessage(String tool, String site, String command, String body,
+			String userID) {
 		this.tool = tool;
 		this.site = site;
 		this.command = command;
 		this.body = body;
+		this.userID = userID;
+	}
+
+	public String getUserID() {
+		return userID;
 	}
 
 	public String getTool() {
@@ -53,10 +61,9 @@ public class ParsedMessage {
 	public String getBody() {
 		return body;
 	}
-	
+
 	public boolean hasBody() {
 		return (body != null);
 	}
-	
-	
+
 }

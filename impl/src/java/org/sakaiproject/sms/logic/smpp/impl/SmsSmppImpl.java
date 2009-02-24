@@ -62,6 +62,7 @@ import org.jsmpp.util.AbsoluteTimeFormatter;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
 import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -107,15 +108,20 @@ public class SmsSmppImpl implements SmsSmpp {
 		return hibernateLogicLocator;
 	}
 
+	public SmsCore getSmsCore() {
+		return smsCore;
+	}
+
+	public void setSmsCore(SmsCore smsCore) {
+		this.smsCore = smsCore;
+	}
+
+	private SmsCore smsCore = null;
+
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-
-
-
-
-
 
 	// provides access to the session for the units.
 	public SMPPSession getSession() {
@@ -238,8 +244,8 @@ public class SmsSmppImpl implements SmsSmpp {
 								smsMessage
 										.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 								hibernateLogicLocator.getSmsTaskLogic()
-								.incrementMessagesDelivered(
-										smsMessage.getSmsTask());
+										.incrementMessagesDelivered(
+												smsMessage.getSmsTask());
 							}
 						}
 						hibernateLogicLocator.getSmsTaskLogic()
@@ -259,9 +265,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 
 			} else {
-				// this message is regular short message
-				LOG.info("Receiving message : "
-						+ new String(deliverSm.getShortMessage()));
+				LOG.info("Receiving MO message");
+				smsCore.processIncomingMessage(new String(deliverSm
+						.getShortMessage()), deliverSm.getSourceAddr());
 
 			}
 		}
@@ -582,6 +588,11 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			return message;
 		}
+		String messageText = message.getSmsTask().getMessageBody();
+		if (message.getSmsTask().getMessageTypeId().equals(
+				SmsHibernateConstants.MESSAGE_TYPE_INCOMING)) {
+			messageText = message.getMessageReplyBody();
+		}
 
 		// Continue to send message to gateway.
 		try {
@@ -600,7 +611,7 @@ public class SmsSmppImpl implements SmsSmpp {
 							replaceIfPresentFlag, new GeneralDataCoding(false,
 									true, MessageClass.CLASS1,
 									Alphabet.ALPHA_DEFAULT), smDefaultMsgId,
-							message.getMessageBody().getBytes());
+							messageText.getBytes());
 			message.setSmscMessageId(messageId);
 
 			message.setSubmitResult(true);
@@ -608,7 +619,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 			message
 					.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
-
 
 			LOG.info("Message submitted, message_id is " + messageId);
 		} catch (PDUException e) {

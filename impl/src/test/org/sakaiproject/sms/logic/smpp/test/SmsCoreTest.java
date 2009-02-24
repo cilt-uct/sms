@@ -366,7 +366,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsSmppImpl.connectToGateway();
 		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getNewTestSmsMessageInstance("Mobile number", "Message body");
-		smsCoreImpl.processIncomingMessage(smsMessage);
+		smsCoreImpl.processIncomingMessage(smsMessage.getMessageBody(),smsMessage.getMobileNumber());
 	}
 
 	/**
