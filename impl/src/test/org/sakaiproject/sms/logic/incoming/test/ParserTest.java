@@ -15,14 +15,14 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.parser.test;
+package org.sakaiproject.sms.logic.incoming.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.logic.parser.ParsedMessage;
-import org.sakaiproject.sms.logic.parser.SmsMessageParser;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
+import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
+import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
-import org.sakaiproject.sms.logic.parser.impl.SmsMessageParserImpl;
 
 /**
  * Unit test for incoming message parsing

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.parser;
+package org.sakaiproject.sms.logic.incoming;
 
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
 
@@ -44,49 +44,4 @@ public interface SmsMessageParser {
 	 * from the Sakai Sms service itself.
 	 */
 	public void validateMessageGeneral();
-
-	/**
-	 * Each sms enabled sakai tool must send over a list of valid commands that
-	 * a user may use to talk to it. Tools must call this only once.
-	 * 
-	 * @param sakaiToolId
-	 *            the sakai tool id the makes the request
-	 * @param validCommands
-	 *            the valid commands for eg. POST READ HELP
-	 */
-	public void toolRegisterCommands(String sakaiToolId,
-			String[] validCommands);
-
-	/**
-	 * 
-	 * 
-	 * Try to find a tool command that closest match the command as entered my
-	 * the sender. Go through the hash map of commands for the specific sakai
-	 * tool and find the best match using Levenshtein distance. See
-	 * http://en.wikipedia.org/wiki/Levenshtein_distance. User might want to
-	 * plug in another algorithm like soundex. Of no single command is closest
-	 * then we must send back a list of possible command to the user.
-	 * 
-	 * @param sakaiToolId
-	 *            the sakai tool id
-	 * @param smsCommand
-	 *            the sms command
-	 */
-	// CHANGED TO JUST RETURN STRING FOR TESTING AT THE MOMENT
-	public String toolMatchCommand(String sakaiToolId, String smsCommand);
-
-	
-	/**
-	 * The specific tool must override this method and use its own logic to
-	 * process the command.
-	 * 
-	 * @param sakaiToolId
-	 *            the sakai tool id
-	 * @param command
-	 *            the command
-	 * @param commandSuffix
-	 *            the command suffix, the optional string following the command
-	 */
-	public void toolProcessCommand(String sakaiToolId, String command,
-			String commandSuffix);
 }
