@@ -30,7 +30,8 @@ jQuery.fn.autoCompletefb = function(options)
             selectFirst:    false,
             width:  300,
             formatItem: function(row, i, max, term) {
-                return '<b>' + row[0] + '</b><br><span style="font-size: 80%;">' + row[1] + '</span>';
+                //return '<b>' + row[0] + '</b><br><span style="font-size: 80%;">' + row[1] + '</span>';
+                return '<b>' + row[0] + '</b>';
             }
         },
         foundClass : ".acfb-data",
@@ -59,10 +60,10 @@ jQuery.fn.autoCompletefb = function(options)
             return tmp.acfb;
         },
         removeFind : function(o) {
-            var tmpArray = new Array($(o).parent().attr('personName'), $(o).parent().attr('personId'));
+            var tmpArray = new Array( $(o).parent().attr('personId'),$(o).parent().attr('personName'));
             $(o).unbind('click').parent().remove();
             $(settings.inputClass, tmp).focus();
-            $.fn.SMS.set.sliceSelectedRecipientsListName(tmpArray[1]);
+            $.fn.SMS.set.sliceSelectedRecipientsListName(tmpArray[0]);
             if ($('#peopleListNamesSuggest > li').length > 0) {
                 $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
             }
