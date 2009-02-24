@@ -36,6 +36,7 @@ import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entitybroker.EntityBroker;
+import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -208,20 +209,46 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 	}
-
-	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
-			String entityReference, boolean getMobileNumbers) {
-		Set<SmsMessage> messages = new HashSet<SmsMessage>();
-		// TODO: here must must figure out if the reference is an Authz group,
-		// role, or list of users
+	
+	@SuppressWarnings("unchecked")	
+	private Set<Object> getMembersForEntityRef(String entityReference) {
 		Set members = new HashSet<Object>();
-
-		setupSession(smsTask.getSenderUserId());
 		Object obj = entityBroker.fetchEntity(entityReference);
-		if (obj instanceof AuthzGroup) {
+		
+		// if in the format /site/123/role/something
+		if ("site".equals(EntityReference.getPrefix(entityReference)) && 
+		    EntityReference.getIdFromRefByKey(entityReference, "role") != null){
+			
+			String role = EntityReference.getIdFromRefByKey(entityReference, "role");
+			String siteRef = "/" + EntityReference.getPrefix(entityReference) + 
+							 "/" + EntityReference.getIdFromRefByKey(entityReference, "site");
+			
+			// Fetch the site
+			AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
+			Set<Member> allMembers = group.getMembers();
+			
+			// Only add if it has corresponding role
+			for (Member member : allMembers) {
+				if (role.equals(member.getRole().getId())) {
+					members.add(member);
+				}
+			}
+			
+		} else if (obj instanceof AuthzGroup) { // Any other authz group
 			AuthzGroup group = (AuthzGroup) obj;
 			members.addAll(group.getMembers());
 		}
+		return members;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
+			String entityReference, boolean getMobileNumbers) {
+		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+
+		setupSession(smsTask.getSenderUserId());
+		Set members = getMembersForEntityRef(entityReference);
+		
 		log.info("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
