@@ -30,10 +30,10 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 public class SmsMessageParserImpl implements SmsMessageParser {
 
 	private static final String DELIMITERS = " \t\r\n\f";
-	
+
 	// Collection for keeping tool ids with their commands
-	private final HashMap<String,HashSet<String>> toolCommandsMapping = new HashMap<String,HashSet<String>>();
-	
+	private final HashMap<String, HashSet<String>> toolCommandsMapping = new HashMap<String, HashSet<String>>();
+
 	/**
 	 * Parses the message general. Try to figure out the sakai site and user.
 	 */
@@ -41,20 +41,22 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
-		
+
 		String[] params = StringUtils.split(msgText, DELIMITERS, 4);
-		
+
 		// Must at lease contain tool + site + command
 		if (params.length < 3) {
-			throw new ParseException("Invalid number of tokens: " + params.length);
+			throw new ParseException("Invalid number of tokens: "
+					+ params.length);
 		}
-		
+
 		if (params.length == 3) {
-			return new ParsedMessage(params[0], params[1], params[2]);
-		} else {
 			return new ParsedMessage(params[0], params[1], params[2], params[3]);
+		} else {
+			return new ParsedMessage(params[0], params[1], params[2],
+					params[3], params[4]);
 		}
-		
+
 	}
 
 	/**
@@ -64,12 +66,11 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		// Make required calls to our external logic
 	}
 
-	public void toolRegisterCommands(String sakaiToolId,
-			String[] validCommands) {
+	public void toolRegisterCommands(String sakaiToolId, String[] validCommands) {
 		// call to this method does not insert duplicates.
-		
+
 		String toolKey = sakaiToolId.toUpperCase();
-		
+
 		if (!toolCommandsMapping.containsKey(toolKey)) {
 			HashSet<String> commands = new HashSet<String>();
 			for (String command : validCommands) {
@@ -93,24 +94,25 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		}
 		String toolKey = sakaiToolId.toUpperCase();
 		String smsCommandKey = smsCommand.toUpperCase();
-		
+
 		if (!toolCommandsMapping.containsKey(toolKey)) {
 			toolKey = getClosestMatch(toolKey, toolCommandsMapping.keySet());
-		}	
-		
-		if (!toolCommandsMapping.get(toolKey).contains(smsCommandKey)) {
-			smsCommandKey = getClosestMatch(smsCommandKey, toolCommandsMapping.get(toolKey));
 		}
-				
-		//toolCommandsMapping.get(sakaiToolId.toUpperCase()).contains(smsCommand.toUpperCase())
-		return smsCommandKey;	
+
+		if (!toolCommandsMapping.get(toolKey).contains(smsCommandKey)) {
+			smsCommandKey = getClosestMatch(smsCommandKey, toolCommandsMapping
+					.get(toolKey));
+		}
+
+		// toolCommandsMapping.get(sakaiToolId.toUpperCase()).contains(smsCommand.toUpperCase())
+		return smsCommandKey;
 	}
 
 	// Use Levenshtein distance to find closest match
 	private String getClosestMatch(String supplied, Set<String> keySet) {
 		int minDistance = Integer.MAX_VALUE;
 		String closestMatch = supplied;
-		
+
 		Iterator<String> iterator = keySet.iterator();
 		while (iterator.hasNext()) {
 			String key = iterator.next();
@@ -120,7 +122,7 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 				minDistance = strDistance;
 			}
 		}
-		
+
 		return closestMatch;
 	}
 
@@ -129,6 +131,5 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+
 }
