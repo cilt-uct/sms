@@ -85,7 +85,7 @@
 			<generator class="native" />
 		</id>
 		<property name="smscMessageId" type="string" column="SMSC_MESSAGE_ID"
-			not-null="false" length="20" unique-key="true" />
+			not-null="false" length="100" unique-key="true" />
 		<property name="smscId" type="string" column="SMSC_ID"
 			not-null="false" length="20" unique-key="true" />
 		<property name="mobileNumber" type="string" column="MOBILE_NUMBER"
