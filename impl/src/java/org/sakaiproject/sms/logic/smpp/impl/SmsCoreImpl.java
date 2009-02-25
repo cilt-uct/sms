@@ -232,6 +232,7 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
 		smsTask.setGroupSizeEstimate(1);
 		smsTask.setGroupSizeActual(1);
+		smsTask.setCreditEstimate(1);
 		return smsTask;
 	}
 
