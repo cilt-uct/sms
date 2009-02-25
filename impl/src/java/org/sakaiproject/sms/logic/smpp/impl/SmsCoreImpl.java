@@ -54,9 +54,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -113,7 +113,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -228,7 +228,8 @@ public class SmsCoreImpl implements SmsCore {
 			String sakaiToolId, String sakaiSenderID) {
 		Set<String> number = new HashSet<String>();
 		number.add(mobilenumber);
-		SmsTask smsTask = getPreliminaryTask(dateToSend, "",sakaiSiteID,  sakaiToolId,  sakaiSenderID,	number) ;
+		SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
+				sakaiToolId, sakaiSenderID, number);
 		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
 		smsTask.setGroupSizeEstimate(1);
 		smsTask.setGroupSizeActual(1);
@@ -308,21 +309,24 @@ public class SmsCoreImpl implements SmsCore {
 	public void processIncomingMessage(String smsMessagebody,
 			String mobileNumber) {
 
-		String smsMessageReplybody="DUMMMY VALUE";
-		if( !smsMessageParser.validateMessageGeneral(smsMessagebody,mobileNumber)){
+		String smsMessageReplyBody = "DUMMMY VALUE";
+		if (!smsMessageParser.validateMessageGeneral(smsMessagebody,
+				mobileNumber)) {
 			// TODO added a propper validation reason.
-			smsMessageReplybody="Message invalid ";
+			smsMessageReplyBody = "Message invalid ";
 		}
 
 		ParsedMessage parsedMessage = null;
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
 		} catch (ParseException e) {
-			// TODO added a propper validation reason.
-			smsMessageReplybody="Message invalid ";
+			// TODO add a proper validation reason.
+			smsMessageReplyBody = "Message invalid ";
 		}
 
-		SmsMessage smsMessage = new SmsMessage(mobileNumber, smsMessageReplybody);
+		SmsMessage smsMessage = new SmsMessage(mobileNumber,
+				smsMessageReplyBody);
+		// TODO What will be the sakai sender id ? null ?
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
 				parsedMessage.getTool(), "*");
@@ -330,7 +334,8 @@ public class SmsCoreImpl implements SmsCore {
 		smsMessage.setSmsTask(smsTask);
 		smsMessage.setSakaiUserId(parsedMessage.getUserID());
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
-		smsMessage.setMessageReplyBody(smsMessageReplybody);// TODO do a real call te get the smsMessageReplybody
+		smsMessage.setMessageReplyBody(smsMessageReplyBody);
+		// TODO do a real call to get the smsMessageReplybody
 		smsMessage.setMessageBody(smsMessagebody);
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
@@ -371,8 +376,9 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
-				if ((!smsTask.getMessageTypeId().equals(SmsHibernateConstants.MESSAGE_TYPE_INCOMING)
-						&& smsTask.getAttemptCount() <= 1)) {
+				if ((!smsTask.getMessageTypeId().equals(
+						SmsHibernateConstants.MESSAGE_TYPE_INCOMING) && smsTask
+						.getAttemptCount() <= 1)) {
 					calculateActualGroupSize(smsTask);
 					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
 							smsTask);
@@ -471,12 +477,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -486,7 +492,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation

@@ -25,13 +25,12 @@ import java.util.Set;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * The SMS service will handle all logic regarding the queueing, sending and
  * receiving of messages.
- *
+ * 
  * @author louis@psybergate.com
  * @version 1.0
  * @created 12-Nov-2008
@@ -41,7 +40,7 @@ public interface SmsCore {
 	/**
 	 * Find the next sms task to process from the task queue. Determine tasks
 	 * with highest priority. Priority is based on message age and type.
-	 *
+	 * 
 	 * @return SmsTask
 	 */
 	public SmsTask getNextSmsTask();
@@ -51,12 +50,12 @@ public interface SmsCore {
 	 * administrators at 10:00, or get latest announcements and send to mobile
 	 * numbers of Sakai group x (phase II). Validation will be done to make sure
 	 * that the preliminary values are supplied.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return the sms task
-	 *
+	 * 
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
 	 * @throws SmsSendDeniedException
@@ -69,7 +68,7 @@ public interface SmsCore {
 	/**
 	 * Add a new task to the sms task list, that contains a list of delivery
 	 * entity id
-	 *
+	 * 
 	 * @param dateToSend
 	 * @param messageBody
 	 * @param sakaiSiteID
@@ -85,7 +84,7 @@ public interface SmsCore {
 	/**
 	 * Add a new task to the sms task list, that will send sms messages to the
 	 * specified list of mobile numbers
-	 *
+	 * 
 	 * @param dateToSend
 	 * @param messageBody
 	 * @param sakaiSiteID
@@ -100,7 +99,7 @@ public interface SmsCore {
 
 	/**
 	 * Get a new sms task object with default values. This step is required.
-	 *
+	 * 
 	 * @param sakaiUserIds
 	 * @param dateToSend
 	 * @param messageBody
@@ -115,7 +114,7 @@ public interface SmsCore {
 
 	/**
 	 * Get a new sms task object with default values. This step is required.
-	 *
+	 * 
 	 * @param deliverGroupId
 	 * @param dateToSend
 	 * @param messageBody
@@ -137,12 +136,12 @@ public interface SmsCore {
 	public void processVeryLateDeliveryReports();
 
 	/**
-	 *
-	 * Try to process an incoming message in real-time by inserting it into the
-	 * queue and calling processMessage immediately. If unable to process, then
-	 * leave in the queue for the job scheduler to handle. Incoming messages are
-	 * for later development in phase II.
-	 *
+	 * 
+	 * Our SMPP listener received an incoming message. Try to process message in
+	 * real-time by inserting it into the queue and calling processMessage
+	 * immediately. If unable to process, leave in queue for the scheduler to
+	 * handle.
+	 * 
 	 * @param smsMessagebody
 	 * @param mobileNumber
 	 */
@@ -168,10 +167,10 @@ public interface SmsCore {
 	 * send attempt was unsuccessful due to gateway connection problems. A retry
 	 * will be re-scheduled some time in the future. When the max retry attempts
 	 * are reached or if credits are insufficient, the task is marked as failed.
-	 *
+	 * 
 	 * The task will also expire if it cannot be processed in a specified time.
 	 * See http://jira.sakaiproject.org/jira/browse/SMS-9
-	 *
+	 * 
 	 * @param smsTask
 	 */
 	public void processTask(SmsTask smsTask);
@@ -182,7 +181,7 @@ public interface SmsCore {
 	 * threads) then the task will be handled by the scheduler. If the scheduler
 	 * is too busy and the task is picked up too late, then the task is marked
 	 * as STATUS_EXPIRE
-	 *
+	 * 
 	 * @param smsTask
 	 */
 	public void tryProcessTaskRealTime(SmsTask smsTask);
@@ -190,7 +189,7 @@ public interface SmsCore {
 	/**
 	 * Calculate the number of messages to be sent when the new sms task is
 	 * created. Also populate other estimated values on the task.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -198,7 +197,7 @@ public interface SmsCore {
 
 	/**
 	 * Send an email.
-	 *
+	 * 
 	 * @param toAddress
 	 *            the to address
 	 * @param subject
@@ -207,7 +206,7 @@ public interface SmsCore {
 	 *            the body
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return true, if send notification email
 	 */
 	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
@@ -221,7 +220,7 @@ public interface SmsCore {
 
 	/**
 	 * Aborts the pending task.
-	 *
+	 * 
 	 * @param smsTaskID
 	 * @throws SmsTaskNotFoundException
 	 */
