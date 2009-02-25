@@ -99,5 +99,7 @@
 
 	</bean>
 
+	<bean id="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" class="org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl"/>
+
 	<import resource="external.xml" />
 </beans>

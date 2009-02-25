@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.IncomingSmsLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
@@ -30,6 +32,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// Collection for keeping tool ids with their logic
 	private final HashMap<String, IncomingSmsLogic> toolLogicMap = new HashMap<String, IncomingSmsLogic>();
+	
+	private static Log log = LogFactory.getLog(SmsIncomingLogicManagerImpl.class);
 	
 	// TODO: Throw exception if no applicable found? Always find closest match now
 	public void process(ParsedMessage message) {
@@ -64,11 +68,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		toolKey = toolKey.toUpperCase();
 		
 		if (!toolLogicMap.containsKey(toolKey)) {
-					toolLogicMap.put(toolKey, logic);
+			toolLogicMap.put(toolKey, logic);
+			log.debug("Registered tool: " + toolKey);
 		} else {
 			// If it exists replace
 			toolLogicMap.remove(toolKey);
 			toolLogicMap.put(toolKey, logic);
+			log.debug("Replaced logic for tool: " + toolKey);
 		}
 		
 	}
