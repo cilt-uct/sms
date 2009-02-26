@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ import org.jsmpp.session.MessageReceiverListener;
 import org.jsmpp.session.SMPPSession;
 import org.jsmpp.session.SessionStateListener;
 import org.jsmpp.util.AbsoluteTimeFormatter;
+import org.jsmpp.util.DeliveryReceiptState;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
 import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -68,12 +70,12 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
-import org.sakaiproject.sms.model.smpp.SmsStatusBridge;
 
 public class SmsSmppImpl implements SmsSmpp {
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsSmppImpl.class);
+	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 	private BindThread bindTest;
 	private int bindThreadTimer;
@@ -222,9 +224,9 @@ public class SmsSmppImpl implements SmsSmpp {
 
 					}
 					if (smsMessage != null) {
-						smsMessage.setSmscDeliveryStatusCode(SmsStatusBridge
-								.getSmsDeliveryStatus((deliveryReceipt
-										.getFinalStatus())));
+						smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
+								.get((deliveryReceipt.getFinalStatus())));
+
 						smsMessage.setDateDelivered(new Date(System
 								.currentTimeMillis()));
 
@@ -235,9 +237,8 @@ public class SmsSmppImpl implements SmsSmpp {
 
 						} else {
 
-							if (SmsStatusBridge
-									.getSmsDeliveryStatus((deliveryReceipt
-											.getFinalStatus())) != SmsConst_SmscDeliveryStatus.DELIVERED) {
+							if (smsDeliveryStatus.get(deliveryReceipt
+									.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
 								smsMessage
 										.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 							} else {
@@ -390,7 +391,34 @@ public class SmsSmppImpl implements SmsSmpp {
 		loadPropertiesFile();
 		loadProperties();
 		connectToGateway();
+		setupStatusBridge();
 		LOG.info("SmsSmpp implementation is started");
+	}
+
+	/**
+	 * Matches up the statuses from the JSMPP API to our local statuses.
+	 */
+	private void setupStatusBridge() {
+		/*
+		 * The hashMap that stores the JSMPP statuses as the key and our local
+		 * statuses as the value.
+		 */
+		smsDeliveryStatus = new HashMap<DeliveryReceiptState, Integer>();
+
+		smsDeliveryStatus.put(DeliveryReceiptState.ACCEPTD,
+				SmsConst_SmscDeliveryStatus.ACCEPTED);
+		smsDeliveryStatus.put(DeliveryReceiptState.DELETED,
+				SmsConst_SmscDeliveryStatus.DELETED);
+		smsDeliveryStatus.put(DeliveryReceiptState.DELIVRD,
+				SmsConst_SmscDeliveryStatus.DELIVERED);
+		smsDeliveryStatus.put(DeliveryReceiptState.EXPIRED,
+				SmsConst_SmscDeliveryStatus.EXPIRED);
+		smsDeliveryStatus.put(DeliveryReceiptState.UNDELIV,
+				SmsConst_SmscDeliveryStatus.UNDELIVERA);
+		smsDeliveryStatus.put(DeliveryReceiptState.UNKNOWN,
+				SmsConst_SmscDeliveryStatus.UNKNOWN);
+		smsDeliveryStatus.put(DeliveryReceiptState.REJECTD,
+				SmsConst_SmscDeliveryStatus.REJECTED);
 	}
 
 	/**
