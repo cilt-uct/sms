@@ -351,6 +351,8 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+		// process all MO in real-time for now
+		processTask(smsTask);
 
 	}
 
