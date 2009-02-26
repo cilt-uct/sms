@@ -11,8 +11,11 @@ import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
+import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
@@ -187,7 +190,28 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 
 	public List<?> getEntities(EntityReference ref, Search search) {
-		//todo
+		String currentUser = developerHelperService.getCurrentUserReference();
+        if (currentUser == null) {
+            throw new SecurityException("Anonymous users cannot view votes: " + ref);
+        }
+        Restriction userRes = search.getRestrictionByProperty("userId");
+        String userId = null;
+        if (userRes == null || userRes.getSingleValue() == null) {
+        	userId = developerHelperService.getCurrentUserId();
+        	if (userId == null) {
+                throw new SecurityException("User must be logged in in order to access sms task: " + ref);
+        	}
+        	
+        }
+        try {
+        	List<SmsTask> tasks = smsTaskLogic.getAllSmsTasksForCriteria(new SearchFilterBean());
+			return tasks;
+		} catch (SmsSearchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
 		return null;
 	}
 
