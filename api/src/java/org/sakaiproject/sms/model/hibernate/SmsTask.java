@@ -254,8 +254,8 @@ public class SmsTask extends BaseModel {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj, false, SmsTask.class,
-				new String[] { "smsMessages", "dateToExpire" });
+		return EqualsBuilder.reflectionEquals(this, obj, false, SmsTask.class);
+		
 	}
 
 	/**
@@ -538,7 +538,7 @@ public class SmsTask extends BaseModel {
 	@Override
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
-				SmsTask.class, new String[] { "smsMessages" });
+				SmsTask.class);
 	}
 
 	/**
