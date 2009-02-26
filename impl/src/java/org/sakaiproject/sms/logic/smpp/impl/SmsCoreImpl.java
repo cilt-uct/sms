@@ -662,9 +662,10 @@ public class SmsCoreImpl implements SmsCore {
 		for (SmsTask smsTask : smsTasks) {
 			smsBilling.settleCreditDifference(smsTask);
 			checkOverdraft(smsTask);
-			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
-
+			if (smsTask.getMessageTypeId() == SmsHibernateConstants.MESSAGE_TYPE_OUTGOING) {
+				sendEmailNotification(smsTask,
+						SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
+			}
 		}
 	}
 
