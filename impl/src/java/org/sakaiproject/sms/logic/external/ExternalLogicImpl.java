@@ -40,6 +40,7 @@ import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
@@ -49,7 +50,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
  * out for the moment
- *
+ * 
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
@@ -128,7 +129,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
 	 */
 	public String getCurrentSiteId() {
@@ -137,7 +138,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
 	 */
@@ -209,49 +210,55 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 	}
-	
-	@SuppressWarnings("unchecked")	
+
+	@SuppressWarnings("unchecked")
 	private Set<Object> getMembersForEntityRef(String entityReference) {
 		Set members = new HashSet<Object>();
 		Object obj = entityBroker.fetchEntity(entityReference);
-		
+
 		// if in the format /site/123/role/something
-		if ("site".equals(EntityReference.getPrefix(entityReference)) && 
-		    EntityReference.getIdFromRefByKey(entityReference, "role") != null){
-			
-			String role = EntityReference.getIdFromRefByKey(entityReference, "role");
-			String siteRef = "/" + EntityReference.getPrefix(entityReference) + 
-							 "/" + EntityReference.getIdFromRefByKey(entityReference, "site");
-			
+		if ("site".equals(EntityReference.getPrefix(entityReference))
+				&& EntityReference.getIdFromRefByKey(entityReference, "role") != null) {
+
+			String role = EntityReference.getIdFromRefByKey(entityReference,
+					"role");
+			String siteRef = "/"
+					+ EntityReference.getPrefix(entityReference)
+					+ "/"
+					+ EntityReference
+							.getIdFromRefByKey(entityReference, "site");
+
 			// Fetch the site
 			AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
 			Set<Member> allMembers = group.getMembers();
-			
+
 			// Only add if it has corresponding role
 			for (Member member : allMembers) {
 				if (role.equals(member.getRole().getId())) {
 					members.add(member);
 				}
 			}
-			
+
 		} else if (obj instanceof AuthzGroup) { // Any other authz group
 			AuthzGroup group = (AuthzGroup) obj;
 			members.addAll(group.getMembers());
 		}
 		return members;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Set<SmsMessage> getSakaiEntityMembersAsMessages(SmsTask smsTask,
 			String entityReference, boolean getMobileNumbers) {
+		boolean addMemberToDelList;
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 
 		setupSession(smsTask.getSenderUserId());
 		Set members = getMembersForEntityRef(entityReference);
-		
+
 		log.info("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
+			addMemberToDelList = true;
 			SmsMessage message = new SmsMessage();
 			if (oObject instanceof Member) {
 				message.setSakaiUserId(((Member) oObject).getUserId());
@@ -262,14 +269,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 				String mobileNumber = getSakaiMobileNumber(message
 						.getSakaiUserId());
 				if (mobileNumber == null) {
-					mobileNumber = "9999999"; // for testing
-					// TODO, user must not be added to list of mobile number is
-					// empty
+					addMemberToDelList = false;
+					if (SmsHibernateConstants.SMS_DEV_MODE) {
+						mobileNumber = "9999999"; // for testing
+					}
 				}
 				message.setMobileNumber(mobileNumber);
 			}
-			message.setSmsTask(smsTask);
-			messages.add(message);
+			if (addMemberToDelList) {
+				message.setSmsTask(smsTask);
+				messages.add(message);
+			}
 		}
 		return messages;
 	}
@@ -383,7 +393,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
 	 */
@@ -437,7 +447,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		} catch (UserNotDefinedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}return null;
+		}
+		return null;
 
 	}
 }
