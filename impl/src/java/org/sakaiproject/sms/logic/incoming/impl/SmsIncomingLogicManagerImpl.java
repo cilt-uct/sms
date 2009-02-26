@@ -37,31 +37,33 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	
 	// TODO: Throw exception if no applicable found? Always find closest match now
 	public void process(ParsedMessage message) {
-		String toolKey = message.getTool().toUpperCase();
-		String cmd = message.getCommand().toUpperCase();
-		IncomingSmsLogic logic = null;
-				
-		if (isValidCommand(toolKey, cmd)) { // Everything is valid
-			logic = toolLogicMap.get(toolKey);
-			cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
-		} else {
-			if (toolLogicMap.containsKey(toolKey)) { // Valid tool but invalid command
+		if (toolLogicMap.size() != 0) { // No logic registered
+			String toolKey = message.getTool().toUpperCase();
+			String cmd = message.getCommand().toUpperCase();
+			IncomingSmsLogic logic = null;
+					
+			if (isValidCommand(toolKey, cmd)) { // Everything is valid
 				logic = toolLogicMap.get(toolKey);
-				cmd = getClosestMatch(cmd, logic.getCommandKeys());
-
-			} else { // Invalid toolKey
-				toolKey = getClosestMatch(toolKey, toolLogicMap.keySet().toArray(new String[toolLogicMap.keySet().size()]));
-				logic = toolLogicMap.get(toolKey);
-				 
-				if (isValidCommand(toolKey, message.getCommand())) { // valid command
-					cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
-				} else { // invalid command
+				cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
+			} else {
+				if (toolLogicMap.containsKey(toolKey)) { // Valid tool but invalid command
+					logic = toolLogicMap.get(toolKey);
 					cmd = getClosestMatch(cmd, logic.getCommandKeys());
+
+				} else { // Invalid toolKey
+					toolKey = getClosestMatch(toolKey, toolLogicMap.keySet().toArray(new String[toolLogicMap.keySet().size()]));
+					logic = toolLogicMap.get(toolKey);
+					 
+					if (isValidCommand(toolKey, message.getCommand())) { // valid command
+						cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
+					} else { // invalid command
+						cmd = getClosestMatch(cmd, logic.getCommandKeys());
+					}
 				}
 			}
+			
+			logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());			
 		}
-		
-		logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());
 	}
 
 	public void register(String toolKey, IncomingSmsLogic logic) {
