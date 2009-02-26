@@ -54,9 +54,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -113,7 +113,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -331,10 +331,11 @@ public class SmsCoreImpl implements SmsCore {
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
-		// TODO What will be the sakai sender id ? null ?
+		// TODO Who will be the sakai user that will "send" the reply, admin for
+		// now
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
-				parsedMessage.getTool(), "*");
+				parsedMessage.getTool(), "admin");
 
 		if (smsTask == null) {
 			return;
@@ -486,12 +487,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -501,7 +502,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation

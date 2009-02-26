@@ -31,7 +31,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	private boolean schedulerEnabled = true;// for unit testing only
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmsSmppImpl.class);
+			.getLogger(SmsSchedulerImpl.class);
 
 	public SmsCore smsCore = null;
 
@@ -41,7 +41,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	}
 
-	private HibernateLogicLocator hibernateLogicLocator=null;
+	private HibernateLogicLocator hibernateLogicLocator = null;
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
@@ -71,7 +71,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	private class SmsSchedulerThread implements Runnable {
 
 		boolean stopScheduler = false;
-		
+
 		SmsSchedulerThread() {
 			Thread t = new Thread(this);
 			t.start();
@@ -86,7 +86,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 				if (stopScheduler) {
 					return;
 				}
-				
+
 				LOG.info("Searching for tasks to process");
 				smsCore.processNextTask();
 				smsCore.processTimedOutDeliveryReports();
