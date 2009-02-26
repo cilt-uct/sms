@@ -19,72 +19,45 @@
 
     <!-- the base is parent -->
     <parent>
-        <groupId>org.sakaiproject</groupId>
+        <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>0.1</version><!--Sms.version-->
+        <version>0.7-SNAPSHOT</version><!--Sms.version-->
     </parent>
 	
-	<repositories>
 
-		<repository>
-			<id>Sakai</id>
-			<name>Sakai Maven Repo</name>
-			<url>http://source.sakaiproject.org/maven2</url>
-		</repository>
-
-		<repository>
-			<id>opensymphony</id>
-			<url>http://maven2.opensymphony.com</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	
     <dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.groboutils</groupId>
 			<artifactId>groboutils-core</artifactId>
-			<version>${groboutils-core.version}</version>
+			
 		</dependency>
 		<dependency>
 			<groupId>com.google.code</groupId>
 			<artifactId>jsmpp</artifactId>
-			<version>${jsmpp.version}</version>
+			
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.0.1B</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.connector.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>quartz</groupId>
@@ -94,8 +67,7 @@
 		<dependency>
         	<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-    		<version>${commons.lang.version}</version>
-    	</dependency>
+       	</dependency>
     	<dependency>
     		<groupId>org.sakaiproject.entitybroker</groupId>
     		<artifactId>entitybroker-api</artifactId>

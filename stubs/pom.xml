@@ -14,38 +14,35 @@
 	<packaging>jar</packaging>
 
 	<!-- the base is the parent pom -->
-	<parent>
-		<groupId>org.sakaiproject</groupId>
-		<artifactId>sms</artifactId>
-		<version>0.1</version><!--Sms.version-->
-	</parent>
-
+    <parent>
+        <groupId>org.sakaiproject.sms</groupId>
+        <artifactId>sms</artifactId>
+        <version>0.7-SNAPSHOT</version><!--Sms.version-->
+    </parent>
+    
+    
 	<dependencies>
 		<!-- email dependencies -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
-			<version>1.3.1</version>
 		</dependency>
 
 		<!--  For sending email -->
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
-			<version>1.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>${commons.logging.version}</version>
 		</dependency>
 		
 		<!-- Internal dependencies -->
 		<dependency>
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-api</artifactId>
-			<version>0.1</version>
 		</dependency>
 
 		<dependency>

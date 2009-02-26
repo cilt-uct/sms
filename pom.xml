@@ -5,7 +5,7 @@
                       http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <name>Sakai Sms</name>
-    <groupId>org.sakaiproject</groupId>
+    <groupId>org.sakaiproject.sms</groupId>
     <artifactId>sms</artifactId>
     <organization>
         <name>Sakai Project</name>
@@ -13,7 +13,7 @@
     </organization>
     <inceptionYear>2008</inceptionYear>
     <packaging>pom</packaging>
-    <version>0.1</version><!--Sms.version-->
+    <version>0.7-SNAPSHOT</version><!--Sms.version-->
 
 
 
@@ -22,13 +22,10 @@
     <parent>
         <artifactId>master</artifactId>
         <groupId>org.sakaiproject</groupId>
-<!--        <version>SNAPSHOT</version>-->
-<!--        <version>M2</version>-->
-<!--        <version>2.5.0</version>-->
 			<version>2.6.0RC1-SNAPSHOT</version>
         <relativePath>../master/pom.xml</relativePath>
     </parent>
-
+<!-- 
 	<properties>
 	    <deploy.webappname>sms_ui</deploy.webappname>
 		<log4j.version>1.2.14</log4j.version>
@@ -39,7 +36,7 @@
 		<beanutils.version>1.6.1</beanutils.version>
 		<commons.lang.version>2.1</commons.lang.version>
 		<commons-collections.version>3.2.1</commons-collections.version>
-		<commons-validator.version>1.3.1</commons-validator.version>
+		*<commons-validator.version>1.3.1</commons-validator.version>
 		<commons.logging.version>1.1</commons.logging.version>
 		<sakai.servletapi.version>2.4</sakai.servletapi.version>
 		<oro.version>2.0.8</oro.version>
@@ -50,7 +47,7 @@
 		<sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>		
 		<hibernate.version>3.2.5.ga</hibernate.version>
 	</properties>
-
+ -->
     <profiles>
         <profile>
             <id>full</id>
@@ -80,22 +77,95 @@
     </profiles>
 
     <!-- handles the management of all related dependencies -->
-    <dependencyManagement>
-        <dependencies>
-<!-- 
-            <dependency>
-                <groupId>org.sakaiproject.entitybroker</groupId>
-                <artifactId>entitybroker-api</artifactId>
-                <version>[1.3.3,1.4.0)</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.sakaiproject.entitybroker</groupId>
-                <artifactId>entitybroker-utils</artifactId>
-                <version>[1.3.3,1.4.0)</version>
-            </dependency>
--->
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-api</artifactId>
+				<version>0.7-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-impl</artifactId>
+				<version>0.7-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-stubs</artifactId>
+				<version>0.7-SNAPSHOT</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.sourceforge.groboutils
+				</groupId>
+				<artifactId>groboutils-core</artifactId>
+				<version>5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code</groupId>
+				<artifactId>jsmpp</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<repositories>
 
+		<repository>
+			<id>Sakai</id>
+			<name>Sakai Maven Repo</name>
+			<url>http://source.sakaiproject.org/maven2</url>
+		</repository>
+
+		<repository>
+			<id>opensymphony</id>
+			<url>http://maven2.opensymphony.com</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>honestyworks</id>
+			<name>honestyworks Maven Repository</name>
+			<url>http://my.honestyworks.jp/maven2/</url>
+		</repository>
+	</repositories>
+	
+	<issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.sakaiproject.org/jira/browse/SMS</url>
+    </issueManagement>
+	<!-- define the license -->
+    <licenses>
+        <license>
+            <name>Educational Community License, Version 2.0</name>
+            <url>http://www.osedu.org/licenses/ECL-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+  <scm>
+    <connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</connection>
+    <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</developerConnection>
+    <url>https://source.sakaiproject.org/contrib/sms/trunk/sms</url>
+  </scm>	
+	
 </project>

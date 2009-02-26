@@ -18,10 +18,10 @@
     </properties>
 
     <!-- the base is parent -->
-    <parent>
-        <groupId>org.sakaiproject</groupId>
+        <parent>
+        <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>0.1</version><!--Sms.version-->
+        <version>0.7-SNAPSHOT</version><!--Sms.version-->
     </parent>
 
     <dependencies>
@@ -30,8 +30,7 @@
         <dependency>
             <groupId>org.sakaiproject.sms</groupId>
             <artifactId>sms-impl</artifactId>
-            <version>0.1</version>
-            <scope>runtime</scope>
+           
         </dependency>
 
     </dependencies>
