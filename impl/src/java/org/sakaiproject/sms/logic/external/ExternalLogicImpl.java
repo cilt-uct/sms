@@ -436,6 +436,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
 			String body) {
 
+		log.debug("Sending email to:" + toAddress + " subject:" + subject
+				+ " body:" + body);
 		String from = "smstesting@sakai";
 		sendEmails(smsTask, from, new String[] { toAddress }, subject, body);
 		return true;
