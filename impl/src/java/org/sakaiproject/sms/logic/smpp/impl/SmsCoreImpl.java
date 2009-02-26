@@ -54,9 +54,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -113,7 +113,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -193,6 +193,8 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setSmsAccountId(smsBilling.getAccountID(sakaiSiteID,
 					sakaiSenderID));
 		} catch (SmsAccountNotFoundException e) {
+			LOG.error("Sms account not found  for sakaiSiteID:=" + sakaiSiteID
+					+ " sakaiSenderID:= " + sakaiSenderID);
 			LOG.error(e);
 			return null;
 		}
@@ -230,10 +232,13 @@ public class SmsCoreImpl implements SmsCore {
 		number.add(mobilenumber);
 		SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
 				sakaiToolId, sakaiSenderID, number);
-		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
-		smsTask.setGroupSizeEstimate(1);
-		smsTask.setGroupSizeActual(1);
-		smsTask.setCreditEstimate(1);
+		if (smsTask != null) {
+			smsTask
+					.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
+			smsTask.setGroupSizeEstimate(1);
+			smsTask.setGroupSizeActual(1);
+			smsTask.setCreditEstimate(1);
+		}
 		return smsTask;
 	}
 
@@ -330,6 +335,10 @@ public class SmsCoreImpl implements SmsCore {
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
 				parsedMessage.getTool(), "*");
+
+		if (smsTask == null) {
+			return;
+		}
 
 		smsMessage.setSmsTask(smsTask);
 		smsMessage.setSakaiUserId(parsedMessage.getUserID());
@@ -477,12 +486,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -492,7 +501,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
