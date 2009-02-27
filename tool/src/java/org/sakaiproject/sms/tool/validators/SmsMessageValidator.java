@@ -28,6 +28,12 @@ import org.springframework.validation.Validator;
  * The Class SmsMessageValidator.
  */
 public class SmsMessageValidator implements Validator {
+	
+	private MessageValidator validator;
+	
+	public void setValidator(MessageValidator validator) {
+		this.validator = validator;
+	}
 
 	/**
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
@@ -48,7 +54,7 @@ public class SmsMessageValidator implements Validator {
 	 */
 	public void validate(Object obj, Errors err) {
 
-		ArrayList<String> errors = MessageValidator
+		ArrayList<String> errors = validator
 				.validateMessage((SmsMessage) obj);
 
 		for (String error : errors) {

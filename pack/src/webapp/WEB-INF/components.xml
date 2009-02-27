@@ -93,6 +93,9 @@
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 	</bean>
 
+	<bean id="org.sakaiproject.sms.logic.smpp.validate.MessageValidator" class="org.sakaiproject.sms.logic.smpp.validate.MessageValidatorImpl" />
+
+
 	<bean id="org.sakaiproject.sms.api.SmsService" class="org.sakaiproject.sms.logic.smpp.impl.SmsServiceImpl">
 		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
 			<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />

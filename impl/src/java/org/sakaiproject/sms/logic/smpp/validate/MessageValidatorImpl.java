@@ -30,7 +30,7 @@ import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
  * @version 1.0
  * @created 12-Jan-2009
  */
-public class MessageValidator {
+public class MessageValidatorImpl implements MessageValidator {
 
 	/**
 	 * Validate message.
@@ -40,7 +40,7 @@ public class MessageValidator {
 	 * 
 	 * @return the array list< string>
 	 */
-	public static ArrayList<String> validateMessage(SmsMessage smsMessage) {
+	public ArrayList<String> validateMessage(SmsMessage smsMessage) {
 		ArrayList<String> errors = new ArrayList<String>();
 
 		if (smsMessage.getMobileNumber() == null

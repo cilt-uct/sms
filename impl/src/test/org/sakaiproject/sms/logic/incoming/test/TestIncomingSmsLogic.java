@@ -8,9 +8,9 @@ public class TestIncomingSmsLogic implements IncomingSmsLogic {
 	
 	private String lastExecuted;
 	
-	public void execute(String command, String siteId, String userId,
+	public String execute(String command, String siteId, String userId,
 			String body) {
-		lastExecuted = command;
+		return command;
 	}
 
 	public String[] getCommandKeys() {

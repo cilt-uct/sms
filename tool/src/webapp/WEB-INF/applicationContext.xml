@@ -64,9 +64,7 @@
 	<!--  Validators -->
 	<bean id="smsMessageGuard" parent="writeGuardParent">
 		<property name="guardedPath" value="SmsMessageLocator.*" />
-		<property name="guard">
-			<bean class="org.sakaiproject.sms.tool.validators.SmsMessageValidator" />
-		</property>
+		<property name="guard" ref="org.sakaiproject.sms.logic.smpp.validate.MessageValidator" />
 	</bean>
 
 	<bean id="smsConfigGaurd" parent="writeGuardParent">

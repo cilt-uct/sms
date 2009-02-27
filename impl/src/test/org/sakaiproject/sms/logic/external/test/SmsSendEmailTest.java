@@ -1,4 +1,4 @@
-package org.sakaiproject.sms.tool.test;
+package org.sakaiproject.sms.logic.external.test;
 
 import junit.framework.TestCase;
 
