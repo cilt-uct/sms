@@ -55,16 +55,16 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
 	private SmsMessageParser smsMessageParser;
-	
+
 	public SmsMessageParser getSmsMessageParser() {
 		return smsMessageParser;
 	}
@@ -95,11 +95,12 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	private SmsIncomingLogicManager smsIncomingLogicManager;
-	
-	public void setSmsIncomingLogicManager(SmsIncomingLogicManager smsIncomingLogicManager) {
+
+	public void setSmsIncomingLogicManager(
+			SmsIncomingLogicManager smsIncomingLogicManager) {
 		this.smsIncomingLogicManager = smsIncomingLogicManager;
 	}
-	
+
 	public SmsSmpp smsSmpp = null;
 
 	public SmsBilling smsBilling = null;
@@ -120,7 +121,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -134,7 +135,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -232,7 +233,9 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
-	public SmsTask getPreliminaryMOTask(String mobilenumber,
+	// We answer back by creating a new sms task with one sms message attached
+	// to it. The task will then be handled like any other MO task.
+	private SmsTask getPreliminaryMOTask(String mobilenumber,
 			String SakaiUserId, Date dateToSend, String sakaiSiteID,
 			String sakaiToolId, String sakaiSenderID) {
 		Set<String> number = new HashSet<String>();
@@ -321,26 +324,41 @@ public class SmsCoreImpl implements SmsCore {
 	public void processIncomingMessage(String smsMessagebody,
 			String mobileNumber) {
 
-		String smsMessageReplyBody = "DUMMMY VALUE";
+		String smsMessageReplyBody = "DUMMY BODY";
 		if (!smsMessageParser.validateMessageGeneral(smsMessagebody,
 				mobileNumber)) {
-			// TODO added a propper validation reason.
+			// TODO added a proper validation reason.
 			smsMessageReplyBody = "Message invalid ";
 		}
 
 		ParsedMessage parsedMessage = null;
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
-			smsMessageReplyBody = smsIncomingLogicManager.process(parsedMessage);
+			if (parsedMessage != null) {
+				String toolReplyBody = smsIncomingLogicManager
+						.process(parsedMessage);
+				if (toolReplyBody != null) {
+					smsMessageReplyBody = toolReplyBody;
+				}
+			} else {
+				smsMessageReplyBody = "No tool found.";
+				// TODO What do we do when we cannot figure out the site or tool
+				// from the sms ? And how do we figure out which account to
+				// bill. We must still answer the user even if the sms body is
+				// empty, at least with some help on the possible commands
+				// he/she can send
+				parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
+						"COMMAND");
+
+			}
 		} catch (ParseException e) {
 			// TODO add a proper validation reason.
-			smsMessageReplyBody = "Message invalid ";
+			smsMessageReplyBody = "Message invalid.";
 		}
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
-		// TODO Who will be the sakai user that will "send" the reply, admin for
-		// now
+		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
 				parsedMessage.getTool(), "admin");
@@ -348,19 +366,18 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			return;
 		}
-
 		smsMessage.setSmsTask(smsTask);
 		smsMessage.setSakaiUserId(parsedMessage.getUserID());
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
-		// TODO do a real call to get the smsMessageReplybody
 		smsMessage.setMessageBody(smsMessagebody);
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
-
 		// process all MO in real-time for now
 		try {
+			// insertTesk will process task immediately because its date to
+			// process is now
 			insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
@@ -511,12 +528,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -526,7 +543,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
