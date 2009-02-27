@@ -54,9 +54,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -113,7 +113,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -350,9 +350,23 @@ public class SmsCoreImpl implements SmsCore {
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
 		// process all MO in real-time for now
-		processTask(smsTask);
+		try {
+			insertTask(smsTask);
+		} catch (SmsTaskValidationException e) {
+			LOG.error(getExceptionStackTraceAsString(e));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SmsSendDeniedException e) {
+			LOG.error(getExceptionStackTraceAsString(e));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SmsSendDisabledException e) {
+			LOG.error(getExceptionStackTraceAsString(e));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -489,12 +503,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -504,7 +518,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation

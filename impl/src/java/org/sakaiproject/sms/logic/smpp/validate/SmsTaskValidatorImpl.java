@@ -142,12 +142,6 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 					.add(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID);
 		}
 
-		// Check delivery group id
-		if (smsTask.getDeliveryGroupId() == null
-				|| smsTask.getDeliveryGroupId().trim().equals("")) {
-			errors.add(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY);
-		}
-
 		return errors;
 	}
 
