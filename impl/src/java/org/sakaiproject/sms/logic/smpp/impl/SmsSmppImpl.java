@@ -70,38 +70,23 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 public class SmsSmppImpl implements SmsSmpp {
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsSmppImpl.class);
 	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
-	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
-	private BindThread bindTest;
-	private int bindThreadTimer;
-	private byte destAddressNPI;
-	private byte destAddressTON;
-	private boolean disconnectGateWayCalled;
-	private int enquireLinkTimeOut;
-	private String gatewayAdress;
-	private boolean gatewayBound = false;
-	private String password;
-	private int port;
-	private byte priorityFlag;
 	private final Properties properties = new Properties();
-	private byte protocolId;
-	private byte replaceIfPresentFlag;
-	private String serviceType;
+	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 	private SMPPSession session = new SMPPSession();
-	private byte smDefaultMsgId;
-	private String sourceAddress;
-	private byte sourceAddressNPI;
-	private byte sourceAddressTON;
-	private String systemType;
-	private String userName;
-	private String addressRange;
-	private int transactionTimer;
-	private int sendingDelay;
+	private boolean disconnectGateWayCalled;
+	private BindThread bindTest;
+
+	private boolean gatewayBound = false;
+
+	private SmsSmppProperties smsSmppProperties = null;
+
 	private static final boolean ALLOW_PROCESS_REMOTELY = false;
 
 	private HibernateLogicLocator hibernateLogicLocator;
@@ -149,7 +134,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					return;
 				}
 				try {
-					Thread.sleep(bindThreadTimer);
+					Thread.sleep(smsSmppProperties.getBindThreadTimer());
 				} catch (InterruptedException e) {
 
 					e.printStackTrace();
@@ -291,17 +276,26 @@ public class SmsSmppImpl implements SmsSmpp {
 					+ properties.getProperty("SMSCUsername"));
 			try {
 				session = new SMPPSession();
-				session.connectAndBind(gatewayAdress, port, new BindParameter(
-						BindType.BIND_TRX, userName, password, systemType,
-						TypeOfNumber.valueOf(destAddressTON),
-						NumberingPlanIndicator.valueOf(destAddressNPI),
-						addressRange));
+				session.connectAndBind(smsSmppProperties.getSMSCAdress(),
+						smsSmppProperties.getSMSCPort(), new BindParameter(
+								BindType.BIND_TRX, smsSmppProperties
+										.getSMSCUsername(), smsSmppProperties
+										.getSMSCPassword(), smsSmppProperties
+										.getSystemType(), TypeOfNumber
+										.valueOf(smsSmppProperties
+												.getDestAddressTON()),
+								NumberingPlanIndicator
+										.valueOf(smsSmppProperties
+												.getDestAddressNPI()),
+								smsSmppProperties.getAddressRange()));
 				if (bindTest != null) {
 					bindTest.allDone = true;
 				}
 				gatewayBound = true;
-				session.setEnquireLinkTimer(enquireLinkTimeOut);
-				session.setTransactionTimer(transactionTimer);
+				session.setEnquireLinkTimer(smsSmppProperties
+						.getEnquireLinkTimeOut());
+				session.setTransactionTimer(smsSmppProperties
+						.getTransactionTimer());
 				session
 						.setMessageReceiverListener(new MessageReceiverListenerImpl());
 				session.addSessionStateListener(new SessionStateListener() {
@@ -365,8 +359,9 @@ public class SmsSmppImpl implements SmsSmpp {
 	public boolean getConnectionStatus() {
 
 		if (gatewayBound) {
-			LOG.info("The server is currently binded to " + gatewayAdress
-					+ "  " + String.valueOf(port));
+			LOG.info("The server is currently binded to "
+					+ smsSmppProperties.getSMSCAdress() + "  "
+					+ String.valueOf(smsSmppProperties.getSMSCPort()));
 		} else {
 			LOG.info("The server is not currently binded");
 		}
@@ -389,7 +384,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	public void init() {
 		LOG.info("SmsSmpp implementation is starting up");
 		loadPropertiesFile();
-		loadProperties();
+		loadSmsSmppProperties();
 		connectToGateway();
 		setupStatusBridge();
 		LOG.info("SmsSmpp implementation is started");
@@ -425,45 +420,67 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * Read some smpp properties from a file. These properties can be changed as
 	 * required.
 	 */
-	private void loadProperties() {
+	private void loadSmsSmppProperties() {
 
 		try {
+			smsSmppProperties = new SmsSmppProperties();
 
-			gatewayAdress = properties.getProperty("SMSCadress");
-			port = Integer.parseInt(properties.getProperty("SMSCport"));
-			userName = properties.getProperty("SMSCUsername");
-			password = properties.getProperty("SMSCPassword");
-			systemType = properties.getProperty("systemType");
-			serviceType = properties.getProperty("serviceType");
-			sourceAddress = (properties.getProperty("sourceAddress"));
-			sourceAddressNPI = (Byte.parseByte(properties
-					.getProperty("sourceAddressNPI")));
-			sourceAddressTON = (Byte.parseByte(properties
-					.getProperty("sourceAddressTON")));
+			smsSmppProperties = hibernateLogicLocator.getExternalLogic()
+					.getSmppProperties(smsSmppProperties);
 
-			destAddressNPI = (Byte.parseByte(properties
-					.getProperty("destAddressNPI")));
-			destAddressTON = (Byte.parseByte(properties
-					.getProperty("destAddressTON")));
+			if (smsSmppProperties.getSMSCAdress() == null) {
+				smsSmppProperties.setSMSCAdress(properties
+						.getProperty("SMSCadress"));
+			}
+			if (smsSmppProperties.getSMSCPort() == 0) {
+				smsSmppProperties.setSMSCPort(Integer.parseInt(properties
+						.getProperty("SMSCport")));
+			}
+			if (smsSmppProperties.getSMSCUsername() == null) {
+				smsSmppProperties.setSMSCUsername(properties
+						.getProperty("SMSCUsername"));
+			}
+			if (smsSmppProperties.getSMSCPassword() == null) {
+				smsSmppProperties.setSMSCPassword((properties
+						.getProperty("SMSCPassword")));
+			}
 
-			protocolId = Byte.parseByte(properties.getProperty("protocolId"));
-			priorityFlag = Byte.parseByte(properties
-					.getProperty("priorityFlag"));
-			replaceIfPresentFlag = Byte.parseByte(properties
-					.getProperty("replaceIfPresentFlag"));
-			smDefaultMsgId = Byte.parseByte(properties
-					.getProperty("smDefaultMsgId"));
-			enquireLinkTimeOut = Integer.parseInt(properties
-					.getProperty("enquireLinkTimeOutSecondes")) * 1000;
-			bindThreadTimer = Integer.parseInt(properties
-					.getProperty("bindThreadTimerSecondes")) * 1000;
-			addressRange = properties.getProperty("addressRange");
+			smsSmppProperties.setSystemType(properties
+					.getProperty("systemType"));
+			smsSmppProperties.setServiceType(properties
+					.getProperty("serviceType"));
+			smsSmppProperties.setSourceAddress((properties
+					.getProperty("sourceAddress")));
+			smsSmppProperties.setSourceAddressNPI((Byte.parseByte(properties
+					.getProperty("sourceAddressNPI"))));
+			smsSmppProperties.setSourceAddressTON((Byte.parseByte(properties
+					.getProperty("sourceAddressTON"))));
 
-			transactionTimer = Integer.parseInt(properties
-					.getProperty("transactionTimer")) * 1000;
+			smsSmppProperties.setDestAddressNPI((Byte.parseByte(properties
+					.getProperty("destAddressNPI"))));
+			smsSmppProperties.setDestAddressTON((Byte.parseByte(properties
+					.getProperty("destAddressTON"))));
 
-			sendingDelay = Integer.parseInt(properties
-					.getProperty("sendingDelay"));
+			smsSmppProperties.setProtocolId(Byte.parseByte(properties
+					.getProperty("protocolId")));
+			smsSmppProperties.setPriorityFlag(Byte.parseByte(properties
+					.getProperty("priorityFlag")));
+			smsSmppProperties.setReplaceIfPresentFlag(Byte.parseByte(properties
+					.getProperty("replaceIfPresentFlag")));
+			smsSmppProperties.setSmDefaultMsgId(Byte.parseByte(properties
+					.getProperty("smDefaultMsgId")));
+			smsSmppProperties.setEnquireLinkTimeOut(Integer.parseInt(properties
+					.getProperty("enquireLinkTimeOutSecondes")) * 1000);
+			smsSmppProperties.setBindThreadTimer(Integer.parseInt(properties
+					.getProperty("bindThreadTimerSecondes")) * 1000);
+			smsSmppProperties.setAddressRange(properties
+					.getProperty("addressRange"));
+
+			smsSmppProperties.setTransactionTimer(Integer.parseInt(properties
+					.getProperty("transactionTimer")) * 1000);
+
+			smsSmppProperties.setSendingDelay(Integer.parseInt(properties
+					.getProperty("sendingDelay")));
 
 		} catch (Exception e) {
 			LOG.error("Properies faild to load" + e);
@@ -501,29 +518,27 @@ public class SmsSmppImpl implements SmsSmpp {
 		for (int i = 0; i < messages.length; i++) {
 			messageBody = messages[i].getMessageBody();
 			mobileNumbers[i] = messages[i].getMobileNumber();
-			addresses[i] = new Address(TypeOfNumber.valueOf(destAddressTON),
-					NumberingPlanIndicator.valueOf(destAddressNPI), messages[i]
-							.getMobileNumber());
+			addresses[i] = new Address(TypeOfNumber.valueOf(smsSmppProperties
+					.getDestAddressTON()), NumberingPlanIndicator
+					.valueOf(smsSmppProperties.getDestAddressNPI()),
+					messages[i].getMobileNumber());
 		}
 		try {
-			SubmitMultiResult submitMultiResult = session
-					.submitMultiple(
-							serviceType,
-							TypeOfNumber.valueOf(sourceAddressTON),
-							NumberingPlanIndicator.valueOf(sourceAddressNPI),
-							sourceAddress,
-							addresses,
-							new ESMClass(),
-							protocolId,
-							priorityFlag,
-							timeFormatter.format(new Date()),
-							null,
-							new RegisteredDelivery(
-									SMSCDeliveryReceipt.SUCCESS_FAILURE),
-							new ReplaceIfPresentFlag(replaceIfPresentFlag),
-							new GeneralDataCoding(false, true,
-									MessageClass.CLASS1, Alphabet.ALPHA_DEFAULT),
-							smDefaultMsgId, messageBody.getBytes(), null);
+			SubmitMultiResult submitMultiResult = session.submitMultiple(
+					smsSmppProperties.getServiceType(), TypeOfNumber
+							.valueOf(smsSmppProperties.getSourceAddressTON()),
+					NumberingPlanIndicator.valueOf(smsSmppProperties
+							.getSourceAddressNPI()), smsSmppProperties
+							.getSourceAddress(), addresses, new ESMClass(),
+					smsSmppProperties.getProtocolId(), smsSmppProperties
+							.getPriorityFlag(), timeFormatter
+							.format(new Date()), null, new RegisteredDelivery(
+							SMSCDeliveryReceipt.SUCCESS_FAILURE),
+					new ReplaceIfPresentFlag(smsSmppProperties
+							.getReplaceIfPresentFlag()), new GeneralDataCoding(
+							false, true, MessageClass.CLASS1,
+							Alphabet.ALPHA_DEFAULT), smsSmppProperties
+							.getSmDefaultMsgId(), messageBody.getBytes(), null);
 
 		} catch (PDUException e) {
 			LOG.error(e);
@@ -567,7 +582,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 			}
 			try {
-				Thread.sleep(sendingDelay);
+				Thread.sleep(smsSmppProperties.getSendingDelay());
 			} catch (InterruptedException e) {
 				LOG.error(e);
 			}
@@ -625,21 +640,22 @@ public class SmsSmppImpl implements SmsSmpp {
 		// Continue to send message to gateway.
 		try {
 
-			String messageId = session
-					.submitShortMessage(serviceType, TypeOfNumber
-							.valueOf(sourceAddressTON), NumberingPlanIndicator
-							.valueOf(sourceAddressNPI), sourceAddress,
-							TypeOfNumber.valueOf(destAddressTON),
-							NumberingPlanIndicator.valueOf(destAddressNPI),
-							message.getMobileNumber(), new ESMClass(),
-							protocolId, priorityFlag, timeFormatter
-									.format(new Date()), null,
-							new RegisteredDelivery(
-									SMSCDeliveryReceipt.SUCCESS_FAILURE),
-							replaceIfPresentFlag, new GeneralDataCoding(false,
-									true, MessageClass.CLASS1,
-									Alphabet.ALPHA_DEFAULT), smDefaultMsgId,
-							messageText.getBytes());
+			String messageId = session.submitShortMessage(smsSmppProperties
+					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
+					.getSourceAddressTON()), NumberingPlanIndicator
+					.valueOf(smsSmppProperties.getSourceAddressNPI()),
+					smsSmppProperties.getSourceAddress(), TypeOfNumber
+							.valueOf(smsSmppProperties.getSourceAddressTON()),
+					NumberingPlanIndicator.valueOf(smsSmppProperties
+							.getSourceAddressNPI()), message.getMobileNumber(),
+					new ESMClass(), smsSmppProperties.getProtocolId(),
+					smsSmppProperties.getPriorityFlag(), timeFormatter
+							.format(new Date()), null, new RegisteredDelivery(
+							SMSCDeliveryReceipt.SUCCESS_FAILURE),
+					smsSmppProperties.getReplaceIfPresentFlag(),
+					new GeneralDataCoding(false, true, MessageClass.CLASS1,
+							Alphabet.ALPHA_DEFAULT), smsSmppProperties
+							.getSmDefaultMsgId(), messageText.getBytes());
 			message.setSmscMessageId(messageId);
 
 			message.setSubmitResult(true);

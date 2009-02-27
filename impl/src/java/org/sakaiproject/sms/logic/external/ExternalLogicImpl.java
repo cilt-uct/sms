@@ -34,6 +34,7 @@ import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -41,6 +42,7 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
@@ -50,13 +52,20 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
  * out for the moment
- * 
+ *
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
 	private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
+
+	private ServerConfigurationService serverConfigurationService = null;
+
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
+	}
 
 	private FunctionManager functionManager;
 
@@ -129,7 +138,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
 	 */
 	public String getCurrentSiteId() {
@@ -138,7 +147,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
 	 */
@@ -393,7 +402,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
 	 */
@@ -451,6 +460,21 @@ public class ExternalLogicImpl implements ExternalLogic {
 			e.printStackTrace();
 		}
 		return null;
+
+	}
+
+	public SmsSmppProperties getSmppProperties(
+			SmsSmppProperties smsSmppProperties) {
+		smsSmppProperties.setSMSCAdress(serverConfigurationService
+				.getString("sms.SMSCAdress"));
+		smsSmppProperties.setSMSCPort(Integer
+				.valueOf(serverConfigurationService.getString("sms.SMSCPort")));
+		smsSmppProperties.setSMSCUsername(serverConfigurationService
+				.getString("sms.SMSCUserName"));
+		smsSmppProperties.setSMSCPassword(serverConfigurationService
+				.getString("sms.SMSCPassword"));
+
+		return smsSmppProperties;
 
 	}
 }

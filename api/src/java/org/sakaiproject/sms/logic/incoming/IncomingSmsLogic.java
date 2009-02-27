@@ -22,17 +22,17 @@ package org.sakaiproject.sms.logic.incoming;
  *  Registered with {@link SmsIncomingLogicManager}
  */
 public interface IncomingSmsLogic {
-	
+
 	/**
 	 * The key to identify commands for this tool
-	 * 
+	 *
 	 * @return array of {@link String} values
 	 */
 	public String[] getCommandKeys();
-	
+
 	 /**
 	  * Method to run when incoming SMS is matched with this tool
-	  * 
+	  *
 	  * @param command
 	  * @param siteId
 	  * @param userId

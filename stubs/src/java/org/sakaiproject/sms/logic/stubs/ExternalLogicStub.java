@@ -35,10 +35,11 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- * 
+ *
  */
 public class ExternalLogicStub implements ExternalLogic {
 
@@ -193,6 +194,12 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String getSakaiEmailAddressForUserId(String userId) {
-		return "it3es@nwu.ac.za";
+				return "louis@nwu.ac.za";
+
+	}
+
+	public SmsSmppProperties getSmppProperties(
+			SmsSmppProperties smsSmppProperties) {
+		return smsSmppProperties;
 	}
 }

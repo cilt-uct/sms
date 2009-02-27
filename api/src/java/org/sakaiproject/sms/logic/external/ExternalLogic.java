@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 /**
  * Interface to logic which is external to SMS.
@@ -116,8 +117,6 @@ public interface ExternalLogic {
 	 */
 	public String getSakaiUserDisplayName(String userId);
 
-
-
 	/**
 	 *returns the email address of the specific user
 	 *
@@ -125,8 +124,6 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public String getSakaiEmailAddressForUserId(String userId);
-
-
 
 	/**
 	 * Get the display id for the current user.
@@ -178,5 +175,14 @@ public interface ExternalLogic {
 	 */
 	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
 			String body);
+
+	/**
+	 * Gets the smsppProperties from the sakai.properties
+	 *
+	 * @param smsSmppProperties
+	 * @return
+	 */
+	public SmsSmppProperties getSmppProperties(
+			SmsSmppProperties smsSmppProperties);
 
 }

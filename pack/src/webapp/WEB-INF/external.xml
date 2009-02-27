@@ -18,6 +18,7 @@
 		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
 		<property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="mobileNumberHelper">
 			<bean class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
 				<property name="profileManager" ref="org.sakaiproject.api.app.profile.ProfileManager" />
