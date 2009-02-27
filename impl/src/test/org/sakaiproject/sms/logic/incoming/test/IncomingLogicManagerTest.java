@@ -84,4 +84,11 @@ public class IncomingLogicManagerTest extends TestCase {
 		
 	}
 	
+	public void testGenerateAssistMessage() {
+		manager.register("test", logic);
+		String msg = manager.generateAssistMessage("test");
+		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", msg);
+		
+	}
+	
 }

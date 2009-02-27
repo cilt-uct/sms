@@ -56,4 +56,12 @@ public interface SmsIncomingLogicManager {
 	 */
 	public boolean isValidCommand(String toolKey, String command);
 	
+	/**
+	 * Generate help message for a registered tool
+	 * 
+	 * @param toolKey tool to generate message for
+	 * @return the assist message
+	 */
+	public String generateAssistMessage(String toolKey);
+	
 }

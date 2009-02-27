@@ -95,6 +95,20 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			}
 		}
 	}
+	
+	public String generateAssistMessage(String toolKey) {
+		String[] commands = toolLogicMap.get(toolKey.toUpperCase()).getCommandKeys();
+		StringBuilder body = new StringBuilder();
+		body.append("Valid commands: \n");
+		for (int i=0; i < commands.length; i++) {
+			body.append(commands[i]);
+			if (i != commands.length-1) {
+				body.append(", ");
+			}
+		}
+		// Just cut off extra characters
+		return StringUtils.left(body.toString(), 160);
+	}
 
 	// Use Levenshtein distance to find closest match
 	private String getClosestMatch(String supplied, String[] values) {
