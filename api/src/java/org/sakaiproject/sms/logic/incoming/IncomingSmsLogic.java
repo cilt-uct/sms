@@ -37,6 +37,8 @@ public interface IncomingSmsLogic {
 	  * @param siteId
 	  * @param userId
 	  * @param body
+	  * 
+	  * @return message to reply
 	  */
-	public void execute(String command, String siteId, String userId, String body);
+	public String execute(String command, String siteId, String userId, String body);
 }

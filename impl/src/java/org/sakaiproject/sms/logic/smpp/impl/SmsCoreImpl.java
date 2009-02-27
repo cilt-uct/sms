@@ -33,6 +33,7 @@ import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
+import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -63,7 +64,7 @@ public class SmsCoreImpl implements SmsCore {
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 
 	private SmsMessageParser smsMessageParser;
-
+	
 	public SmsMessageParser getSmsMessageParser() {
 		return smsMessageParser;
 	}
@@ -93,6 +94,12 @@ public class SmsCoreImpl implements SmsCore {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
+	private SmsIncomingLogicManager smsIncomingLogicManager;
+	
+	public void setSmsIncomingLogicManager(SmsIncomingLogicManager smsIncomingLogicManager) {
+		this.smsIncomingLogicManager = smsIncomingLogicManager;
+	}
+	
 	public SmsSmpp smsSmpp = null;
 
 	public SmsBilling smsBilling = null;
@@ -324,6 +331,7 @@ public class SmsCoreImpl implements SmsCore {
 		ParsedMessage parsedMessage = null;
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
+			smsMessageReplyBody = smsIncomingLogicManager.process(parsedMessage);
 		} catch (ParseException e) {
 			// TODO add a proper validation reason.
 			smsMessageReplyBody = "Message invalid ";

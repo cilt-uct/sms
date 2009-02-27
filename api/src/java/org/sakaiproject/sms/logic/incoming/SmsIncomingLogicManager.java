@@ -44,7 +44,7 @@ public interface SmsIncomingLogicManager {
 	 * 
 	 * @param message the incoming message received
 	 */
-	public void process(ParsedMessage message);
+	public String process(ParsedMessage message);
 	
 	/**
 	 * Check if command is valid for tool

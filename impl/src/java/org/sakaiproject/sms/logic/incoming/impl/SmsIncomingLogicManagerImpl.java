@@ -36,7 +36,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	private static Log log = LogFactory.getLog(SmsIncomingLogicManagerImpl.class);
 	
 	// TODO: Throw exception if no applicable found? Always find closest match now
-	public void process(ParsedMessage message) {
+	public String process(ParsedMessage message) {
 		if (toolLogicMap.size() != 0) { // No logic registered
 			String toolKey = message.getTool().toUpperCase();
 			String cmd = message.getCommand().toUpperCase();
@@ -62,8 +62,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				}
 			}
 			
-			logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());			
+			return logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());			
 		}
+		return null;
 	}
 
 	public void register(String toolKey, IncomingSmsLogic logic) {

@@ -34,17 +34,19 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 			throw new ParseException("null message supplied");
 		}
 
-		String[] params = StringUtils.split(msgText, DELIMITERS, 4);
+		String[] params = StringUtils.split(msgText, DELIMITERS, 5);
 
-		// Must at lease contain tool + site + command
-		if (params.length < 3) {
+		// Must at lease contain tool + site + userid + command
+		if (params.length < 4) {
 			throw new ParseException("Invalid number of tokens: "
 					+ params.length);
 		}
 
 		if (params.length == 4) {
+			// tool + site + userid + command			
 			return new ParsedMessage(params[0], params[1], params[2], params[3]);
 		} else {
+			// tool + site + userid + command + body
 			return new ParsedMessage(params[0], params[1], params[2],
 					params[3], params[4]);
 		}

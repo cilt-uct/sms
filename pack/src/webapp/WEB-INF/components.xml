@@ -77,6 +77,7 @@
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
 		<property name="smsMessageParser" ref="org.sakaiproject.sms.logic.incoming.SmsMessageParser" />
+		<property name="smsIncomingLogicManager" ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
 
 	</bean>
 		<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser" class="org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl">
