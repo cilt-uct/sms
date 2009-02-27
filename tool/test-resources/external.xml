@@ -8,5 +8,10 @@
 	-->
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"
 		class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub" />
+	
+	<bean id=" org.sakaiproject.sms.logic.incoming.IncomingSmsLogic"
+		class="org.sakaiproject.sms.logic.stubs.TestIncomingSmsLogic" init-method="init" >
+		<property name="incomingLogicManager" ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
+	</bean>	
 
 </beans>

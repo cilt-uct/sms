@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
+import org.sakaiproject.sms.logic.stubs.TestIncomingSmsLogic;
 
 /**
  * Unit test for registering of commands
@@ -69,15 +70,15 @@ public class IncomingLogicManagerTest extends TestCase {
 	public void testProcess() {
 		manager.register("test", logic);
 		
-		ParsedMessage msg = new ParsedMessage("test", "site", "create", "userId");
+		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "create");
 		manager.process(msg);
 		assertEquals("CREATE", logic.getLastExecuted());
 		
-		msg = new ParsedMessage("test", "site", "updat", "userId");
+		msg = new ParsedMessage("test", "site", "userId", "updat");
 		manager.process(msg);
 		assertEquals("UPDATE", logic.getLastExecuted());
 
-		msg = new ParsedMessage("test", "site", "DEL", "userId");
+		msg = new ParsedMessage("test", "site", "userId", "DEL");
 		manager.process(msg);
 		assertEquals("DELETE", logic.getLastExecuted());
 		
