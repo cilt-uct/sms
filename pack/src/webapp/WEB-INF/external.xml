@@ -9,6 +9,11 @@
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 	</bean>
 
+	<bean id="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp" class="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp">
+		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"/>
+		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
+	</bean>
+
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
