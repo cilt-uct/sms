@@ -161,7 +161,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		if (id == null)
 			throw new IllegalArgumentException("The reference must include an id for deletes (id is currently null)");
 		
-		SmsTask task = smsTaskLogic.getSmsTask(new Long(id));
+		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
 		if (task == null) {
             throw new IllegalArgumentException("No poll found for the given reference: " + ref);
         }
@@ -182,11 +182,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
     public String[] getHandledInputFormats() {
         return new String[] {Formats.XML, Formats.JSON, Formats.HTML};
     }
-	
-	/**
-	 * TODO
-	 */
-
 
 
 	public List<?> getEntities(EntityReference ref, Search search) {
