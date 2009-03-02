@@ -74,6 +74,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * @return valid command
 	 */
 	private String findValidCommand(String command, IncomingSmsLogic logic) {
+		String aliasedCommand = findAlias(command, logic);
+		if (aliasedCommand != null) {
+			command = aliasedCommand;
+		}
+		
 		if (HELP.equalsIgnoreCase(command)) {
 			return HELP;
 		} else {
@@ -92,6 +97,19 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		}
 		// unreachable at the moment because match will always be found
 		return HELP;
+	}
+	
+	// Tries to command on alias map (returns command if found)
+	private String findAlias(String command, IncomingSmsLogic logic) {
+		// ? is default alias for HELP
+		if ("?".equals(command)) {
+			return HELP;
+		}
+		
+		if (logic.getAliases() != null) {
+			return logic.getAliases().get(command.toUpperCase());
+		}
+		return null;
 	}
 	
 	public void register(String toolKey, IncomingSmsLogic logic) {

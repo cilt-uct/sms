@@ -257,10 +257,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic()
 					.getPagedSmsTasksForCriteria(bean).getPageResults();
 			assertTrue("Collection returned has no objects", tasks.size() > 0);
-
+			assertEquals(1, tasks.size());
+			
 			for (SmsTask task : tasks) {
 				// We know that only one task should be returned
-				assertEquals(task, insertTask);
+				assertTrue(task.getId().equals(insertTask.getId()));
 			}
 		} catch (SmsSearchException se) {
 			fail(se.getMessage());
@@ -455,4 +456,5 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_3));
 	}
+	
 }

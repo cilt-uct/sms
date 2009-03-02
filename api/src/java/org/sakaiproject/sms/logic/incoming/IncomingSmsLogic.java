@@ -17,6 +17,9 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
+import java.util.Map;
+
+
 /**
  *	Interface for tools to implement to register commands for incoming messages
  *  Registered with {@link SmsIncomingLogicManager}
@@ -29,7 +32,14 @@ public interface IncomingSmsLogic {
 	 * @return array of {@link String} values
 	 */
 	public String[] getCommandKeys();
-
+	
+	/**
+	 * Return a map of aliases in alias-command pairs
+	 * 
+	 * @return
+	 */
+	public Map<String, String> getAliases();
+	
 	 /**
 	  * Method to run when incoming SMS is matched with this tool
 	  *

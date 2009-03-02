@@ -1,5 +1,8 @@
 package org.sakaiproject.sms.logic.stubs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.IncomingSmsLogic;
@@ -39,5 +42,13 @@ public class TestIncomingSmsLogic implements IncomingSmsLogic {
 	
 	public String getLastExecuted() {
 		return lastExecuted;
+	}
+
+	public Map<String, String> getAliases() {
+		Map<String, String> aliasMap = new HashMap<String, String>();
+		aliasMap.put("C", "CREATE");
+		aliasMap.put("U", "UPDATE");
+		aliasMap.put("D", "DELETE");
+		return aliasMap;
 	}
 }
