@@ -42,10 +42,10 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		} catch (Exception e) {
 			LOG.error("Exception: " + e);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		}
 	}
 
@@ -57,10 +57,10 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		} catch (Exception e) {
 			LOG.error("Exception: " + e);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		}
 	}
 
@@ -82,10 +82,10 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
 			LOG.error("HibernateException: " + ex);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		} catch (Exception e) {
 			LOG.error("Exception: " + e);
-			transactionManager.rollback(transaction);
+			rollback(transaction);
 		}
 		
 		return affected;
@@ -113,6 +113,12 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	public Criteria createCriteria(Class className) {
 		return getSession().createCriteria(className);
+	}
+	
+	private void rollback(TransactionStatus transaction) {
+		if (!transaction.isCompleted()) {
+			transactionManager.rollback(transaction);
+		}
 	}
 
 }
