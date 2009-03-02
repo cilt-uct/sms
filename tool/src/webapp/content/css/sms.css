@@ -149,3 +149,7 @@ text-align:right;
 	filter: Alpha(Opacity=70);
 	opacity: 0.7;
 }
+#peopleListGroups {
+	height: 200px;
+	overflow: auto;
+}

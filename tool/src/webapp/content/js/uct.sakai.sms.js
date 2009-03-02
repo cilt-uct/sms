@@ -17,9 +17,9 @@
         return this.each(function() {
             // log('eref');
             //$.fn.SMS.get.report_table();
-            //setTimeout(function() {
-            //   log($.fn.SMS.get.peopleByName().toString())
-            //}, 2000);
+            setTimeout(function() {
+               log($.fn.SMS.get.peopleByName())
+            }, 2000);
             //while(var_getEveryoneInSite == null)
             //log(var_getEveryoneInSite);
             //return false;
@@ -89,9 +89,9 @@
                     }
                     shadow.find('td[rel=status]').html(
                             $("<img/>")
-                            .attr("src", $.fn.SMS.settings.images.base + status_icon[0])
-                            .attr('title', status_icon[1])
-                            .attr('alt', status_icon[1])
+                                    .attr("src", $.fn.SMS.settings.images.base + status_icon[0])
+                                    .attr('title', status_icon[1])
+                                    .attr('alt', status_icon[1])
                             );
                     shadow.find('td[rel=author]').text(item.author);
                     shadow.find('td[rel=date]').text(item.date_taken);
@@ -131,9 +131,9 @@
             $.each(selectedRecipientsList.names, function(i, parent) {
                 if (parent) {
                     //$.each(parent, function(n, item) {
-                        if (parent[0] == id) {
-                            selectedRecipientsList.names.splice(parseInt(i), 1);
-                        }
+                    if (parent[1] == id) {
+                        selectedRecipientsList.names.splice(parseInt(i), 1);
+                    }
                     //});
                 }
             });
@@ -148,6 +148,7 @@
         URL_EB_GET_THIS_SMS: '/direct/',
         URL_EB_GET_ACC_REPORT: '/direct/',
         URL_EB_GET_PEOPLE: '/sms-tool/content/js/json-people.js',
+        URL_EB_GET_PEOPLE_PARTICIPANTS: '/sms-tool/content/js/json-participants.js',
         /**
          * Set URLs
          **/
@@ -201,7 +202,8 @@
      */
 
     var var_getEveryoneInSite;     // to hold full people list
-    var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
+    var var_getEveryoneInSite_participants;     // to hold full participants list
+      var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
         roles:
                 new Array()
         ,
@@ -219,14 +221,19 @@
 
     function setEveryoneInSite() {
         $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE, function(data) {
-            var_getEveryoneInSite = data;
-        });
-
+                    var_getEveryoneInSite = data;
+                });
+        $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE_PARTICIPANTS, function(data) {
+                    var_getEveryoneInSite_participants = data;
+                });
     }
     ;
 
-    function getEveryoneInSite() {
-        return var_getEveryoneInSite;
+    function getEveryoneInSite(filter) {
+        if(filter && filter == "names")
+            return var_getEveryoneInSite_participants;
+        else
+            return var_getEveryoneInSite;
     }
 
     var getSelectedRecipientsList = {
@@ -250,6 +257,22 @@
                     break;
                 case "numbers":
                     return selectedRecipientsList.numbers.length;
+                    break;
+            }
+        },
+        array: function(filter) {
+            switch (filter) {
+                case "roles":
+                    return selectedRecipientsList.roles;
+                    break;
+                case "groups":
+                    return selectedRecipientsList.groups;
+                    break;
+                case "names":
+                    return selectedRecipientsList.names;
+                    break;
+                case "numbers":
+                    return selectedRecipientsList.numbers;
                     break;
             }
         }
@@ -276,8 +299,8 @@
                     });
                     break;
                 case "Names":
-                    $.each(var_getEveryoneInSite.people[0].participants, function(i, item) {
-                        query.push(new Array(item.name, item.to));
+                    $.each(var_getEveryoneInSite_participants.membership_collection, function(i, item) {
+                        query.push(new Array(item.userDisplayName, item.id));
                     });
                     break;
             }
@@ -289,7 +312,6 @@
     }
 
     function returnThis(d) {
-        log(d);
         return d;
     }
     //
@@ -359,6 +381,7 @@
                 selectedRecipientsList.roles.push(new Array($(this).parent().find('label').attr('RolesId'), $(this).parent().find('label').attr('RolesName')));
                 //Refresh {selectedRecipients} Number on TAB
                 $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
+                //log(selectedRecipientsList.roles.serializeArray());
 
             } else
             //Fn for the UNcheck event
@@ -368,9 +391,9 @@
                 $.each(selectedRecipientsList.roles, function(i, parent) {
                     if (parent) {
                         //$.each(parent, function(n, item) {
-                            if (parent[0] == thisRoleId) {
-                                selectedRecipientsList.roles.splice(parseInt(i), 1);
-                            }
+                        if (parent[0] == thisRoleId) {
+                            selectedRecipientsList.roles.splice(parseInt(i), 1);
+                        }
                         //});
                     }
                 });
@@ -401,10 +424,10 @@
                     if (parent) {
                         //log(selectedRecipientsList.groups.toString());
                         //$.each(parent, function(n, item) {
-                            //log("Item: "+item);
-                            if (parent[0] == thisRoleId) {
-                               selectedRecipientsList.groups.splice(parseInt(i), 1);
-                            }
+                        //log("Item: "+item);
+                        if (parent[0] == thisRoleId) {
+                            selectedRecipientsList.groups.splice(parseInt(i), 1);
+                        }
                         //});
                     }
                 });
@@ -429,7 +452,7 @@
 
         if ($.fn.SMS.get.peopleByName().length > 16) {
             $("#peopleListNamesSuggest").autoCompletefb();
-        } else if($.fn.SMS.get.peopleByName().length > 0) {
+        } else if ($.fn.SMS.get.peopleByName().length > 0) {
             $("#peopleListNamesSuggest")
                     .removeClass('first acfb-holder')
                     .html(renderPeopleAsCheckboxes("Names"));
@@ -451,10 +474,10 @@
                         if (parent) {
                             //log(selectedRecipientsList.groups.toString());
                             //$.each(parent, function(n, item) {
-                                //log("Item: "+item);
-                                if (parent[0] == thisRoleId) {
-                                   selectedRecipientsList.names.splice(parseInt(i), 1);
-                                }
+                            //log("Item: "+item);
+                            if (parent[0] == thisRoleId) {
+                                selectedRecipientsList.names.splice(parseInt(i), 1);
+                            }
                             //});
                         }
                     });
@@ -487,46 +510,63 @@
                     }
 
                 });
-
-
-                //Log report on valid numbers
-                showSelectedNumbersInDOM();
-                that
-                    //.addClass('messageEr ror')
-                        .val(nums_invalid.toString().split(',').join('\n'));
-                var temp = "";
-                $.each(selectedRecipientsList.numbers, function(i, item) {
-                    temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
-                });
-                that2
-                        .show()
-                        .css({
-                    border: 'none',
-                    height: '100px',
-                    overflow: 'auto',
-                    width: '180px'
-                })
-                        .addClass('acfb-holder')
-                        .html(temp);
-                $("#numbersValid").fadeIn().effect("highlight", 'slow');
-                $("#numbersInvalid").fadeIn().effect("highlight", 'slow');
-                //bind delete image event
-                that2.find('li img.numberDel').bind('click', function() {
-                    var tempText = $(this).parent().find('span').text();
-                    $.each(selectedRecipientsList.numbers, function(i, item) {
-                        if (item && item == tempText) {
-                            selectedRecipientsList.numbers.splice(i, 1);
-                        }
-                    });
-                    $(this).parent().fadeOut(function() {
-                        $(this).remove();
-                    });
+//Log report on valid numbers
+                if (getSelectedRecipientsList.length('numbers') > 0) {
                     showSelectedNumbersInDOM();
-                    log(selectedRecipientsList.numbers.toString());
-                });
-            }
+                    //log(nums_invalid.length);
+                    if (nums_invalid.length > 0) {
+                        that.val(nums_invalid.toString().split(',').join('\n'));
+                        $("#numbersInvalid .msg")
+                                .addClass('highlight')
+                                .fadeIn('fast', function() {
+                            $(this).effect("highlight", 'slow');
+                        });
+                        log('Not empty');
+                    } else {
+                        that.val('');
+                        $("#numbersInvalid .msg").fadeOut();
+                    }
+                    var temp = "";
+                    $.each(selectedRecipientsList.numbers, function(i, item) {
+                        temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
+                    });
+                    that2
+                            .show()
+                            .css({
+                        border: 'none',
+                        height: '100px',
+                        overflow: 'auto',
+                        width: '180px'
+                    })
+                            .addClass('acfb-holder')
+                            .html(temp);
+
+                    $("#numbersValid")
+                            .addClass('messageSuccess')
+                            .fadeIn('fast', function() {
+                        $(this).effect("highlight", 'slow');
+                    });
+
+                    //bind delete image event
+                    that2.find('li img.numberDel').bind('click', function() {
+                        var tempText = $(this).parent().find('span').text();
+                        $.each(selectedRecipientsList.numbers, function(i, item) {
+                            if (item && item == tempText) {
+                                selectedRecipientsList.numbers.splice(i, 1);
+                            }
+                        });
+                        $(this).parent().fadeOut(function() {
+                            $(this).remove();
+                        });
+                        showSelectedNumbersInDOM();
+                        //log(selectedRecipientsList.numbers.toString());
+                    });
+                }
+            }else{
+            $("#numbersInvalid .msg").fadeOut();
             that.focus();
-            return false;
+           // return false;
+            }
         });
 
         function showSelectedNumbersInDOM() {
@@ -536,7 +576,7 @@
                         .slideDown()
                         .addClass('')
                         .html('\
-                    You have ' + getSelectedRecipientsList.length('numbers') + ' valid numbers.\
+                    You have ' + getSelectedRecipientsList.length('numbers') + ' valid number(s).\
                     <br /> \
                     \
                     \
@@ -568,19 +608,14 @@
          }
          ******/
 
-        //for list of individuals in site
-        /*var map = getPeople("Names");
-         for (n in map) {
-         var elem = '\
-         <div><input type="checkbox" id="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">\
-         <label for="peopleList-'+map[n][1]+'" name="'+map[n][0]+'">'+map[n][0]+'\
-         </label>\
-         </div></input>\
-         ';
-         $('#peopleListNames').append(elem);
-         }*/
 
-
+        /**
+         * Bind Command Button events
+         */
+        $('#recipientsCmd').bind('click', function() {
+            log(serializeRecipients());
+            
+        });
     }
 
     function init_smsBoxCounter() {
@@ -610,6 +645,35 @@
                 $(this).val($(this).val().substr(0, limit));
             }
         });
+    }
+
+    /**
+     * Serialise all recipient values
+     */
+    function serializeRecipients() {
+        //Force Validate Numbers Textarea
+        if ($('#peopleListNumbersBox').val() != "") {
+            $('#checkNumbers').trigger('click');
+        }
+        if ($('#peopleListNumbersBox').val() == "") {
+            //return false;
+            var serial = "";
+            var filterValues = new Array('roles', 'groups', 'names', 'numbers');
+            $.each(filterValues, function(n, filter) {
+                var tempArray = new Array();
+                if (getSelectedRecipientsList.length(filter) > 0) {
+                    $.each(getSelectedRecipientsList.array(filter), function(i, item) {
+                        tempArray.push(item[0]);
+                    });
+                    serial += filter + "=" + tempArray.toString() + "&";
+                }
+            });
+            // log("Serialized: "+serial);
+            return serial;
+        } else {
+            $('#peopleTabsNumbers a').trigger('click');
+            return false;
+        }
     }
 
 

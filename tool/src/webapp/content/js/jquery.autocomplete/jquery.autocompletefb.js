@@ -22,16 +22,16 @@ jQuery.fn.autoCompletefb = function(options)
     var settings =
     {
         ul         : tmp,
-        urlLookup  : $.fn.SMS.get.peopleByName(),
+        urlLookup  : $.fn.SMS.get.peopleByName(),//$.fn.SMS.get.peopleByName(),
         acOptions  : {
             minChars: 1,
             matchContains:  true,
-            mustMatch:  true,
+            //mustMatch:  true,
             selectFirst:    false,
             width:  300,
             formatItem: function(row, i, max, term) {
                 //return '<b>' + row[0] + '</b><br><span style="font-size: 80%;">' + row[1] + '</span>';
-                return '<b>' + row[0] + '</b>';
+                return row[0];
             }
         },
         foundClass : ".acfb-data",
@@ -60,7 +60,7 @@ jQuery.fn.autoCompletefb = function(options)
             return tmp.acfb;
         },
         removeFind : function(o) {
-            var tmpArray = new Array( $(o).parent().attr('personId'),$(o).parent().attr('personName'));
+            var tmpArray = new Array($(o).parent().attr('personId'), $(o).parent().attr('personName'));
             $(o).unbind('click').parent().remove();
             $(settings.inputClass, tmp).focus();
             $.fn.SMS.set.sliceSelectedRecipientsListName(tmpArray[0]);
@@ -83,6 +83,7 @@ jQuery.fn.autoCompletefb = function(options)
         $('#peopleListNamesSuggest > li').each(function() {
             if ($(this).attr('personId') == d[1]) {
                 $(this).remove();
+                $.fn.SMS.set.sliceSelectedRecipientsListName(d[1]);
             }
         });
         var f = settings.foundClass.replace(/\./, '');

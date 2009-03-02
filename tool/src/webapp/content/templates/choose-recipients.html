@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
 <head>
 <title rsf:id="page-title">Sms Items</title>
+<script type="text/javascript" src="https://vula.uct.ac.za/direct/membership/site/5cdab93e-bc00-481f-8c6a-61fc44649f75.json"></script>
 <script type="text/javascript">
        // $(document).ready(function() {
 			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
@@ -45,9 +46,17 @@
     <div id="peopleListNumbers">
     <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </p>
       
-      <table width="100%" border="0" cellspacing="3" cellpadding="3">
+      <table width="100%" border="0" cellspacing="5" cellpadding="5">
   <tr>
-    <td><div id="numbersInvalid" style="display:none">Correct these numbers:</div><textarea id="peopleListNumbersBox" name="peopleListNumbersBox" cols="25" rows="5"></textarea></td>
+    <td>
+    <div id="numbersInvalid">
+    <span class="msg" style="display:none">
+      Correct these numbers:</span>
+   <textarea id="peopleListNumbersBox" name="peopleListNumbersBox" cols="22" rows="5"></textarea>
+  </div>
+    
+    
+    </td>
     <td><div id="numbersValid" style="display:none">These numbers are fine:</div><ul id="peopleListNumbersBox2"></ul></td>
   </tr>
 </table>
@@ -61,7 +70,7 @@
     Send me a copy</label>
   </div>
   <div class="act">
-    <input type="submit" class="active" disabled="disabled" id="recipientsCmd" value="Continue" />
+    <input type="button" class="active"  id="recipientsCmd" value="Continue" />
     <input type="button" value="cancel" class="close"/>
   </div>
 </div>
