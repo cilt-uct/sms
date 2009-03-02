@@ -78,9 +78,18 @@ public class IncomingLogicManagerTest extends TestCase {
 		manager.process(msg);
 		assertEquals("UPDATE", logic.getLastExecuted());
 
-		msg = new ParsedMessage("test", "site", "userId", "DEL");
+		msg = new ParsedMessage("test", "site", "userId", "DELET");
 		manager.process(msg);
 		assertEquals("DELETE", logic.getLastExecuted());
+		
+	}
+	
+	public void testHelpCommand() {
+		manager.register("test", logic);
+		assertTrue(manager.isValidCommand("test", "help"));
+		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "help");
+		String value = manager.process(msg);
+		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", value);
 		
 	}
 	

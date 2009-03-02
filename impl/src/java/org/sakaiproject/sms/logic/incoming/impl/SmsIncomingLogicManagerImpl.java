@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.IncomingSmsLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
-import org.sakaiproject.sms.util.SmsStringUtil;
+import org.sakaiproject.sms.util.SmsStringArrayUtil;
 
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
@@ -35,7 +35,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	
 	private static Log log = LogFactory.getLog(SmsIncomingLogicManagerImpl.class);
 	
-	// TODO: Throw exception if no applicable found? Always find closest match now
+	// The help command is valid for all sms-enabled tools 
+	private static final String HELP = "HELP";
+	
+	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message) {
 		if (toolLogicMap.size() != 0) { // No logic registered
 			String toolKey = message.getTool().toUpperCase();
@@ -44,29 +47,53 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					
 			if (isValidCommand(toolKey, cmd)) { // Everything is valid
 				logic = toolLogicMap.get(toolKey);
-				cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
+				cmd = findValidCommand(message.getCommand(), logic);
 			} else {
 				if (toolLogicMap.containsKey(toolKey)) { // Valid tool but invalid command
 					logic = toolLogicMap.get(toolKey);
-					cmd = getClosestMatch(cmd, logic.getCommandKeys());
+					cmd = findValidCommand(cmd, logic);
 
 				} else { // Invalid toolKey
 					toolKey = getClosestMatch(toolKey, toolLogicMap.keySet().toArray(new String[toolLogicMap.keySet().size()]));
 					logic = toolLogicMap.get(toolKey);
-					 
-					if (isValidCommand(toolKey, message.getCommand())) { // valid command
-						cmd = SmsStringUtil.findInArray(logic.getCommandKeys(), message.getCommand());
-					} else { // invalid command
-						cmd = getClosestMatch(cmd, logic.getCommandKeys());
-					}
+					cmd = findValidCommand(message.getCommand(), logic);
 				}
 			}
 			
-			return logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());			
+			if (HELP.equalsIgnoreCase(cmd)) {
+				return generateAssistMessage(toolKey);
+			} else {
+				return logic.execute(cmd, message.getSite(), message.getUserID(), message.getBody());
+			}
 		}
 		return null;
 	}
 
+	/**
+	 * Finds valid command EXACTLY as it is specified in command keys or HELP
+	 * @return valid command
+	 */
+	private String findValidCommand(String command, IncomingSmsLogic logic) {
+		if (HELP.equalsIgnoreCase(command)) {
+			return HELP;
+		} else {
+			String toReturn = SmsStringArrayUtil.findInArray(logic.getCommandKeys(), command);
+			
+			if (toReturn == null) { // None found in command keys
+				String[] values =  SmsStringArrayUtil.copyOf(logic.getCommandKeys(), logic.getCommandKeys().length + 1);
+				values[values.length-1] = HELP;
+				toReturn = getClosestMatch(command, values);
+			}
+			
+			if (toReturn != null) {
+				return toReturn;
+			}
+			
+		}
+		// unreachable at the moment because match will always be found
+		return HELP;
+	}
+	
 	public void register(String toolKey, IncomingSmsLogic logic) {
 		toolKey = toolKey.toUpperCase();
 		
@@ -88,7 +115,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		if (!toolLogicMap.containsKey(toolKey)) {
 			return false;
 		} else {
-			if (Arrays.asList(SmsStringUtil.upperCaseArray(toolLogicMap.get(toolKey).getCommandKeys())).contains(command)) {
+			if (Arrays.asList(SmsStringArrayUtil.upperCaseArray(toolLogicMap.get(toolKey).getCommandKeys())).contains(command) 
+					|| HELP.equalsIgnoreCase(command)) { // HELP command is valid by default
 				return true;
 			} else {
 				return false;
