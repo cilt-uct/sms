@@ -96,6 +96,11 @@ public class TaskListPopupProducer implements ViewComponentProducer,
 				UIOutput.make(tofill, "messsage-body", NullHandling
 						.safeToString(smsTask.getMessageBody()));
 
+				UIMessage.make(tofill, "messsage-reply-body-label",
+						"sms.sms-task.message.reply.body");
+				UIOutput.make(tofill, "messsage-reply-body", NullHandling
+						.safeToString(smsTask.getMessageReplyBody()));
+				
 				UIMessage.make(tofill, "message-type-id-label",
 						"sms.sms-task.message.type.id");
 				UIOutput.make(tofill, "message-type-id", NullHandling
