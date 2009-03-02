@@ -418,29 +418,35 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	/**
 	 * Read some smpp properties from a file. These properties can be changed as
-	 * required.
+	 * required. If the gateway information is not found in sakai.properties,
+	 * then we read it from our own smpp.properties. Please note that this info
+	 * should rather be in sakai.properties.
 	 */
 	private void loadSmsSmppProperties() {
 
 		try {
 			smsSmppProperties = new SmsSmppProperties();
-
+			// for in case bindThreadTimer is not set
+			smsSmppProperties.setBindThreadTimer(5 * 1000);
 			smsSmppProperties = hibernateLogicLocator.getExternalLogic()
 					.getSmppProperties(smsSmppProperties);
 
-			if (smsSmppProperties.getSMSCAdress() == null) {
+			if ((smsSmppProperties.getSMSCAdress() == null)
+					|| smsSmppProperties.getSMSCAdress().equals("")) {
 				smsSmppProperties.setSMSCAdress(properties
-						.getProperty("SMSCadress"));
+						.getProperty("SMSCAdress"));
 			}
 			if (smsSmppProperties.getSMSCPort() == 0) {
 				smsSmppProperties.setSMSCPort(Integer.parseInt(properties
-						.getProperty("SMSCport")));
+						.getProperty("SMSCPort")));
 			}
-			if (smsSmppProperties.getSMSCUsername() == null) {
+			if ((smsSmppProperties.getSMSCUsername() == null)
+					|| (smsSmppProperties.getSMSCUsername().equals(""))) {
 				smsSmppProperties.setSMSCUsername(properties
-						.getProperty("SMSCUsername"));
+						.getProperty("SMSCUserName"));
 			}
-			if (smsSmppProperties.getSMSCPassword() == null) {
+			if ((smsSmppProperties.getSMSCPassword() == null)
+					|| (smsSmppProperties.getSMSCPassword().equals(""))) {
 				smsSmppProperties.setSMSCPassword((properties
 						.getProperty("SMSCPassword")));
 			}

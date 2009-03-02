@@ -52,7 +52,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 /**
  * Implementation of {@link ExternalLogic} with Sakai-specific code commented
  * out for the moment
- *
+ * 
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
@@ -138,7 +138,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentSiteId()
 	 */
 	public String getCurrentSiteId() {
@@ -147,7 +147,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getCurrentLocationId()
 	 */
@@ -402,7 +402,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * org.sakaiproject.sms.logic.external.ExternalLogic#getUserDisplayName()
 	 */
@@ -465,15 +465,20 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public SmsSmppProperties getSmppProperties(
 			SmsSmppProperties smsSmppProperties) {
-		smsSmppProperties.setSMSCAdress(serverConfigurationService
-				.getString("sms.SMSCAdress"));
-		smsSmppProperties.setSMSCPort(Integer
-				.valueOf(serverConfigurationService.getString("sms.SMSCPort")));
-		smsSmppProperties.setSMSCUsername(serverConfigurationService
-				.getString("sms.SMSCUserName"));
-		smsSmppProperties.setSMSCPassword(serverConfigurationService
-				.getString("sms.SMSCPassword"));
-
+		try {
+			smsSmppProperties.setSMSCAdress(serverConfigurationService
+					.getString("sms.SMSCAdress"));
+			smsSmppProperties.setSMSCPort(Integer
+					.valueOf(serverConfigurationService
+							.getString("sms.SMSCPort")));
+			smsSmppProperties.setSMSCUsername(serverConfigurationService
+					.getString("sms.SMSCUserName"));
+			smsSmppProperties.setSMSCPassword(serverConfigurationService
+					.getString("sms.SMSCPassword"));
+		} catch (Exception e) {
+			// smpp properties is not set up in sakai.properties, so we are
+			// going to use smpp.properties
+		}
 		return smsSmppProperties;
 
 	}
