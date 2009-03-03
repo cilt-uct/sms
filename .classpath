@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1/activation-1.1.jar"/>
 	<classpathentry kind="src" path="api/src/java"/>
+	<classpathentry kind="src" path="impl/src/test/resources"/>
 	<classpathentry kind="src" path="impl/src/java"/>
 	<classpathentry kind="src" path="pack/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="tool/src/test"/>
@@ -9,7 +10,7 @@
 	<classpathentry kind="src" path="stubs/src/java"/>
 	<classpathentry excluding="bundle/" kind="src" path="tool/src/webapp/WEB-INF"/>
 	<classpathentry kind="src" path="tool/src/webapp/WEB-INF/bundle"/>
-	<classpathentry kind="src" path="impl/src/test"/>
+	<classpathentry excluding="resources/" kind="src" path="impl/src/test"/>
 	<classpathentry kind="src" path="api/src/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="M2_REPO/org/springframework/spring/2.0.6/spring-2.0.6.jar"/>
