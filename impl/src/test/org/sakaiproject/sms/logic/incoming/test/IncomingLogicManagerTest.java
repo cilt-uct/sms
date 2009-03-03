@@ -21,7 +21,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 import junit.framework.TestCase;
+
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
@@ -99,7 +101,8 @@ public class IncomingLogicManagerTest extends TestCase {
 	public void testProcess() {
 		manager.register("test", logic);
 
-		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "create");
+		ParsedMessage msg = new ParsedMessage("test", "site", "userId",
+				"create");
 		manager.process(msg);
 		assertEquals("CREATE", logic.getLastExecuted());
 
@@ -113,8 +116,6 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
-
-
 	public void testPossibleMatches() {
 		String[] validCommands = parseCSVFile(loadPropertiesFile("ValidCommands.txt"));
 		String[] commandsToMatch = parseCSVFile(loadPropertiesFile("CommandsToMatch.txt"));
@@ -123,8 +124,11 @@ public class IncomingLogicManagerTest extends TestCase {
 			String command = commandSplit[0];
 			SmsPatternSearchResult smsPatternSearchResult = manager
 					.getClosestMatch(command, validCommands);
-			assertTrue(smsPatternSearchResult.getPossibleMatches().size() == Integer
-					.parseInt(commandSplit[1]));
+			boolean result = smsPatternSearchResult.getPossibleMatches().size() == Integer
+					.parseInt(commandSplit[1]);
+			System.out.println("Looking for " + command + " #"
+					+ commandSplit[1] + " " + result);
+			assertTrue(result);
 		}
 	}
 
