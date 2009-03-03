@@ -276,7 +276,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (!hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
 				.isSendSmsEnabled()) {
-			throw new SmsSendDisabledException();
+			throw new SmsSendDisabledException(smsTask);
 		}
 
 		ArrayList<String> errors = new ArrayList<String>();
@@ -358,6 +358,10 @@ public class SmsCoreImpl implements SmsCore {
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
+		if (parsedMessage == null) {
+			parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
+					"COMMAND");
+		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
