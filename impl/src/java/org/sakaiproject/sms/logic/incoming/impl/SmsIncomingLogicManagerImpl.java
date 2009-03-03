@@ -96,8 +96,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Returns an ArrayList of possible strings that match the requested
-	 * command.
-	 *
+	 * command. The idea is based on the Levenshtein distance. Our algorithm
+	 * assign the highest scores to matches on the left hand side of the word.
+	 * And if the first letter does not match, then its a 0% match for the word.
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
@@ -125,22 +127,23 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		}
 		// We loop through each command and pattern. Left hand matching
-		// chars score more points.If the first chars dont match we break the loop.
+		// chars score more points.If the first chars dont match we break the
+		// loop.
 		int maxStringScore = 0;
 
 		for (String str : values) {
-			boolean skipCommand=false;
+			boolean skipCommand = false;
 			int patternScore = 0;
 			char[] commandChars = str.toCharArray();
 			char[] validCommands = valueToMatch.toCharArray();
 			int startChar = 0;
 			for (int i = 0; i < validCommands.length; i++) {
-				if(skipCommand){
+				if (skipCommand) {
 					break;
 				}
 				for (int e = startChar; e < commandChars.length; e++) {
-					if(i==0 && validCommands[0] != commandChars[0]){
-						skipCommand=true;
+					if (i == 0 && validCommands[0] != commandChars[0]) {
+						skipCommand = true;
 						break;
 					}
 					if (validCommands[i] == commandChars[e]) {
@@ -171,7 +174,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Finds valid command EXACTLY as it is specified in command keys or HELP
-	 *
+	 * 
 	 * @return valid command
 	 */
 	private SmsPatternSearchResult findValidCommand(String command,
@@ -263,7 +266,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		} else {
 			body.append("Valid commands: \n");
 
-			if (matches == null ||matches.size()==0 || matches.contains(HELP)) {
+			if (matches == null || matches.size() == 0
+					|| matches.contains(HELP)) {
 				commands = toolLogicMap.get(toolKey.toUpperCase())
 						.getCommandKeys();
 			} else {
@@ -283,7 +287,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return

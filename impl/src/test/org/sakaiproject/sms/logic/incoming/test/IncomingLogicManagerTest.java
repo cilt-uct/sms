@@ -127,7 +127,8 @@ public class IncomingLogicManagerTest extends TestCase {
 			boolean result = smsPatternSearchResult.getPossibleMatches().size() == Integer
 					.parseInt(commandSplit[1]);
 			System.out.println("Looking for " + command + " #"
-					+ commandSplit[1] + " " + result);
+					+ commandSplit[1] + " " + result + " (found "
+					+ smsPatternSearchResult.getPossibleMatches().size() + ")");
 			assertTrue(result);
 		}
 	}
