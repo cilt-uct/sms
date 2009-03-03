@@ -17,27 +17,43 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming.test;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Properties;
+
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.stubs.TestIncomingSmsLogic;
+import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**
  * Unit test for registering of commands
  */
 public class IncomingLogicManagerTest extends TestCase {
-	
+
+	private String validCommands;
+	private String smsedCommands;
 	private SmsIncomingLogicManager manager;
 	private TestIncomingSmsLogic logic;
-	
+
 	@Override
 	public void setUp() {
 		manager = new SmsIncomingLogicManagerImpl();
 		logic = new TestIncomingSmsLogic();
 	}
-	
+
 	public void testRegisterLogic() {
 		manager.register("TEST", logic);
 		assertTrue(manager.isValidCommand("TEST", "CREATE"));
@@ -45,7 +61,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertTrue(manager.isValidCommand("TEST", "DELETE"));
 		assertFalse(manager.isValidCommand("TEST", "SOMETHING"));
 	}
-	
+
 	public void testCaseInsensitivity() {
 		manager.register("test", logic);
 		assertTrue(manager.isValidCommand("TeST", "cReAtE"));
@@ -53,12 +69,12 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertTrue(manager.isValidCommand("TEST", "delETE"));
 		assertFalse(manager.isValidCommand("test", "something"));
 	}
-	
+
 	public void testDuplicateReplace() {
 		manager.register("test", logic);
 		assertFalse(manager.isValidCommand("test", "something"));
 		TestIncomingSmsLogic newLogic = new TestIncomingSmsLogic();
-		newLogic.setCommandKeys(new String[] {"SOMETHING"});
+		newLogic.setCommandKeys(new String[] { "SOMETHING" });
 		manager.register("test", newLogic);
 		assertTrue(manager.isValidCommand("test", "something"));
 		assertFalse(manager.isValidCommand("test", "CREATE"));
@@ -66,14 +82,37 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("test", "DELETE"));
 	}
 
-	
+	private String loadPropertiesFile(final String name) {
+		String fileContents = "";
+		try {
+			InputStream is = this.getClass().getResourceAsStream("/" + name);
+			InputStreamReader input = new InputStreamReader(is);
+			BufferedReader jj = new BufferedReader(input);
+
+			while (jj.ready()) {
+				fileContents += jj.readLine();
+
+			}
+
+		} catch (Exception e) {
+
+		}
+		return fileContents;
+	}
+
+	private String[] parseCSVFile(String csv) {
+
+		return csv.split(";");
+
+	}
+
 	public void testProcess() {
 		manager.register("test", logic);
-		
+
 		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "create");
 		manager.process(msg);
 		assertEquals("CREATE", logic.getLastExecuted());
-		
+
 		msg = new ParsedMessage("test", "site", "userId", "updat");
 		manager.process(msg);
 		assertEquals("UPDATE", logic.getLastExecuted());
@@ -81,37 +120,43 @@ public class IncomingLogicManagerTest extends TestCase {
 		msg = new ParsedMessage("test", "site", "userId", "DELET");
 		manager.process(msg);
 		assertEquals("DELETE", logic.getLastExecuted());
-		
+
 	}
-	
+
+
+
+	public void testPossibleMatches() {
+		String[] validCommands = parseCSVFile(loadPropertiesFile("ValidCommands.txt"));
+		String[] commandsToMatch = parseCSVFile(loadPropertiesFile("CommandsToMatch.txt"));
+		for (int i = 0; i < commandsToMatch.length; i++) {
+			String commandSplit[] = commandsToMatch[i].split("#");
+			String command = commandSplit[0];
+			SmsPatternSearchResult smsPatternSearchResult = manager
+					.getClosestMatch(command, validCommands);
+			assertTrue(smsPatternSearchResult.getPossibleMatches().size() == Integer
+					.parseInt(commandSplit[1]));
+		}
+	}
+
 	public void testHelpCommand() {
 		manager.register("test", logic);
 		assertTrue(manager.isValidCommand("test", "help"));
 		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "help");
 		String value = manager.process(msg);
 		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", value);
-		
+
 	}
-	
+
 	public void testGenerateAssistMessage() {
 		manager.register("test", logic);
-		String msg = manager.generateAssistMessage("test");
+		ArrayList list = new ArrayList();
+		list.add("CREATE");
+		list.add("UPDATE");
+		list.add("DELETE");
+
+		String msg = manager.generateAssistMessage(list, "test");
 		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", msg);
+
 	}
-	
-	public void testAliases() {
-		manager.register("test", logic);
-		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "U");
-		manager.process(msg);
-		assertEquals("UPDATE", logic.getLastExecuted());
-		
-		msg = new ParsedMessage("test", "site", "userId", "D");
-		manager.process(msg);
-		assertEquals("DELETE", logic.getLastExecuted());
-		
-		msg = new ParsedMessage("test", "site", "userId", "C");
-		manager.process(msg);
-		assertEquals("CREATE", logic.getLastExecuted());
-	}
-	
+
 }

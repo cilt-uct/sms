@@ -10,21 +10,21 @@ import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 
 public class TestIncomingSmsLogic implements IncomingSmsLogic {
 
-	private String[] commandKeys = new String[]{"CREATE", "UPDATE", "DELETE"};
-	
+	public String[] commandKeys = new String[]{"CREATE", "UPDATE", "DELETE"};
+
 	private static Log log = LogFactory.getLog(TestIncomingSmsLogic.class);
-	
+
 	private String lastExecuted;
-	private SmsIncomingLogicManager incomingLogicManager;	
-	
+	private SmsIncomingLogicManager incomingLogicManager;
+
 	public void setIncomingLogicManager(SmsIncomingLogicManager incomingLogicManager) {
 		this.incomingLogicManager = incomingLogicManager;
 	}
-	
+
 	public void init() {
 		incomingLogicManager.register("stub", this);
 	}
-	
+
 	public String execute(String command, String siteId, String userId,
 			String body) {
 		lastExecuted = command;
@@ -35,11 +35,11 @@ public class TestIncomingSmsLogic implements IncomingSmsLogic {
 	public String[] getCommandKeys() {
 		return commandKeys;
 	}
-	
+
 	public void setCommandKeys(String[] commandKeys) {
 		this.commandKeys = commandKeys;
 	}
-	
+
 	public String getLastExecuted() {
 		return lastExecuted;
 	}

@@ -17,51 +17,71 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
+import java.util.ArrayList;
+
+import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
+
 /**
  * Registers {@link IncomingSmsLogic} to process incoming messages
  */
 public interface SmsIncomingLogicManager {
-	
+
 	/**
 	 * Registers a {@link IncomingSmsLogic} for specified tool
-	 * 
-	 * @param toolKey unique key for tool
-	 * @param logic {@link IncomingSmsLogic} to register for tool
+	 *
+	 * @param toolKey
+	 *            unique key for tool
+	 * @param logic
+	 *            {@link IncomingSmsLogic} to register for tool
 	 */
 	public void register(String toolKey, IncomingSmsLogic logic);
-	
+
 	/**
-	 * Process a {@link ParsedMessage}
-	 * Finds and executes registered {@link IncomingSmsLogic}
-	 * 
+	 * Process a {@link ParsedMessage} Finds and executes registered
+	 * {@link IncomingSmsLogic}
+	 *
 	 * Try to find a tool command that closest match the command as entered my
 	 * the sender. Go through the hash map of commands for the specific sakai
 	 * tool and find the best match using Levenshtein distance. See
 	 * http://en.wikipedia.org/wiki/Levenshtein_distance. User might want to
 	 * plug in another algorithm like soundex. Of no single command is closest
 	 * then we must send back a list of possible command to the user.
-	 * 
-	 * 
-	 * @param message the incoming message received
+	 *
+	 *
+	 * @param message
+	 *            the incoming message received
 	 */
 	public String process(ParsedMessage message);
-	
+
 	/**
-	 * Check if command is valid for tool
-	 * (Does not do closest match)
-	 * 
-	 * @param toolKey tool for command
-	 * @param command the command
+	 * Check if command is valid for tool (Does not do closest match)
+	 *
+	 * @param toolKey
+	 *            tool for command
+	 * @param command
+	 *            the command
 	 * @return true if command is valid, false if not
 	 */
 	public boolean isValidCommand(String toolKey, String command);
-	
+
 	/**
 	 * Generate help message for a registered tool
-	 * 
-	 * @param toolKey tool to generate message for
+	 *
+	 * @param toolKey
+	 *            tool to generate message for
 	 * @return the assist message
 	 */
-	public String generateAssistMessage(String toolKey);
-	
+	public String generateAssistMessage(ArrayList<String> matches,
+			String toolKey);
+
+	/**
+	 * Return the closest matching string in the values array.
+	 *
+	 * @param valueToMatch
+	 * @param values
+	 * @return
+	 */
+	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
+			String[] values);
+
 }
