@@ -34,16 +34,16 @@ public class ParsedMessage {
 
 	}
 
-	public ParsedMessage(String tool, String site, String userID, String command,
+	public ParsedMessage(String tool, String site, String userId, String command,
 			String body) {
 		this.tool = tool;
 		this.site = site;
-		this.userId = userID;
+		this.userId = userId;
 		this.command = command;
 		this.body = body;
 	}
 
-	public String getUserID() {
+	public String getUserId() {
 		return userId;
 	}
 

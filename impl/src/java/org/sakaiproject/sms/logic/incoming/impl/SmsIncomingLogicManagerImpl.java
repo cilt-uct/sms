@@ -86,7 +86,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						.getPossibleMatches(), toolKey);
 			} else {
 				return logic.execute(smsPatternSearchResult.getPattern(),
-						message.getSite(), message.getUserID(), message
+						message.getSite(), message.getUserId(), message
 								.getBody());
 
 			}

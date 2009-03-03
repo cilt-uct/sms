@@ -366,14 +366,14 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				parsedMessage.getUserID(), new Date(), parsedMessage.getSite(),
+				parsedMessage.getUserId(), new Date(), parsedMessage.getSite(),
 				parsedMessage.getTool(), "admin");
 
 		if (smsTask == null) {
 			return;
 		}
 		smsMessage.setSmsTask(smsTask);
-		smsMessage.setSakaiUserId(parsedMessage.getUserID());
+		smsMessage.setSakaiUserId(parsedMessage.getUserId());
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
 		smsMessage.setMessageBody(smsMessagebody);
