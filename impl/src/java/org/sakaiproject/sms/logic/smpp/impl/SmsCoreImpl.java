@@ -432,9 +432,12 @@ public class SmsCoreImpl implements SmsCore {
 		if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
 			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 					.getNextSmsTask();
+			LOG.info("Number of active Threads :"+getThreadCount(smsThreadGroup));
 			if (smsTask != null) {
 				new ProcessThread(smsTask);
 
+			}else{
+				LOG.info("To many active threads.SmsTask will be scheduled" );
 			}
 		}
 	}
@@ -729,8 +732,11 @@ public class SmsCoreImpl implements SmsCore {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
+			LOG.info("Number of active Threads :"+getThreadCount(smsThreadGroup));
 			if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
 				new ProcessThread(smsTask);
+			}else{
+				LOG.info("To many active threads.SmsTask will be scheduled" );
 			}
 		}
 	}
