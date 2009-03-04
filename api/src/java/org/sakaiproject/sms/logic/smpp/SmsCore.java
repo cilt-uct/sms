@@ -139,8 +139,8 @@ public interface SmsCore {
 	 * 
 	 * Our SMPP listener received an incoming message. Try to process message in
 	 * real-time by inserting it into the queue and calling processMessage
-	 * immediately. If unable to process, leave in queue for the scheduler to
-	 * handle.
+	 * immediately. If unable to process in real-time due to high thread count,
+	 * we leave it in queue for the scheduler to handle.
 	 * 
 	 * @param smsMessagebody
 	 * @param mobileNumber

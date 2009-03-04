@@ -28,7 +28,7 @@ public interface SmsIncomingLogicManager {
 
 	/**
 	 * Registers a {@link IncomingSmsLogic} for specified tool
-	 *
+	 * 
 	 * @param toolKey
 	 *            unique key for tool
 	 * @param command
@@ -42,27 +42,27 @@ public interface SmsIncomingLogicManager {
 	 * @param toolKey
 	 */
 	public void clearCommands(String toolKey);
-	
+
 	/**
 	 * Process a {@link ParsedMessage} Finds and executes registered
 	 * {@link IncomingSmsLogic}
-	 *
+	 * 
 	 * Try to find a tool command that closest match the command as entered my
 	 * the sender. Go through the hash map of commands for the specific sakai
-	 * tool and find the best match using Levenshtein distance. See
-	 * http://en.wikipedia.org/wiki/Levenshtein_distance. User might want to
-	 * plug in another algorithm like soundex. Of no single command is closest
-	 * then we must send back a list of possible command to the user.
-	 *
-	 *
+	 * tool and find the best match using our string match algorithm. The idea
+	 * is based on http://en.wikipedia.org/wiki/Levenshtein_distance. If no
+	 * single command is found then we may send back a list of possible commands
+	 * to the user.
+	 * 
+	 * 
 	 * @param message
 	 *            the incoming message received
 	 */
 	public String process(ParsedMessage message);
 
 	/**
-	 * Check if command is valid for tool (Does not do closest match)
-	 *
+	 * Check if command is valid for tool
+	 * 
 	 * @param toolKey
 	 *            tool for command
 	 * @param command
@@ -72,8 +72,8 @@ public interface SmsIncomingLogicManager {
 	public boolean isValidCommand(String toolKey, String command);
 
 	/**
-	 * Generate help message for a registered tool
-	 *
+	 * Generate help message for a user then sent an invalid command to us.
+	 * 
 	 * @param toolKey
 	 *            tool to generate message for
 	 * @return the assist message
@@ -82,8 +82,9 @@ public interface SmsIncomingLogicManager {
 			String toolKey);
 
 	/**
-	 * Return the closest matching string in the values array.
-	 *
+	 * Return the closest matching string in the values array. So the command
+	 * HELP can be given as H, HE or HELP but not ELP
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
