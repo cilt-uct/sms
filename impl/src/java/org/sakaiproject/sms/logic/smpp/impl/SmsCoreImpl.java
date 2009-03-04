@@ -339,7 +339,7 @@ public class SmsCoreImpl implements SmsCore {
 						.process(parsedMessage);
 				if (toolReplyBody != null) {
 					smsMessageReplyBody = toolReplyBody;
-					LOG.debug("Tool " + parsedMessage.getTool()
+					LOG.info("Tool " + parsedMessage.getTool()
 							+ " answered back with: " + toolReplyBody);
 				}
 			} else {
