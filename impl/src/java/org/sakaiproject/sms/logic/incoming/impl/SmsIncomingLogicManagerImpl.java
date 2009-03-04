@@ -82,22 +82,26 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 				}
 			}
-			if (HELP.equalsIgnoreCase(smsPatternSearchResult.getPattern())) {
-				reply = generateAssistMessage(smsPatternSearchResult
-						.getPossibleMatches(), toolKey);
-			} else if (smsPatternSearchResult.getMatchResult().equals(
-					SmsPatternSearchResult.NO_MATCHES)) {
-				reply = generateAssistMessage(smsPatternSearchResult
-						.getPossibleMatches(), toolKey);
-			} else if (smsPatternSearchResult.getMatchResult().equals(
-					SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
-				reply = generateAssistMessage(smsPatternSearchResult
-						.getPossibleMatches(), toolKey);
-			} else {
-				reply = registered.getCommand(
-						smsPatternSearchResult.getPattern()).execute(
-						message.getSite(), message.getUserId(),
-						message.getBody());
+
+			if ((smsPatternSearchResult.getPattern() != null)
+					&& (smsPatternSearchResult.getMatchResult() != null)) {
+				if (HELP.equalsIgnoreCase(smsPatternSearchResult.getPattern())) {
+					reply = generateAssistMessage(smsPatternSearchResult
+							.getPossibleMatches(), toolKey);
+				} else if (smsPatternSearchResult.getMatchResult().equals(
+						SmsPatternSearchResult.NO_MATCHES)) {
+					reply = generateAssistMessage(smsPatternSearchResult
+							.getPossibleMatches(), toolKey);
+				} else if (smsPatternSearchResult.getMatchResult().equals(
+						SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
+					reply = generateAssistMessage(smsPatternSearchResult
+							.getPossibleMatches(), toolKey);
+				} else {
+					reply = registered.getCommand(
+							smsPatternSearchResult.getPattern()).execute(
+							message.getSite(), message.getUserId(),
+							message.getBody());
+				}
 			}
 		}
 		return formatReply(reply);
@@ -118,7 +122,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * command. The idea is based on the Levenshtein distance. Our algorithm
 	 * assign the highest scores to matches on the left hand side of the word.
 	 * And if the first letter does not match, then its a 0% match for the word.
-	 * 
+	 *
 	 * @param valueToMatch
 	 * @param values
 	 * @return
@@ -193,7 +197,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Finds valid command EXACTLY as it is specified in command keys or HELP
-	 * 
+	 *
 	 * @return valid command
 	 */
 	private SmsPatternSearchResult findValidCommand(String suppliedKey,
@@ -310,7 +314,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param valueToMatch
 	 * @param values
 	 * @return
