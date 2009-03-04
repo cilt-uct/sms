@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 import org.sakaiproject.sms.util.SmsStringArrayUtil;
 
@@ -45,6 +46,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message) {
+		String reply = null;
 		if (toolCmdsMap.size() != 0) { // No tools registered
 			String toolKey = message.getTool().toUpperCase();
 			SmsPatternSearchResult smsPatternSearchResult = new SmsPatternSearchResult();
@@ -70,29 +72,38 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						registered = toolCmdsMap.get(toolKey);
 						smsPatternSearchResult = findValidCommand(suppliedCommand, registered);
 					} else {
-						return generateAssistMessage(smsPatternSearchResult
+						reply = generateAssistMessage(smsPatternSearchResult
 								.getPossibleMatches(), toolKey);
 					}
 
 				}
 			}
 			if (HELP.equalsIgnoreCase(suppliedCommand)) {
-				return generateAssistMessage(smsPatternSearchResult
+				reply = generateAssistMessage(smsPatternSearchResult
 						.getPossibleMatches(), toolKey);
 			} else if (smsPatternSearchResult.getMatchResult().equals(
 					SmsPatternSearchResult.NO_MATCHES)) {
-				return generateAssistMessage(smsPatternSearchResult
+				reply = generateAssistMessage(smsPatternSearchResult
 						.getPossibleMatches(), toolKey);
 			} else if (smsPatternSearchResult.getMatchResult().equals(
 					SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
-				return generateAssistMessage(smsPatternSearchResult
+				reply = generateAssistMessage(smsPatternSearchResult
 						.getPossibleMatches(), toolKey);
 			} else {
-				return registered.getCommand(smsPatternSearchResult.getPattern())
+				reply = registered.getCommand(smsPatternSearchResult.getPattern())
 						.execute(message.getSite(), message.getUserId(), message.getBody());
 			}
 		}
-		return null;
+		return formatReply(reply);
+	}
+	
+	// Format reply to be returned
+	private String formatReply(String reply) {
+		if (reply == null) {
+			return null;
+		}
+		// Just cut off extra characters
+		return StringUtils.left(reply.toString(), SmsHibernateConstants.MAX_SMS_LENGTH);
 	}
 
 	/**
@@ -284,8 +295,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			}
 		}
 
-		// Just cut off extra characters
-		return StringUtils.left(body.toString(), 160);
+		return body.toString();
 	}
 
 	/**
