@@ -31,11 +31,18 @@ public interface SmsIncomingLogicManager {
 	 *
 	 * @param toolKey
 	 *            unique key for tool
-	 * @param logic
-	 *            {@link IncomingSmsLogic} to register for tool
+	 * @param command
+	 *            {@link SmsCommand} to register for tool
 	 */
-	public void register(String toolKey, IncomingSmsLogic logic);
+	public void register(String toolKey, SmsCommand command);
 
+	/**
+	 * Clears all commands for tool
+	 * 
+	 * @param toolKey
+	 */
+	public void clearCommands(String toolKey);
+	
 	/**
 	 * Process a {@link ParsedMessage} Finds and executes registered
 	 * {@link IncomingSmsLogic}

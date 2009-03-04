@@ -18,14 +18,16 @@
 package org.sakaiproject.sms.logic.incoming.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.incoming.IncomingSmsLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
+import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 import org.sakaiproject.sms.util.SmsStringArrayUtil;
@@ -33,7 +35,7 @@ import org.sakaiproject.sms.util.SmsStringArrayUtil;
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// Collection for keeping tool ids with their logic
-	private final HashMap<String, IncomingSmsLogic> toolLogicMap = new HashMap<String, IncomingSmsLogic>();
+	private final HashMap<String, RegisteredCommands> toolCmdsMap = new HashMap<String, RegisteredCommands>();
 
 	private static Log log = LogFactory
 			.getLog(SmsIncomingLogicManagerImpl.class);
@@ -43,29 +45,30 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message) {
-		if (toolLogicMap.size() != 0) { // No logic registered
+		if (toolCmdsMap.size() != 0) { // No tools registered
 			String toolKey = message.getTool().toUpperCase();
 			SmsPatternSearchResult smsPatternSearchResult = new SmsPatternSearchResult();
-			String cmd = message.getCommand().toUpperCase();
-			IncomingSmsLogic logic = null;
-			if (isValidCommand(toolKey, cmd)) { // Everything is valid
-				logic = toolLogicMap.get(toolKey);
-				smsPatternSearchResult = findValidCommand(cmd, logic);
+			String suppliedCommand = message.getCommand().toUpperCase();
+			RegisteredCommands registered = null;
+			
+			if (isValidCommand(toolKey, suppliedCommand)) { // Everything is valid
+				registered = toolCmdsMap.get(toolKey);
+				smsPatternSearchResult = findValidCommand(suppliedCommand, registered);
 			} else {
-				if (toolLogicMap.containsKey(toolKey)) { // Valid tool but
+				if (toolCmdsMap.containsKey(toolKey)) { // Valid tool but
 					// invalid command
-					logic = toolLogicMap.get(toolKey);
-					smsPatternSearchResult = findValidCommand(cmd, logic);
+					registered = toolCmdsMap.get(toolKey);
+					smsPatternSearchResult = findValidCommand(suppliedCommand, registered);
 
 				} else { // Invalid toolKey
 					toolKey = getClosestMatch(
 							toolKey,
-							toolLogicMap.keySet().toArray(
-									new String[toolLogicMap.keySet().size()]))
+							toolCmdsMap.keySet().toArray(
+									new String[toolCmdsMap.keySet().size()]))
 							.getPattern();
 					if (toolKey != null) {
-						logic = toolLogicMap.get(toolKey);
-						smsPatternSearchResult = findValidCommand(cmd, logic);
+						registered = toolCmdsMap.get(toolKey);
+						smsPatternSearchResult = findValidCommand(suppliedCommand, registered);
 					} else {
 						return generateAssistMessage(smsPatternSearchResult
 								.getPossibleMatches(), toolKey);
@@ -73,7 +76,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 				}
 			}
-			if (HELP.equalsIgnoreCase(cmd)) {
+			if (HELP.equalsIgnoreCase(suppliedCommand)) {
 				return generateAssistMessage(smsPatternSearchResult
 						.getPossibleMatches(), toolKey);
 			} else if (smsPatternSearchResult.getMatchResult().equals(
@@ -85,10 +88,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				return generateAssistMessage(smsPatternSearchResult
 						.getPossibleMatches(), toolKey);
 			} else {
-				return logic.execute(smsPatternSearchResult.getPattern(),
-						message.getSite(), message.getUserId(), message
-								.getBody());
-
+				return registered.getCommand(smsPatternSearchResult.getPattern())
+						.execute(message.getSite(), message.getUserId(), message.getBody());
 			}
 		}
 		return null;
@@ -177,28 +178,24 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * 
 	 * @return valid command
 	 */
-	private SmsPatternSearchResult findValidCommand(String command,
-			IncomingSmsLogic logic) {
+	private SmsPatternSearchResult findValidCommand(String suppliedKey,
+			RegisteredCommands commands) {
 		SmsPatternSearchResult smsPatternSearchResult = null;
-		String aliasedCommand = findAlias(command, logic);
+		String aliasedCommand = findAlias(suppliedKey, commands);
 		if (aliasedCommand != null) {
-			command = aliasedCommand;
+			suppliedKey = aliasedCommand;
 		}
 
-		if (HELP.equalsIgnoreCase(command)) {
+		if (HELP.equalsIgnoreCase(suppliedKey)) {
 			return new SmsPatternSearchResult("HELP");
 		} else {
-			String toReturn = SmsStringArrayUtil.findInArray(logic
-					.getCommandKeys(), command);
-
-			if (toReturn == null) { // None found in command keys
-				String[] values = SmsStringArrayUtil.copyOf(logic
-						.getCommandKeys(), logic.getCommandKeys().length + 1);
-				values[values.length - 1] = HELP;
-				smsPatternSearchResult = getClosestMatch(command, values);
+			if (commands.getCommand(suppliedKey) == null) { // None found in command keys
+				Set<String> commandKeys = commands.getCommandKeys();
+				String[] validCommands = SmsStringArrayUtil.copyOf(commandKeys.toArray(new String[commandKeys.size()]), commandKeys.size()+1);
+				validCommands[validCommands.length - 1] = HELP;
+				smsPatternSearchResult = getClosestMatch(suppliedKey, validCommands);
 			} else {
-				smsPatternSearchResult = new SmsPatternSearchResult(command);
-
+				smsPatternSearchResult = new SmsPatternSearchResult(suppliedKey);
 			}
 
 			if (smsPatternSearchResult != null) {
@@ -211,44 +208,48 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	// Tries to command on alias map (returns command if found)
-	private String findAlias(String command, IncomingSmsLogic logic) {
+	private String findAlias(String supplied, RegisteredCommands commands) {
 		// ? is default alias for HELP
-		if ("?".equals(command)) {
+		if ("?".equals(supplied)) {
 			return HELP;
 		}
 
-		if (logic.getAliases() != null) {
-			return logic.getAliases().get(command.toUpperCase());
-		}
-		return null;
+		return commands.findAliasCommandKey(supplied);
 	}
 
-	public void register(String toolKey, IncomingSmsLogic logic) {
+	public void register(String toolKey, SmsCommand command) {
 		toolKey = toolKey.toUpperCase();
 
-		if (!toolLogicMap.containsKey(toolKey)) {
-			toolLogicMap.put(toolKey, logic);
+		// Toolkey not yet registered
+		if (!toolCmdsMap.containsKey(toolKey)) {
+			toolCmdsMap.put(toolKey, new RegisteredCommands(command));
 			log.debug("Registered tool: " + toolKey);
 		} else {
-			// If it exists replace
-			toolLogicMap.remove(toolKey);
-			toolLogicMap.put(toolKey, logic);
-			log.debug("Replaced logic for tool: " + toolKey);
+			// If it tool exist
+			RegisteredCommands commands = toolCmdsMap.get(toolKey);
+			// Add to set of commands
+			commands.addCommand(command);
+			log.debug("Added command " + command.getCommandKey() + " logic for tool: " + toolKey);
 		}
 
 	}
+	
+	public void clearCommands(String toolKey) {
+		toolKey = toolKey.toUpperCase();
+		if (toolCmdsMap.containsKey(toolKey)) {
+			toolCmdsMap.remove(toolKey);
+		}
+	}
+	
 
 	public boolean isValidCommand(String toolKey, String command) {
 		toolKey = toolKey.toUpperCase();
 		command = command.toUpperCase();
-		if (!toolLogicMap.containsKey(toolKey)) {
+		if (!toolCmdsMap.containsKey(toolKey)) {
 			return false;
 		} else {
-			if (Arrays.asList(
-					SmsStringArrayUtil.upperCaseArray(toolLogicMap.get(toolKey)
-							.getCommandKeys())).contains(command)
-					|| HELP.equalsIgnoreCase(command)) { // HELP command is
-				// valid by default
+			if (toolCmdsMap.get(toolKey).getCommandKeys().contains(command)
+					|| HELP.equalsIgnoreCase(command)) { // HELP command is valid by default
 				return true;
 			} else {
 				return false;
@@ -258,7 +259,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	public String generateAssistMessage(ArrayList<String> matches,
 			String toolKey) {
-		String[] commands = null;
+		Collection<String> commands = null;
 		StringBuilder body = new StringBuilder();
 
 		if (toolKey == null) {
@@ -268,15 +269,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 			if (matches == null || matches.size() == 0
 					|| matches.contains(HELP)) {
-				commands = toolLogicMap.get(toolKey.toUpperCase())
+				commands = toolCmdsMap.get(toolKey.toUpperCase())
 						.getCommandKeys();
 			} else {
-				commands = matches.toArray(new String[matches.size()]);
+				commands = matches;
 			}
-
-			for (int i = 0; i < commands.length; i++) {
-				body.append(commands[i]);
-				if (i != commands.length - 1) {
+			Iterator<String> i = commands.iterator();
+			while (i.hasNext()) {
+				String command = i.next();
+				body.append(command);
+				if (i.hasNext()) {
 					body.append(", ");
 				}
 			}
@@ -302,4 +304,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return SmsPatternSearchResult;
 
 	}
+
+
 }
