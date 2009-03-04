@@ -55,13 +55,17 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
+	private static final String THREAD_GROUP_NAME = "sms";
+
+	private static final int MAX_ACTIVE_THREADS = 10;
+	private ThreadGroup smsThreadGroup = new ThreadGroup(THREAD_GROUP_NAME);
 
 	private SmsMessageParser smsMessageParser;
 
@@ -119,9 +123,33 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	/**
+	 * Thread to handle all processing of tasks.
+	 * @author void
+	 *
+	 */
+	private class ProcessThread implements Runnable {
+
+		SmsTask smsTask;
+		ProcessThread(SmsTask smsTask) {
+			this.smsTask = smsTask;
+			Thread t = new Thread(smsThreadGroup, this);
+			t.start();
+
+		}
+		public void run() {
+			Work();
+		}
+
+		public void Work() {
+			processTask(smsTask);
+
+		}
+	}
+
+	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -135,7 +163,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -190,7 +218,6 @@ public class SmsCoreImpl implements SmsCore {
 			Date dateToSend, String messageBody, String sakaiSiteID,
 			String sakaiToolId, String sakaiSenderID,
 			List<String> deliveryEntityList) {
-
 		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
@@ -401,11 +428,14 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	public synchronized void processNextTask() {
-		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getNextSmsTask();
-		if (smsTask != null) {
-			this.processTask(smsTask);
+	public void processNextTask() {
+		if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
+			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
+					.getNextSmsTask();
+			if (smsTask != null) {
+				new ProcessThread(smsTask);
+
+			}
 		}
 	}
 
@@ -442,9 +472,11 @@ public class SmsCoreImpl implements SmsCore {
 				}
 				// ========================== Do the actual sending to the
 				// gateway
+
 				String submissionStatus = smsSmpp
 						.sendMessagesToGateway(smsTask
 								.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
+
 				smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 						smsTask.getId());
 				smsTask.setStatusCode(submissionStatus);
@@ -534,12 +566,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -549,7 +581,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -697,7 +729,9 @@ public class SmsCoreImpl implements SmsCore {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
-			this.processTask(smsTask);
+			if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
+				new ProcessThread(smsTask);
+			}
 		}
 	}
 
@@ -769,4 +803,16 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 	}
+
+	/**
+	 * Counts all the acctive threads in a threadGroup
+	 *
+	 * @param threadgroup
+	 * @return
+	 */
+	private int getThreadCount(ThreadGroup threadgroup) {
+		return threadgroup.activeCount();
+
+	}
+
 }
