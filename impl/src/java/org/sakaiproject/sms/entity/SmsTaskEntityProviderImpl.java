@@ -18,6 +18,7 @@ import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -25,7 +26,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful {
 
 	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
-	
+
 	//TODO these need to come from the services
 	private static String PERMISSION_MANAGE = "sms.manage";
 
@@ -36,7 +37,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
 	}
-	
+
 	private SmsService smsService;
 	public void setSmsService(SmsService smsService) {
 		this.smsService = smsService;
@@ -50,14 +51,14 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 
 	/**
-	 * Implemented 
+	 * Implemented
 	 */
 
 	public String getEntityPrefix() {
 		return ENTITY_PREFIX;
 	}
 
-	
+
 	public Object getSampleEntity() {
 		return new SmsTask();
 	}
@@ -66,12 +67,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		String id = ref.getId();
 		if (id == null)
 				return new SmsTask();
-		
+
 		SmsTask task = smsTaskLogic.getSmsTask(new Long(id));
 		 if (task == null) {
 	            throw new IllegalArgumentException("No sms task found for the given reference: " + ref);
 	        }
-		
+
 		 String currentUserId = developerHelperService.getCurrentUserId();
 		 boolean allowedManage = false;
 		 if (! developerHelperService.isEntityRequestInternal(ref+"")) {
@@ -86,7 +87,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	                }
 	            }
 		 }
-		
+
 		return task;
 	}
 
@@ -95,22 +96,22 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		SmsTask task = (SmsTask) entity;
 		if (task.getDateCreated() == null)
 			task.setDateCreated(new Date());
-		
+
 		 String userReference = developerHelperService.getCurrentUserReference();
 		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
          if (!allowedManage) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
          }
-		
+
 		smsService.calculateEstimatedGroupSize(task);
 		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate())) {
 			throw new SecurityException("User ("+ task.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
 		}
-		
+
 		try {
 			smsService.insertTask(task);
 			return task.getId().toString();
-			
+
 		} catch (SmsTaskValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,12 +121,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		} catch (SmsSendDisabledException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
-	
+
 	public void updateEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 		String id = ref.getId();
@@ -137,44 +141,44 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
             throw new SecurityException("anonymous user cannot update task: " + ref);
         }
 
-        
+
         SmsTask current = smsTaskLogic.getSmsTask(new Long(id));
         if (current == null) {
             throw new IllegalArgumentException("No sms task found to update for the given reference: " + ref);
         }
-	     
-        
+
+
         SmsTask task = (SmsTask) entity;
         boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
         if (!allowedManage) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
-        
+
         developerHelperService.copyBean(task, current, 0, new String[] {"id", "creationDate"}, true);
         //TODO validate the task
         smsTaskLogic.persistSmsTask(task);
-        
-	}	
+
+	}
 
 	public void deleteEntity(EntityReference ref, Map<String, Object> params) {
 		String id = ref.getId();
 		if (id == null)
 			throw new IllegalArgumentException("The reference must include an id for deletes (id is currently null)");
-		
+
 		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
 		if (task == null) {
             throw new IllegalArgumentException("No poll found for the given reference: " + ref);
         }
-		
+
 		String userReference = developerHelperService.getCurrentUserReference();
 		boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
         if (!allowedManage) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
-        
+
 		smsTaskLogic.deleteSmsTask(task);
 	}
-	
+
     public String[] getHandledOutputFormats() {
         return new String[] {Formats.XML, Formats.JSON};
     }
@@ -196,7 +200,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         	if (userId == null) {
                 throw new SecurityException("User must be logged in in order to access sms task: " + ref);
         	}
-        	
+
         }
         try {
         	List<SmsTask> tasks = smsTaskLogic.getAllSmsTasksForCriteria(new SearchFilterBean());
@@ -205,10 +209,10 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        
+
+
 		return null;
 	}
 
-	
+
 }

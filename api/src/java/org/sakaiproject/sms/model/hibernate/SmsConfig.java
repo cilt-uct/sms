@@ -46,6 +46,10 @@ public class SmsConfig extends BaseModel {
 	private String smsEnabled;
 
 	/**
+	 * Enable or disable incomming sms functionality for the site or tool.
+	 */
+	private String incomingEnabled;
+	/**
 	 * The number of times to retry to send the message to gateway. Retries will
 	 * occur when the gateway could not be contacted or when the gateway bind
 	 * failed.
@@ -340,10 +344,14 @@ public class SmsConfig extends BaseModel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((creditCost == null) ? 0 : creditCost.hashCode());
 		result = prime
 				* result
 				+ ((delReportTimeoutDuration == null) ? 0
 						: delReportTimeoutDuration.hashCode());
+		result = prime * result
+				+ ((incomingEnabled == null) ? 0 : incomingEnabled.hashCode());
 		result = prime
 				* result
 				+ ((notificationEmail == null) ? 0 : notificationEmail
@@ -357,11 +365,17 @@ public class SmsConfig extends BaseModel {
 				+ ((notificationEmailSent == null) ? 0 : notificationEmailSent
 						.hashCode());
 		result = prime * result
+				+ ((overdraftLimit == null) ? 0 : overdraftLimit.hashCode());
+		result = prime * result
 				+ ((pagingSize == null) ? 0 : pagingSize.hashCode());
 		result = prime * result
 				+ ((sakaiSiteId == null) ? 0 : sakaiSiteId.hashCode());
 		result = prime * result
 				+ ((sakaiToolId == null) ? 0 : sakaiToolId.hashCode());
+		result = prime
+				* result
+				+ ((schedulerInterval == null) ? 0 : schedulerInterval
+						.hashCode());
 		result = prime * result
 				+ ((smsEnabled == null) ? 0 : smsEnabled.hashCode());
 		result = prime
@@ -376,7 +390,7 @@ public class SmsConfig extends BaseModel {
 				+ ((smsTaskMaxLifeTime == null) ? 0 : smsTaskMaxLifeTime
 						.hashCode());
 		result = prime * result
-				+ ((creditCost == null) ? 0 : creditCost.hashCode());
+				+ ((useSiteAccount == null) ? 0 : useSiteAccount.hashCode());
 		return result;
 	}
 
@@ -386,14 +400,24 @@ public class SmsConfig extends BaseModel {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof SmsConfig))
+		if (getClass() != obj.getClass())
 			return false;
 		SmsConfig other = (SmsConfig) obj;
+		if (creditCost == null) {
+			if (other.creditCost != null)
+				return false;
+		} else if (!creditCost.equals(other.creditCost))
+			return false;
 		if (delReportTimeoutDuration == null) {
 			if (other.delReportTimeoutDuration != null)
 				return false;
 		} else if (!delReportTimeoutDuration
 				.equals(other.delReportTimeoutDuration))
+			return false;
+		if (incomingEnabled == null) {
+			if (other.incomingEnabled != null)
+				return false;
+		} else if (!incomingEnabled.equals(other.incomingEnabled))
 			return false;
 		if (notificationEmail == null) {
 			if (other.notificationEmail != null)
@@ -411,6 +435,11 @@ public class SmsConfig extends BaseModel {
 				return false;
 		} else if (!notificationEmailSent.equals(other.notificationEmailSent))
 			return false;
+		if (overdraftLimit == null) {
+			if (other.overdraftLimit != null)
+				return false;
+		} else if (!overdraftLimit.equals(other.overdraftLimit))
+			return false;
 		if (pagingSize == null) {
 			if (other.pagingSize != null)
 				return false;
@@ -425,6 +454,11 @@ public class SmsConfig extends BaseModel {
 			if (other.sakaiToolId != null)
 				return false;
 		} else if (!sakaiToolId.equals(other.sakaiToolId))
+			return false;
+		if (schedulerInterval == null) {
+			if (other.schedulerInterval != null)
+				return false;
+		} else if (!schedulerInterval.equals(other.schedulerInterval))
 			return false;
 		if (smsEnabled == null) {
 			if (other.smsEnabled != null)
@@ -447,10 +481,10 @@ public class SmsConfig extends BaseModel {
 				return false;
 		} else if (!smsTaskMaxLifeTime.equals(other.smsTaskMaxLifeTime))
 			return false;
-		if (creditCost == null) {
-			if (other.creditCost != null)
+		if (useSiteAccount == null) {
+			if (other.useSiteAccount != null)
 				return false;
-		} else if (!creditCost.equals(other.creditCost))
+		} else if (!useSiteAccount.equals(other.useSiteAccount))
 			return false;
 		return true;
 	}
@@ -482,11 +516,61 @@ public class SmsConfig extends BaseModel {
 		this.creditCost = creditCost;
 	}
 
+	/**
+	 * Gets the Overdraft Limit
+	 *
+	 * @return
+	 */
 	public Long getOverdraftLimit() {
 		return overdraftLimit;
 	}
 
+	/**
+	 *Sets the Overdraft Limit
+	 *
+	 * @param overdraftLimit
+	 */
 	public void setOverdraftLimit(Long overdraftLimit) {
 		this.overdraftLimit = overdraftLimit;
+	}
+
+	/**
+	 *Gets the incoming enabled
+	 *
+	 * @return
+	 */
+	public String getIncomingEnabled() {
+		return incomingEnabled;
+	}
+
+	/**
+	 *Sets the incoming enabled
+	 *
+	 * @param incomingEnabled
+	 */
+	public void setIncomingEnabled(String incomingEnabled) {
+		this.incomingEnabled = incomingEnabled;
+	}
+
+	/**
+	 * Sets the incoming enabled.
+	 *
+	 * @param smsEnabled
+	 *            the new sms enabled
+	 */
+	public void setReceiveIncomingEnabled(Boolean receiveIncomingEnabled) {
+		this.incomingEnabled = receiveIncomingEnabled ? "1" : "0";
+	}
+
+	/**
+	 * Gets the incoming enabled.
+	 *
+	 * @return the sms enabled
+	 */
+	public Boolean isReceiveIncomingEnabled() {
+		if (this.incomingEnabled != null) {
+			return this.incomingEnabled.equals("1") ? true : false;
+		}
+		return null;
 	}
 }

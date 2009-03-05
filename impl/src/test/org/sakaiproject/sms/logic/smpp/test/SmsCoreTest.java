@@ -28,6 +28,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -366,7 +367,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsSmppImpl.connectToGateway();
 		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getNewTestSmsMessageInstance("Mobile number", "Message body");
-		smsCoreImpl.processIncomingMessage(smsMessage.getMessageBody(),smsMessage.getMobileNumber());
+		smsCoreImpl.processIncomingMessage(smsMessage.getMessageBody(),
+				smsMessage.getMobileNumber());
 	}
 
 	/**
@@ -412,6 +414,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				smsCoreImpl.insertTask(statusUpdateTask);
 			} catch (SmsTaskValidationException e1) {
 				fail(e1.getErrorMessagesAsBlock());
+			} catch (ReceiveIncomingSmsDisabledException e) {
+				fail(e.getErrorMessagesAsBlock());
 			}
 			smsSmppImpl
 					.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
@@ -433,6 +437,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				smsCoreImpl.insertTask(timeOutTask);
 			} catch (SmsTaskValidationException e1) {
 				fail(e1.getErrorMessagesAsBlock());
+			} catch (ReceiveIncomingSmsDisabledException e) {
+				e.getErrorMessagesAsBlock();
 			}
 			smsCoreImpl.processNextTask();
 
@@ -573,6 +579,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 	}
 
@@ -623,6 +631,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 	}
 
@@ -693,6 +703,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException e) {
 			assertNotNull(e);
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		// test shouldn't be dependant on eachother

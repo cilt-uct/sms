@@ -40,6 +40,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
@@ -293,7 +294,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public synchronized SmsTask insertTask(SmsTask smsTask)
 			throws SmsTaskValidationException, SmsSendDeniedException,
-			SmsSendDisabledException {
+			SmsSendDisabledException, ReceiveIncomingSmsDisabledException {
 
 		if (!hibernateLogicLocator.getExternalLogic().isUserAllowedInLocation(
 				smsTask.getSenderUserId(), ExternalLogic.SMS_SEND,
@@ -304,6 +305,14 @@ public class SmsCoreImpl implements SmsCore {
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
 				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException(smsTask);
+		}
+		if(smsTask.getMessageTypeId()==SmsHibernateConstants.MESSAGE_TYPE_INCOMING){
+
+			if (!hibernateLogicLocator.getSmsConfigLogic()
+					.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
+					.isReceiveIncomingEnabled()) {
+				throw new ReceiveIncomingSmsDisabledException(smsTask);
+			}
 		}
 
 		ArrayList<String> errors = new ArrayList<String>();
@@ -423,6 +432,10 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (SmsSendDisabledException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			// TODO Auto-generated catch block
+			LOG.error(getExceptionStackTraceAsString(e));
 			e.printStackTrace();
 		}
 

@@ -30,6 +30,14 @@
 		</select></td>
 	</tr>
 	<tr>
+		<td><label rsf:id="sms-incoming-enabled">SMS incoming
+		enabled for site:</label></td>
+		<td><select rsf:id="sms-config-incoming-enabled">
+			<option value="true">Yes</option>
+			<option value="false">No</option>
+		</select></td>
+	</tr>
+	<tr>
 		<td><label rsf:id="notification-email">Notification
 		Email:</label></td>
 		<td><input style="width: 200px" maxlength="100" type="text"
@@ -47,10 +55,10 @@
 			rsf:id="sms-config-overdraftLimit"></input></td>
 	</tr>
 	<tr>
-	<td colspan="1" align="left"><input style="color: #0099CC;"
-		rsf:id="save" type="submit" value="Save" /> <input
-		style="color: #0099CC;" rsf:id="cancel" type="button" value="Cancel"
-		onclick="history.go(-1)" /></td>
+		<td colspan="1" align="left"><input style="color: #0099CC;"
+			rsf:id="save" type="submit" value="Save" /> <input
+			style="color: #0099CC;" rsf:id="cancel" type="button" value="Cancel"
+			onclick="history.go(-1)" /></td>
 	</tr>
 
 </table>

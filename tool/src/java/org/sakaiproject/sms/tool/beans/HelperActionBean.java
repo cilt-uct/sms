@@ -1,17 +1,17 @@
 /***********************************************************************************
  * HelperActionBean.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -21,6 +21,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -39,7 +40,7 @@ public class HelperActionBean {
 
 	/**
 	 * Cancel Action
-	 * 
+	 *
 	 * @return {@link ActionResults}
 	 */
 	public String cancel() {
@@ -49,7 +50,7 @@ public class HelperActionBean {
 
 	/**
 	 * Calculates estimated group size and continues to next page
-	 * 
+	 *
 	 * @return {@link ActionResults}
 	 */
 	public String doContinue() {
@@ -72,7 +73,7 @@ public class HelperActionBean {
 
 	/**
 	 * Checks sufficient credits and then inserts task
-	 * 
+	 *
 	 * @return {@link ActionResults}
 	 */
 	public String save() {
@@ -96,10 +97,21 @@ public class HelperActionBean {
 
 					return ActionResults.ERROR;
 				} catch (SmsSendDeniedException se) {
-					messages.addMessage(new TargettedMessage("sms.errors.task.permission-denied", null, TargettedMessage.SEVERITY_ERROR));
+					messages.addMessage(new TargettedMessage(
+							"sms.errors.task.permission-denied", null,
+							TargettedMessage.SEVERITY_ERROR));
 					return ActionResults.ERROR;
 				} catch (SmsSendDisabledException sd) {
-					messages.addMessage(new TargettedMessage("sms.errors.task.sms-send-disabled", new Object[] {smsTask.getSakaiSiteId()}, TargettedMessage.SEVERITY_ERROR));
+					messages.addMessage(new TargettedMessage(
+							"sms.errors.task.sms-send-disabled",
+							new Object[] { smsTask.getSakaiSiteId() },
+							TargettedMessage.SEVERITY_ERROR));
+					return ActionResults.ERROR;
+				} catch (ReceiveIncomingSmsDisabledException e) {
+					messages.addMessage(new TargettedMessage(
+							"sms.errors.task.sms-incoming-disabled",
+							new Object[] { smsTask.getSakaiSiteId() },
+							TargettedMessage.SEVERITY_ERROR));
 					return ActionResults.ERROR;
 				}
 				messages.addMessage(new TargettedMessage(

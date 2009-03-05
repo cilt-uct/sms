@@ -171,6 +171,8 @@
 			not-null="false" length="99" unique="false" />
 		<property name="smsEnabled" type="string" column="SMS_ENABLED"
 			not-null="false" length="1" />
+		<property name="incomingEnabled" type="string" column="INCOMING_ENABLED"
+			not-null="false" length="1" />
 		<property name="notificationEmail" type="string" column="NOTIFICATION_EMAIL"
 			not-null="false" length="100" />
 		<property name="delReportTimeoutDuration" type="integer"

@@ -8,6 +8,7 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
+import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -113,6 +114,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -1);
@@ -129,6 +132,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -3);
@@ -145,6 +150,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		try {
