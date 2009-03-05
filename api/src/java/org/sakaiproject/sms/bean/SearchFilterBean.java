@@ -1,17 +1,17 @@
 /***********************************************************************************
  * SearchFilterBean.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -26,7 +26,7 @@ import org.sakaiproject.sms.util.DateUtil;
 /**
  * Generic search filter bean object. Will be used for the search screens as a
  * criteria object to house the search parameters
- * 
+ *
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -47,7 +47,9 @@ public class SearchFilterBean {
 
 	/** The Task ID (on Messages Log) */
 	private String taskId;
-	
+
+	private Integer messageTypeId =SmsHibernateConstants.MESSAGE_TYPE_OUTGOING;
+
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
 	}
@@ -85,9 +87,11 @@ public class SearchFilterBean {
 
 	/**
 	 * Instantiates a new search filter bean.
+	 *
 	 * @param status
 	 *            the status
-	 * @param taskId TODO
+	 * @param taskId
+	 *            TODO
 	 * @param dateFrom
 	 *            the date from
 	 * @param dateTo
@@ -105,12 +109,14 @@ public class SearchFilterBean {
 	 * @param id
 	 *            the id
 	 */
-	public SearchFilterBean(String number, String status, String taskId,
-			Date dateFrom, Date dateTo, String toolName, String sender,
-			Integer currentPage, String orderBy, String sortDirection) {
+	public SearchFilterBean(String number, Integer messageTypeId,
+			String status, String taskId, Date dateFrom, Date dateTo,
+			String toolName, String sender, Integer currentPage,
+			String orderBy, String sortDirection) {
 		super();
 		this.number = number;
 		this.status = status;
+		this.messageTypeId = messageTypeId;
 		this.taskId = taskId;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
@@ -123,7 +129,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the number
-	 * 
+	 *
 	 * @return
 	 */
 	public String getNumber() {
@@ -132,7 +138,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the number
-	 * 
+	 *
 	 * @param number
 	 */
 	public void setNumber(String number) {
@@ -141,7 +147,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the status.
-	 * 
+	 *
 	 * @return the status
 	 */
 	public String getStatus() {
@@ -150,7 +156,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the status.
-	 * 
+	 *
 	 * @param status
 	 *            the new status
 	 */
@@ -160,7 +166,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the date from.
-	 * 
+	 *
 	 * @return the date from
 	 */
 	public Date getDateFrom() {
@@ -169,7 +175,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the date from.
-	 * 
+	 *
 	 * @param dateFrom
 	 *            the new date from
 	 */
@@ -179,7 +185,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the date to.
-	 * 
+	 *
 	 * @return the date to
 	 */
 	public Date getDateTo() {
@@ -188,7 +194,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the date to.
-	 * 
+	 *
 	 * @param dateTo
 	 *            the new date to
 	 */
@@ -198,7 +204,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the tool name.
-	 * 
+	 *
 	 * @return the tool name
 	 */
 	public String getToolName() {
@@ -207,7 +213,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the tool name.
-	 * 
+	 *
 	 * @param toolName
 	 *            the new tool name
 	 */
@@ -217,7 +223,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the sender.
-	 * 
+	 *
 	 * @return the sender
 	 */
 	public String getSender() {
@@ -226,7 +232,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the sender.
-	 * 
+	 *
 	 * @param sender
 	 *            the new sender
 	 */
@@ -236,7 +242,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the current page.
-	 * 
+	 *
 	 * @return the current page
 	 */
 	public Integer getCurrentPage() {
@@ -245,7 +251,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the current page.
-	 * 
+	 *
 	 * @param currentPage
 	 *            the new current page
 	 */
@@ -255,7 +261,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the order by.
-	 * 
+	 *
 	 * @return the order by
 	 */
 	public String getOrderBy() {
@@ -264,7 +270,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the order by.
-	 * 
+	 *
 	 * @param orderBy
 	 *            the new order by
 	 */
@@ -274,7 +280,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the transaction type.
-	 * 
+	 *
 	 * @return the transaction type
 	 */
 	public String getTransactionType() {
@@ -283,7 +289,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the transaction type.
-	 * 
+	 *
 	 * @param transactionType
 	 *            the new transaction type
 	 */
@@ -291,9 +297,17 @@ public class SearchFilterBean {
 		this.transactionType = transactionType;
 	}
 
+	public Integer getMessageTypeId() {
+		return messageTypeId;
+	}
+
+	public void setMessageTypeId(Integer messageTypeId) {
+		this.messageTypeId = messageTypeId;
+	}
+
 	/**
 	 * Gets the sort direction.
-	 * 
+	 *
 	 * @return the sort direction
 	 */
 	public String getSortDirection() {
@@ -302,7 +316,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the sort direction.
-	 * 
+	 *
 	 * @param sortDirection
 	 *            the new sort direction
 	 */
@@ -312,7 +326,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Fire action. Denotes a new search
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean fireAction() {
@@ -327,7 +341,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sort asc.
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean sortAsc() {
@@ -340,7 +354,7 @@ public class SearchFilterBean {
 
 	/**
 	 * A boolean to differentiate between a new search or paging
-	 * 
+	 *
 	 * @return new search
 	 */
 	public boolean isNewSearch() {
@@ -349,7 +363,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Set if the search is new
-	 * 
+	 *
 	 * @param newSearch
 	 */
 	public void setNewSearch(boolean newSearch) {
@@ -365,6 +379,7 @@ public class SearchFilterBean {
 		retStr.append("----------\n");
 		retStr.append("number: ").append(number).append("\n");
 		retStr.append("status: ").append(status).append("\n");
+		retStr.append("message typeId: ").append(messageTypeId).append("\n");
 		retStr.append("dateFrom: ").append(dateFrom).append("\n");
 		retStr.append("dateTo: ").append(dateTo).append("\n");
 		retStr.append("taskId: ").append(taskId).append("\n");

@@ -10,4 +10,7 @@ public class SmsSendDisabledException extends Exception {
 		super("SMS sending is disabled for site :"
 				+ smsTask.getSakaiSiteId().toString());
 	}
+
+
+
 }

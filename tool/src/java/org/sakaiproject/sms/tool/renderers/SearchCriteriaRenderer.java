@@ -1,23 +1,24 @@
 /***********************************************************************************
  * SearchCriteriaRenderer.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
 package org.sakaiproject.sms.tool.renderers;
 
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.springframework.util.Assert;
 
@@ -98,11 +99,12 @@ public class SearchCriteriaRenderer {
 		dateEvolver.evolveDateInput(dateTo);
 
 		// Task ID field on message log + Transaction
-		if (labelDropDown.indexOf("Message") != -1 || labelDropDown.indexOf("Type") != -1) {
+		if (labelDropDown.indexOf("Message") != -1
+				|| labelDropDown.indexOf("Type") != -1) {
 			UIMessage.make(searchForm, "task-id-label", "sms.search.task-id");
 			UIInput.make(searchForm, "task-id", createSearchELString("taskId"));
 		}
-		
+
 		// No Id field for Task
 		if (labelDropDown.indexOf("Task") == -1)
 			UIOutput.make(searchForm, "label-id", labelID);
@@ -111,7 +113,8 @@ public class SearchCriteriaRenderer {
 			UIInput.make(searchForm, "id", createSearchELString("number"));
 
 		// No Tool name search criteria
-		if (labelDropDown.indexOf("Type") == -1 && labelDropDown.indexOf("Message") == -1) {
+		if (labelDropDown.indexOf("Type") == -1
+				&& labelDropDown.indexOf("Message") == -1) {
 			UIOutput.make(searchForm, "tool-name-label", "Tool Name:");
 			UIInput.make(searchForm, "tool-name",
 					createSearchELString("toolName"));
@@ -166,6 +169,7 @@ public class SearchCriteriaRenderer {
 
 	private void createTaskDropDown(UIForm searchForm) {
 		UIOutput.make(searchForm, "label-dropdown", labelDropDown);
+		UIOutput.make(searchForm, "task-message-type-label", "Message type");
 
 		UISelect combo = UISelect.make(searchForm, "task-status");
 		combo.selection = new UIInput();
@@ -185,10 +189,27 @@ public class SearchCriteriaRenderer {
 		comboNames.setValue(new String[] { "All", "Retry", "Sent", "Busy",
 				"Pending", "Incomplete", "Failed", "Complete" });
 		combo.optionnames = comboNames;
+
+		UISelect combo2 = UISelect.make(searchForm, "task-message-type");
+		combo2.selection = new UIInput();
+
+		combo2.selection.valuebinding = new ELReference(
+				createSearchELString("messageTypeId"));
+		UIBoundList comboValues2 = new UIBoundList();
+
+		comboValues2.setValue(new String[] { null,
+				SmsHibernateConstants.MESSAGE_TYPE_INCOMING.toString(),
+				SmsHibernateConstants.MESSAGE_TYPE_OUTGOING.toString() });
+		combo2.optionlist = comboValues2;
+		UIBoundList comboNames2 = new UIBoundList();
+		comboNames2.setValue(new String[] { "All", "MO", "SO" });
+		combo2.optionnames = comboNames2;
+
 	}
 
 	private void createMessageDropDown(UIForm searchForm) {
 		UIOutput.make(searchForm, "label-dropdown", labelDropDown);
+
 
 		UISelect combo = UISelect.make(searchForm, "task-status");
 		combo.selection = new UIInput();

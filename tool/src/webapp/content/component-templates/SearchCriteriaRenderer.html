@@ -26,7 +26,13 @@
 		<td>
 			<select id="task-status" rsf:id="task-status">
 				<option>All</option>
-			</select> 
+			</select>
+		</td>
+		<td><div rsf:id="task-message-type-label">Message type:</div></td>
+		<td>
+			<select id="task-message-type" rsf:id="task-message-type">
+				<option>All</option>
+			</select>
 		</td>
 		<td>Date From:</td>
 		<td>
@@ -42,10 +48,10 @@
 			size="12" maxlength="10" /> <img src="../images/calendar.gif"
 			alt="calendar" /> </span>
 		</td>
-		
+
 		<td rsf:id="task-id-label">Task ID:</td>
 		<td><input style="width: 40px;" id="task-id" type="text" rsf:id="task-id" onkeyup="checkNumbers(this)"/></td>
-		
+
 		<td><div id="id" rsf:id="label-id">Mobile Number:</div></td>
 		<td><input id="mobileNumber" style="width: 80px;" onkeyup="checkNumbers(this)" type="text" rsf:id="id"></input></td>
 		<td><div rsf:id="tool-name-label">Tool Name:</div></td>
@@ -56,7 +62,7 @@
 </table>
 	<input rsf:id="search" type="submit" value="Search"/>
 	<input rsf:id="reset" type="submit" value="Reset"/>
-</form>	
+</form>
 </fieldset>
 	<script rsf:id="init-clear-from-date-input" type="text/javascript">
 		initClearDateInput("dateInputId");

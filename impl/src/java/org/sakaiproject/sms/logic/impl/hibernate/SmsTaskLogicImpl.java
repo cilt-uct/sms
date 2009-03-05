@@ -122,13 +122,13 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
 		hql.append(" order by task.dateToSend ");
-		List<SmsTask> tasks = smsDao.runQuery(hql.toString(), 
+		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 							   new QueryParameter("today", getCurrentDate(), Hibernate.TIMESTAMP),
 							   new QueryParameter("statusCodes", new Object[] {
 										SmsConst_DeliveryStatus.STATUS_PENDING,
 										SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
 										SmsConst_DeliveryStatus.STATUS_RETRY }, Hibernate.STRING));
-		
+
 		log.debug("getNextSmsTask() HQL: " + hql);
 		if (tasks != null && tasks.size() > 0) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
@@ -183,6 +183,10 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 					&& !searchBean.getStatus().trim().equals("")) {
 				crit.add(Restrictions.ilike("statusCode", searchBean
 						.getStatus()));
+			}
+			if (searchBean.getMessageTypeId() != null)
+					 {
+				crit.add(Restrictions.eq("messageTypeId", searchBean.getMessageTypeId()));
 			}
 
 			// Sakai tool name
@@ -252,7 +256,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 		String hql = "update SmsTask set MESSAGES_PROCESSED =MESSAGES_PROCESSED+1  where TASK_ID = :smsTaskID";
 		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));
-		
+
 	}
 
 	/**
@@ -276,7 +280,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 									new QueryParameter("smsTaskStatus",
 											SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
 											Hibernate.STRING));
-		
+
 		String hql = "update SmsTask  set STATUS_CODE =:doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus";
 		smsDao.executeUpdate(hql, new QueryParameter("doneStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,Hibernate.STRING),
 										 new QueryParameter("smsTaskStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, Hibernate.STRING));
