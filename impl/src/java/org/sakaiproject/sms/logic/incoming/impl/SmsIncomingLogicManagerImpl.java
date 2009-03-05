@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
@@ -43,6 +44,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// The help command is valid for all sms-enabled tools
 	private static final String HELP = "HELP";
+	
+	private ExternalLogic externalLogic;
+	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+	
 
 	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message) {
@@ -97,15 +105,46 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					reply = generateAssistMessage(smsPatternSearchResult
 							.getPossibleMatches(), toolKey);
 				} else {
-					reply = registered.getCommand(
-							smsPatternSearchResult.getPattern()).execute(
-							message.getSite(), message.getUserId(),
-							message.getBody());
+					String site = getValidSite(message.getSite());
+					if (site == null) {
+						reply = generateInvalidSiteMessage(message.getSite());
+					} else {
+						reply = registered.getCommand(
+								smsPatternSearchResult.getPattern()).execute(
+								getValidSite(message.getSite()), message.getUserId(),
+								message.getBody());
+					}
 				}
 			}
 		}
 		return formatReply(reply);
 	}
+	
+	/**
+	 * Returns a valid site
+	 * 
+	 * @param suppliedSiteId as specified by message 
+	 * @return
+	 */
+	private String getValidSite(String suppliedSiteId) {
+		if (externalLogic.isValidSite(suppliedSiteId)) {
+			return suppliedSiteId;
+		} else {
+			String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
+			if (siteId != null) {
+				return siteId;
+			} else {
+				SmsPatternSearchResult result = getClosestMatch(suppliedSiteId, externalLogic.getAllAliasesAsArray());
+				if (result.getMatchResult().equals(SmsPatternSearchResult.ONE_MATCH)) {
+					return result.getPattern();
+				} else {
+					return null;
+				}
+			}
+		}
+		
+	}
+	
 
 	// Format reply to be returned
 	private String formatReply(String reply) {
@@ -282,6 +321,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				return false;
 			}
 		}
+	}
+	
+	private String generateInvalidSiteMessage(String site) {
+		return "Invalid site (" + site + ") supplied";
 	}
 
 	public String generateAssistMessage(ArrayList<String> matches,

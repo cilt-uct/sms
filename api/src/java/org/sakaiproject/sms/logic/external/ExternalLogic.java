@@ -184,5 +184,20 @@ public interface ExternalLogic {
 	 */
 	public SmsSmppProperties getSmppProperties(
 			SmsSmppProperties smsSmppProperties);
+	
+	/**
+	 * Returns siteId from alias (null if none found)
+	 * 
+	 * @param alias
+	 * @return
+	 */
+	public String getSiteFromAlias(String alias);
+	
+	/**
+	 * Returns all aliases as String array
+	 * 
+	 * @return
+	 */
+	public String[] getAllAliasesAsArray();
 
 }

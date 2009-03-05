@@ -29,6 +29,7 @@
 				<property name="profileManager" ref="org.sakaiproject.api.app.profile.ProfileManager" />
 			</bean>
 		</property>
+		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>
 	</bean>
 
 </beans>

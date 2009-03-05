@@ -103,7 +103,8 @@
 
 	</bean>
 
-	<bean id="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" class="org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl"/>
-
+	<bean id="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" class="org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl">
+			<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	</bean>
 	<import resource="external.xml" />
 </beans>

@@ -202,4 +202,13 @@ public class ExternalLogicStub implements ExternalLogic {
 			SmsSmppProperties smsSmppProperties) {
 		return smsSmppProperties;
 	}
+
+	public String getSiteFromAlias(String alias) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String[] getAllAliasesAsArray() {
+		return new String[0];
+	}
 }

@@ -30,6 +30,8 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.EmailValidator;
+import org.sakaiproject.alias.api.Alias;
+import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
@@ -38,6 +40,7 @@ import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -121,7 +124,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
-
+	
+	private AliasService aliasService;
+	
+	public void setAliasService(AliasService aliasService) {
+		this.aliasService = aliasService;
+	}
+	
 	public void init() {
 		log.debug("init");
 		// register Sakai permissions for this tool
@@ -481,5 +490,31 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return smsSmppProperties;
 
+	}
+
+	public String getSiteFromAlias(String alias) {
+		String target;
+		try {
+			target = aliasService.getTarget(alias);
+			if (isValidSite(target)) {
+				return target;
+			} else {
+				return null;
+			}
+		} catch (IdUnusedException e) {
+			log.error("Undefined alias used: " + alias);
+			return null;
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public String[] getAllAliasesAsArray() {
+		List<Alias> aliases = aliasService.getAliases(1, aliasService.countAliases());
+		String[] toReturn = new String[aliases.size()];
+		for (int i=0; i<aliases.size(); i++) {
+			 toReturn[i] = aliases.get(i).getId();
+		}
+		return toReturn;
 	}
 }
