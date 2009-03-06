@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.sakaiproject.api.app.profile.Profile;
 import org.sakaiproject.api.app.profile.ProfileManager;
+import org.sakaiproject.api.common.edu.person.SakaiPerson;
+import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
+import org.sakaiproject.component.common.edu.person.SakaiPersonImpl;
 
 /**
  * Default implementation of {@link MobileNumberHelper}
@@ -34,9 +38,14 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	
 	private static final Logger LOG = Logger.getLogger(MobileNumberHelperImpl.class);
 	private ProfileManager profileManager;
+	private SakaiPersonManager sakaiPersonManager;
 	
 	public void setProfileManager(ProfileManager profileManager) {
 		this.profileManager = profileManager;
+	}
+	
+	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
+		this.sakaiPersonManager = sakaiPersonManager;
 	}
 	
 	/**
@@ -61,5 +70,22 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			userMobileMap.put(userid, getUserMobileNumber(userid));
 		}
 		return userMobileMap;
+	}
+	
+	/**
+	 * @see MobileNumberHelper#getUserIdsFromMobileNumber(String)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
+		SakaiPerson example = new SakaiPersonImpl();
+		example.setMobile(mobileNumber);
+
+		List<SakaiPerson> list = sakaiPersonManager.findSakaiPerson(example);
+		List<String> toReturn = new ArrayList<String>();
+		for (SakaiPerson person : list) {
+			toReturn.add(person.getUid());
+		}
+		
+		return toReturn;
 	}
 }

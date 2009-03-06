@@ -54,6 +54,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message) {
+		
 		String reply = null;
 		if (toolCmdsMap.size() != 0) { // No tools registered
 			String toolKey = message.getTool().toUpperCase();

@@ -211,4 +211,10 @@ public class ExternalLogicStub implements ExternalLogic {
 	public String[] getAllAliasesAsArray() {
 		return new String[0];
 	}
+
+	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
+		List<String> list = new ArrayList<String>();
+		list.add(SMS_DEV_DEFAULT_SAKAI_USER_ID);
+		return list;
+	}
 }

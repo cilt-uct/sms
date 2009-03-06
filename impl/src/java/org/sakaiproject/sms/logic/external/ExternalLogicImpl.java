@@ -517,4 +517,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return toReturn;
 	}
+
+	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
+		return mobileNumberHelper.getUserIdsFromMobileNumber(mobileNumber);
+	}
 }

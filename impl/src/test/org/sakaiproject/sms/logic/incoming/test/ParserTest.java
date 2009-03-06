@@ -88,5 +88,4 @@ public class ParserTest extends TestCase {
 			assertNotNull(e);
 		}
 	}
-	
 }

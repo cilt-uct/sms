@@ -18,6 +18,7 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -199,5 +200,13 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public String[] getAllAliasesAsArray();
+	
+	/**
+	 * Retrieve userIds with supplied mobile number
+	 * 
+	 * @param mobileNumber
+	 * @return
+	 */
+	List<String> getUserIdsFromMobileNumber(String mobileNumber);
 
 }

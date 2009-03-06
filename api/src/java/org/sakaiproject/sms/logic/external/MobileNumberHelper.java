@@ -39,6 +39,12 @@ public interface MobileNumberHelper {
 	 */
 	Map<String,String> getUserMobileNumbers(List<String> userids);
 
-
+	/**
+	 * Retrieve userIds with supplied mobile number
+	 * 
+	 * @param mobileNumber
+	 * @return
+	 */
+	List<String> getUserIdsFromMobileNumber(String mobileNumber);
 
 }

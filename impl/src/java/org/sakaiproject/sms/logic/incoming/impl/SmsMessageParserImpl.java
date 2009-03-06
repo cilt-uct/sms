@@ -61,10 +61,4 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		return true;
 	}
 
-	public void toolProcessCommand(String sakaiToolId, String command,
-			String commandSuffix) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
