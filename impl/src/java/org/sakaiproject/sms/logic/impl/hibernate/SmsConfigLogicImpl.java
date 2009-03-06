@@ -75,7 +75,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 * @param sms
 	 *            confuguration to be persisted
 	 */
-	public synchronized void persistSmsConfig(SmsConfig smsConfig) {
+	public  void persistSmsConfig(SmsConfig smsConfig) {
 		persist(smsConfig);
 	}
 
@@ -87,7 +87,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 *
 	 * @return the sms config by sakai site id
 	 */
-	public synchronized SmsConfig getOrCreateSmsConfigBySakaiSiteId(
+	public  SmsConfig getOrCreateSmsConfigBySakaiSiteId(
 			String sakaiSiteId) {
 		List<SmsConfig> configs = smsDao.runQuery(
 				"from SmsConfig conf where conf.sakaiSiteId = :id",

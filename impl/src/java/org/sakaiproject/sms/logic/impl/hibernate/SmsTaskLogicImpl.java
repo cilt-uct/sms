@@ -252,7 +252,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *
 	 * @param smsTask
 	 */
-	public synchronized void incrementMessagesProcessed(SmsTask smsTask) {
+	public  void incrementMessagesProcessed(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_PROCESSED =MESSAGES_PROCESSED+1  where TASK_ID = :smsTaskID";
 		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));

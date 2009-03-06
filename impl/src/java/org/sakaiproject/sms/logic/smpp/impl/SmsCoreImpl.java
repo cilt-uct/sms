@@ -125,18 +125,21 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
+	 *
 	 * @author void
 	 *
 	 */
 	private class ProcessThread implements Runnable {
 
 		SmsTask smsTask;
+
 		ProcessThread(SmsTask smsTask) {
 			this.smsTask = smsTask;
 			Thread t = new Thread(smsThreadGroup, this);
 			t.start();
 
 		}
+
 		public void run() {
 			Work();
 		}
@@ -292,7 +295,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	public synchronized SmsTask insertTask(SmsTask smsTask)
+	public SmsTask insertTask(SmsTask smsTask)
 			throws SmsTaskValidationException, SmsSendDeniedException,
 			SmsSendDisabledException, ReceiveIncomingSmsDisabledException {
 
@@ -306,9 +309,10 @@ public class SmsCoreImpl implements SmsCore {
 				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException(smsTask);
 		}
-		if(smsTask.getMessageTypeId()==SmsHibernateConstants.MESSAGE_TYPE_INCOMING){
+		if (smsTask.getMessageTypeId() == SmsHibernateConstants.MESSAGE_TYPE_INCOMING) {
 
-			if (!hibernateLogicLocator.getSmsConfigLogic()
+			if (!hibernateLogicLocator
+					.getSmsConfigLogic()
 					.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
 					.isReceiveIncomingEnabled()) {
 				throw new ReceiveIncomingSmsDisabledException(smsTask);
@@ -445,13 +449,14 @@ public class SmsCoreImpl implements SmsCore {
 		if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
 			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 					.getNextSmsTask();
-			LOG.info("Number of active Threads :"+getThreadCount(smsThreadGroup));
+			LOG.info("Number of active Threads :"
+					+ getThreadCount(smsThreadGroup));
 			if (smsTask != null) {
 				new ProcessThread(smsTask);
 
-			}else{
-				LOG.info("To many active threads.SmsTask will be scheduled" );
 			}
+		} else {
+			LOG.info("To many active threads.SmsTask will be scheduled");
 		}
 	}
 
@@ -741,15 +746,16 @@ public class SmsCoreImpl implements SmsCore {
 		this.smsSmpp = smsSmpp;
 	}
 
-	public void tryProcessTaskRealTime(SmsTask smsTask) {
+	public synchronized void tryProcessTaskRealTime(SmsTask smsTask) {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
-			LOG.info("Number of active Threads :"+getThreadCount(smsThreadGroup));
+			LOG.info("Number of active Threads :"
+					+ getThreadCount(smsThreadGroup));
 			if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
 				new ProcessThread(smsTask);
-			}else{
-				LOG.info("To many active threads.SmsTask will be scheduled" );
+			} else {
+				LOG.info("To many active threads.SmsTask will be scheduled");
 			}
 		}
 	}

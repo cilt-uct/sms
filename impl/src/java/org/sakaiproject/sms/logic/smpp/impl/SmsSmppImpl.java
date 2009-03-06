@@ -153,9 +153,9 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * will receive tcp packets form the gateway. Note that any of the listeners
 	 * running on a ip address, will receive reports and not just the session
 	 * that sent them!
-	 * 
+	 *
 	 * @author etienne@psybergate.co.za
-	 * 
+	 *
 	 */
 	private class MessageReceiverListenerImpl implements
 			MessageReceiverListener {
@@ -263,7 +263,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * Bind to the remote gateway using a username and password. If the
 	 * connection is dropped, this service will try and reconnect and specified
 	 * intervals.
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean bind() {
@@ -572,7 +572,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * Send a list of messages one-by-one to the gateway. Abort if the gateway
 	 * connection is down or when gateway returns an error and mark relevant
 	 * messages as failed. Return message statuses (not reports) back to caller.
-	 * 
+	 *
 	 * @return
 	 */
 	public String sendMessagesToGateway(Set<SmsMessage> messages) {
@@ -610,7 +610,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * This is a future function that could allow an external system to receive
 	 * the delivery report and handle it accordingly. See a code example in
 	 * processOutgoingMessageRemotely.
-	 * 
+	 *
 	 * @param deliveryReceipt
 	 * @return
 	 */
@@ -678,18 +678,22 @@ public class SmsSmppImpl implements SmsSmpp {
 		} catch (PDUException e) {
 			// Invalid PDU parameter
 			message.setDebugInfo("Invalid PDU parameter Message failed");
+			message.getSmsTask().setFailReason("Invalid PDU parameter Message failed");
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+
 			LOG.error(e);
 
 		} catch (ResponseTimeoutException e) {
 			// Response timeout
 			message.setDebugInfo("Response timeout Message failed");
+
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			LOG.error(e);
 
 		} catch (InvalidResponseException e) {
 			// Invalid response
 			message.setDebugInfo("Receive invalid respose Message failed");
+
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			LOG.error(e);
 
@@ -722,7 +726,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * NB: This is just example code of a possible implementation. The remote
 	 * service will need to handle the delivery reports. Other possible solution
 	 * is to use web services.
-	 * 
+	 *
 	 * @param smsMessage
 	 * @return
 	 */
