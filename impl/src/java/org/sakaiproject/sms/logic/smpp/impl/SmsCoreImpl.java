@@ -56,9 +56,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -125,9 +125,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 * 
+	 *
 	 * @author void
-	 * 
+	 *
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -152,7 +152,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -166,7 +166,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -440,15 +440,15 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processNextTask() {
+
 		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getNextSmsTask();
-		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup)
-				+ "/" + maxThreadCount);
+		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup));
 		if (smsTask != null) {
 			new ProcessThread(smsTask);
+
 		}
+
 	}
 
 	public void processTask(SmsTask smsTask) {
@@ -578,12 +578,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -593,7 +593,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -737,7 +737,7 @@ public class SmsCoreImpl implements SmsCore {
 		this.smsSmpp = smsSmpp;
 	}
 
-	public synchronized void tryProcessTaskRealTime(SmsTask smsTask) {
+	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
@@ -764,9 +764,25 @@ public class SmsCoreImpl implements SmsCore {
 		for (SmsTask smsTask : smsTasks) {
 			smsBilling.settleCreditDifference(smsTask);
 			checkOverdraft(smsTask);
-			if (smsTask.getMessageTypeId() == SmsHibernateConstants.MESSAGE_TYPE_OUTGOING) {
+			if (smsTask.getMessageTypeId().equals(
+					SmsHibernateConstants.MESSAGE_TYPE_OUTGOING)) {
 				sendEmailNotification(smsTask,
 						SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
+			} else {
+				if (smsTask.getSmsMessages() != null) {
+					for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
+						if (smsMessages.getStatusCode().equals(
+								SmsConst_DeliveryStatus.STATUS_ERROR)
+								|| smsMessages.getStatusCode().equals(
+										SmsConst_DeliveryStatus.STATUS_FAIL)) {
+							smsTask
+									.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+							smsTask.setFailReason(smsMessages.getDebugInfo());
+							hibernateLogicLocator.getSmsTaskLogic()
+									.persistSmsTask(smsTask);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -827,7 +843,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
-	 * 
+	 *
 	 * @param threadgroup
 	 * @return
 	 */

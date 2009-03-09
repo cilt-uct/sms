@@ -306,9 +306,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						if ((arg0.equals(SessionState.CLOSED) || arg0
 								.equals(SessionState.UNBOUND))
 								&& (!disconnectGateWayCalled)) {
-							LOG
-									.warn("SMSC session lost Status-"
-											+ arg0);
+							LOG.warn("SMSC session lost Status-" + arg0);
 							gatewayBound = false;
 							session.unbindAndClose();
 							if (arg0.equals(SessionState.CLOSED)) {
@@ -653,6 +651,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new NullPointerException(
 						"SMS Message body text may not be empty.");
 			}
+			if (true) {
+				throw new ResponseTimeoutException();
+			}
 			String messageId = session.submitShortMessage(smsSmppProperties
 					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
 					.getSourceAddressTON()), NumberingPlanIndicator
@@ -684,6 +685,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.getSmsTask().setFailReason(
 					"Invalid PDU parameter Message failed");
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 
 			LOG.error(e);
 
@@ -692,6 +695,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setDebugInfo("Response timeout Message failed");
 
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 			LOG.error(e);
 
 		} catch (InvalidResponseException e) {
@@ -699,17 +704,23 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setDebugInfo("Receive invalid respose Message failed");
 
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 			LOG.error(e);
 
 		} catch (NegativeResponseException e) {
 			// Receiving negative response (non-zero command_status)
 			message.setDebugInfo("Receive negative response Message failed");
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 			LOG.error(e);
 
 		} catch (IOException e) {
 			message.setDebugInfo("IO error occur Message failed");
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 			LOG.error(e);
 
 		}
