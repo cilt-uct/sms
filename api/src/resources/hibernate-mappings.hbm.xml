@@ -183,6 +183,8 @@
 			not-null="false" />
 		<property name="smsRetryMaxCount" type="integer" column="SMS_RETRY_MAX_COUNT"
 			not-null="false" />
+		<property name="maxActiveThreads" type="integer" column="MAX_ACTIVE_THREADS"
+			not-null="false" />
 		<property name="smsRetryScheduleInterval" type="integer"
 			column="SMS_RETRY_SCHEDULE_INTERVAL" not-null="false" />
 		<property name="smsTaskMaxLifeTime" type="integer"

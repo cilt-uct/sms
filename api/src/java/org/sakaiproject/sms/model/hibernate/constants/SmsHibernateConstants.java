@@ -166,6 +166,9 @@ public class SmsHibernateConstants {
 	/** The default max time to live */
 	public static final Integer DEFAULT_MAX_TIME_TO_LIVE = 1;
 
+	/** The default max active threads **/
+	public static final int DEFAULT_MAX_ACTIVE_THREADS = 10;
+	
 	/** The Constant INSUFFICIENT_CREDIT_MESSAGE. */
 	public static final String INSUFFICIENT_CREDIT_MESSAGE = "Insufficient credit.";
 

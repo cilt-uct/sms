@@ -115,32 +115,21 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 		// Settings for the Sakai instance
 		if (sakaiSiteId != null && sakaiSiteId.equals("")) {
 			config.setSakaiToolId("");
-			config
-
-			.setSmsRetryMaxCount(SmsHibernateConstants.MAXIMUM_RETRY_COUNT);
-
-			config
-					.setDelReportTimeoutDuration(SmsHibernateConstants.DEL_REPORT_TIMEOUT_DURATION);
-
-			config
-					.setSmsRetryScheduleInterval(SmsHibernateConstants.RETRY_SCHEDULE_INTERVAL);
-			config
-					.setSmsTaskMaxLifeTime(SmsHibernateConstants.MAXIMUM_TASK_LIFETIME);
-			config
-					.setSchedulerInterval(SmsHibernateConstants.SCHEDULER_INTERVAL);
-
+			config.setSmsRetryMaxCount(SmsHibernateConstants.MAXIMUM_RETRY_COUNT);
+			config.setMaxActiveThreads(SmsHibernateConstants.DEFAULT_MAX_ACTIVE_THREADS);
+			config.setDelReportTimeoutDuration(SmsHibernateConstants.DEL_REPORT_TIMEOUT_DURATION);
+			config.setSmsRetryScheduleInterval(SmsHibernateConstants.RETRY_SCHEDULE_INTERVAL);
+			config.setSmsTaskMaxLifeTime(SmsHibernateConstants.MAXIMUM_TASK_LIFETIME);
+			config.setSchedulerInterval(SmsHibernateConstants.SCHEDULER_INTERVAL);
 			config.setCreditCost(SmsHibernateConstants.COST_OF_CREDIT);
-
-			config
-					.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
+			config.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
+			
 		} else {
 			// Setting for each site
 			config.setSakaiToolId("DummyToolId");
 			config.setOverdraftLimit(SmsHibernateConstants.OVERDRAFT_LIMIT);
-			config
-					.setNotificationEmail(SmsHibernateConstants.NOTIFICATION_EMAIL);
-			config
-					.setNotificationEmailBilling("notificationBilling@instution.com");
+			config.setNotificationEmail(SmsHibernateConstants.NOTIFICATION_EMAIL);
+			config.setNotificationEmailBilling("notificationBilling@instution.com");
 			config.setNotificationEmailSent("notificationSent@instution.com");
 			config.setPagingSize(SmsHibernateConstants.DEFAULT_PAGE_SIZE);
 			config.setReceiveIncomingEnabled(true);

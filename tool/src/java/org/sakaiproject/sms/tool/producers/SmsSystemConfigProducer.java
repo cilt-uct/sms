@@ -110,6 +110,12 @@ public class SmsSystemConfigProducer implements ViewComponentProducer {
 		maxTaskLifetimeInput.decorators = new DecoratorList(
 				new UITooltipDecorator(UIMessage
 						.make("sms.site.config.task.lifetime-tooltip")));
+		
+		UIMessage.make(smsSystemForm, "max-active-threads",	"sms.system.config.max.active.threads");
+		UIInput maxActiveThreadsInput = UIInput.make(smsSystemForm,
+		"sms-config-max-active-threads", smsSystemConfigOTP	+ ".maxActiveThreads");
+		maxActiveThreadsInput.decorators = new DecoratorList(new UITooltipDecorator(UIMessage
+				.make("sms.system.config.max.active.threads-tooltip")));
 
 		UIMessage.make(smsSystemForm, "retry-schedule-interval",
 				"sms.site.config.retry.schedule");

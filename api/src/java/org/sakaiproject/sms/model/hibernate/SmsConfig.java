@@ -74,6 +74,9 @@ public class SmsConfig extends BaseModel {
 	/** Sets the interval for the scheduler. */
 	private Integer schedulerInterval;
 
+	/** Max thread count **/
+	private Integer maxActiveThreads;
+	
 	/** Some accounts will be allowed to have a overdraft limit. */
 	private Long overdraftLimit;
 
@@ -573,4 +576,24 @@ public class SmsConfig extends BaseModel {
 		}
 		return null;
 	}
+	
+	/**
+	 * Retrieves max thread count
+	 * 
+	 * @return max thread count
+	 */
+	public Integer getMaxActiveThreads() {
+		return maxActiveThreads;
+	}
+
+	/**
+	 * Sets max thread count
+	 *  
+	 * @param maxThreadCount to set to
+	 */
+	public void setMaxActiveThreads(Integer maxActiveThreads) {
+		this.maxActiveThreads = maxActiveThreads;
+	}
+	
+	
 }

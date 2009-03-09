@@ -65,7 +65,6 @@ public class SmsCoreImpl implements SmsCore {
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 	private static final String THREAD_GROUP_NAME = "sms";
 
-	private static final int MAX_ACTIVE_THREADS = 10;
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(THREAD_GROUP_NAME);
 
 	private SmsMessageParser smsMessageParser;
@@ -440,16 +439,13 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processNextTask() {
-
 			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 					.getNextSmsTask();
 			LOG.info("Number of active Threads :"
 					+ getThreadCount(smsThreadGroup));
 			if (smsTask != null) {
 				new ProcessThread(smsTask);
-
 			}
-
 	}
 
 	public void processTask(SmsTask smsTask) {
@@ -738,13 +734,14 @@ public class SmsCoreImpl implements SmsCore {
 		this.smsSmpp = smsSmpp;
 	}
 
-	public void tryProcessTaskRealTime(SmsTask smsTask) {
+	public synchronized void tryProcessTaskRealTime(SmsTask smsTask) {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
 			LOG.info("Number of active Threads :"
 					+ getThreadCount(smsThreadGroup));
-			if (getThreadCount(smsThreadGroup) < MAX_ACTIVE_THREADS) {
+			int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic().getOrCreateSystemSmsConfig().getMaxActiveThreads();
+			if (getThreadCount(smsThreadGroup) < maxThreadCount) {
 				new ProcessThread(smsTask);
 			} else {
 				LOG.info("To many active threads.SmsTask will be scheduled");
@@ -820,9 +817,6 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 	}
-
-
-
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
