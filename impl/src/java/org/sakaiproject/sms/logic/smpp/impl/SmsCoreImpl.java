@@ -56,16 +56,17 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 	private static final String THREAD_GROUP_NAME = "sms";
 
-	private final ThreadGroup smsThreadGroup = new ThreadGroup(THREAD_GROUP_NAME);
+	private final ThreadGroup smsThreadGroup = new ThreadGroup(
+			THREAD_GROUP_NAME);
 
 	private SmsMessageParser smsMessageParser;
 
@@ -124,9 +125,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 *
+	 * 
 	 * @author void
-	 *
+	 * 
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -151,7 +152,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -165,7 +166,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -367,8 +368,8 @@ public class SmsCoreImpl implements SmsCore {
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
 			if (parsedMessage != null) {
-				String toolReplyBody = smsIncomingLogicManager
-						.process(parsedMessage, mobileNumber);
+				String toolReplyBody = smsIncomingLogicManager.process(
+						parsedMessage, mobileNumber);
 				if (toolReplyBody != null) {
 					smsMessageReplyBody = toolReplyBody;
 					LOG.info("Tool " + parsedMessage.getTool()
@@ -398,8 +399,8 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				"admin", new Date(), parsedMessage.getSite(),
-				parsedMessage.getTool(), "admin");
+				"admin", new Date(), parsedMessage.getSite(), parsedMessage
+						.getTool(), "admin");
 
 		if (smsTask == null) {
 			return;
@@ -439,13 +440,15 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processNextTask() {
-			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
-					.getNextSmsTask();
-			LOG.info("Number of active Threads :"
-					+ getThreadCount(smsThreadGroup));
-			if (smsTask != null) {
-				new ProcessThread(smsTask);
-			}
+		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getNextSmsTask();
+		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
+		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup)
+				+ "/" + maxThreadCount);
+		if (smsTask != null) {
+			new ProcessThread(smsTask);
+		}
 	}
 
 	public void processTask(SmsTask smsTask) {
@@ -575,12 +578,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -590,7 +593,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -738,13 +741,17 @@ public class SmsCoreImpl implements SmsCore {
 
 		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
-			LOG.info("Number of active Threads :"
+			LOG.info("Number of active SMS threads :"
 					+ getThreadCount(smsThreadGroup));
-			int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic().getOrCreateSystemSmsConfig().getMaxActiveThreads();
+			int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
+					.getOrCreateSystemSmsConfig().getMaxActiveThreads();
 			if (getThreadCount(smsThreadGroup) < maxThreadCount) {
 				new ProcessThread(smsTask);
 			} else {
-				LOG.info("To many active threads.SmsTask will be scheduled");
+				LOG
+						.info("Maximum allowed SMS threads of "
+								+ maxThreadCount
+								+ " reached. Task will be scheduled for later processing.");
 			}
 		}
 	}
@@ -820,7 +827,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
-	 *
+	 * 
 	 * @param threadgroup
 	 * @return
 	 */
