@@ -45,17 +45,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// The help command is valid for all sms-enabled tools
 	private static final String HELP = "HELP";
-	
+
 	private ExternalLogic externalLogic;
-	
+
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
 
 	// TODO: Throw exception if no applicable found?
 	public String process(ParsedMessage message, String mobileNr) {
-		
+
 		String reply = null;
 		if (toolCmdsMap.size() != 0) { // No tools registered
 			String toolKey = message.getTool().toUpperCase();
@@ -111,15 +110,17 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					if (site == null) {
 						reply = generateInvalidSiteMessage(message.getSite());
 					} else {
-						// I don't think this is a good method of retrieving the user ids
-						List<String> userIds = externalLogic.getUserIdsFromMobileNumber(mobileNr);
+						// I don't think this is a good method of retrieving the
+						// user ids
+						List<String> userIds = externalLogic
+								.getUserIdsFromMobileNumber(mobileNr);
 						if (userIds.size() == 0) {
 							reply = generateInvalidMobileNrMessage(mobileNr);
 						} else {
 							reply = registered.getCommand(
-									smsPatternSearchResult.getPattern()).execute(
-									getValidSite(message.getSite()), userIds.get(0),
-									message.getBody());						
+									smsPatternSearchResult.getPattern())
+									.execute(site, userIds.get(0),
+											message.getBody());
 						}
 					}
 				}
@@ -127,11 +128,12 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		}
 		return formatReply(reply);
 	}
-	
+
 	/**
 	 * Returns a valid site
 	 * 
-	 * @param suppliedSiteId as specified by message 
+	 * @param suppliedSiteId
+	 *            as specified by message
 	 * @return
 	 */
 	private String getValidSite(String suppliedSiteId) {
@@ -142,17 +144,18 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			if (siteId != null) {
 				return siteId;
 			} else {
-				SmsPatternSearchResult result = getClosestMatch(suppliedSiteId, externalLogic.getAllAliasesAsArray());
-				if (result.getMatchResult().equals(SmsPatternSearchResult.ONE_MATCH)) {
+				SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
+						externalLogic.getAllAliasesAsArray());
+				if (result.getMatchResult().equals(
+						SmsPatternSearchResult.ONE_MATCH)) {
 					return result.getPattern();
 				} else {
 					return null;
 				}
 			}
 		}
-		
+
 	}
-	
 
 	// Format reply to be returned
 	private String formatReply(String reply) {
@@ -169,7 +172,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * command. The idea is based on the Levenshtein distance. Our algorithm
 	 * assign the highest scores to matches on the left hand side of the word.
 	 * And if the first letter does not match, then its a 0% match for the word.
-	 *
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
@@ -244,7 +247,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Finds valid command EXACTLY as it is specified in command keys or HELP
-	 *
+	 * 
 	 * @return valid command
 	 */
 	private SmsPatternSearchResult findValidCommand(String suppliedKey,
@@ -330,13 +333,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			}
 		}
 	}
-	
+
 	private String generateInvalidSiteMessage(String site) {
 		return "Invalid site (" + site + ") supplied";
 	}
-	
+
 	private String generateInvalidMobileNrMessage(String mobileNr) {
-		return "Invalid mobile number (" + mobileNr +") used";
+		return "Invalid mobile number (" + mobileNr + ") used";
 	}
 
 	public String generateAssistMessage(ArrayList<String> matches,
@@ -369,7 +372,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
