@@ -27,38 +27,31 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 	private static final String DELIMITERS = " \t\r\n\f";
 
 	/**
-	 * Parses the message general. Try to figure out the sakai site and user.
+	 * Parses the message general.
+	 * FORMAT: <tool> <site> <command> <body>
 	 */
 	public ParsedMessage parseMessage(String msgText) throws ParseException {
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
 
-		String[] params = StringUtils.split(msgText, DELIMITERS, 5);
+		String[] params = StringUtils.split(msgText, DELIMITERS, 4);
 
 		// Must at lease contain tool + site + userid + command
-		if (params.length < 4) {
+		if (params.length < 3) {
 			throw new ParseException("Invalid number of tokens: "
 					+ params.length);
 		}
 
-		if (params.length == 4) {
-			// tool + site + userid + command			
-			return new ParsedMessage(params[0], params[1], params[2], params[3]);
+		if (params.length == 3) {
+			// tool + site + command			
+			return new ParsedMessage(params[0], params[1], params[2]);
 		} else {
-			// tool + site + userid + command + body
+			// tool + site + command + body
 			return new ParsedMessage(params[0], params[1], params[2],
-					params[3], params[4]);
+					params[3]);
 		}
 
-	}
-
-	/**
-	 * Check for valid pin, sakai site code, mobile number etc.
-	 */
-	public boolean validateMessageGeneral(String smsMessagebody,
-			String mobileNumber) {
-		return true;
 	}
 
 }

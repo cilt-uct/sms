@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +54,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	
 
 	// TODO: Throw exception if no applicable found?
-	public String process(ParsedMessage message) {
+	public String process(ParsedMessage message, String mobileNr) {
 		
 		String reply = null;
 		if (toolCmdsMap.size() != 0) { // No tools registered
@@ -110,10 +111,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					if (site == null) {
 						reply = generateInvalidSiteMessage(message.getSite());
 					} else {
-						reply = registered.getCommand(
-								smsPatternSearchResult.getPattern()).execute(
-								getValidSite(message.getSite()), message.getUserId(),
-								message.getBody());
+						// I don't think this is a good method of retrieving the user ids
+						List<String> userIds = externalLogic.getUserIdsFromMobileNumber(mobileNr);
+						if (userIds.size() == 0) {
+							reply = generateInvalidMobileNrMessage(mobileNr);
+						} else {
+							reply = registered.getCommand(
+									smsPatternSearchResult.getPattern()).execute(
+									getValidSite(message.getSite()), userIds.get(0),
+									message.getBody());						
+						}
 					}
 				}
 			}
@@ -327,6 +334,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	private String generateInvalidSiteMessage(String site) {
 		return "Invalid site (" + site + ") supplied";
 	}
+	
+	private String generateInvalidMobileNrMessage(String mobileNr) {
+		return "Invalid mobile number (" + mobileNr +") used";
+	}
 
 	public String generateAssistMessage(ArrayList<String> matches,
 			String toolKey) {
@@ -349,7 +360,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				String command = i.next();
 				body.append(command);
 				if (i.hasNext()) {
-					body.append(",");
+					body.append(", ");
 				}
 			}
 		}

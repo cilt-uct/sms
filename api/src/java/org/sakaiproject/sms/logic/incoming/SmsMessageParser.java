@@ -22,8 +22,7 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 /**
  * This Class will handle all validation and parsing of MO(Mobile Originating)
  * messages Tool specific parsing and validation will be done from the tool
- * itself. The first line of the Sms may contain a sakai user pin. A typical
- * command might be: QNA SITE1 POST The message to post
+ * itself. A typical command might be: QNA SITE1 POST The message to post
  *
  * To use this class: (1) instantiate with a SmsTask, (2) call
  * parseMessageGeneral (3) call validateMessageGeneral
@@ -36,13 +35,9 @@ public interface SmsMessageParser {
 	/**
 	 * Parses the text of the message. Try to figure out the sakai site and user.
 	 * Usually called from the Sakai Sms service itself.
+	 * 
+	 * FORMAT: <tool> <site> <command> <body>
 	 */
 	public ParsedMessage parseMessage(String msgText) throws ParseException;
 
-	/**
-	 * Check for valid pin, sakai site code, mobile number etc. Usually called
-	 * from the Sakai Sms service itself.
-	 */
-	public boolean validateMessageGeneral(String smsMessagebody,
-			String mobileNumber);
 }

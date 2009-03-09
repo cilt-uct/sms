@@ -66,7 +66,7 @@ public class SmsCoreImpl implements SmsCore {
 	private static final String THREAD_GROUP_NAME = "sms";
 
 	private static final int MAX_ACTIVE_THREADS = 10;
-	private ThreadGroup smsThreadGroup = new ThreadGroup(THREAD_GROUP_NAME);
+	private final ThreadGroup smsThreadGroup = new ThreadGroup(THREAD_GROUP_NAME);
 
 	private SmsMessageParser smsMessageParser;
 
@@ -364,19 +364,13 @@ public class SmsCoreImpl implements SmsCore {
 	public void processIncomingMessage(String smsMessagebody,
 			String mobileNumber) {
 
-		String smsMessageReplyBody = "DUMMY BODY";
-		if (!smsMessageParser.validateMessageGeneral(smsMessagebody,
-				mobileNumber)) {
-			// TODO added a proper validation reason.
-			smsMessageReplyBody = "Message invalid ";
-		}
-
+		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
 			if (parsedMessage != null) {
 				String toolReplyBody = smsIncomingLogicManager
-						.process(parsedMessage);
+						.process(parsedMessage, mobileNumber);
 				if (toolReplyBody != null) {
 					smsMessageReplyBody = toolReplyBody;
 					LOG.info("Tool " + parsedMessage.getTool()
@@ -406,14 +400,15 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				parsedMessage.getUserId(), new Date(), parsedMessage.getSite(),
+				"admin", new Date(), parsedMessage.getSite(),
 				parsedMessage.getTool(), "admin");
 
 		if (smsTask == null) {
 			return;
 		}
 		smsMessage.setSmsTask(smsTask);
-		smsMessage.setSakaiUserId(parsedMessage.getUserId());
+		// TODO: who must te sakai user Id be for te reply?
+		smsMessage.setSakaiUserId("admin");
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
 		smsMessage.setMessageBody(smsMessagebody);

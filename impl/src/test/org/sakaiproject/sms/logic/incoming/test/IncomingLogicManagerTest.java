@@ -24,9 +24,10 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
 import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
@@ -38,14 +39,22 @@ import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
  */
 public class IncomingLogicManagerTest extends TestCase {
 
-	private SmsIncomingLogicManager manager;
+	private SmsIncomingLogicManagerImpl manager;
+	private ExternalLogic externalLogic;
+	
 	private CreateSmsCommand createCmd;
 	private UpdateSmsCommand updateCmd;
 	private DeleteSmsCommand deleteCmd;
 	
+	private static String TEST_MOBILE = "1234";
+	private static String TEST_SITE = "SakaiSiteID";
+	
 	@Override
 	public void setUp() {
 		manager = new SmsIncomingLogicManagerImpl();
+		externalLogic = new ExternalLogicStub();
+		manager.setExternalLogic(externalLogic);
+		
 		createCmd = new CreateSmsCommand();
 		updateCmd = new UpdateSmsCommand();
 		deleteCmd = new DeleteSmsCommand();
@@ -71,12 +80,12 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testDuplicateReplace() {
-		ParsedMessage msg = new ParsedMessage("test", "site", "userId",	"create");
+		ParsedMessage msg = new ParsedMessage("test", TEST_SITE, "create");
 		assertTrue(manager.isValidCommand("test", "CREATE"));
-		assertEquals("CREATE", manager.process(msg));
+		assertEquals("CREATE", manager.process(msg,TEST_MOBILE));
 		manager.register("test", new CreateSmsCommandCopy());
 		assertTrue(manager.isValidCommand("test", "CREATE"));
-		assertEquals("CREATE COPY", manager.process(msg));
+		assertEquals("CREATE COPY", manager.process(msg,TEST_MOBILE));
 	}
 
 	private String loadPropertiesFile(final String name) {
@@ -104,16 +113,16 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testProcess() {
-		ParsedMessage msg = new ParsedMessage("test", "site", "userId",	"create");
+		ParsedMessage msg = new ParsedMessage("test", TEST_SITE, "create");
 		
-		assertEquals("CREATE", manager.process(msg));
+		assertEquals("CREATE", manager.process(msg,TEST_MOBILE));
 
-		msg = new ParsedMessage("test", "site", "userId", "updat");
-		assertEquals("UPDATE", manager.process(msg));
+		msg = new ParsedMessage("test", TEST_SITE, "updat");
+		assertEquals("UPDATE", manager.process(msg,TEST_MOBILE));
 
-		msg = new ParsedMessage("test", "site", "userId", "DELET");
-		manager.process(msg);
-		assertEquals("DELETE", manager.process(msg));
+		msg = new ParsedMessage("test", TEST_SITE, "DELET");
+		manager.process(msg,TEST_MOBILE);
+		assertEquals("DELETE", manager.process(msg,TEST_MOBILE));
 
 	}
 
@@ -136,9 +145,9 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	public void testHelpCommand() {
 		assertTrue(manager.isValidCommand("test", "help"));
-		ParsedMessage msg = new ParsedMessage("test", "site", "userId", "help");
-		String value = manager.process(msg);
-		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", value);
+		ParsedMessage msg = new ParsedMessage("test", TEST_SITE, "help");
+		String value = manager.process(msg,TEST_MOBILE);
+		assertEquals("TEST will understand CREATE, UPDATE, DELETE", value);
 	}
 
 	public void testGenerateAssistMessage() {
@@ -148,7 +157,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		list.add("DELETE");
 
 		String msg = manager.generateAssistMessage(list, "test");
-		assertEquals("Valid commands: \nCREATE, UPDATE, DELETE", msg);
+		assertEquals("test will understand CREATE, UPDATE, DELETE", msg);
 
 	}
 	

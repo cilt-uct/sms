@@ -45,7 +45,7 @@ public interface SmsIncomingLogicManager {
 
 	/**
 	 * Process a {@link ParsedMessage} Finds and executes registered
-	 * {@link IncomingSmsLogic}
+	 * {@link SmsCommand}
 	 * 
 	 * Try to find a tool command that closest match the command as entered my
 	 * the sender. Go through the hash map of commands for the specific sakai
@@ -58,7 +58,7 @@ public interface SmsIncomingLogicManager {
 	 * @param message
 	 *            the incoming message received
 	 */
-	public String process(ParsedMessage message);
+	public String process(ParsedMessage message, String mobileNr);
 
 	/**
 	 * Check if command is valid for tool

@@ -23,28 +23,21 @@ public class ParsedMessage {
 	private final String site;
 	private final String command;
 	private final String body;
-	private final String userId;
 
-	public ParsedMessage(String tool, String site, String userId, String command) {
+	public ParsedMessage(String tool, String site, String command) {
 		this.tool = tool;
 		this.site = site;
-		this.userId = userId;
 		this.command = command;
 		this.body = null;
 
 	}
 
-	public ParsedMessage(String tool, String site, String userId, String command,
+	public ParsedMessage(String tool, String site, String command,
 			String body) {
 		this.tool = tool;
 		this.site = site;
-		this.userId = userId;
 		this.command = command;
 		this.body = body;
-	}
-
-	public String getUserId() {
-		return userId;
 	}
 
 	public String getTool() {

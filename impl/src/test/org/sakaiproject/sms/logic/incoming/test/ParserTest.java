@@ -32,26 +32,24 @@ public class ParserTest extends TestCase {
 	private final SmsMessageParser parser = new SmsMessageParserImpl();
 	
 	public void testParseStandard() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site userid command body");
+		ParsedMessage parsed = parser.parseMessage("tool site command body");
 		assertEquals("tool", parsed.getTool());
 		assertEquals("site", parsed.getSite());
-		assertEquals("userid", parsed.getUserId());
 		assertEquals("command", parsed.getCommand());
 		assertEquals("body", parsed.getBody());
 		assertTrue(parsed.hasBody());
 	}
 	
 	public void testParseMultipleBody() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site userid command  body has multiple");
+		ParsedMessage parsed = parser.parseMessage("tool site command  body has multiple");
 		assertEquals("body has multiple", parsed.getBody());
 		assertTrue(parsed.hasBody());
 	}
 	
 	public void testParseNoBody() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site userid command");
+		ParsedMessage parsed = parser.parseMessage("tool site command");
 		assertEquals("tool", parsed.getTool());
 		assertEquals("site", parsed.getSite());
-		assertEquals("userid", parsed.getUserId());
 		assertEquals("command", parsed.getCommand());
 		assertNull(parsed.getBody());
 		assertFalse(parsed.hasBody());
