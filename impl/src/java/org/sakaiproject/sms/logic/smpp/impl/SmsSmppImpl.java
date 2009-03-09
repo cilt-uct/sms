@@ -302,15 +302,18 @@ public class SmsSmppImpl implements SmsSmpp {
 
 					public void onStateChange(SessionState arg0,
 							SessionState arg1, Object arg2) {
+
 						if ((arg0.equals(SessionState.CLOSED) || arg0
 								.equals(SessionState.UNBOUND))
 								&& (!disconnectGateWayCalled)) {
 							LOG
-									.warn("SMSC session lost Starting BindThread.Status-"
+									.warn("SMSC session lost Status-"
 											+ arg0);
-							session.unbindAndClose();
 							gatewayBound = false;
-							bindTest = new BindThread();
+							session.unbindAndClose();
+							if (arg0.equals(SessionState.CLOSED)) {
+								bindTest = new BindThread();
+							}
 						}
 					}
 				});
@@ -678,7 +681,8 @@ public class SmsSmppImpl implements SmsSmpp {
 		} catch (PDUException e) {
 			// Invalid PDU parameter
 			message.setDebugInfo("Invalid PDU parameter Message failed");
-			message.getSmsTask().setFailReason("Invalid PDU parameter Message failed");
+			message.getSmsTask().setFailReason(
+					"Invalid PDU parameter Message failed");
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 
 			LOG.error(e);
