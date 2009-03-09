@@ -651,9 +651,6 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new NullPointerException(
 						"SMS Message body text may not be empty.");
 			}
-			if (true) {
-				throw new ResponseTimeoutException();
-			}
 			String messageId = session.submitShortMessage(smsSmppProperties
 					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
 					.getSourceAddressTON()), NumberingPlanIndicator
