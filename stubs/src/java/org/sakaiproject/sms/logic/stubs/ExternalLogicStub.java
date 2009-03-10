@@ -39,7 +39,7 @@ import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- *
+ * 
  */
 public class ExternalLogicStub implements ExternalLogic {
 
@@ -194,7 +194,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String getSakaiEmailAddressForUserId(String userId) {
-				return "louis@nwu.ac.za";
+		return "louis@nwu.ac.za";
 
 	}
 
@@ -209,7 +209,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String[] getAllAliasesAsArray() {
-		return new String[0];
+		return new String[] { SMS_DEV_DEFAULT_SAKAI_SITE_ID };
 	}
 
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {

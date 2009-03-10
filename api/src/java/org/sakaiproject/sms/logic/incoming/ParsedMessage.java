@@ -19,45 +19,84 @@ package org.sakaiproject.sms.logic.incoming;
 
 public class ParsedMessage {
 
-	private final String tool;
-	private final String site;
-	private final String command;
-	private final String body;
+	private String tool;
+	private String site;
+	private String command;
+	private String body;
+	private String body_reply;
+	private String incomingUserId;
+
+	public ParsedMessage() {
+
+	}
 
 	public ParsedMessage(String tool, String site, String command) {
 		this.tool = tool;
 		this.site = site;
 		this.command = command;
 		this.body = null;
+		this.body_reply = null;
 
 	}
 
-	public ParsedMessage(String tool, String site, String command,
-			String body) {
+	public ParsedMessage(String tool, String site, String command, String body) {
 		this.tool = tool;
 		this.site = site;
 		this.command = command;
 		this.body = body;
+		this.body_reply = null;
+	}
+
+	public boolean hasBody() {
+		return (body != null);
 	}
 
 	public String getTool() {
 		return tool;
 	}
 
+	public void setTool(String tool) {
+		this.tool = tool;
+	}
+
 	public String getSite() {
 		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
 	}
 
 	public String getCommand() {
 		return command;
 	}
 
+	public void setCommand(String command) {
+		this.command = command;
+	}
+
 	public String getBody() {
 		return body;
 	}
 
-	public boolean hasBody() {
-		return (body != null);
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	public String getBody_reply() {
+		return body_reply;
+	}
+
+	public void setBody_reply(String body_reply) {
+		this.body_reply = body_reply;
+	}
+
+	public String getIncomingUserId() {
+		return incomingUserId;
+	}
+
+	public void setIncomingUserId(String incomingUserId) {
+		this.incomingUserId = incomingUserId;
 	}
 
 }

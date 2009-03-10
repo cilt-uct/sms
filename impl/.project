@@ -3,6 +3,7 @@
   <comment>Sms implementation</comment>
   <projects>
     <project>sms-api</project>
+    <project>sms-stubs</project>
   </projects>
   <buildSpec>
     <buildCommand>

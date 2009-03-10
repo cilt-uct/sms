@@ -31,6 +31,8 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
+import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
+import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 import org.sakaiproject.sms.util.SmsStringArrayUtil;
@@ -52,81 +54,104 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		this.externalLogic = externalLogic;
 	}
 
+	private SmsMessageParser smsMessageParser;
+
+	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
+		this.smsMessageParser = smsMessageParser;
+	}
+
 	// TODO: Throw exception if no applicable found?
-	public String process(ParsedMessage message, String mobileNr) {
+	public ParsedMessage process(String smsMessagebody, String mobileNr) {
 
 		String reply = null;
-		if (toolCmdsMap.size() != 0) { // No tools registered
-			String toolKey = message.getTool().toUpperCase();
-			SmsPatternSearchResult smsPatternSearchResult = new SmsPatternSearchResult();
-			String suppliedCommand = message.getCommand().toUpperCase();
-			RegisteredCommands registered = null;
-
-			if (isValidCommand(toolKey, suppliedCommand)) { // Everything is
-				// valid
-				registered = toolCmdsMap.get(toolKey);
-				smsPatternSearchResult = findValidCommand(suppliedCommand,
-						registered);
-			} else {
-				if (toolCmdsMap.containsKey(toolKey)) { // Valid tool but
-					// invalid command
+		String incomingUserID = null;
+		String toolKey = null;
+		ParsedMessage parsedMessage = new ParsedMessage();
+		SmsPatternSearchResult validCommandMatch = new SmsPatternSearchResult();
+		try {
+			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
+			if (toolCmdsMap.size() != 0) { // No tools registered
+				toolKey = parsedMessage.getTool().toUpperCase();
+				String suppliedCommand = parsedMessage.getCommand()
+						.toUpperCase();
+				RegisteredCommands registered = null;
+				if (isValidCommand(toolKey, suppliedCommand)) {
+					// Everything is valid
 					registered = toolCmdsMap.get(toolKey);
-					smsPatternSearchResult = findValidCommand(suppliedCommand,
+					validCommandMatch = findValidCommand(suppliedCommand,
 							registered);
-
-				} else { // Invalid toolKey
-					toolKey = getClosestMatch(
-							toolKey,
-							toolCmdsMap.keySet().toArray(
-									new String[toolCmdsMap.keySet().size()]))
-							.getPattern();
-					if (toolKey != null) {
-						registered = toolCmdsMap.get(toolKey);
-						smsPatternSearchResult = findValidCommand(
-								suppliedCommand, registered);
-					} else {
-						reply = generateAssistMessage(smsPatternSearchResult
-								.getPossibleMatches(), toolKey);
-					}
-
-				}
-			}
-
-			if ((smsPatternSearchResult.getPattern() != null)
-					&& (smsPatternSearchResult.getMatchResult() != null)) {
-				if (HELP.equalsIgnoreCase(smsPatternSearchResult.getPattern())) {
-					reply = generateAssistMessage(smsPatternSearchResult
-							.getPossibleMatches(), toolKey);
-				} else if (smsPatternSearchResult.getMatchResult().equals(
-						SmsPatternSearchResult.NO_MATCHES)) {
-					reply = generateAssistMessage(smsPatternSearchResult
-							.getPossibleMatches(), toolKey);
-				} else if (smsPatternSearchResult.getMatchResult().equals(
-						SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
-					reply = generateAssistMessage(smsPatternSearchResult
-							.getPossibleMatches(), toolKey);
 				} else {
-					String site = getValidSite(message.getSite());
-					if (site == null) {
-						reply = generateInvalidSiteMessage(message.getSite());
-					} else {
-						// I don't think this is a good method of retrieving the
-						// user ids
-						List<String> userIds = externalLogic
-								.getUserIdsFromMobileNumber(mobileNr);
-						if (userIds.size() == 0) {
-							reply = generateInvalidMobileNrMessage(mobileNr);
+					if (toolCmdsMap.containsKey(toolKey)) {
+						// Valid tool but invalid command
+						registered = toolCmdsMap.get(toolKey);
+						validCommandMatch = findValidCommand(suppliedCommand,
+								registered);
+
+					} else { // Invalid toolKey
+						toolKey = getClosestMatch(
+								toolKey,
+								toolCmdsMap.keySet()
+										.toArray(
+												new String[toolCmdsMap.keySet()
+														.size()])).getPattern();
+						if (toolKey != null) {
+							registered = toolCmdsMap.get(toolKey);
+							validCommandMatch = findValidCommand(
+									suppliedCommand, registered);
 						} else {
-							reply = registered.getCommand(
-									smsPatternSearchResult.getPattern())
-									.execute(site, userIds.get(0),
-											message.getBody());
+							reply = generateAssistMessage(validCommandMatch
+									.getPossibleMatches(), toolKey);
+						}
+
+					}
+				}
+
+				if ((validCommandMatch.getPattern() != null)
+						&& (validCommandMatch.getMatchResult() != null)) {
+					if (HELP.equalsIgnoreCase(validCommandMatch.getPattern())) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches(), toolKey);
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.NO_MATCHES)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches(), toolKey);
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches(), toolKey);
+					} else {
+						String site = getValidSite(parsedMessage.getSite());
+						if (site == null) {
+							reply = generateInvalidSiteMessage(parsedMessage
+									.getSite());
+						} else {
+							// I don't think this is a good method of retrieving
+							// the user ids
+							List<String> userIds = externalLogic
+									.getUserIdsFromMobileNumber(mobileNr);
+							if (userIds.size() == 0) {
+								reply = generateInvalidMobileNrMessage(mobileNr);
+							} else {
+								incomingUserID = userIds.get(0);
+								reply = registered.getCommand(
+										validCommandMatch.getPattern())
+										.execute(site, incomingUserID,
+												parsedMessage.getBody());
+							}
 						}
 					}
 				}
 			}
+		} catch (ParseException e) {
+			// TODO add a proper validation reason.
+			reply = "Message invalid.";
 		}
-		return formatReply(reply);
+
+		parsedMessage.setBody_reply(reply);
+		parsedMessage.setTool(toolKey);
+		parsedMessage.setIncomingUserId(incomingUserID);
+		parsedMessage.setCommand(validCommandMatch.getPattern());
+		return parsedMessage;
 	}
 
 	/**
@@ -179,11 +204,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 */
 	private ArrayList<String> getPossibleMatches(String valueToMatch,
 			String[] values) {
+		valueToMatch = valueToMatch.toUpperCase();
 		ArrayList<String> returnVals = new ArrayList<String>();
 		String returnVal = null;
 		// We first check for matching parts.
 		ArrayList<String> matchedValues = new ArrayList<String>();
 		for (String str : values) {
+			str = str.toUpperCase();
 			if (str.indexOf(valueToMatch) != -1) {
 				matchedValues.add(str);
 			}
@@ -194,6 +221,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		// We calculate the largest string's length to be used as weights.
 		int largestString = 0;
 		for (String str : values) {
+			str = str.toUpperCase();
 			if (str.length() > largestString) {
 				largestString = str.length();
 			}
@@ -205,6 +233,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		int maxStringScore = 0;
 
 		for (String str : values) {
+			str = str.toUpperCase();
 			boolean skipCommand = false;
 			int patternScore = 0;
 			char[] commandChars = str.toCharArray();

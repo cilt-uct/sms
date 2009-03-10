@@ -35,7 +35,6 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
-import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -56,9 +55,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -125,9 +124,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 *
+	 * 
 	 * @author void
-	 *
+	 * 
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -152,7 +151,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -166,7 +165,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 *
+	 * 
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
@@ -365,32 +364,25 @@ public class SmsCoreImpl implements SmsCore {
 
 		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
-		try {
-			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
-			if (parsedMessage != null) {
-				String toolReplyBody = smsIncomingLogicManager.process(
-						parsedMessage, mobileNumber);
-				if (toolReplyBody != null) {
-					smsMessageReplyBody = toolReplyBody;
-					LOG.info("Tool " + parsedMessage.getTool()
-							+ " answered back with: " + toolReplyBody);
-				}
-			} else {
-				smsMessageReplyBody = "No tool found.";
-				// TODO What do we do when we cannot figure out the site or tool
-				// from the sms ? And how do we figure out which account to
-				// bill. We must still answer the user even if the sms body is
-				// empty, at least with some help on the possible commands
-				// he/she can send
-				parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
-						"COMMAND");
-
+		parsedMessage = smsIncomingLogicManager.process(smsMessagebody,
+				mobileNumber);
+		if (parsedMessage != null) {
+			if (parsedMessage.getBody_reply() != null) {
+				smsMessageReplyBody = parsedMessage.getBody_reply();
+				LOG.info("Tool " + parsedMessage.getTool()
+						+ " answered back with: "
+						+ parsedMessage.getBody_reply());
 			}
-		} catch (ParseException e) {
-			// TODO add a proper validation reason.
-			smsMessageReplyBody = "Message invalid.";
+		} else {
+			smsMessageReplyBody = "No tool found.";
+			// TODO What do we do when we cannot figure out the site or tool
+			// from the sms ? And how do we figure out which account to
+			// bill. We must still answer the user even if the sms body is
+			// empty, at least with some help on the possible commands
+			// he/she can send
+			parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
+					"COMMAND");
 		}
-
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
 		if (parsedMessage == null) {
@@ -578,12 +570,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -593,7 +585,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -739,7 +731,6 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
-		// TODO also check number of process threads
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
 			LOG.info("Number of active SMS threads :"
 					+ getThreadCount(smsThreadGroup));
@@ -843,7 +834,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
-	 *
+	 * 
 	 * @param threadgroup
 	 * @return
 	 */
