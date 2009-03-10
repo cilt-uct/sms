@@ -6,7 +6,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public interface SmsTaskValidator {
 
-	public ArrayList<String> checkSufficientCredits(SmsTask smsTask);
+	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,boolean overDraftCheck);
 
 	public ArrayList<String> validateInsertTask(SmsTask smsTask);
 

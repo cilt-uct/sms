@@ -47,12 +47,12 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
  * @created 12-Dec-2008
  */
 public class SmsBillingImpl implements SmsBilling {
-	
+
 	// Transaction Type properties
 	private final Properties properties = new Properties();
-	
+
 	private static Logger LOG = Logger.getLogger(SmsBillingImpl.class);
-	
+
 	private HibernateLogicLocator hibernateLogicLocator;
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
@@ -71,7 +71,8 @@ public class SmsBillingImpl implements SmsBilling {
 			if (is != null) {
 				properties.load(is);
 			} else {
-				properties.load((new FileInputStream("transaction_codes.properties")));
+				properties.load((new FileInputStream(
+						"transaction_codes.properties")));
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error(e);
@@ -79,7 +80,7 @@ public class SmsBillingImpl implements SmsBilling {
 			LOG.error(e);
 		}
 	}
-	
+
 	/**
 	 * Credits an account by the supplied amount of credits.
 	 *
@@ -103,7 +104,8 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
-		smsTransaction.setSakaiUserId(hibernateLogicLocator.getExternalLogic().getCurrentUserId());
+		smsTransaction.setSakaiUserId(hibernateLogicLocator.getExternalLogic()
+				.getCurrentUserId());
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
@@ -121,6 +123,21 @@ public class SmsBillingImpl implements SmsBilling {
 	public void allocateCredits(Long accountID, int creditCount) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 *
+	 * Return true of the account has the required credits available. Take into
+	 * account overdraft limits, if applicable.
+	 *
+	 * @param smsTask
+	 * @parm overDraftCheck
+	 * @return
+	 */
+	public boolean checkSufficientCredits(SmsTask smsTask,
+			boolean overDraftCheck) {
+		return this.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
+				.getCreditEstimate(), overDraftCheck);
 	}
 
 	/**
@@ -148,6 +165,24 @@ public class SmsBillingImpl implements SmsBilling {
 	 */
 	public boolean checkSufficientCredits(Long accountID,
 			Integer creditsRequired) {
+
+		return this.checkSufficientCredits(accountID, creditsRequired, false);
+	}
+
+	/**
+	 * Return true of the account has the required credits available.
+	 *
+	 * @param accountID
+	 *            the account id
+	 * @param creditsRequired
+	 *            the credits required
+	 * @param overDraftCheck
+	 *            the overDraftCheck
+	 *
+	 * @return true, if sufficient credits
+	 */
+	public boolean checkSufficientCredits(Long accountID,
+			Integer creditsRequired, boolean overDraftCheck) {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountID);
 
@@ -162,7 +197,14 @@ public class SmsBillingImpl implements SmsBilling {
 		}
 
 		boolean sufficientCredit = false;
-		if (account.getCredits() >= creditsRequired) {
+
+		Long avalibleCredits = account.getCredits();
+
+		if (overDraftCheck) {
+			avalibleCredits += account.getOverdraftLimit();
+		}
+
+		if (avalibleCredits >= creditsRequired) {
 			sufficientCredit = true;
 		}
 
@@ -507,27 +549,33 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	public String getCancelCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CANCEL", "TCAN"), 5);
+		return StringUtils.left(properties.getProperty("TRANS_CANCEL", "TCAN"),
+				5);
 	}
 
 	public String getCancelReserveCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CANCEL_RESERVE", "RCAN"), 5);
+		return StringUtils.left(properties.getProperty("TRANS_CANCEL_RESERVE",
+				"RCAN"), 5);
 	}
 
 	public String getCreditAccountCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CREDIT_ACCOUNT", "CRED"), 5);
+		return StringUtils.left(properties.getProperty("TRANS_CREDIT_ACCOUNT",
+				"CRED"), 5);
 	}
 
 	public String getDebitLateMessageCode() {
-		return StringUtils.left(properties.getProperty("TRANS_DEBIT_LATE_MESSAGE", "LATE"), 5);
+		return StringUtils.left(properties.getProperty(
+				"TRANS_DEBIT_LATE_MESSAGE", "LATE"), 5);
 	}
 
 	public String getReserveCreditsCode() {
-		return StringUtils.left(properties.getProperty("TRANS_RESERVE_CREDITS", "RES"), 5);
+		return StringUtils.left(properties.getProperty("TRANS_RESERVE_CREDITS",
+				"RES"), 5);
 	}
 
 	public String getSettleDifferenceCode() {
-		return StringUtils.left(properties.getProperty("TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
+		return StringUtils.left(properties.getProperty(
+				"TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
 	}
 
 }

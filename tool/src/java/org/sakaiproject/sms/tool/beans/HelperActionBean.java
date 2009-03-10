@@ -83,7 +83,7 @@ public class HelperActionBean {
 
 			// Check if credits available
 			boolean sufficientCredits = smsBilling.checkSufficientCredits(
-					smsTask.getSmsAccountId(), smsTask.getCreditEstimate());
+					smsTask.getSmsAccountId(), smsTask.getCreditEstimate(),false);
 			if (sufficientCredits) {
 				// do sending
 				try {

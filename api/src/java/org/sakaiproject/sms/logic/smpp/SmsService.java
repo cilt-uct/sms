@@ -131,11 +131,12 @@ public interface SmsService {
 	 *            the sakai user id
 	 * @param creditsRequired
 	 *            the credits required
-	 *
+	 * @param overDraftCheck
+	 *            the overDraftCheck
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(String sakaiSiteID,
-			String sakaiUserID, int creditsRequired);
+			String sakaiUserID, int creditsRequired, boolean overDraftCheck);
 
 	/**
 	 *

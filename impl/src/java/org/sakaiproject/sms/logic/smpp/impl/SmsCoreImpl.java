@@ -64,6 +64,10 @@ public class SmsCoreImpl implements SmsCore {
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
 	private static final String THREAD_GROUP_NAME = "sms";
 
+	private static final int moOverdraftEmailInterval = 2;
+
+	private Calendar lastSendMoOverdraftEmail = null;
+
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
 			THREAD_GROUP_NAME);
 
@@ -277,6 +281,13 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setGroupSizeEstimate(1);
 			smsTask.setGroupSizeActual(1);
 			smsTask.setCreditEstimate(1);
+			try {
+				smsTask.setSmsAccountId(smsBilling
+						.getAccountID(sakaiSiteID, ""));
+			} catch (SmsAccountNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return smsTask;
 	}
@@ -338,7 +349,37 @@ public class SmsCoreImpl implements SmsCore {
 		// checkSufficientCredits() will throw unexpected exceptions. Check for
 		// sufficient credit only if the task is valid
 		errors.clear();
-		errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask));
+		if (smsTask.getMessageTypeId().equals(
+				SmsHibernateConstants.MESSAGE_TYPE_INCOMING)) {
+
+			ArrayList<String> sufficiantCredits = smsTaskValidator
+					.checkSufficientCredits(smsTask, true);
+			if (sufficiantCredits.size() > 0) {
+
+				if (lastSendMoOverdraftEmail == null) {
+					sendEmailNotification(
+							smsTask,
+							SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
+					lastSendMoOverdraftEmail = Calendar.getInstance();
+				} else {
+					Calendar now = Calendar.getInstance();
+					Calendar previousSendmail = lastSendMoOverdraftEmail;
+					previousSendmail.add(Calendar.HOUR,
+							moOverdraftEmailInterval);
+					if (previousSendmail.before(now)) {
+						sendEmailNotification(
+								smsTask,
+								SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
+					}
+
+				}
+			}
+			errors.addAll(sufficiantCredits);
+		} else {
+			errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask,
+					false));
+		}
+
 		if (errors.size() > 0) {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
@@ -646,14 +687,21 @@ public class SmsCoreImpl implements SmsCore {
 
 		} else if (taskMessageType
 				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectOverdraftLimitExceeded",
-					smsTask.getId().toString());
+			subject = MessageCatalog
+					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
 			body = MessageCatalog.getMessage(
 					"messages.notificationOverdraftLimitExceeded", String
 							.valueOf(account.getCredits()), String.valueOf((-1)
 							* (account.getOverdraftLimit() + account
 									.getCredits())));
+
+		} else if (taskMessageType
+				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO)) {
+			subject = MessageCatalog
+					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
+			body = MessageCatalog.getMessage(
+					"messages.notificationMOSubjectOverdraftLimitExceeded",
+					String.valueOf(account.getCredits()));
 
 		}
 

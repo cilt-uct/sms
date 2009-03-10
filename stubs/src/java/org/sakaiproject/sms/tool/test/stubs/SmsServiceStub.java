@@ -89,4 +89,10 @@ public class SmsServiceStub implements SmsService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public boolean checkSufficientCredits(String sakaiSiteID,
+			String sakaiUserID, int creditsRequired, boolean overDraftCheck) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

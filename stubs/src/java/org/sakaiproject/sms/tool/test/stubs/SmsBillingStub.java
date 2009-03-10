@@ -135,4 +135,16 @@ public class SmsBillingStub implements SmsBilling {
 		return "RSET";
 	}
 
+	public boolean checkSufficientCredits(SmsTask smsTask,
+			boolean overDraftCheck) {
+		// TODO Auto-generated method stub
+		return sufficientCredits;
+	}
+
+	public boolean checkSufficientCredits(Long accountID,
+			Integer creditsRequired, boolean overDraftCheck) {
+		// TODO Auto-generated method stub
+		return sufficientCredits;
+	}
+
 }

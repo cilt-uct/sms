@@ -52,12 +52,12 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 	 *
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> checkSufficientCredits(SmsTask smsTask) {
+	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,boolean overDraftCheck) {
 		ArrayList<String> errors = new ArrayList<String>();
 		// check for sufficient balance
 		;
 		boolean sufficientCredits = smsBilling.checkSufficientCredits(smsTask
-				.getSmsAccountId(), smsTask.getCreditEstimate());
+				.getSmsAccountId(), smsTask.getCreditEstimate(),overDraftCheck);
 		if (!sufficientCredits) {
 			errors.add(ValidationConstants.INSUFFICIENT_CREDIT);
 		}

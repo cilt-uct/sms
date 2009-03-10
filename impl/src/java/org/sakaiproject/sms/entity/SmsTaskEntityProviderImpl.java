@@ -104,7 +104,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          }
 
 		smsService.calculateEstimatedGroupSize(task);
-		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate())) {
+		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate(),false)) {
 			throw new SecurityException("User ("+ task.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
 		}
 

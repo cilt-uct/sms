@@ -156,7 +156,10 @@ public class SmsHibernateConstants {
 	public static final int TASK_NOTIFICATION_EXCEPTION = 8;
 
 	/** The Constant for smsAccount ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED. */
-	public static final int ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED = 8;
+	public static final int ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED = 9;
+
+	/** The Constant for smsAccount ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO. */
+	public static final int ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO = 10;
 
 	/** The smsc_id is used to uniquely identify the smsc. */
 	public static final String SMSC_ID = "1";
@@ -168,7 +171,7 @@ public class SmsHibernateConstants {
 
 	/** The default max active threads **/
 	public static final int DEFAULT_MAX_ACTIVE_THREADS = 10;
-	
+
 	/** The Constant INSUFFICIENT_CREDIT_MESSAGE. */
 	public static final String INSUFFICIENT_CREDIT_MESSAGE = "Insufficient credit.";
 

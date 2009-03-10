@@ -123,11 +123,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		hql.append(" and task.statusCode IN (:statusCodes) ");
 		hql.append(" order by task.dateToSend ");
 		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
-							   new QueryParameter("today", getCurrentDate(), Hibernate.TIMESTAMP),
-							   new QueryParameter("statusCodes", new Object[] {
-										SmsConst_DeliveryStatus.STATUS_PENDING,
-										SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
-										SmsConst_DeliveryStatus.STATUS_RETRY }, Hibernate.STRING));
+				new QueryParameter("today", getCurrentDate(),
+						Hibernate.TIMESTAMP), new QueryParameter("statusCodes",
+						new Object[] { SmsConst_DeliveryStatus.STATUS_PENDING,
+								SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
+								SmsConst_DeliveryStatus.STATUS_RETRY },
+						Hibernate.STRING));
 
 		log.debug("getNextSmsTask() HQL: " + hql);
 		if (tasks != null && tasks.size() > 0) {
@@ -184,9 +185,9 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 				crit.add(Restrictions.ilike("statusCode", searchBean
 						.getStatus()));
 			}
-			if (searchBean.getMessageTypeId() != null)
-					 {
-				crit.add(Restrictions.eq("messageTypeId", searchBean.getMessageTypeId()));
+			if (searchBean.getMessageTypeId() != null) {
+				crit.add(Restrictions.eq("messageTypeId", searchBean
+						.getMessageTypeId()));
 			}
 
 			// Sakai tool name
@@ -252,10 +253,11 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *
 	 * @param smsTask
 	 */
-	public  void incrementMessagesProcessed(SmsTask smsTask) {
+	public void incrementMessagesProcessed(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_PROCESSED =MESSAGES_PROCESSED+1  where TASK_ID = :smsTaskID";
-		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));
+		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask
+				.getId(), Hibernate.LONG));
 
 	}
 
@@ -267,7 +269,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_DELIVERED =MESSAGES_DELIVERED+1  where TASK_ID = :smsTaskID";
-		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask.getId(), Hibernate.LONG));
+		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask
+				.getId(), Hibernate.LONG));
 	}
 
 	/**
@@ -276,14 +279,24 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public List<SmsTask> checkAndSetTasksCompleted() {
 
-		List<SmsTask> smsTasks = smsDao.runQuery("from SmsTask mes where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus",
-									new QueryParameter("smsTaskStatus",
-											SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-											Hibernate.STRING));
+		List<SmsTask> smsTasks = smsDao
+				.runQuery(
+						"from SmsTask mes where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (:smsTaskStatus)",
+						new QueryParameter("smsTaskStatus", new Object[] {
+								SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
+								SmsConst_DeliveryStatus.STATUS_FAIL },
 
-		String hql = "update SmsTask  set STATUS_CODE =:doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE<> :smsTaskStatus";
-		smsDao.executeUpdate(hql, new QueryParameter("doneStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,Hibernate.STRING),
-										 new QueryParameter("smsTaskStatus", SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, Hibernate.STRING));
+						Hibernate.STRING));
+
+		String hql = "update SmsTask  set STATUS_CODE =:doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (:smsTaskStatus)";
+		smsDao.executeUpdate(hql,
+				new QueryParameter("doneStatus",
+						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
+						Hibernate.STRING), new QueryParameter("smsTaskStatus",
+						new Object[] {
+								SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
+								SmsConst_DeliveryStatus.STATUS_FAIL },
+						Hibernate.STRING));
 		return smsTasks;
 	}
 
