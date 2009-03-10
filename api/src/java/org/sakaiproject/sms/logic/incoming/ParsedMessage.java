@@ -19,19 +19,13 @@ package org.sakaiproject.sms.logic.incoming;
 
 public class ParsedMessage {
 
-	private String tool;
-	private String site;
 	private String command;
-	private String body;
+	private final String site;
+	private final String body;
 	private String body_reply;
 	private String incomingUserId;
 
-	public ParsedMessage() {
-
-	}
-
-	public ParsedMessage(String tool, String site, String command) {
-		this.tool = tool;
+	public ParsedMessage(String command, String site) {
 		this.site = site;
 		this.command = command;
 		this.body = null;
@@ -39,48 +33,27 @@ public class ParsedMessage {
 
 	}
 
-	public ParsedMessage(String tool, String site, String command, String body) {
-		this.tool = tool;
+	public ParsedMessage(String command, String site, String body) {
 		this.site = site;
 		this.command = command;
 		this.body = body;
 		this.body_reply = null;
 	}
 
-	public boolean hasBody() {
-		return (body != null);
-	}
-
-	public String getTool() {
-		return tool;
-	}
-
-	public void setTool(String tool) {
-		this.tool = tool;
-	}
-
 	public String getSite() {
 		return site;
-	}
-
-	public void setSite(String site) {
-		this.site = site;
 	}
 
 	public String getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command) {
-		this.command = command;
-	}
-
 	public String getBody() {
 		return body;
 	}
 
-	public void setBody(String body) {
-		this.body = body;
+	public boolean hasBody() {
+		return (body != null);
 	}
 
 	public String getBody_reply() {
@@ -99,4 +72,7 @@ public class ParsedMessage {
 		this.incomingUserId = incomingUserId;
 	}
 
+	public void setCommand(String command) {
+		this.command = command;
+	}
 }

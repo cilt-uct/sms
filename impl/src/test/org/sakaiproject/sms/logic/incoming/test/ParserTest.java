@@ -28,33 +28,32 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
  * Unit test for incoming message parsing
  */
 public class ParserTest extends TestCase {
-	
+
 	private final SmsMessageParser parser = new SmsMessageParserImpl();
-	
+
 	public void testParseStandard() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site command body");
-		assertEquals("tool", parsed.getTool());
+		ParsedMessage parsed = parser.parseMessage("command site body");
 		assertEquals("site", parsed.getSite());
 		assertEquals("command", parsed.getCommand());
 		assertEquals("body", parsed.getBody());
 		assertTrue(parsed.hasBody());
 	}
-	
+
 	public void testParseMultipleBody() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site command  body has multiple");
+		ParsedMessage parsed = parser
+				.parseMessage("command site  body has multiple");
 		assertEquals("body has multiple", parsed.getBody());
 		assertTrue(parsed.hasBody());
 	}
-	
+
 	public void testParseNoBody() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("tool site command");
-		assertEquals("tool", parsed.getTool());
+		ParsedMessage parsed = parser.parseMessage("command site");
 		assertEquals("site", parsed.getSite());
 		assertEquals("command", parsed.getCommand());
 		assertNull(parsed.getBody());
 		assertFalse(parsed.hasBody());
 	}
-	
+
 	public void testInvalidNull() {
 		try {
 			ParsedMessage parsed = parser.parseMessage(null);
@@ -62,7 +61,7 @@ public class ParserTest extends TestCase {
 			assertNotNull(e);
 		}
 	}
-	
+
 	public void testInvalidEmpty() {
 		try {
 			ParsedMessage parsed = parser.parseMessage("");
@@ -70,18 +69,18 @@ public class ParserTest extends TestCase {
 			assertNotNull(e);
 		}
 	}
-	
+
 	public void testInvalidInvalid1() {
 		try {
-			ParsedMessage parsed = parser.parseMessage("tool");
+			ParsedMessage parsed = parser.parseMessage("cmd");
 		} catch (ParseException e) {
 			assertNotNull(e);
 		}
 	}
-	
+
 	public void testInvalidInvalid2() {
 		try {
-			ParsedMessage parsed = parser.parseMessage("tool site");
+			ParsedMessage parsed = parser.parseMessage("site");
 		} catch (ParseException e) {
 			assertNotNull(e);
 		}

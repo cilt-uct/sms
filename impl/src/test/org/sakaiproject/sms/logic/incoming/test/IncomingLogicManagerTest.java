@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
@@ -68,26 +69,33 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testRegisterLogic() {
-		assertTrue(manager.isValidCommand("TEST", "CREATE"));
-		assertTrue(manager.isValidCommand("TEST", "UPDATE"));
-		assertTrue(manager.isValidCommand("TEST", "DELETE"));
-		assertFalse(manager.isValidCommand("TEST", "SOMETHING"));
+		assertTrue(manager.isValidCommand("CREATE"));
+		assertTrue(manager.isValidCommand("UPDATE"));
+		assertTrue(manager.isValidCommand("DELETE"));
+		assertFalse(manager.isValidCommand("SOMETHING"));
 	}
 
 	public void testCaseInsensitivity() {
-		assertTrue(manager.isValidCommand("TeST", "cReAtE"));
-		assertTrue(manager.isValidCommand("test", "update"));
-		assertTrue(manager.isValidCommand("TEST", "delETE"));
-		assertFalse(manager.isValidCommand("test", "something"));
+		assertTrue(manager.isValidCommand("cReAtE"));
+		assertTrue(manager.isValidCommand("update"));
+		assertTrue(manager.isValidCommand("delETE"));
+		assertFalse(manager.isValidCommand("something"));
 	}
 
-	public void testDuplicateReplace() {
-		assertTrue(manager.isValidCommand("test", "CREATE"));
-		ParsedMessage msg = manager.process("test " + TEST_SITE + " create",
-				TEST_MOBILE);
+	public void testDuplicateNotReplace() {
+		ParsedMessage msg = manager.process("create test", TEST_MOBILE);
+		assertTrue(manager.isValidCommand("CREATE"));
 		assertEquals("CREATE", msg.getCommand());
-		manager.register("test", new CreateSmsCommandCopy());
-		assertTrue(manager.isValidCommand("test", "CREATE"));
+		try {
+			manager.register("test", new CreateSmsCommandCopy());
+			fail("Should throw exception");
+		} catch (DuplicateCommandKeyException de) {
+			assertNotNull(de);
+		}
+
+		assertTrue(manager.isValidCommand("CREATE"));
+		assertEquals("CREATE", manager.process("create " + TEST_SITE,
+				TEST_MOBILE).getBody_reply());
 	}
 
 	private String loadPropertiesFile(final String name) {
@@ -115,8 +123,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testProcess() {
-		ParsedMessage msg = manager.process("test " + TEST_SITE + " updat",
-				TEST_MOBILE);
+		ParsedMessage msg = manager.process("updat test", TEST_MOBILE);
 		assertEquals("UPDATE", msg.getCommand());
 
 	}
@@ -139,10 +146,18 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testHelpCommand() {
-		ParsedMessage msg = manager.process("test " + TEST_SITE + " help",
+		assertTrue(manager.isValidCommand("help"));
+		ParsedMessage msg = manager.process("help " + TEST_SITE + " test",
 				TEST_MOBILE);
-		assertEquals("TEST will understand CREATE, UPDATE, DELETE", msg
+		assertEquals("Possible matches: CREATE, UPDATE, DELETE", msg
 				.getBody_reply());
+	}
+
+	public void testHelpCommandInvalidBody() {
+		assertTrue(manager.isValidCommand("help"));
+		String value = manager.process("help " + TEST_SITE + " something",
+				TEST_MOBILE).getBody_reply();
+		assertEquals("Invalid tool", value);
 	}
 
 	public void testGenerateAssistMessage() {
@@ -151,19 +166,19 @@ public class IncomingLogicManagerTest extends TestCase {
 		list.add("UPDATE");
 		list.add("DELETE");
 
-		String msg = manager.generateAssistMessage(list, "test");
-		assertEquals("test will understand CREATE, UPDATE, DELETE", msg);
+		String msg = manager.generateAssistMessage(list);
+		assertEquals("Possible matches: CREATE, UPDATE, DELETE", msg);
 
 	}
 
 	public void testClearCommands() {
-		assertTrue(manager.isValidCommand("TEST", "CREATE"));
-		assertTrue(manager.isValidCommand("TEST", "UPDATE"));
-		assertTrue(manager.isValidCommand("TEST", "DELETE"));
+		assertTrue(manager.isValidCommand("CREATE"));
+		assertTrue(manager.isValidCommand("UPDATE"));
+		assertTrue(manager.isValidCommand("DELETE"));
 		manager.clearCommands("test");
-		assertFalse(manager.isValidCommand("TEST", "CREATE"));
-		assertFalse(manager.isValidCommand("TEST", "UPDATE"));
-		assertFalse(manager.isValidCommand("TEST", "DELETE"));
+		assertFalse(manager.isValidCommand("CREATE"));
+		assertFalse(manager.isValidCommand("UPDATE"));
+		assertFalse(manager.isValidCommand("DELETE"));
 	}
 
 }

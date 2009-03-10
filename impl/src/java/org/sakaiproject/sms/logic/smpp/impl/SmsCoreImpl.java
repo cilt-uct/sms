@@ -410,9 +410,8 @@ public class SmsCoreImpl implements SmsCore {
 		if (parsedMessage != null) {
 			if (parsedMessage.getBody_reply() != null) {
 				smsMessageReplyBody = parsedMessage.getBody_reply();
-				LOG.info("Tool " + parsedMessage.getTool()
-						+ " answered back with: "
-						+ parsedMessage.getBody_reply());
+				LOG.info("Command " + parsedMessage.getCommand()
+						+ " answered back with: " + smsMessageReplyBody);
 			}
 		} else {
 			smsMessageReplyBody = "No tool found.";
@@ -421,19 +420,18 @@ public class SmsCoreImpl implements SmsCore {
 			// bill. We must still answer the user even if the sms body is
 			// empty, at least with some help on the possible commands
 			// he/she can send
-			parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
-					"COMMAND");
+			parsedMessage = new ParsedMessage("COMMAND", "!admin");
+
 		}
+
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
 		if (parsedMessage == null) {
-			parsedMessage = new ParsedMessage("TOOL", "!admin", "admin",
-					"COMMAND");
+			parsedMessage = new ParsedMessage("COMMAND", "!admin");
 		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				"admin", new Date(), parsedMessage.getSite(), parsedMessage
-						.getTool(), "admin");
+				"admin", new Date(), parsedMessage.getSite(), null, "admin");
 
 		if (smsTask == null) {
 			return;
@@ -473,15 +471,12 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processNextTask() {
-
 		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getNextSmsTask();
 		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup));
 		if (smsTask != null) {
 			new ProcessThread(smsTask);
-
 		}
-
 	}
 
 	public void processTask(SmsTask smsTask) {

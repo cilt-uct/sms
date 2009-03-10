@@ -41,7 +41,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
- *
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 12-Dec-2008
@@ -83,7 +83,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Credits an account by the supplied amount of credits.
-	 *
+	 * 
 	 * @param accountId
 	 * @param creditsToDebit
 	 */
@@ -114,7 +114,7 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Add extra credits to the specific account by making an entry into
 	 * SMS_TRANSACTION Also update the available credits on the account.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
 	 * @param creditCount
@@ -126,10 +126,10 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 *
+	 * 
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 *
+	 * 
 	 * @param smsTask
 	 * @parm overDraftCheck
 	 * @return
@@ -141,10 +141,10 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 *
+	 * 
 	 * Return true of the account has the required credits available. Take into
 	 * account overdraft limits, if applicable.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -155,12 +155,12 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return true of the account has the required credits available.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
 	 * @param creditsRequired
 	 *            the credits required
-	 *
+	 * 
 	 * @return true, if sufficient credits
 	 */
 	public boolean checkSufficientCredits(Long accountID,
@@ -171,14 +171,14 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return true of the account has the required credits available.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
 	 * @param creditsRequired
 	 *            the credits required
 	 * @param overDraftCheck
 	 *            the overDraftCheck
-	 *
+	 * 
 	 * @return true, if sufficient credits
 	 */
 	public boolean checkSufficientCredits(Long accountID,
@@ -200,7 +200,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		Long avalibleCredits = account.getCredits();
 
-		if (overDraftCheck) {
+		if (overDraftCheck && account.getOverdraftLimit() != null) {
 			avalibleCredits += account.getOverdraftLimit();
 		}
 
@@ -213,10 +213,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Convert amount to credits.
-	 *
+	 * 
 	 * @param amount
 	 *            the amount
-	 *
+	 * 
 	 * @return the double
 	 */
 	public Long convertAmountToCredits(Float amount) {
@@ -229,10 +229,10 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Convert the given credits to currency base on the defined conversion
 	 * value at the given time.
-	 *
+	 * 
 	 * @param creditCount
 	 *            the credit count
-	 *
+	 * 
 	 * @return the credit amount
 	 */
 	public Float convertCreditsToAmount(long creditCount) {
@@ -243,10 +243,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return the currency amount available in the account.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
-	 *
+	 * 
 	 * @return the account balance
 	 */
 	public double getAccountBalance(Long accountID) {
@@ -256,10 +256,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return credits available in the account.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
-	 *
+	 * 
 	 * @return the account credits
 	 */
 	public int getAccountCredits(Long accountID) {
@@ -270,14 +270,14 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
 	 * id. AccountType is only outgoing masses for now.
-	 *
+	 * 
 	 * @param sakaiSiteID
 	 *            (e.g. !admin)
 	 * @param sakaiUserID
 	 *            the sakai user id
-	 *
+	 * 
 	 * @return the account id
-	 *
+	 * 
 	 * @throws SmsAccountNotFoundException
 	 *             the sms account not found exception
 	 */
@@ -297,14 +297,14 @@ public class SmsBillingImpl implements SmsBilling {
 	/**
 	 * Return a list of all transactions between startDate and endDate for the
 	 * specific account.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
 	 * @param startDate
 	 *            the start date
 	 * @param endDate
 	 *            the end date
-	 *
+	 * 
 	 * @return the acc transactions
 	 */
 	public Set getAccTransactions(Long accountID, Date startDate, Date endDate) {
@@ -315,10 +315,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Return all accounts linked to the given Sakai site.
-	 *
+	 * 
 	 * @param sakaiSiteID
 	 *            the sakai site id
-	 *
+	 * 
 	 * @return the all site accounts
 	 */
 	public Set getAllSiteAccounts(String sakaiSiteID) {
@@ -329,10 +329,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Insert a new account and return the new account id.
-	 *
+	 * 
 	 * @param sakaiSiteID
 	 *            the sakai site id
-	 *
+	 * 
 	 * @return true, if insert account
 	 */
 	public boolean insertAccount(String sakaiSiteID) {
@@ -341,14 +341,14 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Insert a new transaction for the given account id.
-	 *
+	 * 
 	 * @param accountID
 	 *            the account id
 	 * @param transCodeID
 	 *            the trans code id
 	 * @param creditAmount
 	 * @return true, if insert transaction the credit amount
-	 *
+	 * 
 	 */
 	public Boolean insertTransaction(Long accountID, int transCodeID,
 			int creditAmount) {
@@ -360,10 +360,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * Insert a new transaction and indicate that the credits are reserved. If
 	 * the request is pending and the administrator delete the request, the
 	 * reservation must be rolled back with another transaction.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return true, if reserve credits
 	 */
 	public boolean reserveCredits(SmsTask smsTask) {
@@ -395,7 +395,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Credits account for a message that came in late.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return true, if successful
 	 */
@@ -427,7 +427,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 *
+	 * 
 	 * @param accountId
 	 *            the account id
 	 * @param account
@@ -440,7 +440,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 *
+	 * 
 	 * @param account
 	 *            the account
 	 */
@@ -450,7 +450,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 *
+	 * 
 	 * @param accountId
 	 *            the account id
 	 */
@@ -471,10 +471,10 @@ public class SmsBillingImpl implements SmsBilling {
 
 	/**
 	 * Cancel pending request.
-	 *
+	 * 
 	 * @param smsTaskId
 	 *            the sms task id
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean cancelPendingRequest(Long smsTaskId) {
@@ -513,10 +513,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * Settle credit difference. The group size might have change since the time
 	 * that the task was requested. So we need to calculate the difference and
 	 * settle the account.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean settleCreditDifference(SmsTask smsTask) {

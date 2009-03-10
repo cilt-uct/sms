@@ -8,41 +8,59 @@ import java.util.Set;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class RegisteredCommands {
-	
+
 	// commands in command key - command object pairs
 	private final Map<String, SmsCommand> commands = new LinkedHashMap<String, SmsCommand>();
 	// aliases in alias-command key pairs
 	private final Map<String, String> aliasMap = new HashMap<String, String>();
-	
-	
+
+	public RegisteredCommands() {
+
+	}
+
 	public RegisteredCommands(SmsCommand cmd) {
 		addCommand(cmd);
 	}
-	
+
 	public Set<String> getCommandKeys() {
 		return commands.keySet();
 	}
-	
+
 	public void addCommand(SmsCommand cmd) {
 		String commandKey = cmd.getCommandKey().toUpperCase();
-		commands.remove(commandKey);		
+		commands.remove(commandKey);
 		commands.put(commandKey, cmd);
 		buildAliasMap(cmd);
 	}
-	
+
 	public String findAliasCommandKey(String alias) {
 		return aliasMap.get(alias);
 	}
-	
+
 	public SmsCommand getCommand(String commandKey) {
 		return commands.get(commandKey.toUpperCase());
 	}
-	
+
+	public void removeByCommandKey(String commandKey) {
+		commands.remove(commandKey.toUpperCase());
+		removeAliasByCommandKey(commandKey.toUpperCase());
+	}
+
 	private void buildAliasMap(SmsCommand cmd) {
 		String[] aliases = cmd.getAliases();
 		for (String alias : aliases) {
 			aliasMap.remove(alias); // remove any previous aliases
 			aliasMap.put(alias, cmd.getCommandKey());
+		}
+	}
+
+	private void removeAliasByCommandKey(String commandKey) {
+		Set<String> aliases = aliasMap.keySet();
+		for (String alias : aliases) {
+			String aliasCommand = aliasMap.get(alias);
+			if (aliasCommand.equalsIgnoreCase(commandKey)) {
+				aliasMap.remove(alias);
+			}
 		}
 	}
 }

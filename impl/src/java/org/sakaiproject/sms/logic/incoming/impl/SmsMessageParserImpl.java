@@ -27,29 +27,28 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 	private static final String DELIMITERS = " \t\r\n\f";
 
 	/**
-	 * Parses the message general.
-	 * FORMAT: <tool> <site> <command> <body>
+	 * Parses the message general. FORMAT: <command> <site> <body>
 	 */
 	public ParsedMessage parseMessage(String msgText) throws ParseException {
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
 
-		String[] params = StringUtils.split(msgText, DELIMITERS, 4);
+		String[] params = StringUtils.split(msgText, DELIMITERS, 3);
 
 		// Must at lease contain tool + site + userid + command
-		if (params.length < 3) {
+		if (params.length < 2) {
 			throw new ParseException("Invalid number of tokens: "
 					+ params.length);
 		}
 
-		if (params.length == 3) {
-			// tool + site + command			
-			return new ParsedMessage(params[0], params[1], params[2]);
+		if (params.length == 2) {
+			// command + site
+			return new ParsedMessage(params[0], params[1]);
 		} else {
-			// tool + site + command + body
-			return new ParsedMessage(params[0], params[1], params[2],
-					params[3]);
+			// command + site + body
+			return new ParsedMessage(params[0], params[1], params[2]);
+
 		}
 
 	}
