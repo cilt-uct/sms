@@ -27,27 +27,27 @@ import org.sakaiproject.api.app.profile.Profile;
 import org.sakaiproject.api.app.profile.ProfileManager;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
-import org.sakaiproject.component.common.edu.person.SakaiPersonImpl;
 
 /**
- * Default implementation of {@link MobileNumberHelper}
- * Mobile numbers retrieved from Profile Tool
- *
+ * Default implementation of {@link MobileNumberHelper} Mobile numbers retrieved
+ * from Profile Tool
+ * 
  */
 public class MobileNumberHelperImpl implements MobileNumberHelper {
-	
-	private static final Logger LOG = Logger.getLogger(MobileNumberHelperImpl.class);
+
+	private static final Logger LOG = Logger
+			.getLogger(MobileNumberHelperImpl.class);
 	private ProfileManager profileManager;
 	private SakaiPersonManager sakaiPersonManager;
-	
+
 	public void setProfileManager(ProfileManager profileManager) {
 		this.profileManager = profileManager;
 	}
-	
+
 	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
 		this.sakaiPersonManager = sakaiPersonManager;
 	}
-	
+
 	/**
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
@@ -71,13 +71,13 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		}
 		return userMobileMap;
 	}
-	
+
 	/**
 	 * @see MobileNumberHelper#getUserIdsFromMobileNumber(String)
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
-		SakaiPerson example = new SakaiPersonImpl();
+		SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setMobile(mobileNumber);
 
 		List<SakaiPerson> list = sakaiPersonManager.findSakaiPerson(example);
@@ -85,7 +85,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		for (SakaiPerson person : list) {
 			toReturn.add(person.getUid());
 		}
-		
+
 		return toReturn;
 	}
 }
