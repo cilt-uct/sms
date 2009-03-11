@@ -91,23 +91,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * Test account id.
-	 */
-	public void testAccountId() {
-
-		// account exists
-		smsTask.setSmsAccountId(account.getId());
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-
-		for (int i = 0; i < errors.size(); i++) {
-
-			System.out.println(errors.get(i));
-		}
-		assertTrue(errors.size() == 1);
-
-	}
-
-	/**
 	 * Test date created.
 	 */
 	public void testDateCreated() {
@@ -129,32 +112,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		errors = smsTaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertTrue(errors.contains(ValidationConstants.TASK_DATE_TO_SEND_EMPTY));
-	}
-
-	/**
-	 * Test delivery group id.
-	 */
-	public void testDeliveryGroupId() {
-		// null
-		smsTask.setDeliveryGroupId(null);
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertTrue(errors
-				.contains(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY));
-
-		// empty String
-		smsTask.setDeliveryGroupId("");
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertTrue(errors
-				.contains(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY));
-
-		// Blank space
-		smsTask.setDeliveryGroupId("   ");
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertTrue(errors
-				.contains(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY));
 	}
 
 	/**

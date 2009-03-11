@@ -47,14 +47,15 @@ public abstract class AbstractBaseTestCase extends TestCase {
 	public static HibernateLogicLocator hibernateLogicLocator;
 	public static StandaloneSmsDaoImpl smsDao;
 	public static SmsBillingImpl smsBilling;
-	
+
 	// Tells HibernateUtil to use the test configuration files
 	static {
 		hibernateLogicLocator = new HibernateLogicLocator();
 		smsDao = new StandaloneSmsDaoImpl("hibernate-test.properties");
 		smsBilling = new SmsBillingImpl();
+		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
 		smsBilling.init();
-		
+
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsAccountLogicImpl.setSmsDao(smsDao);

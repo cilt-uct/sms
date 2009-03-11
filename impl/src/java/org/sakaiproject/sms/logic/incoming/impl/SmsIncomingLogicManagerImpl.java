@@ -123,13 +123,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		parsedMessage.setBody_reply(reply);
 		parsedMessage.setIncomingUserId(incomingUserID);
-		parsedMessage.setCommand(validCommandMatch.getPattern());
+		if (validCommandMatch != null) {
+			parsedMessage.setCommand(validCommandMatch.getPattern());
+
+		}
 		return parsedMessage;
 	}
 
 	/**
 	 * Returns a valid site
-	 * 
+	 *
 	 * @param suppliedSiteId
 	 *            as specified by message
 	 * @return
@@ -170,7 +173,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * command. The idea is based on the Levenshtein distance. Our algorithm
 	 * assign the highest scores to matches on the left hand side of the word.
 	 * And if the first letter does not match, then its a 0% match for the word.
-	 * 
+	 *
 	 * @param valueToMatch
 	 * @param values
 	 * @return
@@ -245,7 +248,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Finds valid command EXACTLY as it is specified in command keys or HELP
-	 * 
+	 *
 	 * @return valid command
 	 */
 	private SmsPatternSearchResult findValidCommand(String suppliedKey,
@@ -392,7 +395,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param valueToMatch
 	 * @param values
 	 * @return

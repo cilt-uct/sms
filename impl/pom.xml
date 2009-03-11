@@ -58,7 +58,11 @@
 			<artifactId>log4j</artifactId>
 
 		</dependency>
-
+        <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+         	<version>5.1.5</version>
+        <scope>test</scope> </dependency>
 		<dependency>
 			<groupId>net.sourceforge.groboutils</groupId>
 			<artifactId>groboutils-core</artifactId>
@@ -119,7 +123,7 @@
 			<groupId>org.sakaiproject</groupId>
 			<artifactId>sakai-common-edu-person-api</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.sakaiproject</groupId>
 			<artifactId>sakai-common-composite-component-data</artifactId>
@@ -164,6 +168,11 @@
 		<testResources>
 			<testResource>
 				<directory>${basedir}/src/resources</directory>
+				 <includes>
+               <include>CommandsToMatch.txt</include>
+               <include>ValidCommands.txt</include>
+            </includes>
+
 			</testResource>
 			<testResource>
 				<directory>${basedir}/src/test</directory>
@@ -202,7 +211,7 @@
 						<version>5.1.5</version>
 					</dependency>
 				</dependencies>
-				
+
 				<configuration>
 					<outputDirectory>
 						<!--

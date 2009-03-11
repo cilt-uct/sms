@@ -43,10 +43,11 @@ public class SmppAPITest extends AbstractBaseTestCase {
 
 	static {
 		smsSmppImpl = new SmsSmppImpl();
+		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
 
-		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
+
 
 	}
 
@@ -88,6 +89,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		insertTask.setAttemptCount(0);
 		insertTask.setMessageBody("testing1234567");
 		insertTask.setSenderUserName("administrator");
+		insertTask.setMessageTypeId(0);
 		insertTask.setMaxTimeToLive(300);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());

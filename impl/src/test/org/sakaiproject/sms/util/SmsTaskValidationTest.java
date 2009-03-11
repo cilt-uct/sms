@@ -34,7 +34,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class SmsTaskValidation test
@@ -55,8 +54,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
-
-
 
 	/** The account. */
 	private SmsAccount account;
@@ -151,29 +148,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * Test delivery group id.
-	 */
-	public void testDeliveryGroupId() {
-		// null
-		smsTask.setDeliveryGroupId(null);
-		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY, errors.get(0));
-
-		// empty String
-		smsTask.setDeliveryGroupId("");
-		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY, errors.get(0));
-
-		// Blank space
-		smsTask.setDeliveryGroupId("   ");
-		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_GROUP_ID_EMPTY, errors.get(0));
-	}
-
-	/**
 	 * Test delivery report timeout duration.
 	 */
 	public void testDelReportTimeoutDuration() {
@@ -181,13 +155,15 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		smsTask.setDelReportTimeoutDuration(null);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID, errors.get(0));
+		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID,
+				errors.get(0));
 
 		// invalid
 		smsTask.setDelReportTimeoutDuration(0);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID, errors.get(0));
+		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID,
+				errors.get(0));
 
 	}
 
@@ -199,14 +175,15 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(null);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_MAX_TIME_TO_LIVE_INVALID, errors.get(0));
-
+		assertEquals(ValidationConstants.TASK_MAX_TIME_TO_LIVE_INVALID, errors
+				.get(0));
 
 		// invalid
 		smsTask.setMaxTimeToLive(0);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_MAX_TIME_TO_LIVE_INVALID, errors.get(0));
+		assertEquals(ValidationConstants.TASK_MAX_TIME_TO_LIVE_INVALID, errors
+				.get(0));
 	}
 
 	/**
@@ -270,19 +247,22 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		smsTask.setSakaiSiteId(null);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors
+				.get(0));
 
 		// empty String
 		smsTask.setSakaiSiteId("");
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors
+				.get(0));
 
 		// Blank space
 		smsTask.setSakaiSiteId("   ");
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY, errors
+				.get(0));
 	}
 
 	/**
@@ -294,19 +274,22 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		smsTask.setSenderUserName(null);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors
+				.get(0));
 
 		// empty String
 		smsTask.setSenderUserName("");
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors
+				.get(0));
 
 		// Blank space
 		smsTask.setSenderUserName("   ");
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors.get(0));
+		assertEquals(ValidationConstants.TASK_SENDER_USER_NAME_EMPTY, errors
+				.get(0));
 	}
 
 	/**

@@ -133,7 +133,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		String[] commandsToMatch = parseCSVFile(loadPropertiesFile("CommandsToMatch.txt"));
 		for (int i = 0; i < commandsToMatch.length; i++) {
 			String commandSplit[] = commandsToMatch[i].split("#");
-			String command = commandSplit[0];
+			String command = commandSplit[0].toUpperCase();
 			SmsPatternSearchResult smsPatternSearchResult = manager
 					.getClosestMatch(command, validCommands);
 			boolean result = smsPatternSearchResult.getPossibleMatches().size() == Integer

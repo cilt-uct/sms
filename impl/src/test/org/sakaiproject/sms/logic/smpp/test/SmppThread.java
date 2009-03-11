@@ -146,6 +146,7 @@ public class SmppThread extends TestRunnable {
 		insertTask.setAttemptCount(0);
 		insertTask.setMessageBody("testing1234567");
 		insertTask.setSenderUserName("administrator");
+		insertTask.setMessageTypeId(0);
 		insertTask.setMaxTimeToLive(300);
 		insertTask.setDelReportTimeoutDuration(300);
 		insertTask.setDateProcessed(new Date());

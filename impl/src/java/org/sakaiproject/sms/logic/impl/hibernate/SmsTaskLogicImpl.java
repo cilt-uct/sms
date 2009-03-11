@@ -117,7 +117,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * @return next sms task
 	 */
 	@SuppressWarnings("unchecked")
-	public SmsTask getNextSmsTask() {
+	public  SmsTask getNextSmsTask() {
 		StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");

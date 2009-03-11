@@ -64,11 +64,13 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		SmsTaskValidatorImpl smsTaskValidatorImpl = new SmsTaskValidatorImpl();
 		smsTaskValidatorImpl.setSmsBilling(smsBilling);
+
 		smsCoreImpl.setSmsTaskValidator(smsTaskValidatorImpl);
+		smsCoreImpl.setSmsBilling(smsBilling);
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.setLogLevel(Level.WARN);
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsCoreImpl.setSmsBilling(smsBilling);
+
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		smsCoreImpl.setLoggingLevel(Level.WARN);
@@ -101,8 +103,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 		Calendar now = Calendar.getInstance();
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
-				now.getTimeInMillis()), "smsTask3", externalLogic
-				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask3",smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
@@ -120,8 +121,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
-				now.getTimeInMillis()), "smsTask2MessageBody", externalLogic
-				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask2MessageBody",
+				smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
 		try {
@@ -138,8 +139,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 		now.add(Calendar.MINUTE, -3);
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
-				now.getTimeInMillis()), "smsTask1MessageBody", externalLogic
-				.getCurrentSiteId(), null, externalLogic.getCurrentUserId());
+				now.getTimeInMillis()), "smsTask1MessageBody", smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 		smsTask1.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		try {

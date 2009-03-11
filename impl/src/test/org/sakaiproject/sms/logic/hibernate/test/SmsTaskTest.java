@@ -233,6 +233,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
+		insertTask.setMessageTypeId(0);
 		insertTask.setMessageBody("taskCrit");
 		insertTask.setSenderUserName("taskCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
@@ -258,7 +259,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 					.getPagedSmsTasksForCriteria(bean).getPageResults();
 			assertTrue("Collection returned has no objects", tasks.size() > 0);
 			assertEquals(1, tasks.size());
-			
+
 			for (SmsTask task : tasks) {
 				// We know that only one task should be returned
 				assertTrue(task.getId().equals(insertTask.getId()));
@@ -285,6 +286,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 			insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			insertTask.setAttemptCount(2);
+			insertTask.setMessageTypeId(0);
 			insertTask.setMessageBody("taskCrit");
 			insertTask.setSenderUserName("taskCrit");
 			insertTask.setSakaiToolName("sakaiToolName");
@@ -456,5 +458,5 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_3));
 	}
-	
+
 }

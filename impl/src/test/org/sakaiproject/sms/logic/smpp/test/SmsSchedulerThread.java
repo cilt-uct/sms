@@ -73,7 +73,8 @@ public class SmsSchedulerThread extends TestRunnable {
 	 * @param sessionName
 	 */
 	public SmsSchedulerThread(String sessionName) {
-		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl(
+				"hibernate-test.properties");
 		smsBillingImpl = new SmsBillingImpl();
 		externalLogicStub = new ExternalLogicStub();
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
@@ -101,8 +102,7 @@ public class SmsSchedulerThread extends TestRunnable {
 		SmsTransactionLogicImpl smsTransactionLogicImpl = new SmsTransactionLogicImpl();
 		smsTransactionLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsTransactionLogicImpl.setSmsDao(hibernateUtil);
-
-
+		smsTransactionLogicImpl.setSmsBilling(smsBillingImpl);
 
 		hibernateLogicLocator.setSmsTransactionLogic(smsTransactionLogicImpl);
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
@@ -174,7 +174,8 @@ public class SmsSchedulerThread extends TestRunnable {
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("SmsTask2"
 				+ sessionName, new Date(now.getTimeInMillis()),
-				"ThreadingTest-SmsTask2MessageBody", smsAccount.getSakaiSiteId(), null, externalLogicStub
+				"ThreadingTest-SmsTask2MessageBody", smsAccount
+						.getSakaiSiteId(), null, externalLogicStub
 						.getCurrentUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 		// smsTask2.setSakaiSiteId(smsAccount.getSakaiSiteId());
@@ -188,7 +189,8 @@ public class SmsSchedulerThread extends TestRunnable {
 
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("SmsTask1"
 				+ sessionName, new Date(now.getTimeInMillis()),
-				"ThreadingTest-SmsTask1MessageBody", smsAccount.getSakaiSiteId(), null, externalLogicStub
+				"ThreadingTest-SmsTask1MessageBody", smsAccount
+						.getSakaiSiteId(), null, externalLogicStub
 						.getCurrentUserId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		smsTask1.setSmsAccountId(smsAccount.getId());

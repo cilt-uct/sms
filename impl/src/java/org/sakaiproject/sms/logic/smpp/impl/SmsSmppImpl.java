@@ -426,11 +426,13 @@ public class SmsSmppImpl implements SmsSmpp {
 	private void loadSmsSmppProperties() {
 
 		try {
-			smsSmppProperties = new SmsSmppProperties();
-			// for in case bindThreadTimer is not set
-			smsSmppProperties.setBindThreadTimer(5 * 1000);
 			smsSmppProperties = hibernateLogicLocator.getExternalLogic()
 					.getSmppProperties(smsSmppProperties);
+			if (smsSmppProperties == null) {
+				smsSmppProperties = new SmsSmppProperties();
+			}
+			// for in case bindThreadTimer is not set
+			smsSmppProperties.setBindThreadTimer(5 * 1000);
 
 			if ((smsSmppProperties.getSMSCAdress() == null)
 					|| smsSmppProperties.getSMSCAdress().equals("")) {
