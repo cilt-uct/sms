@@ -18,10 +18,14 @@
 package org.sakaiproject.sms.logic.smpp.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -32,17 +36,20 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * This API allows for easy implementation of SMS services in an existing or new
  * Sakai tool.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 
 public class SmsServiceImpl implements SmsService {
+
+	private static Log log = LogFactory.getLog(SmsServiceImpl.class);
 
 	public SmsCore smsCore = null;
 
@@ -79,7 +86,7 @@ public class SmsServiceImpl implements SmsService {
 	 * not yet persisted to the database. For eg. send message y to Sakai group
 	 * X at time Z. If the task is future dated, then it be picked up by the sms
 	 * task (job) scheduler for processing.
-	 *
+	 * 
 	 * @param sakaiGroupId
 	 * @param dateToSend
 	 * @param messageBody
@@ -104,7 +111,7 @@ public class SmsServiceImpl implements SmsService {
 	/**
 	 * Add a new task to the sms task list, that will send sms messages to the
 	 * specified list of mobile numbers
-	 *
+	 * 
 	 * @param dateToSend
 	 * @param messageBody
 	 * @param sakaiSiteID
@@ -124,7 +131,7 @@ public class SmsServiceImpl implements SmsService {
 	/**
 	 * Add a new task to the sms task list. In this case you must supply a list
 	 * of Sakai user ID's.
-	 *
+	 * 
 	 * @param sakaiUserIds
 	 * @param dateToSend
 	 * @param messageBody
@@ -147,14 +154,14 @@ public class SmsServiceImpl implements SmsService {
 	 * the Sakai user. If this returns false, then the UI must not allow the
 	 * user to proceed. If not handled by the UI, then the sms service will fail
 	 * the sending of the message anyway.
-	 *
+	 * 
 	 * @param sakaiSiteID
 	 *            , (e.g. "!admin")
 	 * @param sakaiUserID
 	 *            the sakai user id
 	 * @param creditsRequired
 	 *            the credits required
-	 *
+	 * 
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(String sakaiSiteID,
@@ -173,7 +180,7 @@ public class SmsServiceImpl implements SmsService {
 
 	/**
 	 * Will calculate the all the group estimates.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -183,10 +190,10 @@ public class SmsServiceImpl implements SmsService {
 
 	/**
 	 * Validate task.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return the array list< string>
 	 */
 	public ArrayList<String> validateTask(SmsTask smsTask) {
@@ -206,7 +213,7 @@ public class SmsServiceImpl implements SmsService {
 
 	/**
 	 * Aborts the pending task.
-	 *
+	 * 
 	 * @param smsTaskID
 	 * @throws SmsTaskNotFoundException
 	 */
@@ -220,12 +227,12 @@ public class SmsServiceImpl implements SmsService {
 	 * administrators at 10:00, or get latest announcements and send to mobile
 	 * numbers of Sakai group x (phase II). Validation will be done to make sure
 	 * that the preliminary values are supplied.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return the sms task
-	 *
+	 * 
 	 * @throws SmsTaskValidationException
 	 *             the sms task validation exception
 	 * @throws SmsSendDeniedException
@@ -237,5 +244,42 @@ public class SmsServiceImpl implements SmsService {
 			SmsSendDisabledException, ReceiveIncomingSmsDisabledException {
 
 		return smsCore.insertTask(smsTask);
+	}
+
+	/**
+	 * @see SmsService#sendSms(String[], String, String, String, String)
+	 */
+	public String[] sendSms(String[] userIds, String fromId, String siteId,
+			String toolId, String message) {
+		Set<String> ids = new HashSet<String>();
+		ids.addAll(Arrays.asList(userIds));
+
+		SmsTask task = getPreliminaryTask(ids, new Date(), message, siteId,
+				toolId, fromId);
+		calculateEstimatedGroupSize(task);
+		try {
+			insertTask(task);
+		} catch (SmsTaskValidationException e) {
+			log.error("Validation failed: " + e.getErrorMessagesAsBlock());
+		} catch (SmsSendDeniedException e) {
+			log.error(e.getMessage());
+		} catch (SmsSendDisabledException e) {
+			log.error(e.getMessage());
+		} catch (ReceiveIncomingSmsDisabledException e) {
+			// Shouldn't happen
+			log.error(e.getMessage());
+		}
+
+		if (task.getSmsMessages() != null) {
+			String[] sendIds = new String[task.getSmsMessages().size()];
+			int i = 0;
+			for (SmsMessage msg : task.getSmsMessages()) {
+				sendIds[i] = msg.getSakaiUserId();
+				i++;
+			}
+			return sendIds;
+		} else {
+			return new String[] {};
+		}
 	}
 }
