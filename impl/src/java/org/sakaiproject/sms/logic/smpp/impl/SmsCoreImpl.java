@@ -55,9 +55,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -128,9 +128,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 *
+	 * 
 	 * @author void
-	 *
+	 * 
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -155,7 +155,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 *
+	 * 
 	 * @param smsTask
 	 * @return
 	 */
@@ -165,16 +165,6 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setSmsMessagesOnTask(messages);
 		smsTask.setGroupSizeActual(messages.size());
 		return smsTask;
-	}
-
-	/*
-	 * Enables or disables the debug Information
-	 *
-	 * @param debug
-	 */
-	public void setLoggingLevel(Level level) {
-		LOG.setLevel(level);
-
 	}
 
 	public SmsTask getNextSmsTask() {
@@ -262,6 +252,7 @@ public class SmsCoreImpl implements SmsCore {
 				.getDelReportTimeoutDuration());
 		smsTask.setDeliveryMobileNumbersSet(mobileNumbers);
 		smsTask.setDeliveryEntityList(deliveryEntityList);
+		smsTask.setSakaiUserIds(sakaiUserIds);
 		smsTask.setCreditCost(smsBilling.convertCreditsToAmount(1));
 		return smsTask;
 	}
@@ -607,12 +598,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -622,7 +613,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 *
+	 * 
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -878,13 +869,22 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
-	 *
+	 * 
 	 * @param threadgroup
 	 * @return
 	 */
 	private int getThreadCount(ThreadGroup threadgroup) {
 		return threadgroup.activeCount();
 
+	}
+
+	/*
+	 * Enables or disables the debug Information
+	 * 
+	 * @param debug
+	 */
+	public void setLoggingLevel(Level level) {
+		LOG.setLevel(level);
 	}
 
 }

@@ -124,13 +124,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
-	
+
 	private AliasService aliasService;
-	
+
 	public void setAliasService(AliasService aliasService) {
 		this.aliasService = aliasService;
 	}
-	
+
 	public void init() {
 		log.debug("init");
 		// register Sakai permissions for this tool
@@ -328,6 +328,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 			// a single sakai user id, for incoming messages
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryUserId(), getMobileNumbers));
+		} else if (smsTask.getSakaiUserIds() != null) {
+			for (String userId : smsTask.getSakaiUserIds()) {
+				String mobileNr = getSakaiMobileNumber(userId);
+				if (mobileNr != null) {
+					SmsMessage message = new SmsMessage();
+					message.setMobileNumber(mobileNr);
+					message.setSmsTask(smsTask);
+					message.setSakaiUserId(userId);
+					messages.add(message);
+				}
+			}
+
 		}
 		return messages;
 
@@ -510,10 +522,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	@SuppressWarnings("unchecked")
 	public String[] getAllAliasesAsArray() {
-		List<Alias> aliases = aliasService.getAliases(1, aliasService.countAliases());
+		List<Alias> aliases = aliasService.getAliases(1, aliasService
+				.countAliases());
 		String[] toReturn = new String[aliases.size()];
-		for (int i=0; i<aliases.size(); i++) {
-			 toReturn[i] = aliases.get(i).getId();
+		for (int i = 0; i < aliases.size(); i++) {
+			toReturn[i] = aliases.get(i).getId();
 		}
 		return toReturn;
 	}
