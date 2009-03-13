@@ -624,6 +624,15 @@ public class SmsCoreImpl implements SmsCore {
 	private boolean sendEmailNotification(SmsTask smsTask,
 			Integer taskMessageType, String additionInformation) {
 
+		if (smsTask == null || taskMessageType == null) {
+			LOG.error("smsTask or taskMessageType may not to null");
+			return false;
+		}
+
+		if (additionInformation == null) {
+			additionInformation = "";
+		}
+
 		String subject = null;
 		String body = null;
 		String toAddress = null;
