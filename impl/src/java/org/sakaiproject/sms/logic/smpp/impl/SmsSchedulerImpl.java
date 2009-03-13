@@ -60,6 +60,11 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		System.out.println("Init of SmsScheduler complete");
 	}
 
+	public void destroy() {
+		smsSchedulerThread.stop();
+		smsSchedulerThread = null;
+	}
+
 	public SmsCore getSmsCore() {
 		return smsCore;
 	}
@@ -71,9 +76,10 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	private class SmsSchedulerThread implements Runnable {
 
 		boolean stopScheduler = false;
+		Thread t;
 
 		SmsSchedulerThread() {
-			Thread t = new Thread(this);
+			t = new Thread(this);
 			t.start();
 		}
 
@@ -81,26 +87,28 @@ public class SmsSchedulerImpl implements SmsScheduler {
 			Work();
 		}
 
+		public void stop() {
+			t.interrupt();
+		}
+
 		public void Work() {
-			while (true) {
-				if (stopScheduler) {
-					return;
-				}
+			try {
+				while (true) {
+					if (stopScheduler) {
+						return;
+					}
 
-				LOG.info("Searching for tasks to process");
-				smsCore.processNextTask();
-				smsCore.processTimedOutDeliveryReports();
-				smsCore.checkAndSetTasksCompleted();
-				smsCore.processVeryLateDeliveryReports();
+					LOG.info("Searching for tasks to process");
+					smsCore.processNextTask();
+					smsCore.processTimedOutDeliveryReports();
+					smsCore.checkAndSetTasksCompleted();
+					smsCore.processVeryLateDeliveryReports();
 
-				try {
 					Thread.sleep(smsConfig.getSchedulerInterval() * 1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
-
+			} catch (InterruptedException e) {
+				LOG.info("SmsScheduler stopped");
 			}
-
 		}
 	}
 

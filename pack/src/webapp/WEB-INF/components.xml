@@ -70,7 +70,7 @@
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsSmpp" class="org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl"
-		init-method="init">
+		init-method="init" destroy-method="destroy">
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
@@ -95,7 +95,7 @@
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsScheduler" class="org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl"
-		init-method="init">
+		init-method="init" destroy-method="destroy">
 		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
