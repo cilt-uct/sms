@@ -55,9 +55,9 @@ import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 public class SmsCoreImpl implements SmsCore {
 
@@ -128,9 +128,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 * 
+	 *
 	 * @author void
-	 * 
+	 *
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -155,7 +155,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -348,22 +348,21 @@ public class SmsCoreImpl implements SmsCore {
 			if (sufficiantCredits.size() > 0) {
 
 				if (lastSendMoOverdraftEmail == null) {
-					sendEmailNotification(
-							smsTask,
+					sendEmailNotification(smsTask,
 							SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
 					lastSendMoOverdraftEmail = Calendar.getInstance();
 				} else {
 					Calendar now = Calendar.getInstance();
-					Calendar previousSendmail = lastSendMoOverdraftEmail;
-					previousSendmail.add(Calendar.HOUR,
-							moOverdraftEmailInterval);
+					Calendar previousSendmail = Calendar.getInstance();
+					previousSendmail
+							.setTime(lastSendMoOverdraftEmail.getTime());
+					previousSendmail.add(Calendar.HOUR,moOverdraftEmailInterval);
 					if (previousSendmail.before(now)) {
 						sendEmailNotification(
 								smsTask,
 								SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
 						lastSendMoOverdraftEmail = Calendar.getInstance();
 					}
-
 
 				}
 			}
@@ -600,12 +599,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -615,7 +614,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -650,8 +649,7 @@ public class SmsCoreImpl implements SmsCore {
 		String creditsAvailable = credits + "";
 		String creditsRequired = smsTask.getCreditEstimate() + "";
 		toAddress = configSite.getNotificationEmail();
-		if (taskMessageType
-				.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
+		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
 							.toString());
@@ -659,8 +657,7 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationBodyStarted", creditsRequired,
 					creditsAvailable);
 
-		} else if (taskMessageType
-				.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
+		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectSent", smsTask.getId()
 							.toString());
@@ -694,8 +691,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		}
 
-		else if (taskMessageType
-				.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
+		else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
@@ -871,7 +867,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Counts all the acctive threads in a threadGroup
-	 * 
+	 *
 	 * @param threadgroup
 	 * @return
 	 */
@@ -882,7 +878,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/*
 	 * Enables or disables the debug Information
-	 * 
+	 *
 	 * @param debug
 	 */
 	public void setLoggingLevel(Level level) {
