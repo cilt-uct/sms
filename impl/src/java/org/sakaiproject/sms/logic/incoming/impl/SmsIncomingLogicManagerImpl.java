@@ -118,6 +118,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						}
 					}
 				}
+			} else {
+				reply = generateInvalidCommand();
 			}
 		}
 
@@ -132,7 +134,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Returns a valid site
-	 *
+	 * 
 	 * @param suppliedSiteId
 	 *            as specified by message
 	 * @return
@@ -164,8 +166,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			return null;
 		}
 		// Just cut off extra characters
-		return StringUtils.left(reply.toString(),
-				SmsConstants.MAX_SMS_LENGTH);
+		return StringUtils.left(reply.toString(), SmsConstants.MAX_SMS_LENGTH);
 	}
 
 	/**
@@ -173,7 +174,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * command. The idea is based on the Levenshtein distance. Our algorithm
 	 * assign the highest scores to matches on the left hand side of the word.
 	 * And if the first letter does not match, then its a 0% match for the word.
-	 *
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
@@ -248,7 +249,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	/**
 	 * Finds valid command EXACTLY as it is specified in command keys or HELP
-	 *
+	 * 
 	 * @return valid command
 	 */
 	private SmsPatternSearchResult findValidCommand(String suppliedKey,
@@ -351,6 +352,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return "Invalid mobile number (" + mobileNr + ") used";
 	}
 
+	private String generateInvalidCommand() {
+		return "Invalid command supplied. Please sms help for valid commands.";
+	}
+
 	public String generateAssistMessage(ArrayList<String> matches) {
 		Collection<String> commands = null;
 		StringBuilder body = new StringBuilder();
@@ -395,7 +400,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param valueToMatch
 	 * @param values
 	 * @return
