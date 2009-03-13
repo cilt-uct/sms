@@ -123,7 +123,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			}
 		}
 
-		parsedMessage.setBody_reply(reply);
+		parsedMessage.setBody_reply(formatReply(reply));
 		parsedMessage.setIncomingUserId(incomingUserID);
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());
