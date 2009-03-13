@@ -361,7 +361,9 @@ public class SmsCoreImpl implements SmsCore {
 						sendEmailNotification(
 								smsTask,
 								SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
+						lastSendMoOverdraftEmail = Calendar.getInstance();
 					}
+
 
 				}
 			}
