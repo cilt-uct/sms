@@ -205,7 +205,7 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public String getSiteFromAlias(String alias) {
 		// TODO Auto-generated method stub
-		return null;
+		return alias;
 	}
 
 	public String[] getAllAliasesAsArray() {
