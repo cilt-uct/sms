@@ -181,11 +181,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 */
 	private ArrayList<String> getPossibleMatches(String valueToMatch,
 			String[] values) {
+		valueToMatch = valueToMatch.toUpperCase();
 		ArrayList<String> returnVals = new ArrayList<String>();
 		String returnVal = null;
 		// We first check for matching parts.
 		ArrayList<String> matchedValues = new ArrayList<String>();
 		for (String str : values) {
+			str = str.toUpperCase();
 			if (str.indexOf(valueToMatch) != -1) {
 				matchedValues.add(str);
 			}
@@ -196,6 +198,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		// We calculate the largest string's length to be used as weights.
 		int largestString = 0;
 		for (String str : values) {
+			str = str.toUpperCase();
 			if (str.length() > largestString) {
 				largestString = str.length();
 			}
@@ -207,6 +210,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		int maxStringScore = 0;
 
 		for (String str : values) {
+			str = str.toUpperCase();
 			boolean skipCommand = false;
 			int patternScore = 0;
 			char[] commandChars = str.toCharArray();
