@@ -356,7 +356,8 @@ public class SmsCoreImpl implements SmsCore {
 					Calendar previousSendmail = Calendar.getInstance();
 					previousSendmail
 							.setTime(lastSendMoOverdraftEmail.getTime());
-					previousSendmail.add(Calendar.HOUR,moOverdraftEmailInterval);
+					previousSendmail.add(Calendar.HOUR,
+							moOverdraftEmailInterval);
 					if (previousSendmail.before(now)) {
 						sendEmailNotification(
 								smsTask,
@@ -745,13 +746,17 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		boolean systemNotification = sendNotificationEmail(smsTask, toAddress,
 				subject, body);
-		boolean ownerNotification = sendNotificationEmail(smsTask,
-				hibernateLogicLocator.getExternalLogic()
-						.getSakaiEmailAddressForUserId(
-								smsTask.getSenderUserId()), subject, body);
+		if (smsTask.getMessageTypeId().equals(
+				SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
+			boolean ownerNotification = sendNotificationEmail(smsTask,
+					hibernateLogicLocator.getExternalLogic()
+							.getSakaiEmailAddressForUserId(
+									smsTask.getSenderUserId()), subject, body);
 
-		return (systemNotification && ownerNotification);
-
+			return (systemNotification && ownerNotification);
+		} else {
+			return (systemNotification);
+		}
 	}
 
 	public void setSmsBilling(SmsBilling smsBilling) {
