@@ -314,9 +314,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				RegisteredCommands commands = toolCmdsMap.get(toolKey);
 				// Add to set of commands
 				commands.addCommand(command);
-				log.debug("Added command " + command.getCommandKey()
-						+ " logic for tool: " + toolKey);
 			}
+			log.info("Registered command " + command.getCommandKey()
+					+ " for tool " + toolKey);
 			allCommands.addCommand(command);
 		}
 	}
