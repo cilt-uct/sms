@@ -36,7 +36,6 @@ import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
-import org.sakaiproject.sms.util.SmsStringArrayUtil;
 
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
@@ -47,9 +46,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	private static Log log = LogFactory
 			.getLog(SmsIncomingLogicManagerImpl.class);
-
-	// The help command is valid for all sms-enabled tools
-	private static final String HELP = "HELP";
 
 	private ExternalLogic externalLogic;
 
@@ -73,54 +69,63 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
-		} catch (ParseException e) {
-			// TODO add a proper validation reason.
-			reply = "Message invalid.";
-		}
+			if (toolCmdsMap.size() != 0) { // No tools registered
+				String suppliedCommand = parsedMessage.getCommand()
+						.toUpperCase();
 
-		if (toolCmdsMap.size() != 0) { // No tools registered
-			String suppliedCommand = parsedMessage.getCommand().toUpperCase();
+				validCommandMatch = findValidCommand(suppliedCommand,
+						allCommands);
 
-			validCommandMatch = findValidCommand(suppliedCommand, allCommands);
+				if ((validCommandMatch.getPattern() != null)
+						&& (validCommandMatch.getMatchResult() != null)) {
+					if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
+							.getPattern())) {
+						// TODO: Awaiting feedback from UCT about which site to
+						// bill for help commands
+						parsedMessage.setSite("!admin");
+						reply = generateHelpMessage();
 
-			if ((validCommandMatch.getPattern() != null)
-					&& (validCommandMatch.getMatchResult() != null)) {
-				if (HELP.equalsIgnoreCase(validCommandMatch.getPattern())) {
-					reply = generateAssistMessage(parsedMessage.getBody());
-
-				} else if (validCommandMatch.getMatchResult().equals(
-						SmsPatternSearchResult.NO_MATCHES)) {
-					reply = generateAssistMessage(validCommandMatch
-							.getPossibleMatches());
-				} else if (validCommandMatch.getMatchResult().equals(
-						SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
-					reply = generateAssistMessage(validCommandMatch
-							.getPossibleMatches());
-				} else {
-					String site = getValidSite(parsedMessage.getSite());
-					if (site == null) {
-						reply = generateInvalidSiteMessage(parsedMessage
-								.getSite());
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.NO_MATCHES)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches());
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches());
 					} else {
-						// I don't think this is a good method of retrieving the
-						// user ids
-						List<String> userIds = externalLogic
-								.getUserIdsFromMobileNumber(mobileNr);
-						if (userIds.size() == 0) {
-							reply = generateInvalidMobileNrMessage(mobileNr);
+						String site = getValidSite(parsedMessage.getSite());
+						if (site == null) {
+							reply = generateInvalidSiteMessage(parsedMessage
+									.getSite());
 						} else {
-							incomingUserID = userIds.get(0);
-							reply = allCommands.getCommand(
-									validCommandMatch.getPattern()).execute(
-									site, incomingUserID,
-									parsedMessage.getBody());
+							// I don't think this is a good method of retrieving
+							// the user ids
+							List<String> userIds = externalLogic
+									.getUserIdsFromMobileNumber(mobileNr);
+							if (userIds.size() == 0) {
+								reply = generateInvalidMobileNrMessage(mobileNr);
+							} else {
+								incomingUserID = userIds.get(0);
+								reply = allCommands.getCommand(
+										validCommandMatch.getPattern())
+										.execute(site, incomingUserID,
+												parsedMessage.getBody());
 
+							}
 						}
 					}
+				} else {
+					reply = generateInvalidCommand();
 				}
-			} else {
-				reply = generateInvalidCommand();
 			}
+
+		} catch (ParseException e) {
+			parsedMessage = new ParsedMessage();
+			reply = generateInvalidCommand();
+			// TODO: Awaiting feedback from UCT about which site to bill for
+			// invalid commands
+			parsedMessage.setSite("!admin");
 		}
 
 		parsedMessage.setBody_reply(formatReply(reply));
@@ -264,16 +269,20 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			suppliedKey = aliasedCommand;
 		}
 
-		if (HELP.equalsIgnoreCase(suppliedKey)) {
-			return new SmsPatternSearchResult(HELP);
+		if (SmsConstants.HELP.equalsIgnoreCase(suppliedKey)) {
+			return new SmsPatternSearchResult(SmsConstants.HELP);
 		} else {
 			if (commands.getCommand(suppliedKey) == null) { // None found in
 				// command keys
 				Set<String> commandKeys = commands.getCommandKeys();
-				String[] validCommands = SmsStringArrayUtil.copyOf(commandKeys
-						.toArray(new String[commandKeys.size()]), commandKeys
-						.size() + 1);
-				validCommands[validCommands.length - 1] = HELP;
+				String[] validCommands = commandKeys
+						.toArray(new String[commandKeys.size()]);
+				// HELP must must not be used for closest search
+				// String[] validCommands =
+				// SmsStringArrayUtil.copyOf(commandKeys
+				// .toArray(new String[commandKeys.size()]), commandKeys
+				// .size() + 1);
+				// validCommands[validCommands.length - 1] = SmsConstants.HELP;
 				smsPatternSearchResult = getClosestMatch(suppliedKey,
 						validCommands);
 			} else {
@@ -286,14 +295,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		}
 		// unreachable at the moment because match will always be found
-		return new SmsPatternSearchResult(HELP);
+		return new SmsPatternSearchResult(SmsConstants.HELP);
 	}
 
 	// Tries to command on alias map (returns command if found)
 	private String findAlias(String supplied, RegisteredCommands commands) {
 		// ? is default alias for HELP
 		if ("?".equals(supplied)) {
-			return HELP;
+			return SmsConstants.HELP;
 		}
 
 		return commands.findAliasCommandKey(supplied);
@@ -302,8 +311,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	public void register(String toolKey, SmsCommand command) {
 		toolKey = toolKey.toUpperCase();
 
-		if (HELP.equalsIgnoreCase(command.getCommandKey())) {
-			log.error(HELP + " is a reserved command key");
+		if (SmsConstants.HELP.equalsIgnoreCase(command.getCommandKey())) {
+			log.error(SmsConstants.HELP + " is a reserved command key");
 		} else if (allCommands.getCommandKeys().contains(
 				command.getCommandKey().toUpperCase())) {
 			throw new DuplicateCommandKeyException(command.getCommandKey()
@@ -339,7 +348,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	public boolean isValidCommand(String command) {
 		command = command.toUpperCase();
 		if (allCommands.getCommandKeys().contains(command)
-				|| HELP.equalsIgnoreCase(command)) { // HELP command is
+				|| SmsConstants.HELP.equalsIgnoreCase(command)) { // HELP
+			// command
+			// is
 			// valid by default
 			return true;
 		} else {
@@ -360,12 +371,29 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return "Invalid command supplied. Please sms help for valid commands.";
 	}
 
+	private String generateHelpMessage() {
+		StringBuilder body = new StringBuilder();
+		body.append("Valid commands: ");
+
+		Iterator<String> i = allCommands.getCommandKeys().iterator();
+		while (i.hasNext()) {
+			String command = i.next();
+			body.append(command);
+			if (i.hasNext()) {
+				body.append(", ");
+			}
+		}
+
+		return body.toString();
+	}
+
 	public String generateAssistMessage(ArrayList<String> matches) {
 		Collection<String> commands = null;
 		StringBuilder body = new StringBuilder();
 
 		body.append("Possible matches: ");
-		if (matches == null || matches.size() == 0 || matches.contains(HELP)) {
+		if (matches == null || matches.size() == 0
+				|| matches.contains(SmsConstants.HELP)) {
 			// TODO: not sure what to do here
 		} else {
 			commands = matches;

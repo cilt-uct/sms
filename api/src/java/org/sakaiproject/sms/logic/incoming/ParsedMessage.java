@@ -20,10 +20,25 @@ package org.sakaiproject.sms.logic.incoming;
 public class ParsedMessage {
 
 	private String command;
-	private final String site;
+	private String site;
 	private final String body;
 	private String body_reply;
 	private String incomingUserId;
+
+	public ParsedMessage() {
+		this.site = null;
+		this.command = null;
+		this.body = null;
+		this.body_reply = null;
+
+	}
+
+	public ParsedMessage(String command) {
+		this.site = null;
+		this.command = command;
+		this.body = null;
+		this.body_reply = null;
+	}
 
 	public ParsedMessage(String command, String site) {
 		this.site = site;
@@ -74,5 +89,9 @@ public class ParsedMessage {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
 	}
 }

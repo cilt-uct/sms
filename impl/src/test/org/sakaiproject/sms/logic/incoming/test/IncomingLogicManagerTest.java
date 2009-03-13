@@ -147,18 +147,17 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	public void testHelpCommand() {
 		assertTrue(manager.isValidCommand("help"));
-		ParsedMessage msg = manager.process("help " + TEST_SITE + " test",
-				TEST_MOBILE);
-		assertEquals("Possible matches: CREATE, UPDATE, DELETE", msg
+		ParsedMessage msg = manager.process("help", TEST_MOBILE);
+		assertEquals("Valid commands: CREATE, UPDATE, DELETE", msg
 				.getBody_reply());
 	}
 
-	public void testHelpCommandInvalidBody() {
-		assertTrue(manager.isValidCommand("help"));
-		String value = manager.process("help " + TEST_SITE + " something",
-				TEST_MOBILE).getBody_reply();
-		assertEquals("Invalid tool", value);
-	}
+	// public void testHelpCommandInvalidBody() {
+	// assertTrue(manager.isValidCommand("help"));
+	// String value = manager.process("help " + TEST_SITE + " something",
+	// TEST_MOBILE).getBody_reply();
+	// assertEquals("Invalid tool", value);
+	// }
 
 	public void testGenerateAssistMessage() {
 		ArrayList<String> list = new ArrayList<String>();
