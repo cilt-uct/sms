@@ -39,7 +39,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -225,7 +225,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
 			}
 
-			crit.setMaxResults(SmsHibernateConstants.READ_LIMIT);
+			crit.setMaxResults(SmsConstants.READ_LIMIT);
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -243,7 +243,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
 		if (smsConfig == null)
-			return SmsHibernateConstants.DEFAULT_PAGE_SIZE;
+			return SmsConstants.DEFAULT_PAGE_SIZE;
 		else
 			return smsConfig.getPagingSize();
 	}

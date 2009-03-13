@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.tool.producers;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
@@ -102,7 +102,7 @@ public abstract class AbstractSearchListProducer implements
 			sortParams.sortBy = getDefaultSortColumn(); // default
 		}
 		if (sortParams.sortDir == null) {
-			sortParams.sortDir = SmsHibernateConstants.SORT_ASC; // default
+			sortParams.sortDir = SmsConstants.SORT_ASC; // default
 		}
 
 		searchCriteriaRenderer.createSearchCriteria(tofill, "searchCriteria:",

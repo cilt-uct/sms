@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.tool.renderers;
 
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.springframework.util.Assert;
 
@@ -198,8 +198,8 @@ public class SearchCriteriaRenderer {
 		UIBoundList comboValues2 = new UIBoundList();
 
 		comboValues2.setValue(new String[] { null,
-				SmsHibernateConstants.MESSAGE_TYPE_INCOMING.toString(),
-				SmsHibernateConstants.MESSAGE_TYPE_OUTGOING.toString() });
+				SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING.toString(),
+				SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING.toString() });
 		combo2.optionlist = comboValues2;
 		UIBoundList comboNames2 = new UIBoundList();
 		comboNames2.setValue(new String[] { "All", "MO", "SO" });

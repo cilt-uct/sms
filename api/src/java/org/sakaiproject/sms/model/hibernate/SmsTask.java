@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -253,7 +253,7 @@ public class SmsTask extends BaseModel {
 		this.statusCode = "";
 		this.creditEstimate = 0;
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
-		this.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_OUTGOING);
+		this.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 
 	}
 

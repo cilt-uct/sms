@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.tool.renderers;
 
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.params.SortPagerViewParams;
 
 import uk.org.ponder.rsf.components.UIContainer;
@@ -39,9 +39,9 @@ public class TablePagerRenderer {
 		
 		UIJointContainer joint = new UIJointContainer(tofill, divID, "table-pager-component:", ""+1);
 	
-		if(totalnumberOfRowsReturned.intValue() >= SmsHibernateConstants.READ_LIMIT){
+		if(totalnumberOfRowsReturned.intValue() >= SmsConstants.READ_LIMIT){
 			UIOutput.make(joint, "number-of-rows", "Number of rows: " + totalnumberOfRowsReturned 
-					+" (Limited to first " + SmsHibernateConstants.READ_LIMIT  + " rows)");
+					+" (Limited to first " + SmsConstants.READ_LIMIT  + " rows)");
 		}
 		else{
 			UIOutput.make(joint, "number-of-rows", "Number of rows: " + totalnumberOfRowsReturned);	

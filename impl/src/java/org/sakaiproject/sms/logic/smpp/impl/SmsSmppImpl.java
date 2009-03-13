@@ -69,7 +69,7 @@ import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 public class SmsSmppImpl implements SmsSmpp {
@@ -186,7 +186,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					SmsMessage smsMessage = hibernateLogicLocator
 							.getSmsMessageLogic().getSmsMessageBySmscMessageId(
 									deliveryReceipt.getId(),
-									SmsHibernateConstants.SMSC_ID);
+									SmsConstants.SMSC_ID);
 					if (smsMessage == null) {
 						for (int i = 0; i < 5; i++) {
 							LOG.warn("SMSC_DEL_RECEIPT retry " + i
@@ -196,7 +196,7 @@ public class SmsSmppImpl implements SmsSmpp {
 									.getSmsMessageLogic()
 									.getSmsMessageBySmscMessageId(
 											deliveryReceipt.getId(),
-											SmsHibernateConstants.SMSC_ID);
+											SmsConstants.SMSC_ID);
 							if (smsMessage != null) {
 								break;
 							}
@@ -643,7 +643,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		String messageText = message.getSmsTask().getMessageBody();
 
 		if (message.getSmsTask().getMessageTypeId().equals(
-				SmsHibernateConstants.MESSAGE_TYPE_INCOMING)) {
+				SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING)) {
 			messageText = message.getMessageReplyBody();
 		}
 
@@ -672,7 +672,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setSmscMessageId(messageId);
 
 			message.setSubmitResult(true);
-			message.setSmscId(SmsHibernateConstants.SMSC_ID);
+			message.setSmscId(SmsConstants.SMSC_ID);
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 			message
 					.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);

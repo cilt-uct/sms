@@ -44,7 +44,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
@@ -288,7 +288,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 						.getSakaiUserId());
 				if (mobileNumber == null) {
 					addMemberToDelList = false;
-					if (SmsHibernateConstants.SMS_DEV_MODE) {
+					if (SmsConstants.SMS_DEV_MODE) {
 						mobileNumber = "9999999"; // for testing
 					}
 				}

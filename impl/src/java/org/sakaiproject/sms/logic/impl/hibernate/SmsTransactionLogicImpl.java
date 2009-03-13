@@ -39,7 +39,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -188,7 +188,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 				crit.add(Restrictions.like("smsTaskId", new Long(searchBean
 						.getTaskId())));
 			}
-			crit.setMaxResults(SmsHibernateConstants.READ_LIMIT);
+			crit.setMaxResults(SmsConstants.READ_LIMIT);
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -205,7 +205,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 						hibernateLogicLocator.getExternalLogic()
 								.getCurrentSiteId());
 		if (smsConfig == null)
-			return SmsHibernateConstants.DEFAULT_PAGE_SIZE;
+			return SmsConstants.DEFAULT_PAGE_SIZE;
 		else
 			return smsConfig.getPagingSize();
 	}

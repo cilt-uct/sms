@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.logic.smpp.test;
 
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -57,7 +57,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 		try {
 			message = MessageCatalog.getMessage("messages.nonexistent");
 			assertTrue(message
-					.equals(SmsHibernateConstants.CATALOG_MESSAGE_NOT_FOUND));
+					.equals(SmsConstants.CATALOG_MESSAGE_NOT_FOUND));
 		} catch (Exception e) {
 			// fail(e.getMessage());
 		}

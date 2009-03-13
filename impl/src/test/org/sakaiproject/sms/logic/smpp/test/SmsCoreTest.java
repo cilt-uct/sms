@@ -42,7 +42,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.DateUtil;
 
@@ -488,7 +488,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
-				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -510,7 +510,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsMessage insertMessage1 = new SmsMessage();
 		insertMessage1.setMobileNumber("0721998919");
 		insertMessage1.setSmscMessageId("smscMessageId1");
-		insertMessage1.setSmscId(SmsHibernateConstants.SMSC_ID);
+		insertMessage1.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage1.setSakaiUserId("sakaiUserId");
 		insertMessage1.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
 		insertMessage1
@@ -523,7 +523,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsMessage insertMessage2 = new SmsMessage();
 		insertMessage2.setMobileNumber("0823450983");
 		insertMessage2.setSmscMessageId("smscMessageId2");
-		insertMessage2.setSmscId(SmsHibernateConstants.SMSC_ID);
+		insertMessage2.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
 		insertMessage2
@@ -566,7 +566,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
-				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -615,7 +615,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
-				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -658,7 +658,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
 		insertTask
-				.setSakaiToolId(SmsHibernateConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));

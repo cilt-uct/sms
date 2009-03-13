@@ -25,7 +25,7 @@ import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 
 import uk.org.ponder.beanutil.BeanLocator;
@@ -61,7 +61,7 @@ public class SmsAccountLocator implements BeanLocator {
 		if (togo == null) {
 			if (name.startsWith(NEW_PREFIX)) {
 				togo = new SmsAccount();
-				togo.setCredits(SmsHibernateConstants.INITIAL_CREDITS);
+				togo.setCredits(SmsConstants.INITIAL_CREDITS);
 				togo.setSakaiSiteId(hibernateLogicLocator.getExternalLogic()
 						.getCurrentSiteId());
 				togo.setOverdraftLimit(hibernateLogicLocator

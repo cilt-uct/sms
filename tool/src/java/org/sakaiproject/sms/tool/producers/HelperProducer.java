@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.util.SmsAccountHelper;
@@ -79,7 +79,7 @@ public class HelperProducer implements ViewComponentProducer,
 			UIMessage.make(form, "chars-remaining-label",
 					"sms.helper.chars-remaining");
 			UIInput charsRemaining = UIInput.make(form, "chars-remaining", null,
-					Integer.toString(SmsHibernateConstants.MAX_SMS_LENGTH));
+					Integer.toString(SmsConstants.MAX_SMS_LENGTH));
 			// Disables the characters remaining input
 			charsRemaining.decorate(new UIDisabledDecorator());
 
@@ -127,7 +127,7 @@ public class HelperProducer implements ViewComponentProducer,
 									messageBody,
 									charsRemaining,
 									Integer
-									.toString(SmsHibernateConstants.MAX_SMS_LENGTH) });			
+									.toString(SmsConstants.MAX_SMS_LENGTH) });			
 		}
 	}
 

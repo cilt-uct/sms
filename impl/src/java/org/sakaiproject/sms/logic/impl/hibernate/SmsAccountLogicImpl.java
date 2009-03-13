@@ -32,7 +32,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldExcept
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
  * The data service will handle all sms Account database transactions for the
@@ -192,7 +192,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
 		SmsAccount account = null;
-		if (SmsHibernateConstants.SMS_DEV_MODE) {
+		if (SmsConstants.SMS_DEV_MODE) {
 			if (useSiteAccount) {
 				insertTestSmsAccount(sakaiSiteId, null);
 			} else {

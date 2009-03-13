@@ -9,7 +9,7 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -248,14 +248,14 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 					.getPagedSmsTransactionsForCriteria(bean);
 			List<SmsTransaction> tasks = con.getPageResults();
 			assertTrue("Incorrect collection size returned",
-					tasks.size() == SmsHibernateConstants.DEFAULT_PAGE_SIZE);
+					tasks.size() == SmsConstants.DEFAULT_PAGE_SIZE);
 
 			// Test last page. We know there are 124 records to this should
 			// return a list of 4
 			int pages = recordsToInsert
-					/ SmsHibernateConstants.DEFAULT_PAGE_SIZE;
+					/ SmsConstants.DEFAULT_PAGE_SIZE;
 			// set to last page
-			if (recordsToInsert % SmsHibernateConstants.DEFAULT_PAGE_SIZE == 0) {
+			if (recordsToInsert % SmsConstants.DEFAULT_PAGE_SIZE == 0) {
 				bean.setCurrentPage(pages);
 			} else {
 				bean.setCurrentPage(pages + 1);
@@ -266,7 +266,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 			tasks = con.getPageResults();
 			// int lastPageRecordCount = recordsToInsert % pages;
 			int lastPageRecordCount = recordsToInsert
-					- (pages * SmsHibernateConstants.DEFAULT_PAGE_SIZE);
+					- (pages * SmsConstants.DEFAULT_PAGE_SIZE);
 			assertTrue("Incorrect collection size returned",
 					tasks.size() == lastPageRecordCount);
 

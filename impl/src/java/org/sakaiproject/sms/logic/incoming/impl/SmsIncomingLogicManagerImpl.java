@@ -34,7 +34,7 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 import org.sakaiproject.sms.util.SmsStringArrayUtil;
 
@@ -165,7 +165,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		}
 		// Just cut off extra characters
 		return StringUtils.left(reply.toString(),
-				SmsHibernateConstants.MAX_SMS_LENGTH);
+				SmsConstants.MAX_SMS_LENGTH);
 	}
 
 	/**

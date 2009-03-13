@@ -20,7 +20,7 @@ package org.sakaiproject.sms.logic.smpp.validate;
 import java.util.ArrayList;
 
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 /**
@@ -53,7 +53,7 @@ public class MessageValidatorImpl implements MessageValidator {
 			String trimmedNumber = smsMessage.getMobileNumber().trim()
 					.replaceAll(" ", "");
 			// Check length of mobile number
-			if (trimmedNumber.length() > SmsHibernateConstants.MAX_MOBILE_NR_LENGTH) {
+			if (trimmedNumber.length() > SmsConstants.MAX_MOBILE_NR_LENGTH) {
 				errors.add(ValidationConstants.MOBILE_NUMBER_TOO_LONG);
 			}
 

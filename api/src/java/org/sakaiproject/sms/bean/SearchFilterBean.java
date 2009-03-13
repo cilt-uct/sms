@@ -19,7 +19,7 @@ package org.sakaiproject.sms.bean;
 
 import java.util.Date;
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 // TODO: Auto-generated Javadoc
@@ -48,7 +48,7 @@ public class SearchFilterBean {
 	/** The Task ID (on Messages Log) */
 	private String taskId;
 
-	private Integer messageTypeId =SmsHibernateConstants.MESSAGE_TYPE_OUTGOING;
+	private Integer messageTypeId =SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING;
 
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
@@ -346,7 +346,7 @@ public class SearchFilterBean {
 	 */
 	public boolean sortAsc() {
 		if (sortDirection != null && !sortDirection.trim().equals("")) {
-			return sortDirection.equals(SmsHibernateConstants.SORT_ASC);
+			return sortDirection.equals(SmsConstants.SORT_ASC);
 		}
 		// default to asc
 		return true;

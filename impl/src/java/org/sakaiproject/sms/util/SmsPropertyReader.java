@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
  * Util class for reading properties from property files
@@ -51,14 +51,14 @@ public abstract class SmsPropertyReader {
 			loadProperties();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			return SmsHibernateConstants.PROPERTY_FILE_NOT_FOUND;
+			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return SmsHibernateConstants.PROPERTY_FILE_NOT_FOUND;
+			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		}
 
 		return properties.getProperty(propertyKey,
-				SmsHibernateConstants.PROPERTY_NOT_FOUND);
+				SmsConstants.PROPERTY_NOT_FOUND);
 	}
 
 	/**

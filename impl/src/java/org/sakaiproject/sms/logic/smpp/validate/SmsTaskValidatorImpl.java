@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 /**
@@ -115,7 +115,7 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 		if (smsTask.getMessageBody() != null
 				&& !smsTask.getMessageBody().trim().equals("")) {
 			// Check length of messageBody
-			if (smsTask.getMessageBody().length() > SmsHibernateConstants.MAX_SMS_LENGTH) {
+			if (smsTask.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH) {
 				errors.add(ValidationConstants.MESSAGE_BODY_TOO_LONG);
 			}
 		} else {

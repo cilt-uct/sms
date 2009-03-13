@@ -50,7 +50,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -231,7 +231,7 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setSakaiSiteId(sakaiSiteID);
-		smsTask.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_OUTGOING);
+		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		smsTask.setSakaiToolId(sakaiToolId);
 		smsTask.setSenderUserName(hibernateLogicLocator.getExternalLogic()
 				.getSakaiUserDisplayName(sakaiSenderID));
@@ -268,7 +268,7 @@ public class SmsCoreImpl implements SmsCore {
 				sakaiToolId, sakaiSenderID, number);
 		if (smsTask != null) {
 			smsTask
-					.setMessageTypeId(SmsHibernateConstants.MESSAGE_TYPE_INCOMING);
+					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING);
 			smsTask.setGroupSizeEstimate(1);
 			smsTask.setGroupSizeActual(1);
 			smsTask.setCreditEstimate(1);
@@ -309,7 +309,7 @@ public class SmsCoreImpl implements SmsCore {
 				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException(smsTask);
 		}
-		if (smsTask.getMessageTypeId() == SmsHibernateConstants.MESSAGE_TYPE_INCOMING) {
+		if (smsTask.getMessageTypeId() == SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) {
 
 			if (!hibernateLogicLocator
 					.getSmsConfigLogic()
@@ -341,7 +341,7 @@ public class SmsCoreImpl implements SmsCore {
 		// sufficient credit only if the task is valid
 		errors.clear();
 		if (smsTask.getMessageTypeId().equals(
-				SmsHibernateConstants.MESSAGE_TYPE_INCOMING)) {
+				SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING)) {
 
 			ArrayList<String> sufficiantCredits = smsTaskValidator
 					.checkSufficientCredits(smsTask, true);
@@ -350,7 +350,7 @@ public class SmsCoreImpl implements SmsCore {
 				if (lastSendMoOverdraftEmail == null) {
 					sendEmailNotification(
 							smsTask,
-							SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
+							SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
 					lastSendMoOverdraftEmail = Calendar.getInstance();
 				} else {
 					Calendar now = Calendar.getInstance();
@@ -360,7 +360,7 @@ public class SmsCoreImpl implements SmsCore {
 					if (previousSendmail.before(now)) {
 						sendEmailNotification(
 								smsTask,
-								SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
+								SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
 					}
 
 				}
@@ -485,7 +485,7 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_PENDING,
 						SmsConst_DeliveryStatus.STATUS_EXPIRE);
 				sendEmailNotification(smsTask,
-						SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+						SmsConstants.TASK_NOTIFICATION_FAILED);
 				smsBilling.cancelPendingRequest(smsTask.getId());
 				smsTask.setFailReason(MessageCatalog
 						.getMessage("messages.taskExpired"));
@@ -496,7 +496,7 @@ public class SmsCoreImpl implements SmsCore {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 				if ((!smsTask.getMessageTypeId().equals(
-						SmsHibernateConstants.MESSAGE_TYPE_INCOMING) && smsTask
+						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) && smsTask
 						.getAttemptCount() <= 1)) {
 					calculateActualGroupSize(smsTask);
 					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
@@ -531,7 +531,7 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_PENDING,
 						SmsConst_DeliveryStatus.STATUS_FAIL);
 				sendEmailNotification(smsTask,
-						SmsHibernateConstants.TASK_NOTIFICATION_FAILED);
+						SmsConstants.TASK_NOTIFICATION_FAILED);
 				smsTask.setFailReason((MessageCatalog.getMessage(
 						"messages.taskRetryFailure", String
 								.valueOf(systemConfig.getSmsRetryMaxCount()))));
@@ -545,7 +545,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsBilling.settleCreditDifference(smsTask);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION,
+					SmsConstants.TASK_NOTIFICATION_EXCEPTION,
 					getExceptionStackTraceAsString(e));
 
 		}
@@ -649,7 +649,7 @@ public class SmsCoreImpl implements SmsCore {
 		String creditsRequired = smsTask.getCreditEstimate() + "";
 		toAddress = configSite.getNotificationEmail();
 		if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_STARTED)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
 							.toString());
@@ -658,7 +658,7 @@ public class SmsCoreImpl implements SmsCore {
 					creditsAvailable);
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_SENT)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectSent", smsTask.getId()
 							.toString());
@@ -666,14 +666,14 @@ public class SmsCoreImpl implements SmsCore {
 					creditsRequired, creditsAvailable);
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXCEPTION)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_EXCEPTION)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectException", smsTask.getId()
 							.toString());
 			body = additionInformation;
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
+				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
 			subject = MessageCatalog
 					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
 			body = MessageCatalog.getMessage(
@@ -683,7 +683,7 @@ public class SmsCoreImpl implements SmsCore {
 									.getCredits())));
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO)) {
+				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO)) {
 			subject = MessageCatalog
 					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
 			body = MessageCatalog.getMessage(
@@ -693,7 +693,7 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 		else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_EXPIRED)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
@@ -701,7 +701,7 @@ public class SmsCoreImpl implements SmsCore {
 					.getMessage("messages.notificationBodyExpired");
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_COMPLETED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectCompleted", smsTask.getId()
 							.toString());
@@ -711,7 +711,7 @@ public class SmsCoreImpl implements SmsCore {
 							.valueOf(smsTask.getMessagesDelivered()));
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_ABORTED)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_ABORTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectAborted", smsTask.getId()
 							.toString());
@@ -720,7 +720,7 @@ public class SmsCoreImpl implements SmsCore {
 							.getSenderUserName());
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_NOTIFICATION_FAILED)) {
+				.equals(SmsConstants.TASK_NOTIFICATION_FAILED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectFailed", smsTask.getId()
 							.toString());
@@ -728,7 +728,7 @@ public class SmsCoreImpl implements SmsCore {
 					String.valueOf(configSystem.getSmsRetryMaxCount()));
 
 		} else if (taskMessageType
-				.equals(SmsHibernateConstants.TASK_INSUFFICIENT_CREDITS)) {
+				.equals(SmsConstants.TASK_INSUFFICIENT_CREDITS)) {
 			subject = MessageCatalog
 					.getMessage("messages.notificationSubjectTaskInsufficientCredits");
 			body = MessageCatalog.getMessage(
@@ -791,9 +791,9 @@ public class SmsCoreImpl implements SmsCore {
 			smsBilling.settleCreditDifference(smsTask);
 			checkOverdraft(smsTask);
 			if (smsTask.getMessageTypeId().equals(
-					SmsHibernateConstants.MESSAGE_TYPE_OUTGOING)) {
+					SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
 				sendEmailNotification(smsTask,
-						SmsHibernateConstants.TASK_NOTIFICATION_COMPLETED);
+						SmsConstants.TASK_NOTIFICATION_COMPLETED);
 			} else {
 				if (smsTask.getSmsMessages() != null) {
 					for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
@@ -819,7 +819,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (account.getOverdraftLimit() != null) {
 			if ((account.getCredits()) < (-1 * account.getOverdraftLimit())) {
 				sendEmailNotification(smsTask,
-						SmsHibernateConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
+						SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
 			}
 		}
 	}
@@ -862,7 +862,7 @@ public class SmsCoreImpl implements SmsCore {
 					.getMessage("messages.taskAborted"));
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
-					SmsHibernateConstants.TASK_NOTIFICATION_ABORTED);
+					SmsConstants.TASK_NOTIFICATION_ABORTED);
 		}
 
 	}

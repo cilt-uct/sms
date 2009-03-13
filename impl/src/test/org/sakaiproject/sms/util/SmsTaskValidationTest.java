@@ -31,7 +31,7 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 // TODO: Auto-generated Javadoc
@@ -211,7 +211,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	 */
 	public void testMessageBody_tooLong() {
 		smsTask.setMessageBody(VALID_MSG_BODY + VALID_MSG_BODY);
-		assertTrue(msg.getMessageBody().length() > SmsHibernateConstants.MAX_SMS_LENGTH);
+		assertTrue(msg.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH);
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertEquals(ValidationConstants.MESSAGE_BODY_TOO_LONG, errors.get(0));

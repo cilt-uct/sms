@@ -13,7 +13,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -51,14 +51,14 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage1 = new SmsMessage();
 		insertMessage1.setMobileNumber("0721998919");
 		insertMessage1.setSmscMessageId("smscMessageId1");
-		insertMessage1.setSmscId(SmsHibernateConstants.SMSC_ID);
+		insertMessage1.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage1.setSakaiUserId("sakaiUserId");
 		insertMessage1.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 
 		insertMessage2 = new SmsMessage();
 		insertMessage2.setMobileNumber("0823450983");
 		insertMessage2.setSmscMessageId("smscMessageId2");
-		insertMessage2.setSmscId(SmsHibernateConstants.SMSC_ID);
+		insertMessage2.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 	}
@@ -258,15 +258,15 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
 			assertTrue("Incorrect collection size returned",
-					messages.size() == SmsHibernateConstants.DEFAULT_PAGE_SIZE);
+					messages.size() == SmsConstants.DEFAULT_PAGE_SIZE);
 
 			// Test last page. We know there are 124 records to this should
 			// return a list of 4
 
 			int pages = recordsToInsert
-					/ SmsHibernateConstants.DEFAULT_PAGE_SIZE;
+					/ SmsConstants.DEFAULT_PAGE_SIZE;
 			// set to last page
-			if (recordsToInsert % SmsHibernateConstants.DEFAULT_PAGE_SIZE == 0) {
+			if (recordsToInsert % SmsConstants.DEFAULT_PAGE_SIZE == 0) {
 				bean.setCurrentPage(pages);
 			} else {
 				bean.setCurrentPage(pages + 1);
@@ -276,7 +276,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 					.getPagedSmsMessagesForCriteria(bean);
 			messages = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert
-					- (pages * SmsHibernateConstants.DEFAULT_PAGE_SIZE);
+					- (pages * SmsConstants.DEFAULT_PAGE_SIZE);
 			assertTrue("Incorrect collection size returned",
 					messages.size() == lastPageRecordCount);
 
@@ -310,7 +310,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessageBySmscMessageId(
 						insertMessage2.getSmscMessageId(),
-						SmsHibernateConstants.SMSC_ID);
+						SmsConstants.SMSC_ID);
 		assertTrue(smsMessage.equals(insertMessage2));
 		assertEquals(smsMessage.getSmscMessageId(), insertMessage2
 				.getSmscMessageId());

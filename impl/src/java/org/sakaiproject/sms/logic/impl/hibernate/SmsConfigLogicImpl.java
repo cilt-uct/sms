@@ -25,7 +25,7 @@ import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
  * The data service will handle all sms config database transactions for the sms
@@ -106,7 +106,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	}
 
 	public SmsConfig getOrCreateSystemSmsConfig() {
-		return getOrCreateSmsConfigBySakaiSiteId(SmsHibernateConstants.SMS_SYSTEM_SAKAI_SITE_ID);
+		return getOrCreateSmsConfigBySakaiSiteId(SmsConstants.SMS_SYSTEM_SAKAI_SITE_ID);
 	}
 
 	public SmsConfig createDefaultSmsConfig(String sakaiSiteId) {
@@ -115,23 +115,23 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 		// Settings for the Sakai instance
 		if (sakaiSiteId != null && sakaiSiteId.equals("")) {
 			config.setSakaiToolId("");
-			config.setSmsRetryMaxCount(SmsHibernateConstants.MAXIMUM_RETRY_COUNT);
-			config.setMaxActiveThreads(SmsHibernateConstants.DEFAULT_MAX_ACTIVE_THREADS);
-			config.setDelReportTimeoutDuration(SmsHibernateConstants.DEL_REPORT_TIMEOUT_DURATION);
-			config.setSmsRetryScheduleInterval(SmsHibernateConstants.RETRY_SCHEDULE_INTERVAL);
-			config.setSmsTaskMaxLifeTime(SmsHibernateConstants.MAXIMUM_TASK_LIFETIME);
-			config.setSchedulerInterval(SmsHibernateConstants.SCHEDULER_INTERVAL);
-			config.setCreditCost(SmsHibernateConstants.COST_OF_CREDIT);
-			config.setUseSiteAcc(SmsHibernateConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
+			config.setSmsRetryMaxCount(SmsConstants.MAXIMUM_RETRY_COUNT);
+			config.setMaxActiveThreads(SmsConstants.DEFAULT_MAX_ACTIVE_THREADS);
+			config.setDelReportTimeoutDuration(SmsConstants.DEL_REPORT_TIMEOUT_DURATION);
+			config.setSmsRetryScheduleInterval(SmsConstants.RETRY_SCHEDULE_INTERVAL);
+			config.setSmsTaskMaxLifeTime(SmsConstants.MAXIMUM_TASK_LIFETIME);
+			config.setSchedulerInterval(SmsConstants.SCHEDULER_INTERVAL);
+			config.setCreditCost(SmsConstants.COST_OF_CREDIT);
+			config.setUseSiteAcc(SmsConstants.DEFAULT_ACCOUNT_USE_SITE_ACCOUNT);
 			
 		} else {
 			// Setting for each site
 			config.setSakaiToolId("DummyToolId");
-			config.setOverdraftLimit(SmsHibernateConstants.OVERDRAFT_LIMIT);
-			config.setNotificationEmail(SmsHibernateConstants.NOTIFICATION_EMAIL);
+			config.setOverdraftLimit(SmsConstants.OVERDRAFT_LIMIT);
+			config.setNotificationEmail(SmsConstants.NOTIFICATION_EMAIL);
 			config.setNotificationEmailBilling("notificationBilling@instution.com");
 			config.setNotificationEmailSent("notificationSent@instution.com");
-			config.setPagingSize(SmsHibernateConstants.DEFAULT_PAGE_SIZE);
+			config.setPagingSize(SmsConstants.DEFAULT_PAGE_SIZE);
 			config.setReceiveIncomingEnabled(true);
 			config.setSendSmsEnabled(true);
 

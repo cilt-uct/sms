@@ -18,13 +18,13 @@
 package org.sakaiproject.sms.model.hibernate.constants;
 
 /**
- * Constants class for the sms hibernate project
- *
+ * Constants class for SMS
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 08-Dec-2008
  */
-public class SmsHibernateConstants {
+public class SmsConstants {
 
 	/** The Constant SORT_ASC. */
 	public static final String SORT_ASC = "asc";
@@ -38,11 +38,11 @@ public class SmsHibernateConstants {
 	/** The Constant READ_LIMIT. */
 	public static final int READ_LIMIT = 100;
 
-	/** The Constant MESSAGE_TYPE_OUTGOING. */
-	public static final Integer MESSAGE_TYPE_OUTGOING = 0;
+	/** The Constant MESSAGE_TYPE_SYSTEM_ORIGINATING. */
+	public static final Integer MESSAGE_TYPE_SYSTEM_ORIGINATING = 0;
 
-	/** The Constant MESSAGE_TYPE_INCOMING. */
-	public static final Integer MESSAGE_TYPE_INCOMING = 1;
+	/** The Constant MESSAGE_TYPE_MOBILE_ORIGINATING. */
+	public static final Integer MESSAGE_TYPE_MOBILE_ORIGINATING = 1;
 
 	/**
 	 * Used to indicate if the Task must be processed immediately.
@@ -152,7 +152,9 @@ public class SmsHibernateConstants {
 	/** The Constant TASK_NOTIFICATION_FAILED, after all retry attempts. */
 	public static final int TASK_NOTIFICATION_FAILED = 7;
 
-	/** The Constant TASK_NOTIFICATION_EXCEPTION, default exception notification. */
+	/**
+	 * The Constant TASK_NOTIFICATION_EXCEPTION, default exception notification.
+	 */
 	public static final int TASK_NOTIFICATION_EXCEPTION = 8;
 
 	/** The Constant for smsAccount ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED. */

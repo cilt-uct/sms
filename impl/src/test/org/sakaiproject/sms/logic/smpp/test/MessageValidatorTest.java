@@ -9,7 +9,7 @@ import org.sakaiproject.sms.logic.smpp.validate.MessageValidatorImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsHibernateConstants;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 // TODO: Auto-generated Javadoc
@@ -93,7 +93,7 @@ public class MessageValidatorTest extends TestCase {
 	 */
 	public void testMobileNumber_tooLong() {
 		msg.setMobileNumber("012345678901234567890123456789");
-		assertTrue(msg.getMobileNumber().length() > SmsHibernateConstants.MAX_MOBILE_NR_LENGTH);
+		assertTrue(msg.getMobileNumber().length() > SmsConstants.MAX_MOBILE_NR_LENGTH);
 		errors = validator.validateMessage(msg);
 		assertTrue(errors.size() > 0);
 		assertTrue(errors.contains(ValidationConstants.MOBILE_NUMBER_TOO_LONG));
