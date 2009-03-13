@@ -202,7 +202,9 @@ public interface SmsService {
 			SmsSendDisabledException, ReceiveIncomingSmsDisabledException;
 
 	/**
-	 * Send SMS to array of userIds
+	 * Send SMS to array of userIds. Tools that implement SMS must use this
+	 * method to send out messages. For example the posting of an announcement
+	 * may also trigger SMS delivery. See QNA for how to use.
 	 * 
 	 * @param userId
 	 *            array of user ids to send to
