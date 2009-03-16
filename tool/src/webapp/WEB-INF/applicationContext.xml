@@ -67,10 +67,17 @@
 		<property name="guard" ref="org.sakaiproject.sms.logic.smpp.validate.MessageValidator" />
 	</bean>
 
-	<bean id="smsConfigGaurd" parent="writeGuardParent">
+	<bean id="smsSystemConfigGaurd" parent="writeGuardParent">
 		<property name="guardedPath" value="SmsConfigLocator.*" />
 		<property name="guard">
 			<bean class="org.sakaiproject.sms.tool.validators.SmsConfigValidator" />
+		</property>
+	</bean>
+
+	<bean id="smsConfigGaurd" parent="writeGuardParent">
+		<property name="guardedPath" value="SmsSystemConfigLocator.*" />
+		<property name="guard">
+			<bean class="org.sakaiproject.sms.tool.validators.SmsSystemConfigValidator" />
 		</property>
 	</bean>
 
