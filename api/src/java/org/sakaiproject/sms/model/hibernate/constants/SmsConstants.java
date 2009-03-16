@@ -45,14 +45,6 @@ public class SmsConstants {
 	public static final Integer MESSAGE_TYPE_MOBILE_ORIGINATING = 1;
 
 	/**
-	 * Used to indicate if the Task must be processed immediately.
-	 */
-	// public static final Integer SMS_TASK_TYPE_PROCESS_NOW = 1;
-	/**
-	 * Used to indicate if the Task must be processed by the scheduler.
-	 */
-	// public static final Integer SMS_TASK_TYPE_PROCESS_SCHEDULED = 0;
-	/**
 	 * Used to indicate if the system is running in development mode.
 	 */
 	public static boolean SMS_DEV_MODE = false;
@@ -180,5 +172,8 @@ public class SmsConstants {
 	// use the site account for all transactions rather than the user's own
 	// account
 	public static final Boolean DEFAULT_ACCOUNT_USE_SITE_ACCOUNT = true;
+
+	// The help command is valid for all sms-enabled tools
+	public static final String HELP = "HELP";
 
 }
