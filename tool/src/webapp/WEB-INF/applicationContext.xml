@@ -176,6 +176,16 @@
 	</bean>
 
 	<bean class="uk.org.ponder.mapping.DataConverter">
+		<property name="targetPath" value="SmsSystemConfigLocator.*.maxActiveThreads" />
+		<property name="converter">
+			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
+				<property name="field" value="maxActiveThreads" />
+				<property name="numberClass" value="java.lang.Integer" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean class="uk.org.ponder.mapping.DataConverter">
 		<property name="targetPath"
 			value="SmsSystemConfigLocator.*.delReportTimeoutDuration" />
 		<property name="converter">

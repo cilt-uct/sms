@@ -38,7 +38,7 @@ public class SmsSystemConfigValidator implements Validator {
 		if (smsConfig.getMaxActiveThreads() <= 0
 				|| smsConfig.getMaxActiveThreads() > 100) {
 			err.rejectValue("maxActiveThreads",
-					"sms.errors.maxActiveThreads.invalid");
+					"sms.errors.maxActiveThreads.number.invalid");
 		}
 
 	}
