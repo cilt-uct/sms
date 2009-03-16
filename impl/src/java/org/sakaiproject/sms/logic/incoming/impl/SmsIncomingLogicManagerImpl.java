@@ -101,6 +101,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						} else {
 							// I don't think this is a good method of retrieving
 							// the user ids
+							parsedMessage.setSite(site);
 							List<String> userIds = externalLogic
 									.getUserIdsFromMobileNumber(mobileNr);
 							if (userIds.size() == 0) {
