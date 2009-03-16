@@ -624,7 +624,9 @@ public class SmsCoreImpl implements SmsCore {
 	private boolean sendEmailNotification(SmsTask smsTask,
 			Integer taskMessageType, String additionInformation) {
 
-		if (smsTask == null || taskMessageType == null) {
+		if (smsTask == null || smsTask.getMessageBody() == null
+				|| smsTask.getMessageBody().equals("")
+				|| taskMessageType == null) {
 			LOG.error("smsTask or taskMessageType may not to null");
 			return false;
 		}
@@ -635,7 +637,8 @@ public class SmsCoreImpl implements SmsCore {
 
 		String subject = null;
 		String body = null;
-		String toAddress = null;
+		String ownerToAddress = null;
+		String notiToAddress = null;
 
 		SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId());
@@ -658,7 +661,9 @@ public class SmsCoreImpl implements SmsCore {
 
 		String creditsAvailable = credits + "";
 		String creditsRequired = smsTask.getCreditEstimate() + "";
-		toAddress = configSite.getNotificationEmail();
+		ownerToAddress = hibernateLogicLocator.getExternalLogic()
+				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
+		notiToAddress = configSite.getNotificationEmail();
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
@@ -744,28 +749,34 @@ public class SmsCoreImpl implements SmsCore {
 							.valueOf(account.getOverdraftLimit()), String
 							.valueOf(account.getOverdraftLimit()
 									+ account.getCredits()));
-			if (toAddress == null || toAddress.length() == 0) {
 
-				toAddress = hibernateLogicLocator.getExternalLogic()
-						.getSakaiSiteContactEmail();
-			}
-			if (toAddress == null || toAddress.length() == 0) {
-				return false;
-			}
 		}
-		boolean systemNotification = sendNotificationEmail(smsTask, toAddress,
-				subject, body);
-		if (smsTask.getMessageTypeId().equals(
-				SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
-			boolean ownerNotification = sendNotificationEmail(smsTask,
-					hibernateLogicLocator.getExternalLogic()
-							.getSakaiEmailAddressForUserId(
-									smsTask.getSenderUserId()), subject, body);
+		boolean systemNotification = false;
+		if (notiToAddress == null || notiToAddress.length() == 0) {
 
-			return (systemNotification && ownerNotification);
+			return false;
 		} else {
-			return (systemNotification);
+
+			systemNotification = sendNotificationEmail(smsTask, notiToAddress,
+					subject, body);
+
 		}
+
+		if (ownerToAddress == null || ownerToAddress.length() == 0) {
+			return false;
+
+		} else {
+			if (smsTask.getMessageTypeId().equals(
+					SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
+				boolean ownerNotification = sendNotificationEmail(smsTask,
+						ownerToAddress, subject, body);
+
+				return (systemNotification && ownerNotification);
+			} else {
+				return (systemNotification);
+			}
+		}
+
 	}
 
 	public void setSmsBilling(SmsBilling smsBilling) {
