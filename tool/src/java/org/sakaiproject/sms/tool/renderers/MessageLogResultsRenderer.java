@@ -1,17 +1,17 @@
 /***********************************************************************************
  * MessageLogResultsRenderer.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
- * 
- * Licensed under the Educational Community License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.osedu.org/licenses/ECL-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  **********************************************************************************/
@@ -40,7 +40,7 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 			.getLogger(MessageLogResultsRenderer.class);
 
 	private SearchResultContainer<SmsMessage> smsMessageList = new SearchResultContainer<SmsMessage>(SmsUiConstants.NO_RESULTS_PAGING_SIZE);
-	
+
 	private SearchFilterBean searchFilterBean;
 	private SortHeaderRenderer sortHeaderRenderer;
 	private SmsMessageLogic smsMessageLogic;
@@ -106,6 +106,11 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 					"smsTask.statusCode",
 					"sms.message-log-search-results.account.Status");
 
+			sortHeaderRenderer.makeSortingLink(searchResultsTable,
+					"tableheader-smsc-status:", sortViewParams,
+					"smscDeliveryStatusCode",
+					"sms.message-log-search-results.account.smsc.status");
+
 			for (SmsMessage smsMessage : smsMessageList.getPageResults()) {
 
 				UIBranchContainer row = UIBranchContainer.make(
@@ -113,7 +118,7 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 				UIOutput.make(row, "row-data-id", NullHandling
 						.safeToString(smsMessage.getId()));
 				UIOutput.make(row, "row-data-task-id", NullHandling
-						.safeToString(smsMessage.getSmsTask().getId()));				
+						.safeToString(smsMessage.getSmsTask().getId()));
 				UIOutput.make(row, "row-data-receiver", NullHandling
 						.safeToString(smsMessage.getSakaiUserId()));
 				UIOutput.make(row, "row-data-mobile-number", NullHandling
@@ -122,19 +127,21 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 						.safeToStringFormated(smsMessage.getDateDelivered()));
 				UIOutput.make(row, "row-data-status", NullHandling
 						.safeToString(smsMessage.getStatusCode()));
+				UIOutput.make(row, "row-data-smsc-status", NullHandling
+						.safeToString(smsMessage.getSmscDeliveryStatusCode()));
 			}
 		}
 	}
 
 	private void setCurrentPage(SearchFilterBean searchBean, SortPagerViewParams sortViewParams) {
-		
+
 		//new search
 		if(searchBean.isNewSearch()){
 			sortViewParams.current_start = 1;
 			searchBean.setNewSearch(false);
 		}
 		else//paging
-			searchBean.setCurrentPage(sortViewParams.current_start);	
+			searchBean.setCurrentPage(sortViewParams.current_start);
 	}
 
 	public Long getTotalNumberOfRowsReturned() {
