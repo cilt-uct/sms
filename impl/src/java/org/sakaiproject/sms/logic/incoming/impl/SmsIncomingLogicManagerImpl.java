@@ -66,6 +66,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		ParsedMessage parsedMessage = null;
 		String incomingUserID = null;
 		SmsPatternSearchResult validCommandMatch = null;
+		String sakaiSite = null;
+		// TODO: Awaiting feedback from UCT about which site to
+		// bill for help commands
+		String defaultBillingSite = "!admin";
 
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
@@ -80,9 +84,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						&& (validCommandMatch.getMatchResult() != null)) {
 					if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
 							.getPattern())) {
-						// TODO: Awaiting feedback from UCT about which site to
-						// bill for help commands
-						parsedMessage.setSite("!admin");
+						parsedMessage.setSite(defaultBillingSite);
 						reply = generateHelpMessage();
 
 					} else if (validCommandMatch.getMatchResult().equals(
@@ -94,14 +96,12 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						reply = generateAssistMessage(validCommandMatch
 								.getPossibleMatches());
 					} else {
-						String site = getValidSite(parsedMessage.getSite());
-						if (site == null) {
+						sakaiSite = getValidSite(parsedMessage.getSite());
+						if (sakaiSite == null) {
 							reply = generateInvalidSiteMessage(parsedMessage
 									.getSite());
 						} else {
-							// I don't think this is a good method of retrieving
-							// the user ids
-							parsedMessage.setSite(site);
+							parsedMessage.setSite(sakaiSite);
 							List<String> userIds = externalLogic
 									.getUserIdsFromMobileNumber(mobileNr);
 							if (userIds.size() == 0) {
@@ -110,9 +110,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 								incomingUserID = userIds.get(0);
 								reply = allCommands.getCommand(
 										validCommandMatch.getPattern())
-										.execute(site, incomingUserID,
+										.execute(sakaiSite, incomingUserID,
 												parsedMessage.getBody());
-
 							}
 						}
 					}
@@ -125,10 +124,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			parsedMessage = new ParsedMessage();
 			reply = generateInvalidCommand();
 			// TODO: Awaiting feedback from UCT about which site to bill for
-			// invalid commands
-			parsedMessage.setSite("!admin");
+			// invalid commands and help command
+			parsedMessage.setSite(defaultBillingSite);
 		}
-
+		parsedMessage.setSite(sakaiSite != null ? sakaiSite
+				: defaultBillingSite);
 		parsedMessage.setBody_reply(formatReply(reply));
 		parsedMessage.setIncomingUserId(incomingUserID);
 		if (validCommandMatch != null) {

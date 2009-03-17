@@ -408,20 +408,10 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		} else {
 			smsMessageReplyBody = "No tool found.";
-			// TODO What do we do when we cannot figure out the site or tool
-			// from the sms ? And how do we figure out which account to
-			// bill. We must still answer the user even if the sms body is
-			// empty, at least with some help on the possible commands
-			// he/she can send
-			parsedMessage = new ParsedMessage("COMMAND", "!admin");
-
 		}
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,
 				smsMessageReplyBody);
-		if (parsedMessage == null) {
-			parsedMessage = new ParsedMessage("COMMAND", "!admin");
-		}
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				"admin", new Date(), parsedMessage.getSite(), null, "admin");
@@ -430,7 +420,7 @@ public class SmsCoreImpl implements SmsCore {
 			return;
 		}
 		smsMessage.setSmsTask(smsTask);
-		// TODO: who must te sakai user Id be for te reply?
+		// TODO: who must te sakai user Id be for the reply?
 		smsMessage.setSakaiUserId("admin");
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
@@ -438,25 +428,18 @@ public class SmsCoreImpl implements SmsCore {
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
-		// process all MO in real-time for now
 		try {
-			// insertTesk will process task immediately because its date to
-			// process is now
 			insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SmsSendDeniedException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SmsSendDisabledException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ReceiveIncomingSmsDisabledException e) {
-			// TODO Auto-generated catch block
 			LOG.error(getExceptionStackTraceAsString(e));
 			e.printStackTrace();
 		}
@@ -592,7 +575,6 @@ public class SmsCoreImpl implements SmsCore {
 
 	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
 			String subject, String body) {
-		// TODO Call sakai service to send the email
 		hibernateLogicLocator.getExternalLogic().sendEmail(smsTask, toAddress,
 				subject, body);
 		return true;
