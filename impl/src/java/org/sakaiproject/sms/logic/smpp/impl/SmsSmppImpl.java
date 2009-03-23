@@ -310,7 +310,7 @@ public class SmsSmppImpl implements SmsSmpp {
 							gatewayBound = false;
 							session.unbindAndClose();
 							if (arg0.equals(SessionState.CLOSED)) {
-								if (bindTest != null) {
+								if (bindTest == null) {
 									bindTest = new BindThread();
 								}
 							}
