@@ -143,7 +143,6 @@ public class SmsSmppImpl implements SmsSmpp {
 				connectToGateway();
 
 			}
-
 		}
 	}
 
@@ -290,6 +289,7 @@ public class SmsSmppImpl implements SmsSmpp {
 								smsSmppProperties.getAddressRange()));
 				if (bindTest != null) {
 					bindTest.allDone = true;
+					bindTest=null;
 				}
 				gatewayBound = true;
 				session.setEnquireLinkTimer(smsSmppProperties
