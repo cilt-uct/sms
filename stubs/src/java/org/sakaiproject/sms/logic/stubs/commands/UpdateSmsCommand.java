@@ -7,18 +7,22 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 public class UpdateSmsCommand implements SmsCommand {
 
 	private static Log log = LogFactory.getLog(UpdateSmsCommand.class);
-	
+
 	public String execute(String siteId, String userId, String body) {
-		log.debug(getCommandKey() + " command called with parameters: (" + siteId + ", " + userId + ", " + body + ")");
+		log.debug(getCommandKey() + " command called with parameters: ("
+				+ siteId + ", " + userId + ", " + body + ")");
 		return getCommandKey();
 	}
 
 	public String[] getAliases() {
-		return new String[]{"U"};
+		return new String[] { "U" };
 	}
 
 	public String getCommandKey() {
 		return "UPDATE";
 	}
 
+	public String getHelpMessage() {
+		return getCommandKey() + " HELP";
+	}
 }

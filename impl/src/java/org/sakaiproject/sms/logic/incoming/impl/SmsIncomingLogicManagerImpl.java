@@ -108,10 +108,19 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 								reply = generateInvalidMobileNrMessage(mobileNr);
 							} else {
 								incomingUserID = userIds.get(0);
-								reply = allCommands.getCommand(
-										validCommandMatch.getPattern())
-										.execute(sakaiSite, incomingUserID,
-												parsedMessage.getBody());
+
+								if (parsedMessage.getBody() == null
+										|| "".equals(parsedMessage.getBody()
+												.trim())) {
+									reply = allCommands.getCommand(
+											validCommandMatch.getPattern())
+											.getHelpMessage();
+								} else {
+									reply = allCommands.getCommand(
+											validCommandMatch.getPattern())
+											.execute(sakaiSite, incomingUserID,
+													parsedMessage.getBody());
+								}
 							}
 						}
 					}

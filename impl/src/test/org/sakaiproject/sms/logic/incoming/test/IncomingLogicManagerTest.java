@@ -83,7 +83,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	public void testDuplicateNotReplace() {
-		ParsedMessage msg = manager.process("create test", TEST_MOBILE);
+		ParsedMessage msg = manager.process("create test body", TEST_MOBILE);
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertEquals("CREATE", msg.getCommand());
 		try {
@@ -94,7 +94,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		}
 
 		assertTrue(manager.isValidCommand("CREATE"));
-		assertEquals("CREATE", manager.process("create " + TEST_SITE,
+		assertEquals("CREATE", manager.process("create " + TEST_SITE + " body",
 				TEST_MOBILE).getBody_reply());
 	}
 
@@ -178,6 +178,14 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("CREATE"));
 		assertFalse(manager.isValidCommand("UPDATE"));
 		assertFalse(manager.isValidCommand("DELETE"));
+	}
+
+	public void testHelpMessage() {
+		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
+		assertEquals(createCmd.getHelpMessage(), msg.getBody_reply());
+
+		msg = manager.process("UPDATE " + TEST_SITE, TEST_MOBILE);
+		assertEquals(updateCmd.getHelpMessage(), msg.getBody_reply());
 	}
 
 }
