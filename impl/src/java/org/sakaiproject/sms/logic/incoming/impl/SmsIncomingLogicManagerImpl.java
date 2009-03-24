@@ -123,13 +123,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						}
 					}
 				} else {
-					reply = generateInvalidCommand();
+					reply = generateUnknownCommandMessage();
 				}
 			}
 
 		} catch (ParseException e) {
 			parsedMessage = new ParsedMessage();
-			reply = generateInvalidCommand();
+			reply = generateUnknownCommandMessage();
 			// TODO: Awaiting feedback from UCT about which site to bill for
 			// invalid commands and help command
 			parsedMessage.setSite(defaultBillingSite);
@@ -375,8 +375,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return "Invalid mobile number (" + mobileNr + ") used";
 	}
 
-	private String generateInvalidCommand() {
-		return "Invalid command supplied. Please sms help for valid commands.";
+	private String generateUnknownCommandMessage() {
+		return "Unknown command. Please sms help for valid commands.";
 	}
 
 	private String generateHelpMessage() {

@@ -403,7 +403,8 @@ public class SmsCoreImpl implements SmsCore {
 		if (parsedMessage != null) {
 			if (parsedMessage.getBody_reply() != null) {
 				smsMessageReplyBody = parsedMessage.getBody_reply();
-				LOG.info("Command " + parsedMessage.getCommand()
+				LOG.info((parsedMessage.getCommand() != null ? "Command "
+						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
 			}
 		} else {
