@@ -95,27 +95,25 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 							SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
 						reply = generateAssistMessage(validCommandMatch
 								.getPossibleMatches());
-					} else {
-						sakaiSite = getValidSite(parsedMessage.getSite());
-						if (sakaiSite == null) {
-							reply = generateInvalidSiteMessage(parsedMessage
-									.getSite());
+					} else { // Command is valid
+						if (parsedMessage.getSite() == null
+								|| parsedMessage.getBody() == null) {
+							reply = allCommands.getCommand(
+									validCommandMatch.getPattern())
+									.getHelpMessage();
 						} else {
-							parsedMessage.setSite(sakaiSite);
-							List<String> userIds = externalLogic
-									.getUserIdsFromMobileNumber(mobileNr);
-							if (userIds.size() == 0) {
-								reply = generateInvalidMobileNrMessage(mobileNr);
+							sakaiSite = getValidSite(parsedMessage.getSite());
+							if (sakaiSite == null) {
+								reply = generateInvalidSiteMessage(parsedMessage
+										.getSite());
 							} else {
-								incomingUserID = userIds.get(0);
-
-								if (parsedMessage.getBody() == null
-										|| "".equals(parsedMessage.getBody()
-												.trim())) {
-									reply = allCommands.getCommand(
-											validCommandMatch.getPattern())
-											.getHelpMessage();
+								parsedMessage.setSite(sakaiSite);
+								List<String> userIds = externalLogic
+										.getUserIdsFromMobileNumber(mobileNr);
+								if (userIds.size() == 0) {
+									reply = generateInvalidMobileNrMessage(mobileNr);
 								} else {
+									incomingUserID = userIds.get(0);
 									reply = allCommands.getCommand(
 											validCommandMatch.getPattern())
 											.execute(sakaiSite, incomingUserID,

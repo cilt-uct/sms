@@ -184,7 +184,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
 		assertEquals(createCmd.getHelpMessage(), msg.getBody_reply());
 
-		msg = manager.process("UPDATE " + TEST_SITE, TEST_MOBILE);
+		msg = manager.process("UPDATE", TEST_MOBILE);
 		assertEquals(updateCmd.getHelpMessage(), msg.getBody_reply());
 	}
 

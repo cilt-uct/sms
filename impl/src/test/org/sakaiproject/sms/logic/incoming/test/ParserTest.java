@@ -71,33 +71,6 @@ public class ParserTest extends TestCase {
 		}
 	}
 
-	public void testInvalidInvalid1() {
-		try {
-			ParsedMessage parsed = parser.parseMessage("cmd");
-			fail("should throw exception");
-		} catch (ParseException e) {
-			assertNotNull(e);
-		}
-	}
-
-	public void testInvalidInvalid2() {
-		try {
-			ParsedMessage parsed = parser.parseMessage("site");
-			fail("should throw exception");
-		} catch (ParseException e) {
-			assertNotNull(e);
-		}
-	}
-
-	public void testInvalidInvalid3() {
-		try {
-			ParsedMessage parsed = parser.parseMessage("h");
-			fail("should throw exception");
-		} catch (ParseException e) {
-			assertNotNull(e);
-		}
-	}
-
 	public void testHelpCommand() throws ParseException {
 		ParsedMessage parsed = parser.parseMessage("help");
 		assertEquals("help", parsed.getCommand());

@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 public class SmsMessageParserImpl implements SmsMessageParser {
 
@@ -34,16 +33,11 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
+		if ("".equals(msgText.trim())) {
+			throw new ParseException("empty message supplied");
+		}
 
 		String[] params = StringUtils.split(msgText, DELIMITERS, 3);
-
-		// Must at least contain command + site (except for HELP command)
-		if (params.length < 2
-				&& !(params.length == 1 && params[0]
-						.equalsIgnoreCase(SmsConstants.HELP))) {
-			throw new ParseException("Invalid number of tokens: "
-					+ params.length);
-		}
 
 		if (params.length == 1) {
 			return new ParsedMessage(params[0]);
