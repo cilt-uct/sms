@@ -65,7 +65,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -81,7 +81,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms message test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -204,6 +204,60 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		}
 	}
 
+	public void testGetMessageWithNullDeliveryDate() {
+
+		SmsTask insertTask = new SmsTask();
+		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSmsAccountId(1l);
+		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
+		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
+		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		insertTask.setAttemptCount(2);
+		insertTask.setMessageBody("messageCrit");
+		insertTask.setSenderUserName("messageCrit");
+		insertTask.setSakaiToolName("sakaiToolName");
+		insertTask.setMaxTimeToLive(1);
+		insertTask.setDelReportTimeoutDuration(1);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(insertTask.getDateToSend());
+		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
+		insertTask.setDateToExpire(cal.getTime());
+
+		SmsMessage insertMessage = new SmsMessage();
+		insertMessage.setMobileNumber("0721998919");
+		insertMessage.setSmscMessageId("criterai");
+		insertMessage.setSakaiUserId("criterai");
+		insertMessage.setDateDelivered(null);
+		insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
+
+		insertMessage.setSmsTask(insertTask);
+		insertTask.getSmsMessages().add(insertMessage);
+
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+
+		SearchFilterBean bean = new SearchFilterBean();
+		bean.setStatus(insertMessage.getStatusCode());
+		bean.setDateFrom(null);
+		bean.setDateTo(null);
+		bean.setToolName(insertTask.getSakaiToolName());
+		bean.setSender(insertTask.getSenderUserName());
+		bean.setNumber(insertMessage.getMobileNumber());
+		bean.setCurrentPage(1);
+
+		try {
+			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
+					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
+			List<SmsMessage> messages = con.getPageResults();
+			assertTrue("Message not returned", messages.size() == 1);
+			assertNull(messages.get(0).getDateDelivered());
+		} catch (SmsSearchException se) {
+			fail(se.getMessage());
+		} finally {
+			hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
+		}
+
+	}
+
 	/**
 	 * Tests the getMessagesForCriteria method
 	 */
@@ -263,8 +317,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			// Test last page. We know there are 124 records to this should
 			// return a list of 4
 
-			int pages = recordsToInsert
-					/ SmsConstants.DEFAULT_PAGE_SIZE;
+			int pages = recordsToInsert / SmsConstants.DEFAULT_PAGE_SIZE;
 			// set to last page
 			if (recordsToInsert % SmsConstants.DEFAULT_PAGE_SIZE == 0) {
 				bean.setCurrentPage(pages);
@@ -307,10 +360,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	 * Test get sms message by smsc message id.
 	 */
 	public void testGetSmsMessageBySmscMessageId() {
-		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
+		SmsMessage smsMessage = hibernateLogicLocator
+				.getSmsMessageLogic()
 				.getSmsMessageBySmscMessageId(
-						insertMessage2.getSmscMessageId(),
-						SmsConstants.SMSC_ID);
+						insertMessage2.getSmscMessageId(), SmsConstants.SMSC_ID);
 		assertTrue(smsMessage.equals(insertMessage2));
 		assertEquals(smsMessage.getSmscMessageId(), insertMessage2
 				.getSmscMessageId());
