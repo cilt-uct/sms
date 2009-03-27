@@ -210,7 +210,6 @@ public class SearchCriteriaRenderer {
 	private void createMessageDropDown(UIForm searchForm) {
 		UIOutput.make(searchForm, "label-dropdown", labelDropDown);
 
-
 		UISelect combo = UISelect.make(searchForm, "task-status");
 		combo.selection = new UIInput();
 		combo.selection.valuebinding = new ELReference(
@@ -220,11 +219,12 @@ public class SearchCriteriaRenderer {
 				SmsConst_DeliveryStatus.STATUS_SENT,
 				SmsConst_DeliveryStatus.STATUS_PENDING,
 				SmsConst_DeliveryStatus.STATUS_FAIL,
-				SmsConst_DeliveryStatus.STATUS_DELIVERED });
+				SmsConst_DeliveryStatus.STATUS_DELIVERED,
+				SmsConst_DeliveryStatus.STATUS_TIMEOUT });
 		combo.optionlist = comboValues;
 		UIBoundList comboNames = new UIBoundList();
 		comboNames.setValue(new String[] { "All", "Sent", "Pending", "Failed",
-				"Delivered" });
+				"Delivered", "Timed out" });
 		combo.optionnames = comboNames;
 	}
 
