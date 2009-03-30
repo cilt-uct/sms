@@ -52,4 +52,28 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 
 	}
 
+	public String[] parseBody(String text, int nrOfParameters)
+			throws ParseException {
+		if (text == null && nrOfParameters != 0) {
+			throw new ParseException("No body specified");
+		}
+		if (text == null && nrOfParameters == 0) {
+			return new String[0];
+		}
+
+		if (nrOfParameters == 0 && !"".equals(text.trim())) {
+			throw new ParseException("No parameters expected");
+		}
+
+		String[] bodyParams = StringUtils.split(text.trim(), DELIMITERS,
+				nrOfParameters);
+		if (bodyParams.length < nrOfParameters) {
+			throw new ParseException(nrOfParameters
+					+ " parameters expected but " + bodyParams.length
+					+ " received");
+		}
+
+		return bodyParams;
+
+	}
 }

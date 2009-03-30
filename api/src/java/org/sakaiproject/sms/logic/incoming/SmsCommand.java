@@ -44,7 +44,7 @@ public interface SmsCommand {
 	 * @param body
 	 * @return
 	 */
-	String execute(String siteId, String userId, String body);
+	String execute(String siteId, String userId, String... body);
 
 	/**
 	 * Help message to use when no parameters are given
@@ -52,4 +52,11 @@ public interface SmsCommand {
 	 * @return
 	 */
 	String getHelpMessage();
+
+	/**
+	 * Return the number of paramaters expected in the body
+	 * 
+	 * @return
+	 */
+	int getBodyParameterCount();
 }

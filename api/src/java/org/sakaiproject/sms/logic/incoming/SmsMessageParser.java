@@ -40,4 +40,13 @@ public interface SmsMessageParser {
 	 */
 	public ParsedMessage parseMessage(String msgText) throws ParseException;
 
+	/**
+	 * Parses body of text by number of paramters
+	 * 
+	 * @param text
+	 * @param nrOfParameters
+	 * @return
+	 */
+	public String[] parseBody(String text, int nrOfParameters)
+			throws ParseException;
 }

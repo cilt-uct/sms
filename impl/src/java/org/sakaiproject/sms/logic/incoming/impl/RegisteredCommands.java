@@ -1,7 +1,9 @@
 package org.sakaiproject.sms.logic.incoming.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,11 +58,18 @@ public class RegisteredCommands {
 
 	private void removeAliasByCommandKey(String commandKey) {
 		Set<String> aliases = aliasMap.keySet();
+		List<String> toRemove = new ArrayList<String>();
+
 		for (String alias : aliases) {
 			String aliasCommand = aliasMap.get(alias);
 			if (aliasCommand.equalsIgnoreCase(commandKey)) {
-				aliasMap.remove(alias);
+				toRemove.add(alias);
 			}
 		}
+
+		for (String alias : toRemove) {
+			aliasMap.remove(alias);
+		}
+
 	}
 }

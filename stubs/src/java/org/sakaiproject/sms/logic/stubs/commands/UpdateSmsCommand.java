@@ -8,7 +8,7 @@ public class UpdateSmsCommand implements SmsCommand {
 
 	private static Log log = LogFactory.getLog(UpdateSmsCommand.class);
 
-	public String execute(String siteId, String userId, String body) {
+	public String execute(String siteId, String userId, String... body) {
 		log.debug(getCommandKey() + " command called with parameters: ("
 				+ siteId + ", " + userId + ", " + body + ")");
 		return getCommandKey();
@@ -24,5 +24,9 @@ public class UpdateSmsCommand implements SmsCommand {
 
 	public String getHelpMessage() {
 		return getCommandKey() + " HELP";
+	}
+
+	public int getBodyParameterCount() {
+		return 1;
 	}
 }

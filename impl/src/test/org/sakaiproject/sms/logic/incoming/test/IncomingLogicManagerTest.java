@@ -33,6 +33,7 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
 import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
+import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
@@ -47,6 +48,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	private CreateSmsCommand createCmd;
 	private UpdateSmsCommand updateCmd;
 	private DeleteSmsCommand deleteCmd;
+	private MultipleBodySmsCommand multipleCmd;
 
 	private static String TEST_MOBILE = "1234";
 	private static String TEST_SITE = "SakaiSiteID";
@@ -61,10 +63,12 @@ public class IncomingLogicManagerTest extends TestCase {
 		createCmd = new CreateSmsCommand();
 		updateCmd = new UpdateSmsCommand();
 		deleteCmd = new DeleteSmsCommand();
+		multipleCmd = new MultipleBodySmsCommand();
 
 		manager.register("TEST", createCmd);
 		manager.register("TEST", updateCmd);
 		manager.register("TEST", deleteCmd);
+		manager.register("TEST", multipleCmd);
 
 	}
 
@@ -138,9 +142,9 @@ public class IncomingLogicManagerTest extends TestCase {
 					.getClosestMatch(command, validCommands);
 			boolean result = smsPatternSearchResult.getPossibleMatches().size() == Integer
 					.parseInt(commandSplit[1]);
-			System.out.println("Looking for " + command + " #"
-					+ commandSplit[1] + " " + result + " (found "
-					+ smsPatternSearchResult.getPossibleMatches().size() + ")");
+			// System.out.println("Looking for " + command + " #"
+			// + commandSplit[1] + " " + result + " (found "
+			// + smsPatternSearchResult.getPossibleMatches().size() + ")");
 			assertTrue(result);
 		}
 	}
@@ -148,7 +152,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	public void testHelpCommand() {
 		assertTrue(manager.isValidCommand("help"));
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
-		assertEquals("Valid commands: CREATE, UPDATE, DELETE", msg
+		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
 				.getBody_reply());
 	}
 
@@ -188,4 +192,17 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals(updateCmd.getHelpMessage(), msg.getBody_reply());
 	}
 
+	public void testMultipleBody() {
+		ParsedMessage msg = manager.process("MULTIPLE " + TEST_SITE
+				+ " PARAM1 PARAM2", TEST_MOBILE);
+		assertEquals("MULTIPLE", msg.getBody_reply());
+		assertEquals("PARAM1", multipleCmd.param1);
+		assertEquals("PARAM2", multipleCmd.param2);
+	}
+
+	public void testMultipleBodyInvalid() {
+		ParsedMessage msg = manager.process(
+				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
+		assertEquals("MULTIPLE HELP", msg.getBody_reply());
+	}
 }
