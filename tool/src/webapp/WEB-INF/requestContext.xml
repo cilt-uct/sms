@@ -125,6 +125,14 @@
   </bean>
 
   <bean id="permissionDeniedProducer" class="org.sakaiproject.sms.tool.producers.PermissionDeniedProducer" />
+  
+  <!-- Front-end Producers -->
+  <bean class="org.sakaiproject.sms.tool.producers.MainProducer">
+  	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
+	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
+	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	<property name="localeGetter" ref="requestLocaleProxy" />
+  </bean>
 
   <!--  Action Beans -->
   <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">

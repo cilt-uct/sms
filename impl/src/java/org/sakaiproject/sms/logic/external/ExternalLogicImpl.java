@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -46,6 +47,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
+import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
@@ -129,6 +131,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public void setAliasService(AliasService aliasService) {
 		this.aliasService = aliasService;
+	}
+	
+	private TimeService timeService;
+	public void setTimeService(TimeService ts) {
+		timeService = ts;
 	}
 
 	public void init() {
@@ -533,5 +540,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
 		return mobileNumberHelper.getUserIdsFromMobileNumber(mobileNumber);
+	}
+
+	public TimeZone getLocalTimeZone() {
+		return timeService.getLocalTimeZone();
 	}
 }

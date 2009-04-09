@@ -31,6 +31,7 @@
 			</bean>
 		</property>
 		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>
+		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 	</bean>
 
 </beans>

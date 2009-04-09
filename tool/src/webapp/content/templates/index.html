@@ -28,9 +28,12 @@
 </head>
 <body>
 <div class="portletBody">
-  <div class="navIntraTool"> <a rsf:id="add-item-link" href="AddItem.html">Permissions</a> </div>
+  	<div class="navIntraTool">
+		<a rsf:id="link-admin" href="config.html">Configurate</a>
+		<a rsf:id="add-item-link" href="AddItem.html">Permissions</a>
+	</div>
   <a href="create-sms.html">
-  <h3 class="insColor addItem insBak insBorder">Create SMS</h3>
+  <h3 rsf:id="msg=ui.create.sms.header" class="insColor addItem insBak insBorder">Create SMS</h3>
   </a>
   <div rsf:id="message-for:*" class="alertMessage">
     <ul style="margin:0px;">
@@ -38,32 +41,35 @@
     </ul>
   </div>
   <div id="reportConsole" class="timeCells">
-    <div>Credits remaining: <span class="breadCrumb" id="creditsAvail">100 credits</span></div>
-    <div> Estimated value: <span class="breadCrumb" id="valueAvail">R100.00</span></div>
-    <div>To purchase SMS credits, please email <a href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a></div>
+    <div rsf:id="console-credits">Credits remaining: 100 credits</div>
+    <div rsf:id="console-value"> Estimated value: R100.00</div>
+    <div>
+    	<span rsf:id="console-purchase">To purchase SMS credits, please email </span>
+		<a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
+	</div>
   </div>
   <br />
-  <table class="listHier lines" id="reportTable">
+  <table rsf:id="tasks-table" class="listHier lines" id="reportTable">
     <thead>
       <tr>
-        <th width="38%"><a href="#">SMS</a></th>
-        <th width="5%"><a href="#">Status</a></th>
-        <th width="13%"><a href="#">Author</a></th>
-        <th width="23%"><a href="#">Date/Time</a></th>
-        <th width="12%"><a href="#">Recipients</a></th>
-        <th width="9%"><a href="#">Credits</a></th>
+        <th width="38%"><a rsf:id="tasks-message" href="#">SMS</a></th>
+        <th width="5%"><a rsf:id="tasks-status" href="#">Status</a></th>
+        <th width="13%"><a rsf:id="tasks-sender" href="#">Author</a></th>
+        <th width="23%"><a rsf:id="tasks-time" href="#">Date/Time</a></th>
+        <th width="12%"><a rsf:id="tasks-recipients" href="#">Recipients</a></th>
+        <th width="9%"><a rsf:id="tasks-cost" href="#">Credits</a></th>
       </tr>
     </thead>
     <tbody>
-      <tr rsf:id="item-row:">
-        <td rel="title"><a href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
-        <td rel="status"><img src="../images/calx.gif" width="17" height="13" alt="" /></td>
-        <td rel="author"> oe Bloggs </td>
-        <td rel="date"> Sep 15, 2006 1:26 AM </td>
-        <td rel="recipients">9 of 15</td>
-        <td rel="credits">34</td>
+      <tr rsf:id="task-row:">
+        <td rsf:id="task-message" rel="title"><a href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
+        <td rel="status"><img rsf:id="task-status" src="../images/calx.gif" width="17" height="13" alt="" /></td>
+        <td rsf:id="task-sender" rel="author"> oe Bloggs </td>
+        <td rsf:id="task-time" rel="date"> Sep 15, 2006 1:26 AM </td>
+        <td rsf:id="task-recipients" rel="recipients">9 of 15</td>
+        <td rsf:id="task-cost" rel="credits">34</td>
       </tr>
-      <tr rsf:id="item-row:">
+      <tr rsf:id="task-row:">
         <td rel="title"><a href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
         <td rel="status"><img src="../images/calx.gif" width="17" height="13" alt="" /></td>
         <td rel="author"> Joe Bloggs </td>
@@ -73,6 +79,7 @@
       </tr>
     </tbody>
   </table>
+  <div rsf:id="tasks-none" class="">You have no messages to moderate</div>
 </div>
 </body>
 </html>

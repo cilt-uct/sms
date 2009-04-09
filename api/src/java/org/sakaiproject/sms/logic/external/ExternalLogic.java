@@ -20,6 +20,7 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -209,4 +210,5 @@ public interface ExternalLogic {
 	 */
 	List<String> getUserIdsFromMobileNumber(String mobileNumber);
 
+	public TimeZone getLocalTimeZone();
 }

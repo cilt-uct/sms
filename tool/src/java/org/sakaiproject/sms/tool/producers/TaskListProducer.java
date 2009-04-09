@@ -28,11 +28,9 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.flow.jsfnav.NavigationCase;
-import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
-public class TaskListProducer extends AbstractSearchListProducer implements
-		DefaultView {
+public class TaskListProducer extends AbstractSearchListProducer{
 
 	public static final String VIEW_ID = "TaskList";
 
