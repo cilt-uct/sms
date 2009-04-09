@@ -76,6 +76,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		
 		//Render console summary
 		if ( smsAccount.getCredits() == null){
+			UIMessage.make(tofill, "send", "ui.create.sms.header");
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
 			UIMessage.make(tofill, "console-credits", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
 		}else{
