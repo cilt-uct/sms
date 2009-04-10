@@ -21,6 +21,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -115,7 +116,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				Map<String, String> statusLibrary = getStatusLibrary();
 				String status = statusLibrary.get(sms.getStatusCode());
 				UILink statusIcon = UILink.make(row, "task-status", statusIconDirectory + status + statusIconExtension);
-				statusIcon.decorate(new UIFreeAttributeDecorator("alt", status)); //TODO generate user friendly status messages and show them in the alt attribute
+				statusIcon.decorate(new UIAlternativeTextDecorator(status)); //TODO generate user friendly status messages and show them in the alt attribute
 				UIOutput.make(row, "task-sender", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", df.format(sms.getDateToSend()));
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual()}); //TODO Verify that these sms variables give what's expected
