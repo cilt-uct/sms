@@ -1,7 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import javax.mail.Message;
-
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -17,6 +15,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -62,11 +61,19 @@ public class ChooseRecipientsProducer implements ViewComponentProducer {
 			
 			String chooseRecipientsOTP = "#{sendSmsBean.";
 			
-			//Fillin tab areas on condition
+			//Filling tab areas on condition
 			fillTabs( tofill, new String[] {"roles", "groups", "names", "numbers"});
 			
 			UIForm form = UIForm.make(tofill, "form");
 			
+			UIInput.make(form, "names-box", chooseRecipientsOTP + "selectedNames}");
+			
+			//copy me checkbox
+			UIBoundBoolean copy = UIBoundBoolean.make(form, "copy-me", chooseRecipientsOTP + "notifyMe}");
+			UIMessage.make(form, "copy-me-label", "ui.recipients.choose.copy")
+				.decorate(new UILabelTargetDecorator(copy));
+			UICommand.make(form, "continue", UIMessage.make("ui.recipients.choose.continue"), chooseRecipientsOTP + "saveRecipients}")
+				.decorate(new UIIDStrategyDecorator("recipientsCmd"));
 			
 		}else{
 			UIMessage.make(tofill, "error", "ui.error.cannot.create");

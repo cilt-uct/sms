@@ -26,54 +26,40 @@
     <div id="people">
       <div id="peopleList">
         <ul>
-          <li rsf:id="roles" id="peopleTabsRoles">
-          	<a rsf:id="roles-title ui.recipients.choose.roles.title" href="#peopleListRoles">Select by role</a>
-            <span rsf:id="roles-selected ui.recipients.choose.roles.selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> 
-          </li>
-          <li rsf:id="groups" id="peopleTabsGroups">
-          <a rsf:id="groups-title ui.recipients.choose.groups.title" href="#peopleListGroups">Select by group</a>
-          <span rsf:id="groups-selected ui.recipients.choose.groups.selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span>
-          </li>
-          <li rsf:id="names" id="peopleTabsNames">
-          <a rsf:id="names-title ui.recipients.choose.names.title" href="#peopleListNames">Individuals</a>
-          <span rsf:id="names-selected ui.recipients.choose.names.selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span>
-          </li>
-          <li rsf:id="numbers" id="peopleTabsNumbers">
-          <a rsf:id="numbers-title ui.recipients.choose.numbers.title" href="#peopleListNumbers">Numbers</a>
-          <span rsf:id="numbers-selected ui.recipients.choose.numbers.selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span>
-          </li>
+          <li rsf:id="roles" id="peopleTabsRoles"> <a rsf:id="roles-title" href="#peopleListRoles">Select by role</a> <span rsf:id="roles-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="groups" id="peopleTabsGroups"> <a rsf:id="groups-title" href="#peopleListGroups">Select by group</a> <span rsf:id="groups-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="names" id="peopleTabsNames"> <a rsf:id="names-title" href="#peopleListNames">Individuals</a> <span rsf:id="names-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="numbers" id="peopleTabsNumbers"> <a rsf:id="numbers-title" href="#peopleListNumbers">Numbers</a> <span rsf:id="numbers-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
         </ul>
         <div id="peopleListRoles"> </div>
         <div id="peopleListGroups"> </div>
         <div id="peopleListNames">
           <p>Mauris eleifend est et turpis. Duis id erat. </p>
           <ul id="peopleListNamesSuggest" class="first acfb-holder">
-            <input type="text" class="city acfb-input"/>
+            <input rsf:id="names-box" type="text" class="city acfb-input"/>
           </ul>
         </div>
-        <div id="peopleListNumbers">
-          <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </p>
+        <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </span>
           <table width="100%" border="0" cellspacing="5" cellpadding="5">
             <tr>
-              <td><div id="numbersInvalid"> <span class="msg" style="display:none"> Correct these numbers:</span>
-                  <textarea id="peopleListNumbersBox" name="peopleListNumbersBox" cols="22" rows="5"></textarea>
+              <td><div id="numbersInvalid"> <span rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg" style="display:none"> Correct these numbers:</span>
+                  <textarea rsf:id="numbers-box" id="peopleListNumbersBox" name="peopleListNumbersBox" cols="22" rows="5"></textarea>
                 </div></td>
-              <td><div id="numbersValid" style="display:none">These numbers are fine:</div>
+              <td><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
                 <ul id="peopleListNumbersBox2">
                 </ul></td>
             </tr>
           </table>
           <h3 id="peopleListNumbersLog" style="display:none"></h3>
-          <div><a href="#" id="checkNumbers">Check numbers</a></div>
+          <div><a rsf:id="msg=ui.recipients.choose.numbers.check" href="#" id="checkNumbers">Check numbers</a></div>
         </div>
       </div>
       <div class="clear">
-        <label>
-        <input type="checkbox" name="copyMe" id="copyMe" />
-        Send me a copy</label>
+        <input rsf:id="copy-me" type="checkbox" name="copyMe" id="copyMe" />
+        <label rsf:id="copy-me-label">Send me a copy</label>
       </div>
       <div class="act">
-        <input type="button" class="active"  id="recipientsCmd" value="Continue" />
+        <input rsf:id="continue" type="button" class="active"  id="recipientsCmd" value="Continue" />
         <input type="button" value="cancel" class="close"/>
       </div>
     </div>

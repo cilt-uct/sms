@@ -138,6 +138,12 @@
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />/>
   </bean>
+  
+  <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
+  	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
+	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />/>
+ 	<property name="messageLocator" ref="uk.org.ponder.messageutil.MessageLocator" />/>
+  </bean>
 
   <!--  Action Beans -->
   <bean id="AbortTaskActionBean" class="org.sakaiproject.sms.tool.beans.AbortTaskActionBean">
