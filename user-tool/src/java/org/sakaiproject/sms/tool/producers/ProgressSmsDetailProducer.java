@@ -1,8 +1,10 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.List;
+
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.tool.params.IdParams;
+import org.sakaiproject.sms.tool.params.SmsStatusParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -10,6 +12,7 @@ import org.sakaiproject.sms.tool.util.StatusUtils;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -20,9 +23,11 @@ import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
-public class FailedSmsDetailProducer implements ViewComponentProducer {
+public class ProgressSmsDetailProducer implements ViewComponentProducer {
 	
-	public static final String VIEW_ID = "failed-sms-detail";
+	public static final String VIEW_ID = "inprogress-sms-detail";
+	public static final String const_Inprogress = "inprogress";
+	public static final String const_Scheduled = "scheduled";
 	
 	public String getViewID() {
 		return VIEW_ID;
@@ -39,8 +44,8 @@ public class FailedSmsDetailProducer implements ViewComponentProducer {
 	}
 	
 	private DateUtil dateUtil;
-	public void setDateUtil(DateUtil dateUtil) {
-		this.dateUtil = dateUtil;
+	public void setDateFormat(DateUtil dateFormat) {
+		this.dateUtil = dateFormat;
 	}
 	
 	private StatusUtils statusUtils;
@@ -52,11 +57,12 @@ public class FailedSmsDetailProducer implements ViewComponentProducer {
 			ComponentChecker checker) {
 		
 		if ( viewparams != null ){
-			IdParams idParams = (IdParams) viewparams;
-			if ( idParams != null && idParams.id != null ){
+			SmsStatusParams statusParams = (SmsStatusParams) viewparams;
+			if ( statusParams != null && statusParams.id != null && statusParams.status != null ){
 				
-				Long smsId = Long.parseLong(idParams.id);
+				Long smsId = Long.parseLong(statusParams.id);
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
+				String statusToShow = statusParams.status;
 		
 				//Top links
 				navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
@@ -74,17 +80,38 @@ public class FailedSmsDetailProducer implements ViewComponentProducer {
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
-				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
-				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeActual() });
+				//Insert original user selections
+				List<String> smsEntities = smsTask.getDeliveryEntityList();
+				for ( String entity : smsEntities){
+					UIBranchContainer list = UIBranchContainer.make(tofill, "selections-row:");
+					UIOutput.make(list, "selections", entity); //TODO fix this & make it work
+				}	
 				
+				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost");
+				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.cost", new Object[] { smsTask.getCreditEstimate() });
+				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { smsTask.getCostEstimate() });
+				
+				UIForm form = UIForm.make(tofill, "form");
 				/**
-				 * These 3 action buttons are handled by JS. RSF is only needed for i18N
+				 * The action buttons are handled by JS. RSF is only needed for i18N
 				 */
-				UICommand.make(tofill, "edit", UIMessage.make("sms.general.editandsend"))
-					.decorate(new UIIDStrategyDecorator("smsEdit"));
-				UICommand.make(tofill, "delete", UIMessage.make("sms.general.delete"))
-					.decorate(new UIIDStrategyDecorator("smsDelete"));
-				UICommand.make(tofill, "back-button", UIMessage.make("sms.general.back"));
+				if ( const_Inprogress.equals(statusToShow)){
+					UIMessage.make(tofill, "sms-sent", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeActual() });
+					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
+						.decorate(new UIIDStrategyDecorator("smsStop"));
+				}else if( const_Scheduled.equals(statusToShow)){
+					UIMessage.make(tofill, "sms-sent", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
+						.decorate(new UIIDStrategyDecorator("smsEdit"));
+					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
+						.decorate(new UIIDStrategyDecorator("smsDelete"));
+				}else{
+					throw new IllegalArgumentException("Cannot act on this status type: " + statusToShow);
+				}
+				UIMessage.make(tofill, "sms-sent", "ui.inprogress.sms.finish", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+				
+				UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 				
 			}else{
 				//TODO: show error message since sms.id() is not specified

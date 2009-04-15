@@ -61,15 +61,15 @@ public class StatusUtils {
 	private Map<String, String> getStatusProducer(){
 		Map<String, String> lib = new HashMap<String, String>();
 		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, "status.busy");
+		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, "inprogress");
 		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, FailedSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, FailedSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "status.incomplete");
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "status.late");
-		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "status.pending");
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "status.retry");
+		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "inprogress");
+		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "inprogress");
+		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "scheduled");
+		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "inprogress");
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, FailedSmsDetailProducer.VIEW_ID);	

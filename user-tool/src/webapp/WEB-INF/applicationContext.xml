@@ -35,7 +35,7 @@
 			value="" />
 	</bean>
 	
-	<bean id="sakaiDateFormat" class="org.sakaiproject.sms.tool.util.DateUtil">
+	<bean id="dateUtil" class="org.sakaiproject.sms.tool.util.DateUtil">
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="localeGetter" ref="requestLocaleProxy" />
 	</bean>

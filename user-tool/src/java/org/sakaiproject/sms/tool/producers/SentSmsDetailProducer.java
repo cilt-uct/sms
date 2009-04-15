@@ -8,7 +8,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
-import org.sakaiproject.sms.tool.util.SakaiDateFormat;
+import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -45,9 +45,9 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 		this.navBarRenderer = navBarRenderer;
 	}
 	
-	private SakaiDateFormat sakaiDateFormat;
-	public void setDateFormat(SakaiDateFormat dateFormat) {
-		this.sakaiDateFormat = dateFormat;
+	private DateUtil dateUtil;
+	public void setDateUtil(DateUtil dateUtil) {
+		this.dateUtil = dateUtil;
 	}
 	
 	private StatusUtils statusUtils;
@@ -71,7 +71,7 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 				UIMessage.make(tofill, "message-title", "ui.sent.sms.title");
 				UIOutput.make(tofill, "message", smsTask.getMessageBody());
 				UIMessage.make(tofill, "sms-id", "ui.sent.sms.id", new Object[] { smsId });
-				UIMessage.make(tofill, "sms-created", "ui.sent.sms.created", new Object[] { sakaiDateFormat.formatDate(smsTask.getDateCreated()) });
+				UIMessage.make(tofill, "sms-created", "ui.sent.sms.created", new Object[] { dateUtil.formatDate(smsTask.getDateCreated()) });
 				
 				UIBranchContainer status = UIBranchContainer.make(tofill, "status:");
 				String statusCode = smsTask.getStatusCode();
@@ -79,7 +79,7 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
-				UIMessage.make(tofill, "sms-sent", "ui.sent.sms.completed", new Object[] { sakaiDateFormat.formatDate(smsTask.getDateProcessed()) });
+				UIMessage.make(tofill, "sms-sent", "ui.sent.sms.completed", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
 				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeActual() });
 				
 				UILink.make(tofill, "recipient-header", UIMessage.make("ui.sent.sms.header.recipients"), "#");

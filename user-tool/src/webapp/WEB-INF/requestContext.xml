@@ -44,9 +44,9 @@
 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>
 
-  <bean class="org.sakaiproject.sms.tool.producers.InProgressSmsDetailProducer">
+  <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
-	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
   </bean>

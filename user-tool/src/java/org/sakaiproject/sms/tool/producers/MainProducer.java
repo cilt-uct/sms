@@ -1,17 +1,14 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.tool.params.IdParams;
-import org.sakaiproject.sms.tool.util.SakaiDateFormat;
+import org.sakaiproject.sms.tool.params.SmsStatusParams;
+import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -46,9 +43,9 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	
-	private SakaiDateFormat sakaiDateFormat;
-	public void setDateFormat(SakaiDateFormat dateFormat) {
-		this.sakaiDateFormat = dateFormat;
+	private DateUtil dateUtil;
+	public void setDateUtil(DateUtil dateUtil) {
+		this.dateUtil = dateUtil;
 	}
 
 	private SmsTaskLogic smsTaskLogic;
@@ -97,11 +94,24 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			for (SmsTask sms : smsTasks){
 				UIBranchContainer row = UIBranchContainer.make(tofill, "task-row:");
 				String status = sms.getStatusCode();
-				UIInternalLink.make(row, "task-message", sms.getMessageBody(), new IdParams(statusUtils.getStatusProducer(status), sms.getId() + ""));
+				String detailView = statusUtils.getStatusProducer(status);
+				SmsStatusParams statusParams = new SmsStatusParams();
+				
+				//Fix additional string in params. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
+				if ("inprogress".equals(detailView)){
+					statusParams.setStatus("inprogress");
+				}else if ("scheduled".equals(detailView)){
+					statusParams.setStatus("scheduled");
+				}else{
+					statusParams.setStatus("normal");
+				}
+				
+				statusParams.setId(sms.getId() + "");
+				UIInternalLink.make(row, "task-message", sms.getMessageBody(), statusParams);
 				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(status));
 				statusIcon.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(status))); 
 				UIOutput.make(row, "task-sender", sms.getSenderUserName());
-				UIOutput.make(row, "task-time", sakaiDateFormat.formatDate(sms.getDateToSend()));
+				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual()}); //TODO Verify that these sms variables give what's expected
 				UIOutput.make(row, "task-cost", sms.getCreditCost() + "");				
 			}
