@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -215,5 +216,10 @@ public class ExternalLogicStub implements ExternalLogic {
 		List<String> list = new ArrayList<String>();
 		list.add(SMS_DEV_DEFAULT_SAKAI_USER_ID);
 		return list;
+	}
+
+	public TimeZone getLocalTimeZone() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
