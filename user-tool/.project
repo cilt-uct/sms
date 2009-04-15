@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>sms-tool</name>
+  <name>sms-user-tool</name>
   <comment>Sms webapp (tool)</comment>
   <projects>
     <project>sms-api</project>
