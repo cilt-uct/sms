@@ -1,0 +1,34 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+	<title rsf:id="page-title">Credit Account</title>
+
+	<script rsf:id="scr=portal-matter" type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<link href="../css/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+    <link href="../css/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body style="margin-left : 5px;">
+	<div rsf:id="navIntraTool:" class="navIntraTool"/>	
+	<h3 rsf:id="sms-credit-account-heading" >Credit Account</h3>
+	<div rsf:id="message-for:*">
+		<span>Message for user here</span>
+	</div>
+
+	<form name="credit-account-form" rsf:id="credit-account-form">
+		<p class="shorttext required">
+			<label rsf:id="account-id-label">Account id</label>
+			<input rsf:id="account-id-input" type="text" maxlength="99" />
+		</p>
+		<p class="shorttext required">
+			<label rsf:id="account-amount-label">Amount</label>
+			<input rsf:id="account-amount-input" type="text" maxlength="10" />
+		</p>
+		<div class="act">
+			<input rsf:id="save-btn" class="active" value="Save" accesskey="s" type="submit" />
+			<input value="Cancel" accesskey="x" type="button" onclick="history.go(-1)" />
+		</div>		
+	</form>
+</body>
+</html>

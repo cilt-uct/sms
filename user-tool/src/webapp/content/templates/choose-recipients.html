@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+<title rsf:id="page-title">Sms Items</title>
+<script type="text/javascript" src="https://vula.uct.ac.za/direct/membership/site/5cdab93e-bc00-481f-8c6a-61fc44649f75.json"></script>
+<script type="text/javascript">
+       // $(document).ready(function() {
+			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
+			$('#peopleList').tabs();
+			$("#peopleListNamesSuggest").autoCompletefb();
+				
+       // });
+    </script>
+</head>
+<body>
+<div class="portletBody">
+  <h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder">Choose Recipients</h3>
+  <div class="alertMessage" style="display:none">
+    <ul style="margin:0px;">
+      <li>Message for user here</li>
+    </ul>
+  </div>
+  <form rsf:id="form">
+    <div id="people">
+      <div id="peopleList">
+        <ul>
+          <li rsf:id="roles" id="peopleTabsRoles"> <a rsf:id="roles-title" href="#peopleListRoles">Select by role</a> <span rsf:id="roles-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="groups" id="peopleTabsGroups"> <a rsf:id="groups-title" href="#peopleListGroups">Select by group</a> <span rsf:id="groups-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="names" id="peopleTabsNames"> <a rsf:id="names-title" href="#peopleListNames">Individuals</a> <span rsf:id="names-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="numbers" id="peopleTabsNumbers"> <a rsf:id="numbers-title" href="#peopleListNumbers">Numbers</a> <span rsf:id="numbers-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+        </ul>
+        <div id="peopleListRoles"> </div>
+        <div id="peopleListGroups"> </div>
+        <div id="peopleListNames">
+          <p>Mauris eleifend est et turpis. Duis id erat. </p>
+          <ul id="peopleListNamesSuggest" class="first acfb-holder">
+            <input rsf:id="names-box" type="text" class="city acfb-input"/>
+          </ul>
+        </div>
+        <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </span>
+          <table width="100%" border="0" cellspacing="5" cellpadding="5">
+            <tr>
+              <td><div id="numbersInvalid"> <span rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg" style="display:none"> Correct these numbers:</span>
+                  <textarea rsf:id="numbers-box" id="peopleListNumbersBox" name="peopleListNumbersBox" cols="22" rows="5"></textarea>
+                </div></td>
+              <td><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
+                <ul id="peopleListNumbersBox2">
+                </ul></td>
+            </tr>
+          </table>
+          <h3 id="peopleListNumbersLog" style="display:none"></h3>
+          <div><a rsf:id="msg=ui.recipients.choose.numbers.check" href="#" id="checkNumbers">Check numbers</a></div>
+        </div>
+      </div>
+      <div class="clear">
+        <input rsf:id="copy-me" type="checkbox" name="copyMe" id="copyMe" />
+        <label rsf:id="copy-me-label">Send me a copy</label>
+      </div>
+      <div class="act">
+        <input rsf:id="continue" type="button" class="active"  id="recipientsCmd" value="Continue" />
+        <input type="button" value="cancel" class="close"/>
+      </div>
+    </div>
+  </form>
+  <hr width="465" noshade="noshade" class="loginform" />
+</div>
+</body>
+</html>

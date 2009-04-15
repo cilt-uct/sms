@@ -1,0 +1,98 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+	<title rsf:id="page-title">SMS Test</title>
+
+	<script rsf:id="scr=portal-matter" type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<link href="../css/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+    <link href="../css/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+	<script type="text/javascript" language="JavaScript" src="../js/validation.js"></script>
+	<script type="text/javascript">
+
+		// Function to run when message body is changed
+		function processMsgBodyChange(msgBody, charsRemaining, maxChars) {
+
+			// Limit the input area of the message body
+			if (msgBody.value.length >= maxChars) {
+				msgBody.value = msgBody.value.substring(0, maxChars);
+			}
+
+			// Remove invalid characters
+			if (msgBody.value.length != 0) {
+				msgBody.value = removeInvalidChars(msgBody.value);
+			}
+
+			// Changed the chars remaining input field
+			var remaining = maxChars - msgBody.value.length;
+			charsRemaining.value = remaining;
+		}
+
+	  	// Init the onkeydown and onkeyup event
+		function initMsgBodyChange(msgBodyId, charsRemainingId, maxChars) {
+			var msgBody = document.getElementById(msgBodyId);
+			var charsRemaining = document.getElementById(charsRemainingId);
+			msgBody.onkeydown = function() { processMsgBodyChange(msgBody, charsRemaining, maxChars)};
+			msgBody.onkeyup = function()   { processMsgBodyChange(msgBody, charsRemaining, maxChars)};
+		}
+
+
+	</script>
+
+</head>
+
+<body style="margin-left : 5px;">
+	  <div rsf:id="navIntraTool:" class="navIntraTool"/>
+	  <h3 rsf:id="sms-test-heading" >Sms Test Window</h3>
+  	  <div rsf:id="message-for:*">
+		<span>Message for user here</span>
+  	  </div>
+  	  <br/>
+	  <form rsf:id="test-form" method="post">
+	  	<label rsf:id="mobile-nr-label" for="mobile-nr">Mobile number</label>
+	  	<input rsf:id="mobile-nr" type="text" name="mobile-nr" id="mobile-nr" size="20" value="+2783 123 1234" /><br/>
+
+		<br/>
+		<label rsf:id="message-body-label" for="message-body">Message body</label><br/>
+		<textarea rsf:id="message-body" rows="7" cols="80" name="message-body" id="message-body" style="overflow-x: hidden;" wrap="soft" />
+
+	  	<br/>
+	  	<label rsf:id="chars-remaining-label" for="chars-remaining">Chars remaining</label>
+	  	<input rsf:id="chars-remaining" type="text" name="chars-remaining" id="chars-remaining" size="3" value="160"/>
+
+	  	<br/><br/>
+	  	<table>
+	  		<tr>
+	  			<td><label rsf:id="estimated-group-size-label" for="estimated-group-size">Estimated group size:</label></td>
+	  			<td><input rsf:id="estimated-group-size" style="width: 100px" type="text" disabled="disabled"/></td>
+			</tr>
+			<tr>
+				<td><label rsf:id="account-credits-label" for="account-credits">Account credits:</label></td>
+				<td><input rsf:id="account-credits" style="width: 100px" type="text" disabled="disabled"/></td>
+			</tr>
+			<tr>
+				<td><label rsf:id="estimated-cost-label" for="estimated-cost">Estimated cost (Rand):</label></td>
+				<td><input rsf:id="estimated-cost" style="width: 100px" type="text" disabled="disabled"/></td>
+	  		</tr>
+	  	</table>
+
+	  	<br/><br/>
+	  	<input rsf:id="ok-button" type="submit" name="ok-button" id="ok-button" />
+	  	<input rsf:id="cancel-button" type="submit" name="cancel-button" id="cancel-button" />
+
+	  	<br/><br/>
+	  	<label rsf:id="smpp-debug-label" for="message-body">SMPP debug</label><br/>
+		<textarea rsf:id="smpp-debug" rows="4" cols="80" name="smpp-debug" id="smpp-debug" />
+
+	  </form>
+
+
+	  <script rsf:id="init-msg-body-change" type="text/javascript">
+	  	initMsgBodyChange("message-body", "chars-remaining", 160);
+	  </script>
+</body>
+
+
+</html>
+
+

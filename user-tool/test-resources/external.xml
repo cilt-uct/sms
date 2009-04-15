@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!--
+		create an external logic bean which abstracts out the Sakai bits
+	-->
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"
+		class="org.sakaiproject.sms.logic.stubs.ExternalLogicStub" />
+	
+	<bean id="SmsCommandRegister"
+		class="org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper" init-method="init" >
+		<property name="incomingLogicManager" ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
+		<property name="toolKey" value="stub" />
+		<property name="commands">
+			<list>
+				<bean class="org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand"/>
+				<bean class="org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand"/>
+				<bean class="org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand"/>
+			</list>
+		</property>
+	</bean>	
+
+</beans>

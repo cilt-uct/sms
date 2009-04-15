@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
+		version="2.4">
+	<display-name>sakai-sms</display-name>
+	<description>Sakai SMS</description>
+
+
+  <!-- Configure standard Spring application contexts. Be sure to mention
+    rsf config files first, so any overrides may be processed. The first two
+    config files are loaded from inside the rsfutil.jar  -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:conf/rsf-config.xml,
+      classpath:conf/blank-applicationContext.xml,
+      classpath:conf/components-applicationContext.xml,
+
+      <!-- Sakai -->
+<!--      classpath:conf/sakai-applicationContext.xml,-->
+<!--      classpath:conf/sakaiComponents-applicationContext.xml,-->
+<!--	  classpath:conf/sakai-entitybroker-applicationContext.xml,-->
+	  
+	   /WEB-INF/components.xml
+	   /WEB-INF/applicationContext.xml
+     </param-value>
+  </context-param>
+  
+  <!-- Configure "resource scope" Spring application contexts (RSAC).
+     Be sure to mention rsf config files first, so any overrides may be
+    processed -->
+  <context-param>
+    <param-name>requestContextConfigLocation</param-name>
+    <param-value>classpath:conf/rsf-requestscope-config.xml,
+                  classpath:conf/blank-requestContext.xml,
+                  classpath:conf/components-requestContext.xml,
+                  
+                  <!--  Sakai -->
+<!--                  classpath:conf/sakai-requestContext.xml,-->
+<!--                  classpath:conf/sakaiComponents-requestContext.xml,-->
+<!--				  classpath:conf/sakai-entitybroker-requestContext.xml,-->
+				  
+				  /WEB-INF/requestContext.xml
+                 </param-value>
+  </context-param>
+	
+  <!-- The "request scope application context" loading filter. Only use this
+    if your application defines no filters which perform wrapping of the
+    servlet request, otherwise use methods of RSACBeanLocator manually in your 
+    filters. -->
+  <filter>
+  <filter-name>RSACFilter</filter-name>
+    <filter-class>
+      uk.org.ponder.rsac.servlet.RSACFilter
+    </filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>RSACFilter</filter-name>
+    <url-pattern>/faces/*</url-pattern>
+  </filter-mapping>
+
+  <!--
+    The Sakai Request Handler - standard stanza. Do NOT apply the sakai 
+    request filter to anything that falls outside the "mapped path", in this
+    instance, /faces/*. Anything that falls outside this path (interpreted
+    as a resource URL) will be handled directly by the container (Tomcat).
+  -->
+<!--  <filter>-->
+<!--    <filter-name>sakai.request</filter-name>-->
+<!--    <filter-class>org.sakaiproject.util.RequestFilter</filter-class>-->
+<!--  </filter>-->
+<!--  <filter-mapping>-->
+<!--    <filter-name>sakai.request</filter-name>-->
+<!--   	<servlet-name>sakai.sms</servlet-name>-->
+<!--    <dispatcher>REQUEST</dispatcher>-->
+<!--    <dispatcher>FORWARD</dispatcher>-->
+<!--    <dispatcher>INCLUDE</dispatcher>-->
+<!--  </filter-mapping>-->
+
+
+  	<!-- Sakai listeners -->
+<!--	<listener>-->
+<!--		<listener-class>org.sakaiproject.util.ToolListener</listener-class>-->
+<!--	</listener>-->
+<!--	<listener>-->
+<!--		<listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>-->
+<!--	</listener>-->
+	
+	<listener>
+    	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  	</listener>
+  
+  
+  <servlet>
+    <servlet-name>ReasonableServlet</servlet-name>
+    <servlet-class>uk.org.ponder.rsf.servlet.ReasonableServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>ReasonableServlet</servlet-name>
+    <url-pattern>/faces/*</url-pattern>
+  </servlet-mapping>
+  
+  	<!-- tool servlet -->
+<!--	<servlet>-->
+		<!-- servlet name must match tool.id in tools xml file -->
+<!--		<servlet-name>sakai.sms</servlet-name>-->
+<!--		<servlet-class>uk.ac.cam.caret.sakai.rsf.servlet.ReasonableSakaiServlet</servlet-class>-->
+<!--	</servlet>-->
+<!--	<servlet-mapping>-->
+<!--		<servlet-name>sakai.sms</servlet-name>-->
+<!--		<url-pattern>/faces/*</url-pattern>-->
+<!--	</servlet-mapping>  -->
+ 
+</web-app>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+	<script rsf:id="scr=portal-matter" type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<link href="../css/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+    <link href="../css/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
+
+	<title rsf:id="page-title">Sms System Config</title>
+
+</head>
+<body style="padding: 5px; margin: 4px;">
+	<div rsf:id="navIntraTool:" class="navIntraTool"/>
+	<div align="left">
+
+	<form name="config" id="config" action="#" rsf:id="sms-system-config-form">
+    	<h2 rsf:id="page-heading">SMS Config</h2>
+
+   	<div rsf:id="message-for:*">
+		<span>Message for user here</span>
+  	</div>
+
+    <table class="shorttext required">
+      <tr>
+      	<td><label rsf:id="scheduler-interval-label">Scheduler Interval</label></td>
+      	<td><input  style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-scheduler-interval"></input> seconds</td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="gateway-report-timeout">Gateway report timeout:</label></td>
+      	<td><input style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-report-timeout"></input> seconds</td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="max-retry-count">Maximum retry count:</label></td>
+      	<td><input  style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-retry-count"></input></td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="max-task-lifetime">Maximum task lifetime:</label></td>
+      	<td><input  style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-task-max-lifetime"></input> seconds</td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="max-active-threads">Maximum active threads:</label></td>
+      	<td><input  style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-max-active-threads"></input></td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="retry-schedule-interval">Retry schedule interval:</label></td>
+      	<td><input  style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-retry-interval" ></input> seconds</td>
+      </tr>
+      <tr>
+      	<td><label rsf:id="sms-credit-cost">Gateway report timeout:</label></td>
+      	<td><input style="width: 72px" maxlength="10" type="text" rsf:id="sms-config-sms-credit-cost"></input></td>
+      </tr>
+      <tr>
+		<td><label rsf:id="use-site-account">Use site rather than user account:</label></td>
+		<td><select rsf:id="config-use-site-account">
+			<option value="true">Yes</option>
+			<option value="false">No</option>
+		</select></td>
+	  </tr>
+      <tr>
+      <td colspan="1" align="left">
+        <input style="color:#0099CC;" rsf:id="save" type="submit" value="Save"/>
+        <input style="color:#0099CC;" rsf:id="cancel" type="button" value="Cancel" onclick="history.go(-1)"/>
+      </td>
+      </tr>
+    </table>
+    </form>
+</div>
+</body>
+</html>
