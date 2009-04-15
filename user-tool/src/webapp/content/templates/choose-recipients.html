@@ -22,6 +22,10 @@
       <li>Message for user here</li>
     </ul>
   </div>
+<div rsf:id="error" class="">
+                You have no messages to moderate
+            </div>
+<input rsf:id="error-back" type="button" value="cancel" class="close"/>
   <form rsf:id="form">
     <div id="people">
       <div id="peopleList">
@@ -57,9 +61,22 @@
       <div class="clear">
         <input rsf:id="copy-me" type="checkbox" name="copyMe" id="copyMe" />
         <label rsf:id="copy-me-label">Send me a copy</label>
-      </div>
+      </div>      <div class="act">
+      <input rsf:id="calculate" type="button" class="active"  id="recipientsCmd" value="Calculate" /></div>
+      <div id="reportConsole" class="timeCells" style="display:none">
+                    <div rsf:id="console-credits">
+                        Credits remaining: 100 credits
+                    </div>
+                    <div rsf:id="console-value">
+                        Estimated value: R100.00
+                    </div>
+                    <div>
+                        <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
+                        <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
+                    </div>
+                </div>
       <div class="act">
-        <input rsf:id="continue" type="button" class="active"  id="recipientsCmd" value="Continue" />
+        <input rsf:id="continue" type="button" class="active" id="recipientsCmd" value="Continue" disabled="disabled" />
         <input type="button" value="cancel" class="close"/>
       </div>
     </div>

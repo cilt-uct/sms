@@ -77,12 +77,10 @@ public class ChooseRecipientsProducer implements ViewComponentProducer {
 			
 		}else{
 			UIMessage.make(tofill, "error", "ui.error.cannot.create");
-			UIInternalLink.make(tofill, "error-back", UIMessage.make("sms.general.back"), new SimpleViewParameters(MainProducer.VIEW_ID));
+			UICommand.make(tofill, "error-back", UIMessage.make("sms.general.cancel"));
 			UIMessage.make(tofill, "error-help", "ui.console.help");
 			UIOutput.make(tofill, "error-email"); //TODO show email for credit purchases
 		}
-		
-		
 		
 	}
 
