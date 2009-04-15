@@ -6,8 +6,8 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.tool.params.IdParams;
-import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
+import org.sakaiproject.sms.tool.params.SmsStatusParams;
+import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
@@ -40,9 +40,9 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 		this.smsTaskLogic = smsTaskLogic;
 	}
 	
-	private NavBarRenderer navBarRenderer;
-	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-		this.navBarRenderer = navBarRenderer;
+	private UserNavBarRenderer userNavBarRenderer;
+	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
+		this.userNavBarRenderer = userNavBarRenderer;
 	}
 	
 	private DateUtil dateUtil;
@@ -59,14 +59,14 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 			ComponentChecker checker) {
 		
 		if ( viewparams != null ){
-			IdParams idParams = (IdParams) viewparams;
-			if ( idParams != null && idParams.id != null ){
+			SmsStatusParams statusParams = (SmsStatusParams) viewparams;
+			if ( statusParams != null && statusParams.id != null){
 				
-				Long smsId = Long.parseLong(idParams.id);
+				Long smsId = Long.parseLong(statusParams.id);
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
 		
 				//Top links
-				navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 				
 				UIMessage.make(tofill, "message-title", "ui.sent.sms.title");
 				UIOutput.make(tofill, "message", smsTask.getMessageBody());

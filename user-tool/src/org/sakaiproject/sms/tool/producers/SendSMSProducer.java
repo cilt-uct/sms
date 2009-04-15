@@ -3,6 +3,7 @@ package org.sakaiproject.sms.tool.producers;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UICommand;
@@ -36,6 +37,11 @@ public class SendSMSProducer implements ViewComponentProducer {
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	
+	private UserNavBarRenderer userNavBarRenderer;
+	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
+		this.userNavBarRenderer = userNavBarRenderer;
+	}
+	
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		
@@ -45,9 +51,8 @@ public class SendSMSProducer implements ViewComponentProducer {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		
 		//Top links
-		if (externalLogic.isUserAdmin(currentUserId)){
-			UIInternalLink.make(tofill, "link-admin", UIMessage.make("sms.navbar.system-config"), new SimpleViewParameters(TaskListProducer.VIEW_ID));
-		}
+		//Top links
+		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		//Check for credits
 		if ( smsAccount.getCredits() == null){

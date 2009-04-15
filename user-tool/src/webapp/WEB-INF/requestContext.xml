@@ -7,7 +7,7 @@
   <!-- Binding  Beans -->
  
   <!--  Renderers -->
-  <bean id="navBarRenderer" class="org.sakaiproject.sms.tool.renderers.NavBarRenderer" />
+  <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer" />
 
   <!--  Producers -->
   <bean class="org.sakaiproject.sms.tool.producers.MainProducer">
@@ -16,11 +16,13 @@
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
   	<property name="statusUtils" ref="statusUtils" />
+	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SendSMSProducer">
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
@@ -34,21 +36,21 @@
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
   	<property name="statusUtils" ref="statusUtils" />
-	<property name="navBarRenderer" ref="navBarRenderer" />
+	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
   	<property name="statusUtils" ref="statusUtils" />
-	<property name="navBarRenderer" ref="navBarRenderer" />
+	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
-	<property name="navBarRenderer" ref="navBarRenderer" />
+	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
   <!--  Action Beans -->

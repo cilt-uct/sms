@@ -6,6 +6,7 @@ import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsStatusParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
+import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
@@ -38,9 +39,9 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer {
 		this.smsTaskLogic = smsTaskLogic;
 	}
 
-	private NavBarRenderer navBarRenderer;
-	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
-		this.navBarRenderer = navBarRenderer;
+	private UserNavBarRenderer userNavBarRenderer;
+	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
+		this.userNavBarRenderer = userNavBarRenderer;
 	}
 	
 	private DateUtil dateUtil;
@@ -65,7 +66,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer {
 				String statusToShow = statusParams.status;
 		
 				//Top links
-				navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 				
 				UIMessage.make(tofill, "message-title", "ui.sent.sms.title");
 				UIOutput.make(tofill, "message", smsTask.getMessageBody())
