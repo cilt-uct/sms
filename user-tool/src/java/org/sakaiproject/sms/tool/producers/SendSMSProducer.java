@@ -33,7 +33,7 @@ public class SendSMSProducer implements ViewComponentProducer {
 	}
 
 	private SmsAccountLogic smsAccountLogic;
-	public void SmsAccountLogic(SmsAccountLogic smsAccountLogic) {
+	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	

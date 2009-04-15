@@ -40,7 +40,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 	}
 
 	private SmsAccountLogic smsAccountLogic;
-	public void SmsAccountLogic(SmsAccountLogic smsAccountLogic) {
+	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	
@@ -55,8 +55,8 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 	}
 	
 	private StatusUtils statusUtils;
-	public void setStatusIcons(StatusUtils statusIcons) {
-		this.statusUtils = statusIcons;
+	public void setStatusUtils(StatusUtils statusUtils) {
+		this.statusUtils = statusUtils;
 	}
 	
 	private UserNavBarRenderer userNavBarRenderer;
@@ -74,9 +74,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
 		
 		//Top links
-		if (externalLogic.isUserAdmin(currentUserId)){
-			UIInternalLink.make(tofill, "link-admin", UIMessage.make("sms.navbar.system-config"), new SimpleViewParameters(TaskListProducer.VIEW_ID));
-		}
+		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		//Render console summary
 		if ( smsAccount.getCredits() == null){

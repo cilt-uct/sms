@@ -14,7 +14,7 @@
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
-	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
@@ -34,14 +34,14 @@
   <bean class="org.sakaiproject.sms.tool.producers.SentSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
-	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
-	<property name="sakaiDateFormat" ref="sakaiDateFormat" />
+	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>

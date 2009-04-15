@@ -5,7 +5,6 @@ import java.util.List;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsStatusParams;
-import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -50,8 +49,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer {
 	}
 	
 	private StatusUtils statusUtils;
-	public void setStatusIcons(StatusUtils statusIcons) {
-		this.statusUtils = statusIcons;
+	public void setStatusUtils(StatusUtils statusUtils) {
+		this.statusUtils = statusUtils;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,

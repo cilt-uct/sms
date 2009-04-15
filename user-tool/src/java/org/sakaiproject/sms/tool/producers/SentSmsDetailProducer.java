@@ -51,8 +51,8 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 	}
 	
 	private StatusUtils statusUtils;
-	public void setStatusIcons(StatusUtils statusIcons) {
-		this.statusUtils = statusIcons;
+	public void setStatusUtils(StatusUtils statusUtils) {
+		this.statusUtils = statusUtils;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
