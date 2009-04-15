@@ -2,12 +2,15 @@ package org.sakaiproject.sms.tool.producers;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.tool.params.SmsStatusParams;
+import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
+import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -29,6 +32,8 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 public class MainProducer implements ViewComponentProducer, DefaultView {
 	
 	public static final String VIEW_ID = "index";
+	
+	public static Log log = LogFactory.getLog(MainProducer.class);
 		
 	public String getViewID() {
 		return VIEW_ID;
@@ -73,19 +78,23 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
 		
+		log.info("Site id:"+currentSiteId);
+		log.info("getAccountName:"+smsAccount.getAccountName());
+		log.info("getCredits:"+smsAccount.getCredits());
+		
 		//Top links
 		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		//Render console summary
-		if ( smsAccount.getCredits() == null){
+		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			UIOutput.make(tofill, "send");
-			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SimpleViewParameters(SendSMSProducer.VIEW_ID));
+			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID));
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(tofill, "console-credits", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
+			UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
 		}else{
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.none");
 		}
-		UIMessage.make(tofill, "console-help", "ui.console.help");
+		UIMessage.make(tofill, "console-purchase", "ui.console.help");
 		UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 		
 		if ( smsTasks.size() > 0 ){
@@ -99,7 +108,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIBranchContainer row = UIBranchContainer.make(tofill, "task-row:");
 				String status = sms.getStatusCode();
 				String detailView = statusUtils.getStatusProducer(status);
-				SmsStatusParams statusParams = new SmsStatusParams();
+				SmsParams statusParams = new SmsParams();
 				
 				//Fix additional string in params. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
 				if ("inprogress".equals(detailView)){

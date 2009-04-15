@@ -2,7 +2,7 @@ package org.sakaiproject.sms.tool.producers;
 
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.tool.params.SmsStatusParams;
+import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -52,7 +52,7 @@ public class FailedSmsDetailProducer implements ViewComponentProducer {
 			ComponentChecker checker) {
 		
 		if ( viewparams != null ){
-			SmsStatusParams statusParams = (SmsStatusParams) viewparams;
+			SmsParams statusParams = (SmsParams) viewparams;
 			if ( statusParams != null && statusParams.id != null){
 				
 				Long smsId = Long.parseLong(statusParams.id);

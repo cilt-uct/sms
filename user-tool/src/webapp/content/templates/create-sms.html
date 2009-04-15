@@ -12,7 +12,7 @@
         </script>
         <script type="text/javascript" src="../js/jquery-ui-tabs.date.selectable.effects.1.5.3.min.js">
         </script>
-        <script type="text/javascript" src="../js/uct.sakai.sms.js">
+        <script type="text/javascript" src="../js/sms.js">
         </script>
         <script type="text/javascript" src="../js/facebox.js">
         </script>
@@ -30,7 +30,7 @@
         <script type="text/javascript">
             $(document).ready(function(){
                 $(document).SMS().bind('reveal.facebox', function(){
-                    $.fn.SMS.get.people(); //Populate the people lists ie:roles, groups and individuals
+                   $.fn.SMS.get.people(); //Populate the people lists ie:roles, groups and individuals
                 });
                 //$.fn.SMS.settings.test = 'hey';
                 $("#smsAddRecipients").facebox();
@@ -75,8 +75,7 @@
                 <textarea rsf:id="form-box" name="smsMessage" cols="50" rows="7" class="" id="smsMessage">
                 </textarea>
                 <div>
-                    <a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients"><h3 class="addItem">Add recipients</h3></a>
-                    <br/>
+                    <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
                 </div>
                 <div id="reportConsole" class="timeCells">
                     <div rsf:id="console-credits">
@@ -100,7 +99,7 @@
                     <div id="smsDatesExpiry">
                         <h4 class="exipry">Set expiry date/time</h4>
                         <div name="date">
-                            <input rsf:id="form=notify" type="text" id="smsDatesExpiryDate"/>
+                            <input type="text" id="smsDatesExpiryDate"/>
                         </div>
                     </div>
                 </div>
@@ -111,7 +110,8 @@
                     </label>
                 </div>
                 <div class="act">
-                    <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /><input type="button" value="cancel" />
+                    <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> 
+					<input rsf:id="back" type="button" value="Back"/>
                 </div>
             </form>
         </div>

@@ -24,14 +24,23 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
  * General view parameter for passing an ID
  * 
  */
-public class SmsStatusParams extends SimpleViewParameters {
+public class SmsParams extends SimpleViewParameters {
 	public String id;
 	public String status;
 
-	public SmsStatusParams() {
+	public SmsParams() {
 	}
 
-	public SmsStatusParams(String viewid, String id, String status) {
+	public SmsParams(String viewid) {
+		this.viewID = viewid;
+	}
+
+	public SmsParams(String viewid, String id) {
+		this.viewID = viewid;
+		this.id = id;
+	}
+
+	public SmsParams(String viewid, String id, String status) {
 		this.viewID = viewid;
 		this.id = id;
 		this.status = status;

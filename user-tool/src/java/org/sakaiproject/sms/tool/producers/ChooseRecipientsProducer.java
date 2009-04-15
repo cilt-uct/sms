@@ -1,5 +1,7 @@
 package org.sakaiproject.sms.tool.producers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -23,7 +25,10 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 
 public class ChooseRecipientsProducer implements ViewComponentProducer {
 	
-	public static final String VIEW_ID = "create-sms";
+	public static Log log = LogFactory.getLog(ChooseRecipientsProducer.class);
+	
+	public static final String VIEW_ID = "choose-recipients";
+	
 	
 	public String getViewID() {
 		return VIEW_ID;
@@ -46,7 +51,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer {
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
-		
+		log.info("VIEW"+VIEW_ID);
 		//view variables
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -54,8 +59,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer {
 		
 		
 		
-		//Check for credits
-		if ( smsAccount.getCredits() == null){
+		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			
 			String chooseRecipientsOTP = "#{sendSmsBean.";
 			
@@ -83,8 +87,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer {
 	}
 
 	private void fillTabs(UIContainer tofill, String[] tabs) {
+		log.info("tabs:"+tabs.length);
 		for ( int i=0; i < tabs.length; i++){
 			String tab = tabs[i];
+			log.info("tab:"+tab);
+			
 			UIBranchContainer branch = UIBranchContainer.make(tofill, tab + ":");
 			UILink.make(branch, tab + "-title", messageLocator.getMessage("ui.recipients.choose.prefix") + messageLocator.getMessage("ui.recipients.choose." + tab + ".title"), null); //TODO check that this preserves the HTML defined href
 			UIOutput.make(branch, tab + "-selected", 0 + "")

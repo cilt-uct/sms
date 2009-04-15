@@ -28,7 +28,7 @@
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
- 	<property name="messageLocator" ref="uk.org.ponder.messageutil.MessageLocator" />
+ 	<property name="messageLocator" ref="messageLocator" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SentSmsDetailProducer">

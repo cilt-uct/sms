@@ -3,6 +3,7 @@ package org.sakaiproject.sms.tool.producers;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 
 import uk.org.ponder.rsf.components.UIBoundBoolean;
@@ -13,6 +14,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
@@ -54,8 +56,7 @@ public class SendSMSProducer implements ViewComponentProducer {
 		//Top links
 		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
-		//Check for credits
-		if ( smsAccount.getCredits() == null){
+		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			
 			String sendOTP = "#{sendSmsBean.";
 			
@@ -64,11 +65,12 @@ public class SendSMSProducer implements ViewComponentProducer {
 			//textarea
 			UIInput.make(form, "form-box", sendOTP + "messageBody}");
 			
-			UIInternalLink.make(form, "form-add-recipients", UIMessage.make(""), new SimpleViewParameters(SendSMSProducer.VIEW_ID)); //TODO link to choose-recip. view
+			UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"), new SmsParams(ChooseRecipientsProducer.VIEW_ID))
+				.decorate(new UIIDStrategyDecorator("smsAddRecipients"));
 			
 			//mini report console
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(tofill, "console-credits", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
+			UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
 			UIMessage.make(tofill, "console-help", "ui.console.help");
 			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 			
@@ -76,11 +78,13 @@ public class SendSMSProducer implements ViewComponentProducer {
 			
 			//notify me checkbox
 			UIBoundBoolean notify = UIBoundBoolean.make(form, "form-notify", sendOTP + "notifyMe}");
-			UIMessage.make(form, "form-notify-target", "ui.send.notify")
+			UIMessage.make(form, "form-notify-label", "ui.send.notify")
 				.decorate(new UILabelTargetDecorator(notify));
 			
-			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), sendOTP + "saveTask}");
-			
+			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), sendOTP + "saveTask}")
+				.decorate(new UIIDStrategyDecorator("smsSend"));
+			UICommand.make(form, "back", UIMessage.make("sms.general.back"));
+		
 		}else{
 			
 			UIMessage.make(tofill, "error", "ui.error.cannot.create");
