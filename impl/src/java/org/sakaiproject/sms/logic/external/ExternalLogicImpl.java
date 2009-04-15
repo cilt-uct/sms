@@ -545,4 +545,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public TimeZone getLocalTimeZone() {
 		return timeService.getLocalTimeZone();
 	}
+
+	public String getSakaiUserSortName(String sakaiUserId) {
+		String result = null;
+		if (isValidUser(sakaiUserId)) { // user may be null or not a Sakai user
+			try {
+				result = userDirectoryService.getUser(sakaiUserId).getSortName();
+			} catch (UserNotDefinedException e) {
+				log
+						.warn("Cannot getSakaiUserSortName for user id "
+								+ sakaiUserId);
+			}
+		}
+		return result;
+	}
 }

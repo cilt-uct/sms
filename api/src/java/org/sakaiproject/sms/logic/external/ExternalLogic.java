@@ -211,4 +211,6 @@ public interface ExternalLogic {
 	List<String> getUserIdsFromMobileNumber(String mobileNumber);
 
 	public TimeZone getLocalTimeZone();
+
+	public String getSakaiUserSortName(String sakaiUserId);
 }
