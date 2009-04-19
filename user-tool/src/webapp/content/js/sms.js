@@ -17,9 +17,9 @@
         return this.each(function() {
             // log('eref');
             //$.fn.SMS.get.report_table();
-            setTimeout(function() {
-               log($.fn.SMS.get.peopleByName())
-            }, 2000);
+            //setTimeout(function() {
+               //log($.fn.SMS.get.peopleByName());
+            //}, 2000);
             //while(var_getEveryoneInSite == null)
             //log(var_getEveryoneInSite);
             //return false;
@@ -115,13 +115,16 @@
             renderPeople();
         },
 
-        peopleByName: function() {
-            return getPeople('Names');
+        peopleByName: function(type) {
+            if(type == null){
+                var_getEveryoneInSite_participants = getPeople('Names');
+            }
+            return var_getEveryoneInSite_participants;
+        },
+        getSelectedRecipientsListNames : function(){
+            getSelectedRecipientsList.length('names');
         }
-
-
-
-    };
+};
     $.fn.SMS.set = {
         setSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names.push(array);
@@ -147,8 +150,8 @@
         URL_EB_GET_ALL_SMSES: '/sms-user-tool/content/js/json.js',
         URL_EB_GET_THIS_SMS: '/direct/',
         URL_EB_GET_ACC_REPORT: '/direct/',
-        URL_EB_GET_PEOPLE: '/sms-user-tool/content/js/json-people.js',
-        URL_EB_GET_PEOPLE_PARTICIPANTS: '/sms-user-tool/content/js/json-participants.js',
+        URL_EB_GET_PEOPLE: '',
+        URL_EB_GET_PEOPLE_PARTICIPANTS: '',
         /**
          * Set URLs
          **/
@@ -159,7 +162,7 @@
         images: {
             base: '/library/image/silk/',
             busy: 'spinner.gif',
-            deleteAutocompleteImage: '../js/jquery.autocomplete/delete.gif',
+            deleteAutocompleteImage: '/sms-user-tool/content/images/delete.gif',
             status: {
                 completed: ['tick.png', 'Completed'],
                 failed: ['cancel.png','Failed'],
@@ -202,7 +205,7 @@
      */
 
     var var_getEveryoneInSite;     // to hold full people list
-    var var_getEveryoneInSite_participants;     // to hold full participants list
+    var var_getEveryoneInSite_participants = new Array();     // to hold full participants list
       var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
         roles:
                 new Array()
@@ -220,13 +223,13 @@
      */
 
     function setEveryoneInSite() {
-        $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE, function(data) {
-                    var_getEveryoneInSite = data;
-                });
+       // $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE, function(data) {
+            //        var_getEveryoneInSite = data;
+            //    });
 				//TODO: re-enable this see line 303
         //$.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE_PARTICIPANTS, function(data) {
                    // var_getEveryoneInSite_participants = data;
-               // });
+                //});
     }
     ;
 
@@ -300,10 +303,12 @@
                     });
                     break;
                 case "Names":
-				//TODO: re-enable this filter for names
-                    //$.each(var_getEveryoneInSite_participants.membership_collection, function(i, item) {
-                     //   query.push(new Array(item.userDisplayName, item.id));
-                    //});
+				    $.getJSON( '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json' , function(data) {
+                        $.each(data.membership_collection, function(i, item) {
+                            query.push(new Array(item.userDisplayName, item.userId));
+                        });
+                    });
+
                     break;
             }
 
@@ -350,7 +355,7 @@
         });
     }
     /**
-     *
+     *  //TODO: Remove this function for "Roles", "Groups" ONLY leave for Names
      * @param string Takes one of these strings: "Roles", "Groups", "Names"
      */
     function renderPeopleAsCheckboxes(item) {
@@ -369,9 +374,9 @@
 
     function renderPeople() {
 
-        $('#peopleListRoles').append(renderPeopleAsCheckboxes("Roles"));
+       /* $('#peopleListRoles').append(renderPeopleAsCheckboxes("Roles"));
         $('#peopleListGroups').append(renderPeopleAsCheckboxes("Groups"));
-
+*/
 
         //Bind checkbox event listeners
 

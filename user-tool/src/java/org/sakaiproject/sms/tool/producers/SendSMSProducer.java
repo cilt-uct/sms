@@ -2,7 +2,9 @@ package org.sakaiproject.sms.tool.producers;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 
@@ -20,8 +22,9 @@ import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class SendSMSProducer implements ViewComponentProducer {
+public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporter {
 	
 	public static final String VIEW_ID = "create-sms";
 	
@@ -39,6 +42,11 @@ public class SendSMSProducer implements ViewComponentProducer {
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	
+	private SmsTaskLogic smsTaskLogic;
+	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
+		this.smsTaskLogic = smsTaskLogic;
+	}
+	
 	private UserNavBarRenderer userNavBarRenderer;
 	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
 		this.userNavBarRenderer = userNavBarRenderer;
@@ -53,19 +61,23 @@ public class SendSMSProducer implements ViewComponentProducer {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		
 		//Top links
-		//Top links
 		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			
-			String sendOTP = "#{sendSmsBean.";
+			SmsParams smsParams = (SmsParams) viewparams;
+			SmsTask smsTask = new SmsTask();
+			if ( smsParams.id != null && ! "".equals(smsParams.id) ){
+				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
+			}
 			
-			UIForm form = UIForm.make(tofill, "form");
+			UIForm form = UIForm.make(tofill, "form", new SmsParams("/direct/sms-task/XXX/edit"));
 			
 			//textarea
-			UIInput.make(form, "form-box", sendOTP + "messageBody}");
+			UIInput.make(form, "form-box", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
 			
-			UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"), new SmsParams(ChooseRecipientsProducer.VIEW_ID))
+			UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"),
+					new SmsParams(ChooseRecipientsProducer.VIEW_ID, smsTask.getId() == null ? null : smsTask.getId() + ""))
 				.decorate(new UIIDStrategyDecorator("smsAddRecipients"));
 			
 			//mini report console
@@ -77,11 +89,16 @@ public class SendSMSProducer implements ViewComponentProducer {
 			//TODO Add dateTime pickers
 			
 			//notify me checkbox
-			UIBoundBoolean notify = UIBoundBoolean.make(form, "form-notify", sendOTP + "notifyMe}");
+			UIBoundBoolean notify = UIBoundBoolean.make(form, "form-notify", Boolean.FALSE);
 			UIMessage.make(form, "form-notify-label", "ui.send.notify")
 				.decorate(new UILabelTargetDecorator(notify));
 			
-			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), sendOTP + "saveTask}")
+			if ( smsTask.getId() != null ){
+				UIInput.make(tofill, "id", null, smsTask.getId() + "");
+			}
+			UIInput.make(tofill, "sakaiSiteId", null, currentSiteId)
+				.fossilize = false;
+			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), null)
 				.decorate(new UIIDStrategyDecorator("smsSend"));
 			UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 		
@@ -95,6 +112,11 @@ public class SendSMSProducer implements ViewComponentProducer {
 		
 		
 		
+	}
+
+	public ViewParameters getViewParameters() {
+		// TODO Auto-generated method stub
+		return new SmsParams();
 	}
 	
 }

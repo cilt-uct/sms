@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer;
+import org.sakaiproject.sms.tool.producers.SendSMSProducer;
 import org.sakaiproject.sms.tool.producers.SentSmsDetailProducer;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -36,6 +37,7 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cancel");	
+		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	
 		return lib;	
 	}
 	
@@ -55,6 +57,7 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "status.sent");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "status.completed");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "status.timeout");	
+		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "status.draft");	
 		return lib;	
 	}
 	//populate path to specific view producer depending on status code
@@ -72,7 +75,9 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "inprogress");
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, SentSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, FailedSmsDetailProducer.VIEW_ID);	
+		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, FailedSmsDetailProducer.VIEW_ID);
+		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, SendSMSProducer.VIEW_ID);	
+		
 		return lib;	
 	}
 	/**

@@ -19,6 +19,7 @@
 package org.sakaiproject.sms.logic.external;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -112,10 +113,9 @@ public interface ExternalLogic {
 			boolean getMobileNumbers);
 
 	/**
-	 *return the friendly display name of a specific user
-	 *
-	 * @param userId
-	 * @return
+	 * Retrieve the friendly Sakai Display Name. Defaults to Sakai username if no display name is set.
+	 * 
+	 * @return Display name or username
 	 */
 	public String getSakaiUserDisplayName(String userId);
 
@@ -213,4 +213,8 @@ public interface ExternalLogic {
 	public TimeZone getLocalTimeZone();
 
 	public String getSakaiUserSortName(String sakaiUserId);
+	
+	public Map<String, String> getSakaiRolesForSite(String siteId);
+	
+	public  Map<String, String> getSakaiGroupsForSite(String siteId);
 }

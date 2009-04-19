@@ -101,7 +101,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			
 			
 			UIOutput.make(tofill, "tasks-table");
-			fillTableHeaders( tofill, new String[] {"message", "status", "sender", "time", "recipients", "cost"});
+			fillTableHeaders( tofill, new String[] {"message", "status", "author", "time", "recipients", "cost"});
 
 			//show table rows
 			for (SmsTask sms : smsTasks){
@@ -112,18 +112,22 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				
 				//Fix additional string in params. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
 				if ("inprogress".equals(detailView)){
-					statusParams.setStatus("inprogress");
+					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
+					statusParams.status = "inprogress";
 				}else if ("scheduled".equals(detailView)){
-					statusParams.setStatus("scheduled");
+					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
+					statusParams.status = "scheduled";
 				}else{
-					statusParams.setStatus("normal");
+					statusParams.viewID = detailView;
+					statusParams.status = "normal";
 				}
 				
 				statusParams.setId(sms.getId() + "");
 				UIInternalLink.make(row, "task-message", sms.getMessageBody(), statusParams);
 				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(status));
 				statusIcon.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(status))); 
-				UIOutput.make(row, "task-sender", sms.getSenderUserName());
+				statusIcon.decorate(new UITooltipDecorator(statusUtils.getStatusFullName(status))); 
+				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual()}); //TODO Verify that these sms variables give what's expected
 				UIOutput.make(row, "task-cost", sms.getCreditCost() + "");				
@@ -137,8 +141,8 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		// Render table headers
 		for (int i=0; i < headers.length; i++){
 			String header = headers[i];
-			UILink.make(tofill, "tasks-" + header, UIMessage.make("ui.tasks.headers." + header), "#")
-				.decorate(new UITooltipDecorator("ui.tasks.headers." + header + ".tooltip"));
+			UILink.make(tofill, "tasks-" + header, UIMessage.make("ui.tasks.headers." + header), null)
+				.decorate(new UITooltipDecorator(UIMessage.make("ui.tasks.headers." + header + ".tooltip")));
 		}
 	}
 }

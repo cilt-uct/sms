@@ -1,117 +1,43 @@
-(
+var var_getEveryoneInSite_participants = {"entityPrefix": "membership", "membership_collection": [
 {
-    "title": "d'bug",
-    "link": "http://blog.reindel.com",
-    "description": "d'bug shares tips, tricks, and advice with Web development professionals",
-    "published": "Thu, 02 Oct 2007 12:00:00 +0000",
-    "language": "en",
-    "people": [{
-        "roles": [{
-            "rid": "12",
-            "rname": "students"
-        },
-            {
-                "rid": "113",
-                "rname": "tutors"
-            },
-            {
-                "rid": "31",
-                "rname": "Lecturers"
-            },
-            {
-                "rid": "42",
-                "rname": "Site Owners"
-            }
-        ],
-
-        "groups": [{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },{
-            "gid": "4242",
-            "gname": "Tuts 1"
-        },
-            {
-                "gid": "1234",
-                "gname": "Tts 2"
-            }]
-        ,
-/*
-        "participants": [{
-            "pid": "779",
-            "pname": "Tuts 1"
-        },
-            {
-                "pid": "909",
-                "pname": "Tts 2"
-            }]*/
-
-     participants: [
-         { name: "Peter Pan", to: "073 466 6575" },
-         { name: "Molly", to: "34543 53    553 534 " },
-         { name: "Forneria Marconi", to: "3453534 5 3434 534 " },
-         { name: "Master ", to: "565447464 46" },
-         { name: "Dr. de Log", to: "+33 356333 3 33" },
-         { name: "Don Corleone", to: "6765 765 75765 5" },
-         { name: "Mc Chick", to: "6575676 77 7567" },
-         { name: "Donnie Darko", to: "5675 7565 577" },
-         { name: "Peter Pan", to: "073 466 6575" },
-         { name: "Molly", to: "34543 53    553 534 " },
-         { name: "Forneria Marconi", to: "3453534 5 3434 534 " },
-         { name: "Master ", to: "565447464 46" },
-         { name: "Dr. de Log", to: "+33 356333 3 33" },
-         { name: "Don Corleone", to: "6765 765 75765 5" },
-         { name: "Mc Chick", to: "6575676 77 7567" },
-         { name: "Donnie Darko", to: "5675 7565 577" },
-         { name: "Peter Pan", to: "073 466 6575" },
-         { name: "Molly", to: "34543 53    553 534 " },
-         { name: "Forneria Marconi", to: "3453534 5 3434 534 " },
-         { name: "Master ", to: "565447464 46" },
-         { name: "Dr. de Log", to: "+33 356333 3 33" },
-         { name: "Don Corleone", to: "6765 765 75765 5" },
-         { name: "Mc Chick", to: "6575676 77 7567" },
-         { name: "Donnie Darko", to: "5675 7565 577" },
-	{ name: "Quake The Net", to: "6767 77777777775 6" },
-	{ name: "Dr. Write", to: "5675 757 575567" }
-        ]
-
-    }]
+  "id": "f3375d4c-5b2a-4072-9c7f-69f0cf0347bb::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "lastLoginTime": 1239976037300,
+  "locationReference": "\/site\/38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "memberRole": "Lecturer",
+  "userDisplayId": "1cygfiuygiu@gvsjdjpk.wfwf",
+  "userDisplayName": "1cygfiuygiu@gvsjdjpk.wfwf",
+  "userEid": "1cygfiuygiu@gvsjdjpk.wfwf",
+  "userEmail": "1cygfiuygiu@gvsjdjpk.wfwf",
+  "userId": "f3375d4c-5b2a-4072-9c7f-69f0cf0347bb",
+  "userSortName": "1cygfiuygiu@gvsjdjpk.wfwf",
+  "active": true,
+  "provided": false,
+  "entityReference": "\/membership\/f3375d4c-5b2a-4072-9c7f-69f0cf0347bb::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityURL": "http:\/\/137.158.97.158:8080\/direct\/membership\/f3375d4c-5b2a-4072-9c7f-69f0cf0347bb::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityId": "f3375d4c-5b2a-4072-9c7f-69f0cf0347bb::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityTitle": "1cygfiuygiu@gvsjdjpk.wfwf"
+},{
+  "id": "b42beb87-71fe-4514-94eb-d2edce94fe22::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "lastLoginTime": 1239976037242,
+  "locationReference": "\/site\/38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "memberRole": "Support Staff",
+  "userDisplayId": "1jhbdsjrgjiu@qwe.er",
+  "userDisplayName": "1jhbdsjrgjiu@qwe.er",
+  "userEid": "1jhbdsjrgjiu@qwe.er",
+  "userEmail": "1jhbdsjrgjiu@qwe.er",
+  "userId": "b42beb87-71fe-4514-94eb-d2edce94fe22",
+  "userSortName": "1jhbdsjrgjiu@qwe.er",
+  "active": true,
+  "provided": false,
+  "entityReference": "\/membership\/b42beb87-71fe-4514-94eb-d2edce94fe22::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityURL": "http:\/\/137.158.97.158:8080\/direct\/membership\/b42beb87-71fe-4514-94eb-d2edce94fe22::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityId": "b42beb87-71fe-4514-94eb-d2edce94fe22::site:38429753-7acb-41cb-a0cb-9b8cabe69414",
+  "entityTitle": "1jhbdsjrgjiu@qwe.er"
 }
+]}
 
-        )
+//var tempParticipants = $.getJSON( '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json' , function(data) {var_getEveryoneInSite_participants = data});
+ //var_getEveryoneInSite_participants = tempParticipants;
+ $.each(var_getEveryoneInSite_participants.membership_collection, function(i, item) {
+ console.log(item.userDisplayName +" --- "+ item.userId);
+ });

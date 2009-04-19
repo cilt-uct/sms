@@ -22,6 +22,7 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful {
 
@@ -96,6 +97,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		SmsTask task = (SmsTask) entity;
 		if (task.getDateCreated() == null)
 			task.setDateCreated(new Date());
+		//Mark new task as a draft and future date it due to workflow when user creates a Task
+		task.setStatusCode(SmsConst_DeliveryStatus.STATUS_DRAFT);
+		if (task.getDateToSend() == null){
+			Date future = new Date();
+			future.setYear(2200);
+			task.setDateToSend(future);
+		}
+		//set message body to '-------';
+		if( "".equals(task.getMessageBody()) ){
+			task.setMessageBody("------");
+		}
+		
+		log.info("Send date is: "+task.getDateToSend());
 
 		 String userReference = developerHelperService.getCurrentUserReference();
 		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());

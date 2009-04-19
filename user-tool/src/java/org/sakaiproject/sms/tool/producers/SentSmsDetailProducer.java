@@ -2,6 +2,8 @@ package org.sakaiproject.sms.tool.producers;
 
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -21,8 +23,11 @@ import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class SentSmsDetailProducer implements ViewComponentProducer {
+public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsReporter {
+	
+	public static Log log = LogFactory.getLog(SentSmsDetailProducer.class);
 	
 	public static final String VIEW_ID = "sent-sms-detail";
 	
@@ -57,6 +62,8 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
+		
+		log.info("Paras"+ viewparams);
 		
 		if ( viewparams != null ){
 			SmsParams statusParams = (SmsParams) viewparams;
@@ -102,6 +109,11 @@ public class SentSmsDetailProducer implements ViewComponentProducer {
 		}
 		
 	
+	}
+
+	public ViewParameters getViewParameters() {
+		// TODO Auto-generated method stub
+		return new SmsParams();
 	}
 
 }

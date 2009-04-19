@@ -20,6 +20,7 @@ package org.sakaiproject.sms.logic.stubs;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
@@ -222,4 +223,20 @@ public class ExternalLogicStub implements ExternalLogic {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public String getSakaiUserSortName(String sakaiUserId) {
+		// TODO Auto-generated method stub
+		return "--------";
+	}
+
+	public Map<String, String> getSakaiGroupsForSite(String siteId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Map<String, String> getSakaiRolesForSite(String siteId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

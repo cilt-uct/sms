@@ -6,7 +6,7 @@
         </script>
         <link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
         <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
-        <link rel="stylesheet" href="../css/Sms.css" type="text/css"/>
+        <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
         <link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
         <script type="text/javascript" src="../js/jquery-1.2.6.js">
         </script>
@@ -29,9 +29,10 @@
         <link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
         <script type="text/javascript">
             $(document).ready(function(){
-                $(document).SMS().bind('reveal.facebox', function(){
-                   $.fn.SMS.get.people(); //Populate the people lists ie:roles, groups and individuals
-                });
+                //$(document).SMS().bind('reveal.facebox', function(){
+					//$.get( "/direct/membership/site/" + $('input[name=sakaiSiteId]').val() + ".json" );
+                   	$.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
+                //});
                 //$.fn.SMS.settings.test = 'hey';
                 $("#smsAddRecipients").facebox();
                 $("#smsDatesScheduleDate").datepicker({
@@ -104,12 +105,14 @@
                     </div>
                 </div>
                 <div class="copyMe">
+                    <input rsf:id="id" type="hidden" value="" name="id"/>
                     <input rsf:id="form-notify" type="checkbox" name="notifyMe" id="notifyMe" />
                     <label rsf:id="form-notify-label">
                         Notify me by email when delivery is complete
                     </label>
                 </div>
                 <div class="act">
+                	<input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
                     <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> 
 					<input rsf:id="back" type="button" value="Back"/>
                 </div>

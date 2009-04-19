@@ -341,7 +341,7 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * Gets the date to send.
+	 * Gets the date to send. Will return the year as 2200 if this is a draft task.
 	 * 
 	 * @return the date to send
 	 */
@@ -417,7 +417,7 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * Gets the message body.
+	 * Get the message body. Will return '-------' if this is a draft task.
 	 * 
 	 * @return the message body
 	 */
@@ -505,7 +505,7 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * Gets the sender user name.
+	 * Gets the sender's Sakai display name.
 	 * 
 	 * @return the sender user name
 	 */

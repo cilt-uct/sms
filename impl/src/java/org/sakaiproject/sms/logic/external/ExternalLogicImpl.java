@@ -19,9 +19,11 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -36,12 +38,14 @@ import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -238,7 +242,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	@SuppressWarnings("unchecked")
 	private Set<Object> getMembersForEntityRef(String entityReference) {
-		Set members = new HashSet<Object>();
+		Set<Object> members = new HashSet<Object>();
 		Object obj = entityBroker.fetchEntity(entityReference);
 
 		// if in the format /site/123/role/something
@@ -354,9 +358,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public String getSakaiUserDisplayName(String userId) {
 		String result = null;
-		if (isValidUser(userId)) { // user may be null or not a Sakai user
+		if (isValidUser(userId)) { // user may NOT be null or not a Sakai user
 			try {
 				result = userDirectoryService.getUser(userId).getDisplayName();
+				if ( "".equals(result) || result == null) { //Display Name does not exits. Get the username
+					result = userDirectoryService.getUser(userId).getDisplayId() == null ? 
+							userDirectoryService.getUser(userId).getEid() : userDirectoryService.getUser(userId).getDisplayId();
+				}
 			} catch (UserNotDefinedException e) {
 				log
 						.warn("Cannot getSakaiUserDisplayName for user id "
@@ -558,5 +566,35 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 		return result;
+	}
+
+	public Map<String, String> getSakaiGroupsForSite(String siteId) {
+		// TODO Auto-generated method stub
+		Map<String, String> groups = new HashMap<String, String>();
+		try {
+			Collection<Group> groupsCollection = siteService.getSite(siteId).getGroups();
+			for ( Group grp : groupsCollection ){
+				groups.put(grp.getId(), grp.getTitle());
+			}
+		} catch (IdUnusedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return groups;
+	}
+
+	public Map<String, String> getSakaiRolesForSite(String siteId) {
+		// TODO Auto-generated method stub
+		Map<String, String> roles = new HashMap<String, String>();
+		try {
+			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
+			for ( Role r : rolesCollection ){
+				roles.put(r.getId(), r.getId());
+			}
+		} catch (IdUnusedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return roles;
 	}
 }

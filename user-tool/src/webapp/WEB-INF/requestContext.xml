@@ -22,12 +22,14 @@
   <bean class="org.sakaiproject.sms.tool.producers.SendSMSProducer">
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
  	<property name="messageLocator" ref="messageLocator" />
   </bean>
   

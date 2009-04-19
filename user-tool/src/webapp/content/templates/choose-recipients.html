@@ -4,19 +4,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
 <head>
 <title rsf:id="page-title">Sms Items</title>
-<script type="text/javascript" src="https://vula.uct.ac.za/direct/membership/site/5cdab93e-bc00-481f-8c6a-61fc44649f75.json"></script>
 <script type="text/javascript">
        // $(document).ready(function() {
 			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
 			$('#peopleList').tabs();
 			$("#peopleListNamesSuggest").autoCompletefb();
-				
+
        // });
     </script>
 </head>
 <body>
 <div class="portletBody">
-  <h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder">Choose Recipients</h3>
+<h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder">Choose Recipients</h3>
   <div class="alertMessage" style="display:none">
     <ul style="margin:0px;">
       <li>Message for user here</li>
@@ -26,7 +25,7 @@
                 You have no messages to moderate
             </div>
 <input rsf:id="error-back" type="button" value="cancel" class="close"/>
-  <form rsf:id="form">
+  <form rsf:id="form" action="/direct/sms-task/new" type="POST">
     <div id="people">
       <div id="peopleList">
         <ul>
@@ -35,19 +34,31 @@
           <li rsf:id="names:" id="peopleTabsNames"> <a rsf:id="names-title" href="#peopleListNames">Individuals</a> <span rsf:id="names-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
           <li rsf:id="numbers:" id="peopleTabsNumbers"> <a rsf:id="numbers-title" href="#peopleListNumbers">Numbers</a> <span rsf:id="numbers-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
         </ul>
-        <div id="peopleListRoles"> </div>
-        <div id="peopleListGroups"> </div>
+          <div id="peopleListRoles">
+          		<span rsf:id="role-holder" />
+                  <div rsf:id="role-row:" rel="Roles">
+                      <input rsf:id="role-box" type="checkbox" name="students" value="1233" id="peopleList-students-12"/>
+                      <label rsf:id="role-label" for="peopleList-students-12">students </label>
+                  </div>
+          </div>
+        <div id="peopleListGroups">
+        	<span rsf:id="group-holder" />
+           <div rsf:id="group-row:" rel="Groups">
+               <input rsf:id="group-box" type="checkbox" name="Group 1" value="433443" id="group-students-12"/>
+               <label rsf:id="group-label" for="peopleList-students-12">students </label>
+           </div>
+        </div>
         <div id="peopleListNames">
           <p>Mauris eleifend est et turpis. Duis id erat. </p>
           <ul id="peopleListNamesSuggest" class="first acfb-holder">
-            <input rsf:id="names-box" type="text" class="city acfb-input"/>
+            <input id="sakaiUserIds" name="sakaiUserIds" rsf:id="names-box" type="text" class="acfb-input"/>
           </ul>
         </div>
         <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </span>
           <table width="100%" border="0" cellspacing="5" cellpadding="5">
             <tr>
               <td><div id="numbersInvalid"> <span rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg" style="display:none"> Correct these numbers:</span>
-                  <textarea rsf:id="numbers-box" id="peopleListNumbersBox" name="peopleListNumbersBox" cols="22" rows="5"></textarea>
+                  <textarea rsf:id="numbers-box" id="peopleListNumbersBox" name="deliveryMobileNumbersSet" cols="22" rows="5"></textarea>   <!-- TODO: change in sms.js from peopleListNumbersBox to deliveryMobileNumbersSet -->
                 </div></td>
               <td><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
                 <ul id="peopleListNumbersBox2">
@@ -61,8 +72,10 @@
       <div class="clear">
         <input rsf:id="copy-me" type="checkbox" name="copyMe" id="copyMe" />
         <label rsf:id="copy-me-label">Send me a copy</label>
-      </div>      <div class="act">
-      <input rsf:id="calculate" type="button" class="active"  id="recipientsCmd" value="Calculate" /></div>
+      </div>
+        <div class="act">
+      <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" />
+        </div>
       <div id="reportConsole" class="timeCells" style="display:none">
                     <div rsf:id="console-credits">
                         Credits remaining: 100 credits
@@ -76,12 +89,16 @@
                     </div>
                 </div>
       <div class="act">
+        <input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
+        <input rsf:id="id" type="hidden" value="" name="id"/>
+        <input rsf:id="senderUserName" type="hidden" value="" name="senderUserName"/>
+        <input rsf:id="senderUserId" type="hidden" value="" name="senderUserId"/>
         <input rsf:id="continue" type="button" class="active" id="recipientsCmd" value="Continue" disabled="disabled" />
         <input type="button" value="cancel" class="close"/>
       </div>
     </div>
   </form>
-  <hr width="465" noshade="noshade" class="loginform" />
+  <hr width="565" noshade="noshade" class="loginform" />
 </div>
 </body>
 </html>

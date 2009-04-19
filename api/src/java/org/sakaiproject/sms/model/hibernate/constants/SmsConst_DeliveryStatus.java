@@ -77,5 +77,10 @@ public class SmsConst_DeliveryStatus {
 	 * The message did not receive a delivery report within the timeout period.
 	 */
 	public final static String STATUS_TIMEOUT = "T";
+	
+	/**
+	 * The create message workflow was started by the user but never finished. Task is a draft.
+	 */
+	public final static String STATUS_DRAFT = "DR";
 
 }

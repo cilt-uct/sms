@@ -19,8 +19,9 @@ import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class FailedSmsDetailProducer implements ViewComponentProducer {
+public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParamsReporter {
 	
 	public static final String VIEW_ID = "failed-sms-detail";
 	
@@ -92,6 +93,11 @@ public class FailedSmsDetailProducer implements ViewComponentProducer {
 		}
 		
 	
+	}
+
+	public ViewParameters getViewParameters() {
+		// TODO Auto-generated method stub
+		return new SmsParams();
 	}
 
 }
