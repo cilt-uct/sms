@@ -60,12 +60,19 @@
                 <module>impl</module>
                 <module>pack</module>
                 <module>tool</module>
+				<module>user-tool</module>
             </modules>
         </profile>
         <profile>
             <id>tool</id>
             <modules>
                 <module>tool</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>user-tool</id>
+            <modules>
+                <module>user-tool</module>
             </modules>
         </profile>
         <profile>
