@@ -20,7 +20,7 @@
 	<bean id="messageTemplateContributor" parent="templateContributorParent">
 		<property name="baseDirectory" value="content/component-templates/" />
 		<property name="templateNames"
-			value="" />
+			value="Messages, navbar" />
 	</bean>
 	
 	<bean id="dateUtil" class="org.sakaiproject.sms.tool.util.DateUtil">

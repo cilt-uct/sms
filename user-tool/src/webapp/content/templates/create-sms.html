@@ -8,9 +8,9 @@
         <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
         <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
         <link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
-        <script type="text/javascript" src="../js/jquery-1.2.6.js">
+        <script type="text/javascript" src="../js/jquery-1.2.6.min.js">
         </script>
-        <script type="text/javascript" src="../js/jquery-ui-tabs.date.selectable.effects.1.5.3.min.js">
+        <script type="text/javascript" src="../js/jquery-ui-1.6.custom.min.js">
         </script>
         <script type="text/javascript" src="../js/sms.js">
         </script>
@@ -24,7 +24,7 @@
         </script>
         <script type='text/javascript' src='../js/jquery.autocomplete/jquery.autocompletefb.js'>
         </script>
-        <script type='text/javascript' src='../js/jquery.autocomplete/localdata.js'>
+        <script type='text/javascript' src='../js/jquery.form.js'>
         </script>
         <link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
         <script type="text/javascript">
@@ -35,25 +35,24 @@
                 //});
                 //$.fn.SMS.settings.test = 'hey';
                 $("#smsAddRecipients").facebox();
-                $("#smsDatesScheduleDate").datepicker({
+                /*$("#smsDatesScheduleDate").datepicker({
                     minDate: 0,
                     maxDate: '+3M +10D'
                 });
                 $("#smsDatesExpiryDate").datepicker({
                     minDate: 0,
                     maxDate: '+3M +10D'
-                });//$('a[rel=*getReport]').SMS();
+                });*///$('a[rel=*getReport]').SMS();
                 //jQuery.facebox('some html');
             });
         </script>
+        <script type="text/javascript" language="JavaScript"
+                src="../js/sms.task.js"></script>
         <title rsf:id="page-title">Sms Items</title>
     </head>
     <body>
         <div class="portletBody">
-            <div class="navIntraTool">
-                <a rsf:id="link-admin" href="config.html">Configurate</a>
-                <a rsf:id="add-item-link" href="AddItem.html">Permissions</a>
-            </div>
+            <div rsf:id="navIntraTool:" class="navIntraTool"/>
             <h3 rsf:id="msg=ui.create.sms.header" class="insColor insBak insBorder">Create SMS</h3>
             <div rsf:id="message-for:*" class="alertMessage">
                 <ul style="margin:0px;">
@@ -114,7 +113,7 @@
                 <div class="act">
                 	<input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
                     <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> 
-					<input rsf:id="back" type="button" value="Back"/>
+					<input rsf:id="back" type="button" value="Back" rel="back"/>
                 </div>
             </form>
         </div>

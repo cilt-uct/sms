@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
@@ -13,12 +14,14 @@ import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
+import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -45,8 +48,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	}
 	
 	private DateUtil dateUtil;
-	public void setDateFormat(DateUtil dateFormat) {
-		this.dateUtil = dateFormat;
+	public void setDateUtil(DateUtil dateUtil) {
+		this.dateUtil = dateUtil;
 	}
 	
 	private StatusUtils statusUtils;
@@ -82,27 +85,33 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
 				//Insert original user selections
-				List<String> smsEntities = smsTask.getDeliveryEntityList();
-				for ( String entity : smsEntities){
-					UIBranchContainer list = UIBranchContainer.make(tofill, "selections-row:");
-					UIOutput.make(list, "selections", entity); //TODO fix this & make it work
-				}	
+				//List<String> smsEntities = smsTask.getDeliveryEntityList();
+				//for ( String entity : smsEntities){
+				//	UIBranchContainer list = UIBranchContainer.make(tofill, "selections-row:");
+				//	UIOutput.make(list, "selections", entity); //TODO fix this & make it work
+				//}	
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost");
 				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.cost", new Object[] { smsTask.getCreditEstimate() });
 				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { smsTask.getCostEstimate() });
 				
-				UIForm form = UIForm.make(tofill, "form");
+				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString()));
+				form.type = EarlyRequestParser.RENDER_REQUEST;
+				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
+				UIInput.make(tofill, "smsId", null, smsTask.getId() + "")
+				.decorate(new UIIDStrategyDecorator("smsId"));
 				/**
 				 * The action buttons are handled by JS. RSF is only needed for i18N
 				 */
 				if ( const_Inprogress.equals(statusToShow)){
-					UIMessage.make(tofill, "sms-sent", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeActual() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
 						.decorate(new UIIDStrategyDecorator("smsStop"));
+					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)
+						.decorate(new UIIDStrategyDecorator("abortCode"));
 				}else if( const_Scheduled.equals(statusToShow)){
-					UIMessage.make(tofill, "sms-sent", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
 						.decorate(new UIIDStrategyDecorator("smsEdit"));
 					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
@@ -110,7 +119,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				}else{
 					throw new IllegalArgumentException("Cannot act on this status type: " + statusToShow);
 				}
-				UIMessage.make(tofill, "sms-sent", "ui.inprogress.sms.finish", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+				UIMessage.make(tofill, "sms-finish", "ui.inprogress.sms.finish", new Object[] { dateUtil.formatDate(smsTask.getDateToExpire()) });
 				
 				UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 				

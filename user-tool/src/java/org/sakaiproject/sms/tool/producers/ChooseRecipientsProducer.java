@@ -33,6 +33,7 @@ import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
+import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -86,9 +87,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			}
 			
 			//Filling tab areas on condition
-			fillTabs( tofill, new String[] {"roles", "groups", "names", "numbers"});
+			fillTabs( tofill, new String[] {"Roles", "Groups", "Names", "Numbers"});
 			
-			UIForm form = UIForm.make(tofill, "form", new SmsParams("/direct/sms-task/new"));
+			UIForm form = UIForm.make(tofill, "chooseForm");
+			form.targetURL = "/direct/sms-task/new";
+			form.decorate(new UIIDStrategyDecorator("chooseForm"));
 			//Checkboxes for Groups and Roles
 			Map<String, String> roles = new HashMap<String, String>();
 			roles = externalLogic.getSakaiRolesForSite(currentSiteId);
@@ -199,14 +202,13 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 	}
 
 	private void fillTabs(UIContainer tofill, String[] tabs) {
-		log.info("tabs:"+tabs.length);
 		for ( int i=0; i < tabs.length; i++){
-			String tab = tabs[i];
-			log.info("tab:"+tab);
-			
-			UIBranchContainer branch = UIBranchContainer.make(tofill, tab + ":");
-			UILink.make(branch, tab + "-title", messageLocator.getMessage("ui.recipients.choose.prefix") + messageLocator.getMessage("ui.recipients.choose." + tab + ".title"), null); //TODO check that this preserves the HTML defined href
-			UIOutput.make(branch, tab + "-selected", 0 + "")
+			String tabCapitalised = tabs[i];
+			String tab = tabCapitalised.toLowerCase();
+			UIOutput.make(tofill, tab)
+				.decorate(new UIIDStrategyDecorator("peopleTabs" + tabCapitalised));
+			UILink.make(tofill, tab + "-title", messageLocator.getMessage("ui.recipients.choose.prefix") + messageLocator.getMessage("ui.recipients.choose." + tab + ".title"), null);
+			UIOutput.make(tofill, tab + "-selected", 0 + "")
 				.decorate(new UITooltipDecorator(UIMessage.make("ui.recipients.choose.selected.tooltip", new Object[] { messageLocator.getMessage("ui.recipients.choose." + tab + ".title") })));
 		}
 	}

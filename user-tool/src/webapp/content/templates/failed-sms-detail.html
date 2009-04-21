@@ -10,6 +10,10 @@
 <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+<script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+<script type="text/javascript" language="JavaScript"
+                src="../js/sms.task.js"></script>
+
 <title rsf:id="page-title">Failed SMS Detail</title>
 </head>
 <body>
@@ -29,11 +33,13 @@
   </div>
   <div rsf:id="sms-sent">Sending completed: 10/12/2009 11.15pm</div>
   <h3 rsf:id="recipients">Recipients: 34</h3>
-  <form>
+  <form rsf:id="editForm">
   <div class="act">
-    <input rsf:id="edit" type="button" value="Edit and resend"/>
-    <input rsf:id="delete" type="button" value="Delete SMS"/>
-    <input rsf:id="back" type="button" value="Back"/>
+  	<input rsf:id="smsId" type="hidden" value="" name="smsId"/>
+    <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
+    <input rsf:id="edit" type="submit" value="Edit and resend"/>
+    <input rsf:id="delete" id="smsDelete" type="button" value="Delete SMS" rel="task"/>
+    <input rsf:id="back" type="button" value="Back" rel="back"/>
   </div>
   </form>
 </div>

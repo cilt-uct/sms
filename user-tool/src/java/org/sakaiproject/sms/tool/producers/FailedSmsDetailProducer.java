@@ -10,12 +10,15 @@ import org.sakaiproject.sms.tool.util.StatusUtils;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIForm;
+import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
+import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -63,9 +66,7 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 				
 				UIMessage.make(tofill, "message-title", "ui.sent.sms.title");
-				UIOutput.make(tofill, "message", smsTask.getMessageBody())
-				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
-					.decorate(new UIFreeAttributeDecorator("rel", smsTask.getId().toString()));
+				UIOutput.make(tofill, "message", smsTask.getMessageBody());
 				UIMessage.make(tofill, "sms-id", "ui.sent.sms.id", new Object[] { smsId });
 				UIMessage.make(tofill, "sms-created", "ui.sent.sms.created", new Object[] { dateUtil.formatDate(smsTask.getDateCreated()) });
 				
@@ -78,14 +79,20 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
 				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeActual() });
 				
+				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString()));
+				form.type = EarlyRequestParser.RENDER_REQUEST;
+				
+				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
+				UIInput.make(form, "smsId", null, smsId + "")
+					.decorate(new UIIDStrategyDecorator("smsId"));
 				/**
 				 * These 3 action buttons are handled by JS. RSF is only needed for i18N
 				 */
-				UICommand.make(tofill, "edit", UIMessage.make("sms.general.editandsend"))
+				UICommand.make(form, "edit", UIMessage.make("sms.general.editandsend"))
 					.decorate(new UIIDStrategyDecorator("smsEdit"));
-				UICommand.make(tofill, "delete", UIMessage.make("sms.general.delete"))
+				UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
 					.decorate(new UIIDStrategyDecorator("smsDelete"));
-				UICommand.make(tofill, "back-button", UIMessage.make("sms.general.back"));
+				UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 				
 			}else{
 				//TODO: show error message since sms.id() is not specified

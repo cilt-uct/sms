@@ -123,6 +123,13 @@
         },
         getSelectedRecipientsListNames : function(){
             getSelectedRecipientsList.length('names');
+        },
+        getSelectedRecipientsListIDs : function(){
+            var tempIDs = new Array();
+            for ( var i = 0; i < selectedRecipientsList.names.length ; i++){
+                tempIDs.push(selectedRecipientsList.names[i][1]);
+            }
+            return tempIDs;
         }
 };
     $.fn.SMS.set = {
@@ -140,7 +147,7 @@
                     //});
                 }
             });
-        }
+       }
     }
 
     //
@@ -385,10 +392,10 @@
             //Fn for the check event
             if (this.checked) {
                 //Save data into selectedRecipientsList
-                selectedRecipientsList.roles.push(new Array($(this).parent().find('label').attr('RolesId'), $(this).parent().find('label').attr('RolesName')));
+                selectedRecipientsList.roles.push(new Array($(this).val(), $(this).val()));
                 //Refresh {selectedRecipients} Number on TAB
                 $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
-                //log(selectedRecipientsList.roles.serializeArray());
+                //log(selectedRecipientsList.roles.length);
 
             } else
             //Fn for the UNcheck event
@@ -418,7 +425,7 @@
             //Fn for the check event
             if (this.checked) {
                 //Save data into selectedRecipientsList
-                selectedRecipientsList.groups.push(new Array($(this).parent().find('label').attr('GroupsId'), $(this).parent().find('label').attr('GroupsName')));
+                selectedRecipientsList.groups.push(new Array($(this).val(), $(this).val()));
                 //Refresh {selectedRecipients} Number on TAB
                 $('#peopleTabsGroups span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('groups'));
             } else
@@ -457,9 +464,9 @@
 
         //Initialise the Individuals Tab
 
-        if ($.fn.SMS.get.peopleByName().length > 16) {
+        if (var_getEveryoneInSite_participants.length > 16) {
             $("#peopleListNamesSuggest").autoCompletefb();
-        } else if ($.fn.SMS.get.peopleByName().length > 0) {
+        } else if (var_getEveryoneInSite_participants.length > 0) {
             $("#peopleListNamesSuggest")
                     .removeClass('first acfb-holder')
                     .html(renderPeopleAsCheckboxes("Names"));

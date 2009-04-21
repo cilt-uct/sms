@@ -37,7 +37,6 @@ jQuery.fn.autoCompletefb = function(options)
         foundClass : ".acfb-data",
         inputClass : ".acfb-input",
         deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage   ,
-        inputBox: ""
     }
     if (options) jQuery.extend(settings, options);
 
@@ -95,7 +94,7 @@ jQuery.fn.autoCompletefb = function(options)
         });
         $(settings.inputClass, tmp).val('').focus();
         $.fn.SMS.set.setSelectedRecipientsListName(d);
-        $(settings.inputBox).val($.fn.SMS.getSelectedRecipientsListNames.length);
+        //$(settings.inputBox).val($.fn.SMS.getSelectedRecipientsListNames.length);
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
     });
     $(settings.inputClass, tmp).focus();

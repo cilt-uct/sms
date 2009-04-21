@@ -10,6 +10,9 @@
 <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+<script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+<script type="text/javascript" language="JavaScript"
+                src="../js/sms.task.js"></script>
 <title rsf:id="page-title">In Progress SMS Detail</title>
 </head>
 <body>
@@ -39,12 +42,14 @@
     <h2 rsf:id="cost">Cost</h2>
   	<div rsf:id="cost-credits">Estimated cerdits required: 23</div>
    <div rsf:id="cost-cost">Estimated cost: R34</div>
-  <form>
+  <form rsf:id="form">
   <div class="act">
-    <input rsf:id="stop" type="button" value="Stop SMS"/>
-    <input rsf:id="edit" type="button" value="Edit"/>
-    <input rsf:id="delete" type="button" value="Delete SMS"/>
-    <input rsf:id="back" type="button" value="Back"/>
+  	<input rsf:id="smsId" type="hidden" value="" name="smsId"/>
+    <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
+    <input rsf:id="stop" type="button" value="Stop SMS" class="active" id="smsStop" rel="task"/>
+    <input rsf:id="edit" type="submit" value="Edit" class="active"/>
+    <input rsf:id="delete" id="smsDelete" type="button" value="Delete SMS" rel="task"/>
+    <input rsf:id="back" type="button" value="Back" rel="back"/>
   </div>
   </form>
 </div>
