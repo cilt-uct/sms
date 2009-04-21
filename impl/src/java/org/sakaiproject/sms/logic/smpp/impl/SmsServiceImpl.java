@@ -63,7 +63,7 @@ public class SmsServiceImpl implements SmsService {
 		this.smsTaskValidator = smsTaskValidator;
 	}
 
-	public SmsBilling smsBilling = null;
+	public SmsBilling smsBilling;
 
 	public SmsBilling getSmsBilling() {
 		return smsBilling;
