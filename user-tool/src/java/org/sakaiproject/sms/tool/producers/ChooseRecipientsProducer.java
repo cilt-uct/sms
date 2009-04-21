@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.awt.TextArea;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -165,11 +166,12 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				//TODO: Show message that there are no groups in site
 			}
 			//Textearee for the numbers
-			UIInput.make(form, "numbers-box", null)
-				.decorate(new UIIDStrategyDecorator("peopleListNumbersBox"));
+			UIInput textarea = UIInput.make(form, "peopleListNumbersBox", null);
+			textarea.decorate(new UIIDStrategyDecorator("peopleListNumbersBox"));
+			textarea.decorate(new UIFreeAttributeDecorator("name", "deliveryMobileNumbersSet"));
 			
 			UIInput.make(form, "names-box", null, "")
-				.decorate(new UIFreeAttributeDecorator("name", "sakaiUserIds"));
+				.decorate(new UIFreeAttributeDecorator("name", null));
 			UICommand.make(form, "calculate", UIMessage.make("ui.recipients.choose.continue"), null)
 			.decorate(new UIIDStrategyDecorator("calculateCmd"));
 		

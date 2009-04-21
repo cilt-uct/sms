@@ -121,13 +121,14 @@
             }
             return var_getEveryoneInSite_participants;
         },
-        getSelectedRecipientsListNames : function(){
+        getSelectedRecipientsListNames : function(){  getSelectedRecipientsList
             getSelectedRecipientsList.length('names');
         },
-        getSelectedRecipientsListIDs : function(){
+        getSelectedRecipientsListIDs : function(filter){
+            var type = getSelectedRecipientsList.array(filter);
             var tempIDs = new Array();
-            for ( var i = 0; i < selectedRecipientsList.names.length ; i++){
-                tempIDs.push(selectedRecipientsList.names[i][1]);
+            for ( var i = 0; i < type.length ; i++){
+                tempIDs.push(type[i][1]);
             }
             return tempIDs;
         }
