@@ -121,7 +121,7 @@
             }
             return var_getEveryoneInSite_participants;
         },
-        getSelectedRecipientsListNames : function(){  getSelectedRecipientsList
+        getSelectedRecipientsListNames : function(){
             getSelectedRecipientsList.length('names');
         },
         getSelectedRecipientsListIDs : function(filter){
@@ -148,7 +148,28 @@
                     //});
                 }
             });
-       }
+       },
+        savedTaskEntities: function(){
+            //Re-select saved selections
+            if ( $("#savedEntityList").length != 0 ){
+                //Render saved entity selections
+                var values = $("#savedEntityList").val().toString().split(',');
+                $.each(values, function(i, entityId){
+                        $('input[value='+ entityId +']:eq(0)').each(function(){
+                            this.checked = true;
+                            checkNameboxAction(this);
+                        });
+                });
+            }
+
+            if ( $("#savedDeliveryMobileNumbersSet").length != 0 ){
+                //Render saved numbers
+                var values = $("#savedDeliveryMobileNumbersSet").val();
+                if ( values != null && values.length > 0 ){
+                    $("#peopleListNumbersBox").text(values.toString().split(',').join('\n'));
+                }
+            }
+        }
     }
 
     //
@@ -367,11 +388,11 @@
      * @param string Takes one of these strings: "Roles", "Groups", "Names"
      */
     function renderPeopleAsCheckboxes(item) {
-        var map = getPeople(item);
+        var map = var_getEveryoneInSite_participants;
         var elem = "";
-        for (n in map) {
+        for (var n in map) {
             elem += '\
-                   <div rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '">\
+                   <div rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />\
                    <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + item + 'Name="' + map[n][0] + '" ' + item + 'Id="' + map[n][1] + '">' + map[n][0] + '\
                    </label>\
                    </input></div>\
@@ -464,33 +485,29 @@
         });
 
         //Initialise the Individuals Tab
-
         if (var_getEveryoneInSite_participants.length > 16) {
             $("#peopleListNamesSuggest").autoCompletefb();
         } else if (var_getEveryoneInSite_participants.length > 0) {
             $("#peopleListNamesSuggest")
                     .removeClass('first acfb-holder')
                     .html(renderPeopleAsCheckboxes("Names"));
-            //for the Groups Tab
-            $('#peopleListNamesSuggest > div[@rel=Names] input').bind('click', function() {
-                //Fn for the check event
+            $('#peopleListNamesSuggest > div[@rel=Names] input').click(function() {
+                 var id = $(this).val();
+               //Fn for the check event
                 if (this.checked) {
-                    //Save data into selectedRecipientsList
-                    selectedRecipientsList.names.push(new Array($(this).parent().find('label').attr('NamesId'), $(this).parent().find('label').attr('NamesName')));
-                    //Refresh {selectedRecipients} Number on TAB
-                    $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
+                    checkNameboxAction(this);
                 } else
                 //Fn for the UNcheck event
                 {
-                    var thisRoleId = $(this).parent().find('label').attr('NamesId');
+
                     //log(thisRoleId);
                     //Remove data from selectedRecipientsList
                     $.each(selectedRecipientsList.names, function(i, parent) {
                         if (parent) {
-                            //log(selectedRecipientsList.groups.toString());
+                            //log(selectedRecipientsList.names.toString());
                             //$.each(parent, function(n, item) {
                             //log("Item: "+item);
-                            if (parent[0] == thisRoleId) {
+                            if (parent[0] == id) {
                                 selectedRecipientsList.names.splice(parseInt(i), 1);
                             }
                             //});
@@ -502,7 +519,7 @@
                     else
                         $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
                 }
-
+                // log(selectedRecipientsList.names.toString());
             });
 
         }
@@ -580,8 +597,8 @@
             }else{
             $("#numbersInvalid .msg").fadeOut();
             that.focus();
-           // return false;
             }
+            return false;
         });
 
         function showSelectedNumbersInDOM() {
@@ -690,6 +707,13 @@
             return false;
         }
     }
+    
+    function checkNameboxAction(_this) {
+        //Save data into selectedRecipientsList
+        selectedRecipientsList.names.push(new Array($(_this).val(), $(_this).attr('title')));
+        //Refresh {selectedRecipients} Number on TAB
+        $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
+    };
 
 
 })(jQuery);

@@ -170,8 +170,12 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			textarea.decorate(new UIIDStrategyDecorator("peopleListNumbersBox"));
 			textarea.decorate(new UIFreeAttributeDecorator("name", "deliveryMobileNumbersSet"));
 			
-			UIInput.make(form, "names-box", null, "")
-				.decorate(new UIFreeAttributeDecorator("name", null));
+			UILink.make(form, "checkNumbers", UIMessage.make("ui.recipients.choose.numbers.check"), null)
+				.decorate(new UIIDStrategyDecorator("checkNumbers"));
+			
+			//UIInput names = UIInput.make(form, "names-box", null, "");
+			//names.decorate(new UIFreeAttributeDecorator("name", null));
+			//names.decorate(new UIIDStrategyDecorator("calculateCmd"));
 			UICommand.make(form, "calculate", UIMessage.make("ui.recipients.choose.continue"), null)
 			.decorate(new UIIDStrategyDecorator("calculateCmd"));
 		
@@ -182,7 +186,12 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				.decorate(new UILabelTargetDecorator(copy));
 			
 			if ( smsTask.getId() != null ){
-				UIInput.make(tofill, "id", smsTask.getId() + "", null);
+				UIInput.make(tofill, "savedEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
+				.decorate(new UIIDStrategyDecorator("savedEntityList"));
+				UIInput.make(tofill, "savedDeliveryMobileNumbersSet", null, toJSONarray(smsTask.getDeliveryMobileNumbersSet().toArray(new String[] {})))//turn DeliveryMobileNumbersSet into a JS Array object
+				.decorate(new UIIDStrategyDecorator("savedDeliveryMobileNumbersSet"));
+				UIInput.make(tofill, "smsId", smsTask.getId() + "", null)
+				.decorate(new UIIDStrategyDecorator("smsId"));
 			}
 			UIInput.make(tofill, "sakaiSiteId", null, currentSiteId)
 				.fossilize = false;
@@ -201,6 +210,24 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIOutput.make(tofill, "error-email"); //TODO show email for credit purchases
 		}
 		
+	}
+
+	private String toJSONarray(String[] entities) {
+		if ( ! "".equals(entities) ){
+			String jsonList = "";
+			StringBuilder sb = new StringBuilder(jsonList);
+			int count = 1;
+			for (String entity : entities){
+				sb.append(entity);
+				//jsonList += entity;
+				if ( count == entities.length -1 ){
+					sb.append(",");
+				}
+				count++;
+			}
+			return sb.toString();
+		}
+		return null;
 	}
 
 	private void fillTabs(UIContainer tofill, String[] tabs) {
