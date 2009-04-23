@@ -13,12 +13,6 @@
 		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"/>
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 	</bean>
-	
-	<bean id="org.sakaiproject.sms.entity.SmsTaskCalculateImpl" class="org.sakaiproject.sms.entity.SmsTaskCalculateImpl">
-		<property name="smsService" ref="org.sakaiproject.sms.api.SmsService"/>
-		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
-		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
-	</bean>
 
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
