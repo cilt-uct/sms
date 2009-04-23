@@ -107,7 +107,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				int count = 0;
 				while ( selector.hasNext() ) {
                 	Map.Entry<String, String> pairs = selector.next();
-                	String id = (String) pairs.getValue();
+                	String id = (String) pairs.getKey();
                 	rolesValues.add(id);
                 	String name = (String) pairs.getValue();
                 	rolesLabels.add(name);
@@ -143,7 +143,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				int count = 0;
 				while ( selector.hasNext() ) {
                 	Map.Entry<String, String> pairs = selector.next();
-                	String id = (String) pairs.getValue();
+                	String id = (String) pairs.getKey();
                 	groupsValues.add(id);
                 	String name = (String) pairs.getValue();
                 	groupsLabels.add(name);

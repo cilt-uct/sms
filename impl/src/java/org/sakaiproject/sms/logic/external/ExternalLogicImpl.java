@@ -330,10 +330,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		}
 		if (smsTask.getDeliveryMobileNumbersSet() != null) {
-			log.info("FOUND!!! a list of mobile numbers, not necessarily from sakai users");
 			// a list of mobile numbers, not necessarily from sakai users
 			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
-				log.info(mobileNumber);
 				SmsMessage message = new SmsMessage();
 				message.setMobileNumber(mobileNumber);
 				message.setSmsTask(smsTask);
@@ -580,7 +578,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			Collection<Group> groupsCollection = siteService.getSite(siteId).getGroups();
 			for ( Group grp : groupsCollection ){
-				groups.put(grp.getId(), grp.getTitle());
+				groups.put(grp.getReference(), grp.getTitle());
 			}
 		} catch (IdUnusedException e) {
 			// TODO Auto-generated catch block
@@ -595,7 +593,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
 			for ( Role r : rolesCollection ){
-				roles.put(r.getId(), r.getId());
+				String siteReference = siteService.getSite(siteId).getReference();
+				roles.put(siteReference + "/role/" + r.getId(), r.getId());
 			}
 		} catch (IdUnusedException e) {
 			// TODO Auto-generated catch block
