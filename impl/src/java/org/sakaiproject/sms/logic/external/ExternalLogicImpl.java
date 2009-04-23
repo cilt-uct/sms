@@ -322,24 +322,30 @@ public class ExternalLogicImpl implements ExternalLogic {
 				messages.addAll(getSakaiEntityMembersAsMessages(smsTask,
 						reference, getMobileNumbers));
 			}
-		} else if (smsTask.getDeliveryGroupId() != null) {
+		}
+		if (smsTask.getDeliveryGroupId() != null) {
 			// a single group reference
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryGroupId(), getMobileNumbers));
 
-		} else if (smsTask.getDeliveryMobileNumbersSet() != null) {
+		}
+		if (smsTask.getDeliveryMobileNumbersSet() != null) {
+			log.info("FOUND!!! a list of mobile numbers, not necessarily from sakai users");
 			// a list of mobile numbers, not necessarily from sakai users
 			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
+				log.info(mobileNumber);
 				SmsMessage message = new SmsMessage();
 				message.setMobileNumber(mobileNumber);
 				message.setSmsTask(smsTask);
 				messages.add(message);
 			}
-		} else if (smsTask.getDeliveryUserId() != null) {
+		} 
+		if (smsTask.getDeliveryUserId() != null) {
 			// a single sakai user id, for incoming messages
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryUserId(), getMobileNumbers));
-		} else if (smsTask.getSakaiUserIds() != null) {
+		} 
+		if (smsTask.getSakaiUserIds() != null) {
 			for (String userId : smsTask.getSakaiUserIds()) {
 				String mobileNr = getSakaiMobileNumber(userId);
 				if (mobileNr != null) {
