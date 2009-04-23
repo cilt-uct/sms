@@ -127,14 +127,93 @@
         getSelectedRecipientsListIDs : function(filter){
             var type = getSelectedRecipientsList.array(filter);
             var tempIDs = new Array();
+            if (filter == "numbers"){
             for ( var i = 0; i < type.length ; i++){
-                tempIDs.push(type[i][1]);
+                tempIDs.push(type[i]);
             }
-            log(filter + ": ---------- " + tempIDs.toString());
+            }else{
+            for ( var i = 0; i < type.length ; i++){
+                tempIDs.push(type[i][0]);
+            }
+            }
             return tempIDs;
         }
 };
     $.fn.SMS.set = {
+        processCalculate: function(domElements) {
+            //alert('erger');
+            //$(".acfb-input").val($.fn.SMS.get.getSelectedRecipientsListIDs()[0]);
+            $('#checkNumbers').click(); // Fire numbers check function
+            $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
+            var entityList = new Array();
+            if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
+                entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("groups"));
+            }
+            if ($.fn.SMS.get.getSelectedRecipientsListIDs("roles").length > 0) {
+                entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("roles"));
+            }
+            $("#deliveryEntityList").val(entityList.toString() == "," ? null : entityList.toString()); //set deliveryEntityList to null if no groups or roles are selected.
+            $("#deliveryMobileNumbersSet").val($.fn.SMS.get.getSelectedRecipientsListIDs("numbers").toString());
+            //$("#msg").val("This is the msg");
+            //alert($.fn.SMS.get.getSelectedRecipientsListNamesIDs());
+            //return false;
+            var params = function() {
+                var tempParams = [];
+                $.each(domElements, function(i, item) {
+                    var val = $('[name=' + item + ']').val() ;
+                    if (val != null) {
+                        if (val != '')    // Don't combine if statements to avoid RSF template translation error
+                            tempParams.push({name:item, value:val});
+                    }
+                });
+                return $.param(tempParams);
+            }
+            $.ajax({
+                url: "/direct/sms-task/calculate",
+                type: "POST",
+                dataType: "xml",
+                data: params(),
+                beforeSend: function(){
+                    $("#alertInsufficient").slideUp('fast');
+                    $("#cReportConsole").slideUp('fast');
+                },
+                success: function(data) {
+                    $("#cReportConsole").slideDown('fast', function(){
+                            $(this).effect('highlight', 'fast');
+                    });
+                    var xml = $(data);
+                    var cSelected = xml.find("groupSizeEstimate").text();
+                    var cCredits = xml.find("creditEstimate").text();
+                    var cCost = xml.find("costEstimate").text();
+                    var cTotal = $("#cReportConsole .console-total").text();
+
+                    $("#cReportConsole .console-selected").text(cSelected);
+                    $("#cReportConsole .console-credits").text(cCredits);
+                    $("#cReportConsole .console-cost").text(cCost);
+
+                    if (cCredits > cTotal){
+                        $("#alertInsufficient").slideDown('fast', function(){
+                            $(this).effect('highlight', 'slow');
+                        });
+                    }else{
+                        $("#recipientsCmd").removeAttr("disabled");
+                        $("#recipientsCmd").bind('click', function(){
+                               // $(document).trigger("facebox.close");
+                            $("#facebox").fadeOut('fast');
+                            $("#smsAddRecipients").unbind('click');
+                            $("#smsAddRecipients").bind('click', function(){
+                                if ($("#facebox").length != 0 ){
+                                    $("#facebox").fadeIn('fast');
+                                }
+                                return false;
+                            });
+                        });
+                    }
+                    return false;
+                }
+            });
+
+        },
         setSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names.push(array);
             return true;
@@ -644,14 +723,6 @@
          }
          ******/
 
-
-        /**
-         * Bind Command Button events
-         */
-        $('#recipientsCmd').bind('click', function() {
-            log(serializeRecipients());
-            
-        });
     }
 
     function init_smsBoxCounter() {
@@ -722,11 +793,11 @@
     function checkEntityboxAction(_this, type) {
         //Save data into selectedRecipientsList
         if (type == "Groups"){
-            selectedRecipientsList.groups.push(new Array($(_this).val(), $(_this).val()));
+            selectedRecipientsList.groups.push(new Array($(_this).val(), $(_this).attr('title')));
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsGroups span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('groups'));
         }else if (type == "Roles"){
-            selectedRecipientsList.roles.push(new Array($(_this).val(), $(_this).val()));
+            selectedRecipientsList.roles.push(new Array($(_this).val(), $(_this).attr('title')));
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
         }

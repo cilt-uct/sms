@@ -11,46 +11,8 @@
 			$("#peopleListNamesSuggest").autoCompletefb();
            // $("#chooseForm").ajaxForm();
             $("#calculateCmd").bind('click', function(){
-                    //alert('erger');
-                    //$(".acfb-input").val($.fn.SMS.get.getSelectedRecipientsListIDs()[0]);
-                $('#checkNumbers').click(); // Fire numbers check function
-                $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
-                var entityList = new Array();
-                if($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0){
-                    entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("groups"));
-                }
-                if($.fn.SMS.get.getSelectedRecipientsListIDs("roles").length > 0){
-                    entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("roles"));
-                }
-                $("#deliveryEntityList").val(entityList.toString() == "," ? null : entityList.toString()); //set deliveryEntityList to null if no groups or roles are selected.
-                $("#deliveryMobileNumbersSet").val($.fn.SMS.get.getSelectedRecipientsListIDs("numbers").toString());
-                    //$("#msg").val("This is the msg");
-                    //alert($.fn.SMS.get.getSelectedRecipientsListNamesIDs());
-                //return false;
-                var params = function(){
-                   var tempParams = [];
-                    $.each(
-                            ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"]
-                            , function(i, item){
-                        var val = $('[name='+item+']').val() ;
-                        if(val != null ){
-                            if(val != '')    // Don't combine if statements to avoid RSF template translation error
-                                tempParams.push({name:item, value:val});
-                    }
-                    });
-                   return $.param(tempParams);
-                }
-
-                console.log(params());
-                $.ajax({
-                    url: "/direct/sms-task/calculate",
-                    type: "POST",
-                    data: params(),
-                    success: function(data){
-                        //alert(data);
-                    }
-                });
-
+                 var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
+                $.fn.SMS.set.processCalculate(domElements);
                 //alert('regre');
             });
            $("input[@rel=closeFB]").bind('click', function(){
@@ -155,18 +117,63 @@
         <div class="act">
       <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" />
         </div>
-      <div id="reportConsole" class="timeCells" style="display:none">
-                    <div rsf:id="console-credits">
-                        Credits remaining: 100 credits
-                    </div>
-                    <div rsf:id="console-value">
-                        Estimated value: R100.00
-                    </div>
-                    <div>
-                        <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
-                        <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
-                    </div>
-                </div>
+      <div id="cReportConsole" class="timeCells" style="display:none">
+
+          <div>
+                    <span rsf:id="msg=ui.console.selected">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-selected" class="console-selected">
+                        100
+                    </span>
+          </div>
+
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.credits">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-credits" class="console-credits">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.cost">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-cost" class="console-cost">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.credits.total">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-total" class="console-total">
+                        100
+                    </span>
+          </div>
+          <div>
+          <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
+          <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.maychange">
+                        100
+                    </span>
+          </div>
+          <div id="alertInsufficient" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.insufficient">
+                        100
+                    </span>
+          </div>
+      </div>
+    
       <div class="act">
           <!-- DOM elements for re-opening a task -->
           <input rsf:id="savedUserIds" id="savedUserIds" name="savedUserIds" type="hidden" value=""/>

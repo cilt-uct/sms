@@ -23,6 +23,7 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
+import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -114,6 +115,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
                 	
                 	UIBranchContainer row = UIBranchContainer.make(form, "role-row:", count + "");
                 	UISelectChoice choice = UISelectChoice.make(row, "role-box", rolesBoxesId, count);
+                	choice.decorate(new UITooltipDecorator(name));
                 	UISelectLabel label = UISelectLabel.make(row, "role-label", rolesBoxesId, count);
                 	label.decorate(new UIFreeAttributeDecorator("rolesname", name));
                 	label.decorate(new UIFreeAttributeDecorator("name", name));
@@ -150,6 +152,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
                 	
                 	UIBranchContainer row = UIBranchContainer.make(form, "group-row:", count + "");
                 	UISelectChoice choice = UISelectChoice.make(row, "group-box", groupBoxesId, count);
+                	choice.decorate(new UITooltipDecorator(name));
                 	UISelectLabel label = UISelectLabel.make(row, "group-label", groupBoxesId, count);
                 	label.decorate(new UIFreeAttributeDecorator("groupsname", name));
                 	label.decorate(new UIFreeAttributeDecorator("name", name));
@@ -176,7 +179,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			//UIInput names = UIInput.make(form, "names-box", null, "");
 			//names.decorate(new UIFreeAttributeDecorator("name", null));
 			//names.decorate(new UIIDStrategyDecorator("calculateCmd"));
-			UICommand.make(form, "calculate", UIMessage.make("ui.recipients.choose.continue"), null)
+			UICommand.make(form, "calculate", UIMessage.make("ui.recipients.choose.calculate"), null)
 			.decorate(new UIIDStrategyDecorator("calculateCmd"));
 		
 			
@@ -184,6 +187,14 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIBoundBoolean copy = UIBoundBoolean.make(form, "copy-me", Boolean.FALSE);
 			UIMessage.make(form, "copy-me-label", "ui.recipients.choose.copy")
 				.decorate(new UILabelTargetDecorator(copy));
+			
+			//Render console summary  console-selected  console-selected-figure
+			UIOutput.make(tofill, "console-selected", ( smsTask.getId() != null )? 0 + "" : smsTask.getGroupSizeActual() + "");
+			UIOutput.make(tofill, "console-credits", ( smsTask.getId() != null )? 0 + "" : smsTask.getCreditCost() + "");
+			UIOutput.make(tofill, "console-cost", ( smsTask.getId() != null )? 0 + "" : smsTask.getCostEstimate() + "");
+			UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
+			UIMessage.make(tofill, "console-purchase", "ui.console.help");
+			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 			
 			if ( smsTask.getId() != null ){
 				UIInput.make(tofill, "savedEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
