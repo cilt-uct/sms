@@ -188,10 +188,12 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			if ( smsTask.getId() != null ){
 				UIInput.make(tofill, "savedEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
 				.decorate(new UIIDStrategyDecorator("savedEntityList"));
+				UIInput.make(tofill, "savedUserIds", null, toJSONarray(smsTask.getSakaiUserIds().toArray(new String[] {}))) //turn user ids into a JS Array object
+				.decorate(new UIIDStrategyDecorator("savedUserIds"));
 				UIInput.make(tofill, "savedDeliveryMobileNumbersSet", null, toJSONarray(smsTask.getDeliveryMobileNumbersSet().toArray(new String[] {})))//turn DeliveryMobileNumbersSet into a JS Array object
 				.decorate(new UIIDStrategyDecorator("savedDeliveryMobileNumbersSet"));
-				UIInput.make(tofill, "smsId", smsTask.getId() + "", null)
-				.decorate(new UIIDStrategyDecorator("smsId"));
+				UIInput.make(tofill, "id", smsTask.getId() + "", null)
+				.decorate(new UIIDStrategyDecorator("id"));
 			}
 			UIInput.make(tofill, "sakaiSiteId", null, currentSiteId)
 				.fossilize = false;

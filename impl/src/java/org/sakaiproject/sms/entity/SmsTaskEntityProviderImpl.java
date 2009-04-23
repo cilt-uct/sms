@@ -1,13 +1,20 @@
 package org.sakaiproject.sms.entity;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.EntityView;
+import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
@@ -24,7 +31,7 @@ import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 
-public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful {
+public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
 
 	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
 
@@ -49,7 +56,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			DeveloperHelperService developerHelperService) {
 		this.developerHelperService = developerHelperService;
 	}
-
 
 	/**
 	 * Implemented
@@ -118,6 +124,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          }
 
 		smsService.calculateEstimatedGroupSize(task);
+		
+		log.info("getGroupSizeEstimate: "+ task.getGroupSizeEstimate());
+		
 		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate(),false)) {
 			throw new SecurityException("User ("+ task.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
 		}
@@ -194,7 +203,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 
     public String[] getHandledOutputFormats() {
-        return new String[] {Formats.XML, Formats.JSON};
+        return new String[] {Formats.JSON};
     }
 
     public String[] getHandledInputFormats() {
@@ -228,5 +237,61 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		return null;
 	}
 
+	//Custom action to handle /sms-task/calculate
+	@EntityCustomAction(action=CUSTOM_ACTION,viewKey=EntityView.VIEW_NEW)
+	public String calculate(EntityReference ref, Map<String, Object> params) {
+		SmsTask smsTask = (SmsTask) getSampleEntity();
+		//Build smsTask object with received parameters
+		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		while ( selector.hasNext() ) {
+        	Entry<String, Object> pairs = selector.next();
+        	String paramsKey = pairs.getKey();
+        	String paramsValue = pairs.getValue().toString();
+        	if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
+        		smsTask.setSakaiSiteId(paramsValue.toString());
+        	}
+        	if( "senderUserId".equals(paramsKey) && ! "".equals( paramsValue)){
+        		smsTask.setSenderUserId(paramsValue.toString());
+        	} 
+        	if( "senderUserName".equals(paramsKey) && ! "".equals( paramsValue)){
+        		smsTask.setSenderUserName(paramsValue.toString());
+        	}  
+        	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
+        		smsTask.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
+        		log.info("key: "+ paramsKey);
+            	log.info("Value: "+paramsValue.toString());
+        	} 
+            if( "sakaiUserIds".equals(paramsKey) && ! "".equals( paramsValue)){
+            	smsTask.setSakaiUserIds((Set<String>) Arrays.asList(paramsValue.split(",")));
+            	log.info("key: "+ paramsKey);
+            	log.info("Value: "+paramsValue.toString());
+        	} 
+        	if( "deliveryMobileNumbersSet".equals(paramsKey) && ! "".equals( paramsValue)){
+        		smsTask.setDeliveryMobileNumbersSet((Set<String>) Arrays.asList(paramsValue.split(",")));
+        		log.info("key: "+ paramsKey);
+            	log.info("Value: "+paramsValue.toString());
+        	}
+        	
+		}
+		
+		if (smsTask.getSakaiSiteId() == null || smsTask.getSenderUserId() == null || smsTask.getSenderUserName() == null){
+			throw new IllegalArgumentException("ALL of these parameters need to be set: sakaiSiteId or senderUserId or senderUserName");
+		}
+		if (smsTask.getDeliveryEntityList().size() == 0 && smsTask.getSakaiUserIds().size() == 0 && smsTask.getDeliveryMobileNumbersSet().size() == 0){
+			throw new IllegalArgumentException("At least one of these parameters need to be set: deliveryMobileNumbersSet or sakaiUserIds or deliveryEntityList");
+		}
+		
+		String userReference = developerHelperService.getCurrentUserReference();
+		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + smsTask.getSakaiSiteId());
+         if (!allowedManage) {
+             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
+         }
 
+		smsService.calculateEstimatedGroupSize(smsTask);
+		
+        if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
+			throw new SecurityException("User ("+ smsTask.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
+		}
+		return JSONTranscoder.makeJSON(smsTask);
+	}
 }

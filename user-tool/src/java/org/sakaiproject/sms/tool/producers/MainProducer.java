@@ -78,15 +78,12 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
 		
-		log.info("Site id:"+currentSiteId);
-		log.info("getAccountName:"+smsAccount.getAccountName());
-		log.info("getCredits:"+smsAccount.getCredits());
-		
 		//Top links
 		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		//Render console summary
-		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
+		if ( smsAccount != null){
+			if(! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			UIOutput.make(tofill, "send");
 			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID));
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
@@ -132,6 +129,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual()}); //TODO Verify that these sms variables give what's expected
 				UIOutput.make(row, "task-cost", sms.getCreditCost() + "");				
 			}
+		}
 		}else
 		{
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");

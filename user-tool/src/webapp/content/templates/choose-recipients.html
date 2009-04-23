@@ -13,16 +13,24 @@
             $("#calculateCmd").bind('click', function(){
                     //alert('erger');
                     //$(".acfb-input").val($.fn.SMS.get.getSelectedRecipientsListIDs()[0]);
+                $('#checkNumbers').click(); // Fire numbers check function
                 $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
-                $("#deliveryGroupId").val($.fn.SMS.get.getSelectedRecipientsListIDs("groups").toString());
-                $("#deliveryMobileNumbersSet").val("+23534533333334664");
+                var entityList = new Array();
+                if($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0){
+                    entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("groups"));
+                }
+                if($.fn.SMS.get.getSelectedRecipientsListIDs("roles").length > 0){
+                    entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("roles"));
+                }
+                $("#deliveryEntityList").val(entityList.toString() == "," ? null : entityList.toString()); //set deliveryEntityList to null if no groups or roles are selected.
+                $("#deliveryMobileNumbersSet").val($.fn.SMS.get.getSelectedRecipientsListIDs("numbers").toString());
                     //$("#msg").val("This is the msg");
                     //alert($.fn.SMS.get.getSelectedRecipientsListNamesIDs());
                 //return false;
                 var params = function(){
                    var tempParams = [];
                     $.each(
-                            ["messageBody","sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryGroupId", "deliveryMobileNumbersSet"]
+                            ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"]
                             , function(i, item){
                         var val = $('[name='+item+']').val() ;
                         if(val != null ){
@@ -35,7 +43,7 @@
 
                 console.log(params());
                 $.ajax({
-                    url: "/direct/sms-task-calculate/new",
+                    url: "/direct/sms-task/calculate",
                     type: "POST",
                     data: params(),
                     success: function(data){
@@ -161,13 +169,14 @@
                 </div>
       <div class="act">
           <!-- DOM elements for re-opening a task -->
-         <input rsf:id="savedEntityList" id="savedEntityList" name="savedEntityList" type="hidden" value=""/>
-         <input rsf:id="savedDeliveryMobileNumbersSet"  id="savedDeliveryMobileNumbersSet" name="savedDeliveryMobileNumbersSet" type="hidden" value=""/>
-          <input rsf:id="smsId" type="hidden" value="" name="smsId"/>
+          <input rsf:id="savedUserIds" id="savedUserIds" name="savedUserIds" type="hidden" value=""/>
+          <input rsf:id="savedEntityList" id="savedEntityList" name="savedEntityList" type="hidden" value=""/>
+          <input rsf:id="savedDeliveryMobileNumbersSet"  id="savedDeliveryMobileNumbersSet" name="savedDeliveryMobileNumbersSet" type="hidden" value=""/>
+          <input rsf:id="id" type="hidden" value="" name="id"/>
         <!-- <input type="hidden" value="" name="deliveryUserId" id="deliveryUserId"/>  -->
         <input type="hidden" name="messageBody" id="messageBody" value="This is the msg"/>
         <input id="sakaiUserIds" name="sakaiUserIds" type="hidden"/>
-        <input id="deliveryGroupId" name="deliveryGroupId" type="hidden"/>
+        <input id="deliveryEntityList" name="deliveryEntityList" type="hidden"/>
         <input id="deliveryMobileNumbersSet" name="deliveryMobileNumbersSet" type="hidden"/>
         <input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
         <input rsf:id="senderUserName" type="hidden" value="" name="senderUserName"/>

@@ -36,7 +36,7 @@ jQuery.fn.autoCompletefb = function(options)
         },
         foundClass : ".acfb-data",
         inputClass : ".acfb-input",
-        deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage   ,
+        deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
     }
     if (options) jQuery.extend(settings, options);
 
