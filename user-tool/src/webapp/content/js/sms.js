@@ -159,29 +159,20 @@
             }
             $("#deliveryEntityList").val(entityList.toString() == "," ? null : entityList.toString()); //set deliveryEntityList to null if no groups or roles are selected.
             $("#deliveryMobileNumbersSet").val($.fn.SMS.get.getSelectedRecipientsListIDs("numbers").toString());
-            var params = function() {
-                var tempParams = [];
-                $.each(domElements, function(i, item) {
-                    var val = $('[name=' + item + ']').val() ;
-                    if (val != null) {
-                        if (val != '')    // Don't combine if statements to avoid RSF template translation error
-                            tempParams.push({name:item, value:val});
-                    }
-                });
-                return $.param(tempParams);
-            }
             $.ajax({
                 url: "/direct/sms-task/calculate",
                 type: "POST",
                 dataType: "xml",
-                data: params(),
+                data: smsParams(domElements),
                 beforeSend: function(){
                     $("#alertInsufficient").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
+                    frameGrow($("#cReportConsole").height(), "shrink");
                 },
                 success: function(data) {
                     $("#cReportConsole").slideDown('fast', function(){
                             $(this).effect('highlight', 'fast');
+                            frameGrow($("#cReportConsole").height(), "grow");
                     });
                     var xml = $(data);
                     var cSelected = xml.find("groupSizeEstimate").text();
@@ -209,6 +200,28 @@
                     $("#cReportConsole").slideUp('fast');
             }
 
+        },
+        processSubmitTask: function(domElements){
+            $.ajax({
+                url: "/direct/sms-task/new",
+                type: "POST",
+                dataType: "xml",
+                data: smsParams(domElements),
+                beforeSend: function(){
+                    log(smsParams(domElements));
+                },
+                success: function(data) {
+                    return false;
+                }
+            });
+        }   ,
+        setSubmitTaskButton: function(){
+            log($("#messageBody").val().length);
+            if ( $.fn.SMS.get.preserveDomSelections && $("#messageBody").val().length != 0 ) {
+                $("#smsSend").removeAttr("disabled");
+            } else {
+                $("#smsSend").attr("disabled", "disabled");
+            }
         },
         setSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names.push(array);
@@ -728,7 +741,7 @@
 
     function init_smsBoxCounter() {
         //Counter for the SMS Textarea
-        $("#smsMessage")
+        $("#messageBody")
                 .change(function(e) {
             $(this).keypress();
         })
@@ -752,6 +765,7 @@
             } else {
                 $(this).val($(this).val().substr(0, limit));
             }
+            $.fn.SMS.set.setSubmitTaskButton();
         });
     }
 
@@ -803,6 +817,37 @@
             $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
         }
     }
+    function frameGrow(height, updown) {
+        var _height = height == "" ? 250 : parseInt(height);
+        var frame = parent.document.getElementById(window.name);
+        try {
+            if (frame) {
+                if (updown == 'shrink') {
+                    var clientH = document.body.clientHeight - _height;
+                }
+                else {
+                    var clientH = document.body.clientHeight + _height;
+                }
+                $(frame).height(clientH);
+            }
+        } catch(e) {
+        }
+    }
 
+    function smsParams(domElements) {
+                var tempParams = [];
+                $.each(domElements, function(i, item) {
+                    var val = $('[name=' + item + ']').val() ;
+                    if (val != null) {
+                        if (val != '')    // Don't combine if statements to avoid RSF template translation error
+                            tempParams.push({name:item, value:val});
+                        log(item +" ----- "+ val);
+                    }
+                });
+        //set defaults for some params
+        tempParams.push({name:"messageBody", value:$("#messageBody").val()});
+        /*tempParams.push({name:"messageType", value:0});*/
+        return $.param(tempParams);
+            }
 
 })(jQuery);

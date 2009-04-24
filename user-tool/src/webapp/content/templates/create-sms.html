@@ -46,6 +46,19 @@
                     });
                 //});
 
+                $("#smsSend").bind('click', function(){
+                    //validate variables
+
+                    //Bind EB submit action
+                    $(".loadingImage").show();
+                    var d = new Date();
+                    d.setYear(2012);
+                    $("#dateToExpire").val(d);
+                     $("#dateToSend").val(new Date());
+                         var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet", "messageBody", "dateToSend", "dateToExpire"];
+                        $.fn.SMS.set.processSubmitTask(domElements);
+                        $(".loadingImage").hide();
+                    });
                 /*$("#smsDatesScheduleDate").datepicker({
                     minDate: 0,
                     maxDate: '+3M +10D'
@@ -83,7 +96,7 @@
                     Your message:
                 </div>
                 <h1 id="smsBoxCounter">160</h1>
-                <textarea rsf:id="form-box" name="smsMessage" cols="50" rows="7" class="" id="smsMessage">
+                <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
                 </textarea>
                 <div>
                     <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
@@ -104,13 +117,19 @@
                     <div id="smsDatesSchedule">
                         <h4 class="schedule">Schedule for a later date/time</h4>
                         <div name="date">
-                            <input type="text" id="smsDatesScheduleDate"/>
+                            <span rsf:id="smsDatesScheduleDate:">
+                            	<input type="text" id="smsDatesScheduleDate" name="smsDatesScheduleDate" value="YYYY/MM/DD" size="12" maxlength="10" />
+								<img src="../images/calendar.gif" alt="calendar" />
+							</span>
                         </div>
                     </div>
                     <div id="smsDatesExpiry">
                         <h4 class="exipry">Set expiry date/time</h4>
                         <div name="date">
-                            <input type="text" id="smsDatesExpiryDate"/>
+                            <span rsf:id="smsDatesExpiryDate:">
+                            	<input type="text" id="smsDatesExpiryDate" name="smsDatesExpiryDate" value="YYYY/MM/DD" size="12" maxlength="10" />
+								<img src="../images/calendar.gif" alt="calendar" />
+							</span>
                         </div>
                     </div>
                 </div>
@@ -122,8 +141,10 @@
                     </label>
                 </div>
                 <div class="act">
+                    <input id="dateToSend" name="dateToSend" type="hidden"/>
+                    <input id="dateToExpire" name="dateToExpire" type="hidden"/>
                 	<input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
-                    <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> 
+                    <input rsf:id="form-send" type="button" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
 					<input rsf:id="back" type="button" value="Back" rel="back"/>
                 </div>
             </form>

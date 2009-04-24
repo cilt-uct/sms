@@ -23,6 +23,15 @@
 			value="Messages, navbar" />
 	</bean>
 	
+	<!--
+		Define the bean roots from the request scope file that are accessible
+		via incoming request URL
+	-->
+	<bean parent="requestAddressibleParent">
+		<property name="value"
+			value="dummyBean" />
+	</bean>
+	
 	<bean id="dateUtil" class="org.sakaiproject.sms.tool.util.DateUtil">
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="localeGetter" ref="requestLocaleProxy" />

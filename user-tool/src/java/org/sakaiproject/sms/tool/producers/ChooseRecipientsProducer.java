@@ -134,6 +134,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			
 			Map<String, String> groups = new HashMap<String, String>();
 			groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
+			log.info("Found this many grps: "+ groups.size());
 			if ( groups.size() > 0 ){
 			
 				List<String> groupsValues = new ArrayList<String>(); 
@@ -147,8 +148,10 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
                 	Map.Entry<String, String> pairs = selector.next();
                 	String id = (String) pairs.getKey();
                 	groupsValues.add(id);
+                	log.info(id);
                 	String name = (String) pairs.getValue();
                 	groupsLabels.add(name);
+                	log.info(name);
                 	
                 	UIBranchContainer row = UIBranchContainer.make(form, "group-row:", count + "");
                 	UISelectChoice choice = UISelectChoice.make(row, "group-box", groupBoxesId, count);

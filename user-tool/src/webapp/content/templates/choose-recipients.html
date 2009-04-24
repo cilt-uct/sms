@@ -6,11 +6,14 @@
 <title rsf:id="page-title">Sms Items</title>
 <script type="text/javascript">
 $(document).ready(function() {
+    $("#facebox .body .header").text($(".portletBody .insColor:eq(0)").text());
     $("#peopleList").tabs();
     $("#peopleListNamesSuggest").autoCompletefb();
     $("#calculateCmd").bind('click', function(){
+        $(".loadingImage").show();
          var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
         $.fn.SMS.set.processCalculate(domElements);
+        $(".loadingImage").hide();
     });
    $("input[@rel=closeFB]").bind('click', function(){
         $(document).trigger('close.facebox');
@@ -19,17 +22,28 @@ $(document).ready(function() {
     $("#recipientsCmd").bind('click', function(){
         $("#facebox").hide('fast');
         $.fn.SMS.get.preserveDomSelections = true;
+        $.fn.SMS.set.setSubmitTaskButton();
     });
    //envoke checkbox bindings
     $.fn.SMS.get.people();
    //Re-select saved selections
     $.fn.SMS.set.savedTaskEntities();
+    //Customize tab Content height if neccessary
+    if ( $("#peopleListGroups").height() > 195 ){
+        $("#peopleListGroups").height(200);
+    }
+    if ( $("#peopleListRoles").height() > 195 ){
+        $("#peopleListRoles").height(200);
+    }
+    if ( $("#peopleListNames").height() > 195 ){
+        $("#peopleListNames").height(200);
+    }
 });
 </script>
 </head>
 <body>
 <div class="portletBody">
-<h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder">Choose Recipients</h3>
+<h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder" style="display:none">Choose Recipients</h3>
   <div class="alertMessage" style="display:none">
     <ul style="margin:0px;">
       <li>Message for user here</li>
@@ -88,7 +102,7 @@ $(document).ready(function() {
         <label rsf:id="copy-me-label">Send me a copy</label>
       </div>
         <div class="act">
-      <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" />
+      <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
         </div>
       <div id="cReportConsole" class="timeCells" style="display:none">
 
@@ -154,7 +168,6 @@ $(document).ready(function() {
           <input rsf:id="savedDeliveryMobileNumbersSet"  id="savedDeliveryMobileNumbersSet" name="savedDeliveryMobileNumbersSet" type="hidden" value=""/>
           <input rsf:id="id" type="hidden" value="" name="id"/>
         <!-- <input type="hidden" value="" name="deliveryUserId" id="deliveryUserId"/>  -->
-        <input type="hidden" name="messageBody" id="messageBody" value="This is the msg"/>
         <input id="sakaiUserIds" name="sakaiUserIds" type="hidden"/>
         <input id="deliveryEntityList" name="deliveryEntityList" type="hidden"/>
         <input id="deliveryMobileNumbersSet" name="deliveryMobileNumbersSet" type="hidden"/>

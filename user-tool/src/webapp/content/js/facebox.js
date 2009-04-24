@@ -94,8 +94,8 @@
               <td class="b"/> \
               <td class="body"> \
                 <div class="footer"> \
-                  <a href="#" class="close"> \
-                    <img src="/library/image/sakai/cross.png" title="close" class="close_image" /> \
+                  <h3 class="header breadCrumb" style="display:block"></h3> \
+			        <a class="close" href="#" style="padding:5px;" accesskey="x"><img class="close_image" title="close"/></a></div> \
                   </a> \
                 </div> \
         <div class="content"> \

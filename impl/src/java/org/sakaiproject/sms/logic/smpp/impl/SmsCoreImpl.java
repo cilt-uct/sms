@@ -318,7 +318,34 @@ public class SmsCoreImpl implements SmsCore {
 				throw new ReceiveIncomingSmsDisabledException(smsTask);
 			}
 		}
-
+		
+		//Cross-check account info. {@link org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl NEW does not set this
+		if ( smsTask.getSmsAccountId() == null ){
+			SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
+			.getSmsAccount(smsTask.getSakaiSiteId(), smsTask.getSenderUserId());
+			if ( account != null ){
+				smsTask.setSmsAccountId(account.getId());
+			}
+		}
+		
+		//Set messageType, expiry date, TTL, report tiemout.
+		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
+		.getOrCreateSystemSmsConfig();
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig();
+		
+		// Set DateToExpire to getMaxTimeToLive if it aint set in the UI
+		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
+		if (smsTask.getDateToExpire() == null){
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(smsTask.getDateToSend());
+			cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+			smsTask.setDateToExpire(cal.getTime());
+		}
+		smsTask.setDelReportTimeoutDuration(systemConfig.getDelReportTimeoutDuration());		
+		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
+		smsTask.setAttemptCount(0);
+		
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {

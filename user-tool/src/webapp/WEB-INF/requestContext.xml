@@ -24,6 +24,7 @@
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
@@ -55,6 +56,13 @@
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
-  <!--  Action Beans -->
- 
+  <bean id="myFieldDateInputEvolver"
+   class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver">
+    <property name="JSEmitter" ref="dateSymbolJSEmitter" />
+    <property name="requestBeanGetter" ref="ELEvaluator" />
+  </bean>
+
+	<!-- Action Beans -->
+	<bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
+
 </beans>
