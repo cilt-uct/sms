@@ -78,7 +78,7 @@
   $.extend($.facebox, {
     settings: {
       opacity      : 0,
-      overlay      : true,
+      overlay      : false, //if Using overlay, Disable overlay FB event so as not to loose DOM selections see use of $.fn.SMS.get.preserveDomSelections
       loadingImage : '/library/image/sakai/s.gif',
       closeImage   : '/library/image/sakai/cross.png',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
@@ -126,10 +126,12 @@
         left:	385.5
       }).show()
 
+      /**Disable key event so as not to loose DOM selections see use of $.fn.SMS.get.preserveDomSelections
+       *
       $(document).bind('keydown.facebox', function(e) {
         if (e.keyCode == 27) $.facebox.close()
         return true
-      })
+      })*/
       $(document).trigger('loading.facebox')
     },
 
@@ -308,7 +310,7 @@
    */
 
   $(document).bind('close.facebox', function() {
-    $(document).unbind('keydown.facebox')
+    //$(document).unbind('keydown.facebox')
     $('#facebox').fadeOut(function() {
       $('#facebox .content').removeClass().addClass('content')
       hideOverlay()

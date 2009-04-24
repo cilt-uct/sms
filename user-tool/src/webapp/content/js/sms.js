@@ -110,6 +110,7 @@
             });
         },
 
+        preserveDomSelections: false,
 
         people: function() {
             renderPeople();
@@ -137,13 +138,17 @@
             }
             }
             return tempIDs;
+        },
+        isSelectionMade: function(){
+            var bool = false;
+            bool = (getSelectedRecipientsList.length("roles") > 0 || getSelectedRecipientsList.length("groups") > 0 || getSelectedRecipientsList.length("names") > 0 || getSelectedRecipientsList.length("numbers") > 0 );
+            return bool;
         }
 };
     $.fn.SMS.set = {
         processCalculate: function(domElements) {
-            //alert('erger');
-            //$(".acfb-input").val($.fn.SMS.get.getSelectedRecipientsListIDs()[0]);
-            $('#checkNumbers').click(); // Fire numbers check function
+           $('#checkNumbers').click(); // Fire numbers check function
+            if( $.fn.SMS.get.isSelectionMade() ){
             $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
             var entityList = new Array();
             if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
@@ -154,9 +159,6 @@
             }
             $("#deliveryEntityList").val(entityList.toString() == "," ? null : entityList.toString()); //set deliveryEntityList to null if no groups or roles are selected.
             $("#deliveryMobileNumbersSet").val($.fn.SMS.get.getSelectedRecipientsListIDs("numbers").toString());
-            //$("#msg").val("This is the msg");
-            //alert($.fn.SMS.get.getSelectedRecipientsListNamesIDs());
-            //return false;
             var params = function() {
                 var tempParams = [];
                 $.each(domElements, function(i, item) {
@@ -197,21 +199,15 @@
                         });
                     }else{
                         $("#recipientsCmd").removeAttr("disabled");
-                        $("#recipientsCmd").bind('click', function(){
-                               // $(document).trigger("facebox.close");
-                            $("#facebox").fadeOut('fast');
-                            $("#smsAddRecipients").unbind('click');
-                            $("#smsAddRecipients").bind('click', function(){
-                                if ($("#facebox").length != 0 ){
-                                    $("#facebox").fadeIn('fast');
-                                }
-                                return false;
-                            });
-                        });
                     }
                     return false;
                 }
             });
+            }else{
+                alert("Make a selection first.");
+                 $("#alertInsufficient").slideUp('fast');
+                    $("#cReportConsole").slideUp('fast');
+            }
 
         },
         setSelectedRecipientsListName: function(array) {
@@ -221,11 +217,9 @@
         sliceSelectedRecipientsListName: function(id) {
             $.each(selectedRecipientsList.names, function(i, parent) {
                 if (parent) {
-                    //$.each(parent, function(n, item) {
                     if (parent[1] == id) {
                         selectedRecipientsList.names.splice(parseInt(i), 1);
                     }
-                    //});
                 }
             });
        },
@@ -391,6 +385,9 @@
                 case "numbers":
                     return selectedRecipientsList.numbers.length;
                     break;
+                case "all":
+                    return selectedRecipientsList.length;
+                    break;
             }
         },
         array: function(filter) {
@@ -406,6 +403,9 @@
                     break;
                 case "numbers":
                     return selectedRecipientsList.numbers;
+                    break;
+                case "all":
+                    return selectedRecipientsList;
                     break;
             }
         }
@@ -564,6 +564,7 @@
             if (selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
             if (selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
             if (selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
+            $.fn.SMS.get.preserveDomSelections = false;
         });
 
         //Initialise the Individuals Tab

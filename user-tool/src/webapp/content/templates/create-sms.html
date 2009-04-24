@@ -33,8 +33,19 @@
 					//$.get( "/direct/membership/site/" + $('input[name=sakaiSiteId]').val() + ".json" );
                    	$.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
                 //});
-                //$.fn.SMS.settings.test = 'hey';
-                $("#smsAddRecipients").facebox();
+
+                    $("#smsAddRecipients").bind('click',function() {
+                        if($.fn.SMS.get.preserveDomSelections){
+                           if ($("#facebox").length != 0) {
+                                $("#facebox").fadeIn('fast');
+                          }
+                        }else{
+                            $.facebox({ajax: this.href});
+                        }
+                        return false;
+                    });
+                //});
+
                 /*$("#smsDatesScheduleDate").datepicker({
                     minDate: 0,
                     maxDate: '+3M +10D'

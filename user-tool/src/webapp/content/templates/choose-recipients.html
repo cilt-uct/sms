@@ -5,54 +5,27 @@
 <head>
 <title rsf:id="page-title">Sms Items</title>
 <script type="text/javascript">
-       $(document).ready(function() {
-			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
-			$("#peopleList").tabs();
-			$("#peopleListNamesSuggest").autoCompletefb();
-           // $("#chooseForm").ajaxForm();
-            $("#calculateCmd").bind('click', function(){
-                 var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
-                $.fn.SMS.set.processCalculate(domElements);
-                //alert('regre');
-            });
-           $("input[@rel=closeFB]").bind('click', function(){
-                $(document).trigger('close.facebox');
-                return false;
-            });
-           //envoke checkbox bindings
-            $.fn.SMS.get.people();
-           //Re-select saved selections
-            $.fn.SMS.set.savedTaskEntities();
-        });
-    </script>
-
-
-   <!-- <script type="text/javascript">
-       $(document).ready(function() {
-			//$.fn.SMS.people(); //Populate the people lists ie:roles, groups and individuals
-			$("#peopleList").tabs();
-			$("#peopleListNamesSuggest").autoCompletefb();
-            $("#calculateCmd").bind('click', function(){
-                    //alert('erger');
-                    //$(".acfb-input").val($.fn.SMS.get.getSelectedRecipientsListIDs()[0]);
-                    alert($(".acfb-input").val());
-                $.ajax({
-                    url: "/direct/sms-task/new",
-                    type: "POST",
-                    data: $("#chooseForm").formToArray()
-                });
-                return false;
-            });
-           $("input[@rel=closeFB]").bind('click', function(){
-                $(document).trigger("facebox.close");
-                return false;
-            });
-           //envoke checkbox bindings
-            $.fn.SMS.get.people();
-        });
-    </script>-->
-
-
+$(document).ready(function() {
+    $("#peopleList").tabs();
+    $("#peopleListNamesSuggest").autoCompletefb();
+    $("#calculateCmd").bind('click', function(){
+         var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
+        $.fn.SMS.set.processCalculate(domElements);
+    });
+   $("input[@rel=closeFB]").bind('click', function(){
+        $(document).trigger('close.facebox');
+        return false;
+    });
+    $("#recipientsCmd").bind('click', function(){
+        $("#facebox").hide('fast');
+        $.fn.SMS.get.preserveDomSelections = true;
+    });
+   //envoke checkbox bindings
+    $.fn.SMS.get.people();
+   //Re-select saved selections
+    $.fn.SMS.set.savedTaskEntities();
+});
+</script>
 </head>
 <body>
 <div class="portletBody">
