@@ -55,7 +55,7 @@
                     d.setYear(2012);
                     $("#dateToExpire").val(d);
                      $("#dateToSend").val(new Date());
-                         var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet", "messageBody", "dateToSend", "dateToExpire"];
+                         var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet", "messageBody"];
                         $.fn.SMS.set.processSubmitTask(domElements);
                         $(".loadingImage").hide();
                     });
@@ -95,8 +95,8 @@
                 <div rsf:id="msg=ui.send.message">
                     Your message:
                 </div>
-                <h1 id="smsBoxCounter">160</h1>
-                <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
+                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <b id="smsBoxCounter">160</b></div>
+        <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
                 </textarea>
                 <div>
                     <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
@@ -141,9 +141,7 @@
                     </label>
                 </div>
                 <div class="act">
-                    <input id="dateToSend" name="dateToSend" type="hidden"/>
-                    <input id="dateToExpire" name="dateToExpire" type="hidden"/>
-                	<input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
+                    <input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
                     <input rsf:id="form-send" type="button" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
 					<input rsf:id="back" type="button" value="Back" rel="back"/>
                 </div>

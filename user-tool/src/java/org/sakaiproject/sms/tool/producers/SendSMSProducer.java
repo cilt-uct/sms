@@ -103,25 +103,27 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			UIOutput.make(form, "console-email"); //TODO show email for credit purchases
 			
 			//TODO Add dateTime pickers
-			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_INPUT);
+			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
 
-			UIInput scheduleDate = UIInput.make(form, "smsDatesScheduleDate:", "dummyBean.dummyField" ); 
+			UIInput scheduleDate = UIInput.make(form, "smsDatesScheduleDate:", "dummyBean.smsDatesScheduleDate" ); 
 			//scheduleDate.decorate(new UIIDStrategyDecorator("smsDatesScheduleDate"));
 			//scheduleDate.fossilize = true;
 			//dateEvolver.evolveDateInput(scheduleDate);
 			if (smsTask.getDateToSend() == null){
-				dateEvolver.evolveDateInput(scheduleDate);
+				dateEvolver.evolveDateInput(scheduleDate, new Date());
 			}else{
 				dateEvolver.evolveDateInput(scheduleDate, smsTask.getDateToSend());
 			}
 			
 
-			UIInput expireDate = UIInput.make(form, "smsDatesExpiryDate:", "dummyBean.dummyField" ); 
+			UIInput expireDate = UIInput.make(form, "smsDatesExpiryDate:", "dummyBean.smsDatesScheduleDate" ); 
 			//scheduleDate.decorate(new UIIDStrategyDecorator("smsDatesExpiryDate"));
 			//scheduleDate.fossilize = true;
 			//dateEvolver.evolveDateInput(scheduleDate);
 			if (smsTask.getDateToSend() == null){
-				dateEvolver.evolveDateInput(expireDate);
+				Date expiry = new Date();
+				expiry.setDate(expiry.getDate() + 7); //TODO change this one week default to something else
+				dateEvolver.evolveDateInput(expireDate, expiry);
 			}else{
 				dateEvolver.evolveDateInput(expireDate, smsTask.getDateToSend());
 			}

@@ -157,3 +157,7 @@ text-align:right;
 	/*height: 100%;JS set actual height depending on content*/
 	overflow: auto;
 }
+.Counter {
+	text-indent: 270px;
+	color: #666666;
+}

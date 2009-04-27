@@ -200,12 +200,18 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 			
 			if ( smsTask.getId() != null ){
-				UIInput.make(tofill, "savedEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
-				.decorate(new UIIDStrategyDecorator("savedEntityList"));
-				UIInput.make(tofill, "savedUserIds", null, toJSONarray(smsTask.getSakaiUserIds().toArray(new String[] {}))) //turn user ids into a JS Array object
-				.decorate(new UIIDStrategyDecorator("savedUserIds"));
-				UIInput.make(tofill, "savedDeliveryMobileNumbersSet", null, toJSONarray(smsTask.getDeliveryMobileNumbersSet().toArray(new String[] {})))//turn DeliveryMobileNumbersSet into a JS Array object
-				.decorate(new UIIDStrategyDecorator("savedDeliveryMobileNumbersSet"));
+				if( smsTask.getDeliveryEntityList() != null){
+					UIInput.make(tofill, "savedEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
+					.decorate(new UIIDStrategyDecorator("savedEntityList"));
+				}
+				if( smsTask.getSakaiUserIds() != null ){
+					UIInput.make(tofill, "savedUserIds", null, toJSONarray(smsTask.getSakaiUserIds().toArray(new String[] {}))) //turn user ids into a JS Array object
+					.decorate(new UIIDStrategyDecorator("savedUserIds"));
+				}
+				if( smsTask.getDeliveryMobileNumbersSet() != null ){
+					UIInput.make(tofill, "savedDeliveryMobileNumbersSet", null, toJSONarray(smsTask.getDeliveryMobileNumbersSet().toArray(new String[] {})))//turn DeliveryMobileNumbersSet into a JS Array object
+					.decorate(new UIIDStrategyDecorator("savedDeliveryMobileNumbersSet"));
+				}
 				UIInput.make(tofill, "id", smsTask.getId() + "", null)
 				.decorate(new UIIDStrategyDecorator("id"));
 			}
@@ -216,6 +222,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIInput.make(tofill, "senderUserId", null, currentUserId)
 				.fossilize = false;
 			
+			UICommand.make(tofill, "cancel", UIMessage.make("sms.general.cancel"));
 			UICommand.make(form, "continue", UIMessage.make("ui.recipients.choose.continue"), null)
 				.decorate(new UIIDStrategyDecorator("recipientsCmd"));
 			

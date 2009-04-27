@@ -188,6 +188,7 @@
                         $("#alertInsufficient").slideDown('fast', function(){
                             $(this).effect('highlight', 'slow');
                         });
+                        $("#recipientsCmd").attr("disabled", "disabled");
                     }else{
                         $("#recipientsCmd").removeAttr("disabled");
                     }
@@ -208,7 +209,7 @@
                 dataType: "xml",
                 data: smsParams(domElements),
                 beforeSend: function(){
-                    log(smsParams(domElements));
+                    //log(smsParams(domElements));
                 },
                 success: function(data) {
                     return false;
@@ -216,7 +217,7 @@
             });
         }   ,
         setSubmitTaskButton: function(){
-            log($("#messageBody").val().length);
+            //log($("#messageBody").val().length);
             if ( $.fn.SMS.get.preserveDomSelections && $("#messageBody").val().length != 0 ) {
                 $("#smsSend").removeAttr("disabled");
             } else {
@@ -694,7 +695,7 @@
             $("#numbersInvalid .msg").fadeOut();
             that.focus();
             }
-            log(selectedRecipientsList.numbers.toString());
+            //log(selectedRecipientsList.numbers.toString());
             return false;
         });
 
@@ -841,12 +842,13 @@
                     if (val != null) {
                         if (val != '')    // Don't combine if statements to avoid RSF template translation error
                             tempParams.push({name:item, value:val});
-                        log(item +" ----- "+ val);
+                        //log(item +" ----- "+ val);
                     }
                 });
         //set defaults for some params
         tempParams.push({name:"messageBody", value:$("#messageBody").val()});
-        /*tempParams.push({name:"messageType", value:0});*/
+        tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
+        tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
         return $.param(tempParams);
             }
 

@@ -56,13 +56,23 @@
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
 
-  <bean id="myFieldDateInputEvolver"
-   class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver">
-    <property name="JSEmitter" ref="dateSymbolJSEmitter" />
-    <property name="requestBeanGetter" ref="ELEvaluator" />
+<bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
+
+  <bean id="nullableFieldDateTransit" parent="beanExploder">
+    <property name="factory">
+      <bean class="org.sakaiproject.sms.tool.rsf.NullableFieldDateTransit"
+        init-method="init">
+        <property name="locale" ref="requestLocale" />
+        <property name="timeZone" ref="requestTimeZone"/>
+      </bean>
+    </property>
   </bean>
 
-	<!-- Action Beans -->
-	<bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
+  <bean id="myFieldDateInputEvolver"
+   class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver" singleton="false">
+    <property name="JSEmitter" ref="dateSymbolJSEmitter" />
+    <property name="requestBeanGetter" ref="ELEvaluator" />
+    <property name="transitBase" value="nullableFieldDateTransit" />
+  </bean>
 
 </beans>

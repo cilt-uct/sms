@@ -3,9 +3,19 @@
  */
 package org.sakaiproject.sms.tool.beans;
 
-public class DummyBean {
+import java.util.Date;
 
- private String dummyField;
+public class DummyBean {
+	private Date smsDatesScheduleDate;
+	public Date getSmsDatesScheduleDate() {
+		return smsDatesScheduleDate;
+	}
+
+	public void setSmsDatesScheduleDate(Date smsDatesScheduleDate) {
+		this.smsDatesScheduleDate = smsDatesScheduleDate;
+	}
+
+	private String dummyField;
 
 public String getDummyField() {
 	return dummyField;
