@@ -76,8 +76,8 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
-				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
-				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeActual() });
+				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
+				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
 				
 				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString()));
 				form.type = EarlyRequestParser.RENDER_REQUEST;

@@ -87,12 +87,13 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
 				UIMessage.make(tofill, "sms-sent", "ui.sent.sms.completed", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
-				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeActual() });
+				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeEstimate() });
 				
 				UILink.make(tofill, "recipient-header", UIMessage.make("ui.sent.sms.header.recipients"), "#");
 				UILink.make(tofill, "status-header", UIMessage.make("ui.sent.sms.header.status"), "#");
 				
 				Set<SmsMessage> smses = smsTask.getSmsMessages();
+				log.info("SMSes found = "+smses.size());
 				for (SmsMessage sms : smses){
 					UIBranchContainer row = UIBranchContainer.make(tofill, "sms-row:");
 					UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(sms.getSakaiUserId()));

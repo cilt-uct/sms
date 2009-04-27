@@ -10,8 +10,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 
-import com.sun.tools.javac.util.Log;
-
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
