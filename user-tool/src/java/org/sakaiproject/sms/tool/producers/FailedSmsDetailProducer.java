@@ -79,7 +79,7 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
 				
-				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString()));
+				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.statusType_NEW));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
 				
 				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete

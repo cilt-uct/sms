@@ -85,7 +85,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		if ( smsAccount != null){
 			if(! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			UIOutput.make(tofill, "send");
-			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID));
+			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
 			UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
 		}else{

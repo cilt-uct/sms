@@ -204,8 +204,14 @@
 
         },
         processSubmitTask: function(domElements){
+            var _url = "";
+            if($("#statusType").val() != null && $("#statusType").val() == "EDIT"){
+                _url = "/direct/sms-task/"+ $("#smsId").val() +"/edit";
+            }else{
+                _url = "/direct/sms-task/new";
+            }
             $.ajax({
-                url: "/direct/sms-task/new",
+                url: _url,
                 type: "POST",
                 dataType: "xml",
                 data: smsParams(domElements),
@@ -213,7 +219,7 @@
                     //log(smsParams(domElements));
                 },
                 success: function(data) {
-                    return false;
+                    return true;
                 }
             });
         }   ,
@@ -852,7 +858,21 @@
                     }
                 });
         //set defaults for some params
+        var savedElements = ["tasksakaiUserIds", "taskdeliveryEntityList", "taskdeliveryMobileNumbersSet"];
+        if ($("#facebox").length == 0){
+             $.each(savedElements, function(i, item) {
+                    var val = $('[name=' + item + ']').val() ;
+                    if (val != null) {
+                        if (val != '')    // Don't combine if statements to avoid RSF template translation error
+                            tempParams.push({name:item.replace("task",""), value:val});
+                        //log(item +" ----- "+ val);
+                    }
+                });
+        }
         tempParams.push({name:"messageBody", value:$("#messageBody").val()});
+        if($("#statusType").val() != null && $("#statusType").val() == "EDIT"){
+            tempParams.push({name:"id", value:$("#smsId").val()});
+        }
         //ALWAYS send through a schedule date.
         tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
         if($("#booleanExpiry:checked").length != 0){

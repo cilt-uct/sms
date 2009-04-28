@@ -16,6 +16,9 @@ public class StatusUtils {
 	
 	private static final String statusIconExtension = ".png";
 	
+	public static final String statusType_NEW = "NEW";
+	public static final String statusType_EDIT = "EDIT";
+	
 	private MessageLocator messageLocator;
 	public void setMessageLocator(MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;

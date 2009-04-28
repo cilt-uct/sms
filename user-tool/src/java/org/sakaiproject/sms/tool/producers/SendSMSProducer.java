@@ -9,6 +9,7 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
+import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UICommand;
@@ -80,7 +81,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 			}
 			
-			UIForm form = UIForm.make(tofill, "form");
+			UIForm form = UIForm.make(tofill, "form", new SmsParams(MainProducer.VIEW_ID));
 			
 			//textarea
 			UIInput messageBody = UIInput.make(form, "form-box", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
@@ -148,10 +149,31 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				.decorate(new UILabelTargetDecorator(notify));
 			
 			if ( smsTask.getId() != null ){
-				UIInput.make(form, "id", null, smsTask.getId() + "")
-				 .fossilize = false;
+				if( smsTask.getDeliveryEntityList() != null){
+					UIInput.make(tofill, "taskdeliveryEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
+					.decorate(new UIIDStrategyDecorator("taskdeliveryEntityList"));
+				}
+				if( smsTask.getSakaiUserIds() != null ){
+					UIInput.make(tofill, "taskuserIds", null, toJSONarray(smsTask.getSakaiUserIds().toArray(new String[] {}))) //turn user ids into a JS Array object
+					.decorate(new UIIDStrategyDecorator("taskuserIds"));
+				}
+				if( smsTask.getDeliveryMobileNumbersSet() != null ){
+					UIInput.make(tofill, "taskdeliveryMobileNumbersSet", null, toJSONarray(smsTask.getDeliveryMobileNumbersSet().toArray(new String[] {})))//turn DeliveryMobileNumbersSet into a JS Array object
+					.decorate(new UIIDStrategyDecorator("taskdeliveryMobileNumbersSet"));
+				}
+				UIInput smsId = UIInput.make(form, "id", null, smsTask.getId() + "");
+				smsId.fossilize = false;
+				smsId.decorate(new UIIDStrategyDecorator("smsId"));
 			}
-			UIInput.make(form, "sakaiSiteId", null, currentSiteId)
+			
+			UIInput statusType = UIInput.make(form, "statusType", null, smsParams.status == null ? StatusUtils.statusType_NEW : smsParams.status);
+			statusType.fossilize = false;
+			statusType.decorate(new UIIDStrategyDecorator("statusType"));
+			UIInput.make(tofill, "sakaiSiteId", null, currentSiteId)
+				.fossilize = false;
+			UIInput.make(tofill, "senderUserName", null, externalLogic.getSakaiUserDisplayName(currentUserId))
+				.fossilize = false;
+			UIInput.make(tofill, "senderUserId", null, currentUserId)
 				.fossilize = false;
 			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), null)
 				.decorate(new UIIDStrategyDecorator("smsSend"));
@@ -167,6 +189,24 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		
 		
 		
+	}
+	
+	private String toJSONarray(String[] entities) {
+		if ( ! "".equals(entities) ){
+			String jsonList = "";
+			StringBuilder sb = new StringBuilder(jsonList);
+			int count = 1;
+			for (String entity : entities){
+				sb.append(entity);
+				//jsonList += entity;
+				if ( count == entities.length -1 ){
+					sb.append(",");
+				}
+				count++;
+			}
+			return sb.toString();
+		}
+		return null;
 	}
 
 	public ViewParameters getViewParameters() {

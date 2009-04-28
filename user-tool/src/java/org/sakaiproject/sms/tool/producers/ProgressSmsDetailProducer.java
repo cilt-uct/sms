@@ -114,65 +114,75 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				StringBuffer usersSb = new StringBuffer();
 				StringBuffer numbersSb = new StringBuffer();
 				int count = 1;
-				for ( String role : roles){
-					if ( role != null){
-						rolesSb.append(role);
-						 if( count != roles.size()){
-							 rolesSb.append(", "); 
-						 }
-						count ++;
+				if(roles.size() > 0){
+					for ( String role : roles){
+						if ( role != null){
+							rolesSb.append(role);
+							 if( count != roles.size()){
+								 rolesSb.append(", "); 
+							 }
+							count ++;
+						}
+					}
+					if ( rolesSb.toString() != null ){
+						UIOutput.make(tofill, "selections1", rolesSb.toString());
 					}
 				}
-				if ( rolesSb.toString() != null ){
-					UIOutput.make(tofill, "selections1", rolesSb.toString());
+				
+				if(groupIds.size() > 0){
+					Iterator<Entry<String, String>> selector = groupIds.entrySet().iterator();
+					count = 1;
+					while ( selector.hasNext() ) {
+			        	Entry<String, String> pairs = selector.next();
+			        	String siteId = pairs.getKey();
+			        	String groupId = pairs.getValue().toString();
+			        	String groupName = externalLogic.getSakaiGroupNameFromId(siteId, groupId);
+			        	groupsSb.append(groupName);
+			        	if( count != roles.size()){
+			        		groupsSb.append(", "); 
+						 }
+			        	count ++;
+					}
+					if ( groupsSb.toString() != null ){
+						UIOutput.make(tofill, "selections2", groupsSb.toString());
+					}
 				}
-				Iterator<Entry<String, String>> selector = groupIds.entrySet().iterator();
-				count = 1;
-				while ( selector.hasNext() ) {
-		        	Entry<String, String> pairs = selector.next();
-		        	String siteId = pairs.getKey();
-		        	String groupId = pairs.getValue().toString();
-		        	String groupName = externalLogic.getSakaiGroupNameFromId(siteId, groupId);
-		        	groupsSb.append(groupName);
-		        	if( count != roles.size()){
-		        		groupsSb.append(", "); 
-					 }
-		        	count ++;
-				}
-				if ( groupsSb.toString() != null ){
-					UIOutput.make(tofill, "selections2", groupsSb.toString());
-				}
+				
 				Set<String> sakaiUserIds = smsTask.getSakaiUserIds();
 				count = 1;
-				for ( String user : sakaiUserIds){
-					usersSb.append(externalLogic.getSakaiUserSortName(user));
-		        	if( count != roles.size()){
-		        		usersSb.append(", "); 
-					 }
-		        	count ++;
-				}
-				if( usersSb.toString() != null ){
-					UIOutput.make(tofill, "selections3", usersSb.toString());
+				if(sakaiUserIds.size() > 0){
+					for ( String user : sakaiUserIds){
+						usersSb.append(externalLogic.getSakaiUserSortName(user));
+			        	if( count != roles.size()){
+			        		usersSb.append(", "); 
+						 }
+			        	count ++;
+					}
+					if( usersSb.toString() != null ){
+						UIOutput.make(tofill, "selections3", usersSb.toString());
+					}
 				}
 					
 				Set<String> numbers = smsTask.getDeliveryMobileNumbersSet();
 				count = 1;
-				for ( String num : numbers){
-					numbersSb.append(num);
-					if( count != roles.size()){
-						numbersSb.append(", "); 
-					 }
-		        	count ++;
-				}
-				if( numbersSb.toString() != null ){
-					UIOutput.make(tofill, "selections4", numbersSb.toString());
+				if(numbers.size() > 0){
+					for ( String num : numbers){
+						numbersSb.append(num);
+						if( count != roles.size()){
+							numbersSb.append(", "); 
+						 }
+			        	count ++;
+					}
+					if( numbersSb.toString() != null ){
+						UIOutput.make(tofill, "selections4", numbersSb.toString());
+					}
 				}
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
 				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.credits", new Object[] { smsTask.getCreditEstimate() });
 				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { smsTask.getCostEstimate() });
 				
-				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString()));
+				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_NEW));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
 				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
 				UIInput.make(tofill, "smsId", null, smsTask.getId() + "")

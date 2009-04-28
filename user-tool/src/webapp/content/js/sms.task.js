@@ -39,8 +39,7 @@ $(document).ready(function(){
      function init(_that) {
          if(_that.id = "smsDelete"){
              smsDelete(_that);
-         }
-         if(_that.id = "smsStop"){
+         }else if(_that.id = "smsStop"){
              smsStop(_that);
          }
      }
