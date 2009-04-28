@@ -80,7 +80,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 			}
 			
-			UIForm form = UIForm.make(tofill, "form", new SmsParams("/direct/sms-task/XXX/edit"));
+			UIForm form = UIForm.make(tofill, "form");
 			
 			//textarea
 			UIInput messageBody = UIInput.make(form, "form-box", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
