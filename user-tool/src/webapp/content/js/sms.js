@@ -851,5 +851,21 @@
         tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
         return $.param(tempParams);
             }
+    /**
+     * To parse date object into a timestamp. //TODO: This is not yet being used due to tests on the EP SimpleDateFormat converter code.
+     * @param _date  ISO8601 format date
+     */
+      function parseIsoToTimestamp(_date) {
+        if(isNaN(_date)){
+            var s = $.trim(_date);
+            s = s.replace(/-/, "/").replace(/-/, "/");
+            s = s.replace(/-/, "/").replace(/-/, "/");
+            s = s.replace(/:00.000/, "");
+            s = s.replace(/T/, " ").replace(/Z/, " UTC");
+            s = s.replace(/([\+-]\d\d)\:?(\d\d)/, " $1$2"); // -04:00 -> -0400
+            return Number(new Date(s));
+        }
+        return null;
+    }
 
 })(jQuery);

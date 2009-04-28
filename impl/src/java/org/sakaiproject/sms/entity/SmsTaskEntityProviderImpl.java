@@ -1,9 +1,10 @@
 package org.sakaiproject.sms.entity;
 
-import java.text.Format;
-import java.util.ArrayList;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,8 +15,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
 import org.azeckoski.reflectutils.transcoders.XMLTranscoder;
+import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -34,7 +35,6 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
 
@@ -42,6 +42,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 	//TODO these need to come from the services
 	private static String PERMISSION_MANAGE = "sms.manage";
+	private static String DATE_FORMAT_ISO8601 = "yyyy-MM-dd'T'HH:mm:ss";
 
 	/**
 	 * Inject services
@@ -106,25 +107,51 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 		SmsTask task = (SmsTask) entity;
+		Date simpleDate = new Date();
 		if (task.getDateCreated() == null)
-			task.setDateCreated(new Date());
-
+			task.setDateCreated(simpleDate);
+		//Assert date params to task object. Default casting to task doesn't set these. SMS-28
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
+		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		while ( selector.hasNext() ) {
+        	Entry<String, Object> pairs = selector.next();
+        	String paramsKey = pairs.getKey();
+        	String paramsValue = pairs.getValue().toString();
+        	if( "dateToSend".equals(paramsKey) ){
+    			try {
+					task.setDateToSend( formatter.parse(paramsValue) );
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    	}
+    	if( "dateToExpire".equals(paramsKey) ){
+			try {
+				task.setDateToExpire( formatter.parse(paramsValue) );
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+		}
+		
 		 String userReference = developerHelperService.getCurrentUserReference();
 		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
          if (!allowedManage) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
          }
-
-         //TODO remove manula date set
-         task.setDateToSend(new Date());
          
-		smsService.calculateEstimatedGroupSize(task);
+         smsService.calculateEstimatedGroupSize(task);
 		
 		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate(),false)) {
 			throw new SecurityException("User ("+ task.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
 		}
 
 		try {
+			log.info("getMessageBody: "+task.getMessageBody());
+			log.info("getDateCreated: "+task.getDateCreated());
+			log.info("getDateToExpire: "+task.getDateToExpire());
+			log.info("getDateToSend: "+task.getDateToSend());
 			smsService.insertTask(task);
 			//return task.getId().toString();
 
