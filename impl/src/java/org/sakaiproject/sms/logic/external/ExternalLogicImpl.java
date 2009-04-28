@@ -602,4 +602,29 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return roles;
 	}
+
+	public String getSakaiGroupNameFromId(String siteId, String groupId) {
+		if (! "".equals(groupId)){
+			try {
+				return	siteService.getSite(siteId).getGroup(EntityReference.getIdFromRefByKey(entity, "group")).getTitle();
+			} catch (IdUnusedException e) {
+				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
+			}
+		}
+		return null;
+	}
+
+	public String getEntityRealIdFromRefByKey(String entity, String key) {
+		if ( entity != null && key != null ){
+			return EntityReference.getIdFromRefByKey(entity, key);
+		}
+		return null;
+	}
+
+	public String getEntityPrefix(String entity) {
+		if ( entity != null ){
+			return EntityReference.getPrefix(entity);
+		}
+		return null;
+	}
 }

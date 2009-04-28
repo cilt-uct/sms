@@ -148,12 +148,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
 
 		try {
-			log.info("getMessageBody: "+task.getMessageBody());
-			log.info("getDateCreated: "+task.getDateCreated());
-			log.info("getDateToExpire: "+task.getDateToExpire());
-			log.info("getDateToSend: "+task.getDateToSend());
 			smsService.insertTask(task);
-			//return task.getId().toString();
+			return task.getId().toString();
 
 		} catch (SmsTaskValidationException e) {
 			// TODO Auto-generated catch block

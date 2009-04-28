@@ -217,4 +217,10 @@ public interface ExternalLogic {
 	public Map<String, String> getSakaiRolesForSite(String siteId);
 	
 	public  Map<String, String> getSakaiGroupsForSite(String siteId);
+
+	public String getSakaiGroupNameFromId(String siteId, String groupId);
+
+	public String getEntityRealIdFromRefByKey(String entity, String key);
+
+	public String getEntityPrefix(String entity);
 }

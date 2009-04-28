@@ -238,5 +238,20 @@ public class ExternalLogicStub implements ExternalLogic {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public String getSakaiGroupNameFromId(String siteId, String groupId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getEntityRealIdFromRefByKey(String entity, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getEntityPrefix(String entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

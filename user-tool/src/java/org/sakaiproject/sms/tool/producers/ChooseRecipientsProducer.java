@@ -192,9 +192,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				.decorate(new UILabelTargetDecorator(copy));
 			
 			//Render console summary  console-selected  console-selected-figure
-			UIOutput.make(tofill, "console-selected", ( smsTask.getId() != null )? 0 + "" : smsTask.getGroupSizeActual() + "");
-			UIOutput.make(tofill, "console-credits", ( smsTask.getId() != null )? 0 + "" : smsTask.getCreditCost() + "");
-			UIOutput.make(tofill, "console-cost", ( smsTask.getId() != null )? 0 + "" : smsTask.getCostEstimate() + "");
+			UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
+			UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
+			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0 + "" : smsTask.getCostEstimate() + "");
 			UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
 			UIMessage.make(tofill, "console-purchase", "ui.console.help");
 			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases

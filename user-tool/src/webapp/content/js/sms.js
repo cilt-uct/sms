@@ -192,6 +192,7 @@
                     }else{
                         $("#recipientsCmd").removeAttr("disabled");
                     }
+                    $("#recipientsCmd").removeAttr("disabled");
                     return false;
                 }
             });
@@ -238,38 +239,39 @@
             });
        },
         savedTaskEntities: function(){
+            if ($("#id").length != 0 && $("#id").val() != ""){
+                $("#cReportConsole").show();
+            }
 //Re-select saved Entity selections   ie: roles and groups
             if ( $("#savedEntityList").length != 0 ){
                 //Render saved entity selections
                 var values = $("#savedEntityList").val().toString().split(',');
-                var siteId = $("#sakaiSiteId").val();
-                var types = ["Group", "Role"];
-                $.each(types, function(n, type){
-                    var regExp = "/site/" + siteId + "/" + type.toLowerCase() + "/";
-                    $.each(values, function(i, entityId){
-                        var idValue = entityId.replace(regExp, "");
-                            $('#peopleList'+ type +' > div[@rel='+ type +'] input[value='+ idValue +']:eq(0)').each(function(){
+                $.each(values, function(i, entity){
+                    if(entity != "" && entity != null){
+                       var elem = 'input[value='+ entity +']:eq(0)';
+                       $(elem).each(function(){
                                 this.checked = true;
-                                checkEntityboxAction(this, type + "s");
+                                checkEntityboxAction(this, entity.split("/")[3] + "s");
                             });
+                    }
                     });
-
-                });
             }
 
 //Re-select saved users selections ie: individuals
-            if ( $("#savedUserIds").length != 0 ){
+            if ( $("#savedUserIds").length != 0 && $("#savedUserIds").val() != null ){
                 //Render saved entity selections
                 values = $("#savedUserIds").val().toString().split(',');
                 $.each(values, function(i, entityId){
+                    if(entityId != "" && entityId != null){
                         $('input[value='+ entityId +']:eq(0)').each(function(){
                             this.checked = true;
                             checkNameboxAction(this);
                         });
+                    }
                 });
             }
 
-                                   if ( $("#savedDeliveryMobileNumbersSet").length != 0 ){
+    if ( $("#savedDeliveryMobileNumbersSet").length != 0 && $("#savedDeliveryMobileNumbersSet").val() != null ){
                 //Render saved numbers
                 values = $("#savedDeliveryMobileNumbersSet").val();
                 if ( values != null && values.length > 0 ){
@@ -328,6 +330,10 @@
                 {
                     "fname": "setEveryoneInSite()",
                     "fdelay": "1"
+                },
+                {
+                    "fname": "setDateListners()",
+                    "fdelay": "0"
                 }
             ]
         })
@@ -808,11 +814,11 @@
 
     function checkEntityboxAction(_this, type) {
         //Save data into selectedRecipientsList
-        if (type == "Groups"){
+        if (type.toLowerCase() == "Groups".toLowerCase()){
             selectedRecipientsList.groups.push(new Array($(_this).val(), $(_this).attr('title')));
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsGroups span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('groups'));
-        }else if (type == "Roles"){
+        }else if (type.toLowerCase() == "Roles".toLowerCase()){
             selectedRecipientsList.roles.push(new Array($(_this).val(), $(_this).attr('title')));
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
@@ -847,8 +853,11 @@
                 });
         //set defaults for some params
         tempParams.push({name:"messageBody", value:$("#messageBody").val()});
+        //ALWAYS send through a schedule date.
         tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
-        tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
+        if($("#booleanExpiry:checked").length != 0){
+            tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
+        }
         return $.param(tempParams);
             }
     /**
@@ -866,6 +875,27 @@
             return Number(new Date(s));
         }
         return null;
+    }
+
+
+    function setDateListners(){
+        $.each(["booleanSchedule", "booleanExpiry"], function(i, item){
+            $("#"+item).bind('click', function(){
+                if (this.checked){
+                    $("#"+item+"Date").slideDown('normal');
+                    frameGrow(50, 'shrink');
+                }else{
+                    $("#"+item+"Date").slideUp('normal');
+                    frameGrow(50, 'grow');
+                }
+            });
+            $("#"+item+":checked").each(function(){
+                if (this.checked){
+                    $(this).click();
+                    this.checked;
+                }
+            });
+        });
     }
 
 })(jQuery);

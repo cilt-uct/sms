@@ -69,6 +69,9 @@ jQuery.fn.autoCompletefb = function(options)
             }
             else {
                 $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
+                $("#numbersInvalid .msg").fadeOut();
+                $("#numbersValid").fadeOut();
+                $("#peopleListNumbersLog").fadeOut();
             }
             return tmp.acfb;
         }
