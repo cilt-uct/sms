@@ -606,7 +606,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String getSakaiGroupNameFromId(String siteId, String groupId) {
 		if (! "".equals(groupId)){
 			try {
-				return	siteService.getSite(siteId).getGroup(EntityReference.getIdFromRefByKey(entity, "group")).getTitle();
+				return	siteService.getSite(siteId).getGroup(EntityReference.getIdFromRefByKey(groupId, "group")).getTitle();
 			} catch (IdUnusedException e) {
 				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
 			}
