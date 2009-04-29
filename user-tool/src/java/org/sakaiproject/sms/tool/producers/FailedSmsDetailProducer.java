@@ -86,10 +86,11 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				
 				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
 				
-				UIMessage.make(tofill, "reason", "ui.failed.sms.reason", 
-						new Object[] { ( smsTask.getFailReason() == null && "".equals(smsTask.getFailReason()) ) ? 
-								messageLocator.getMessage("ui.failed.sms.reason.none") : smsTask.getFailReason() });
-				
+				if ( smsTask.getFailReason() != null && ! "".equals(smsTask.getFailReason()) ){
+					UIMessage.make(tofill, "reason", "ui.failed.sms.reason", 
+						new Object[] { smsTask.getFailReason() });
+				}
+
 				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
 				
 				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.statusType_REUSE));

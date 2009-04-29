@@ -42,10 +42,8 @@ $(document).ready(function(){
      function init(_that) {
          console.log(_that.id);
          if(_that.id == "smsDelete"){
-             console.log("del");
              smsDelete(_that);
          }else if(_that.id == "smsStop"){
-             console.log("stop");
              smsStop(_that);
          }
      }
