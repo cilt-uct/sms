@@ -196,6 +196,10 @@
                     }
                     $("#recipientsCmd").removeAttr("disabled");
                     return false;
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
+                    return false;
                 }
             });
             }else{
@@ -216,7 +220,11 @@
                 url: _url,
                 type: "POST",
                 dataType: "xml",
-                data: smsParams(domElements)
+                data: smsParams(domElements),
+                error: function(xhr, ajaxOptions, thrownError){
+                    $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
+                    return false;
+                }
             });
         }   ,
         setSubmitTaskButton: function(){
@@ -444,13 +452,23 @@ function getPeople(filter) {
             var query = new Array();
             switch (filter) {
                 case "Names":
-				    $.getJSON( '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json' , function(data) {
+				    $.ajax({
+                        url: '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json',
+                        dataType: "json",
+                        cache: true,
+                        success: function(data) {
                         var userId = $("input[name=senderUserId]").val();
-                        $.each(data.membership_collection, function(i, item) {
-                            if ( item.userId != userId){
-                                query.push(new Array(item.userDisplayName, item.userId));
-                            }
-                        });
+                            $.each(data.membership_collection, function(i, item) {
+                                if ( item.userId != userId){
+                                    query.push(new Array(item.userDisplayName, item.userId));
+                                }
+                            });
+                        },
+                        error: function(xhr, ajaxOptions, thrownError){
+                            $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText +
+                                      "<h3> An error occured and you will not have ability to select participants by their NAMES.</h3>");
+                            return false;
+                        }
                     });
 
                     break;

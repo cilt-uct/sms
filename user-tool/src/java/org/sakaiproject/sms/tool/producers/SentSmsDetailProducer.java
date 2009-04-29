@@ -98,7 +98,7 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 					UIBranchContainer row = UIBranchContainer.make(tofill, "sms-row:");
 					UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(sms.getSakaiUserId()));
 					String userStatusCode = sms.getStatusCode();
-					UILink.make(status, "sms-recipient-status", statusUtils.getStatusIcon(userStatusCode))
+					UILink.make(row, "sms-recipient-status", statusUtils.getStatusIcon(userStatusCode))
 						.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(userStatusCode)));
 				}
 				

@@ -15,7 +15,7 @@ $(document).ready(function() {
         $.fn.SMS.set.processCalculate(domElements);
         $(".loadingImage").hide();
     });
-    $("[rel=closeFB]").bind('click', function(){
+    $("[rel=closeFB]").click(function(){
         $("#facebox").fadeOut('fast');
        $.fn.SMS.get.preserveDomSelections = true;
         return false;

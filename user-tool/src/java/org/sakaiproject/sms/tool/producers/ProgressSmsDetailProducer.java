@@ -21,6 +21,7 @@ import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -79,6 +80,11 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+	
+	private MessageLocator messageLocator;
+	public void setMessageLocator(MessageLocator messageLocator) {
+		this.messageLocator = messageLocator;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
@@ -211,9 +217,11 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeEstimate() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
-						.decorate(new UIIDStrategyDecorator("smsStop"));
+						.decorate(new UIIDStrategyDecorator("smsStop")); 
 					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)
 						.decorate(new UIIDStrategyDecorator("abortCode"));
+					UIInput.make(form, "ui.task.aborted", null, messageLocator.getMessage("ui.task.aborted", new String[] { externalLogic.getCurrentUserDisplayId() }) )
+						.decorate(new UIIDStrategyDecorator("abortMessage"));
 				}else if( const_Scheduled.equals(statusToShow)){
 					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))

@@ -26,20 +26,26 @@ $(document).ready(function(){
 
     $.fn.task.defaults = {
         EB_DELETE_PATH: "/direct/sms-task/:ID:/delete",
-        EB_UPDATE_PATH: "/direct/sms-task/:ID:/delete",
+        EB_UPDATE_PATH: "/direct/sms-task/:ID:/edit",
         SUCCESS_PATH: "index",
         getSmsId: function(){
             return $("#smsId").val();
         },
         getAbortCode: function(){
             return $("#abortCode").val();
+        },
+        getAbortMessage: function(){
+            return $("#abortMessage").val();
         }
     }
 
      function init(_that) {
-         if(_that.id = "smsDelete"){
+         console.log(_that.id);
+         if(_that.id == "smsDelete"){
+             console.log("del");
              smsDelete(_that);
-         }else if(_that.id = "smsStop"){
+         }else if(_that.id == "smsStop"){
+             console.log("stop");
              smsStop(_that);
          }
      }
@@ -49,8 +55,8 @@ $(document).ready(function(){
             $.ajax({
                 url: $.fn.task.defaults.EB_DELETE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()),
                 type: "DELETE",
-                error: function(event, XMLHttpRequest, ajaxOptions, thrownError){
-                    //alert(thrownError + " &&" +event.info);
+                error: function(xhr, ajaxOptions, thrownError){
+                    $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
                 },
                 success: function(){
                     window.location.href = $.fn.task.defaults.SUCCESS_PATH;
@@ -63,12 +69,14 @@ $(document).ready(function(){
     function smsStop(_that){
         if(smsConfirm("Sure to stop?")){
             $.ajax({
-                url: $.fn.task.defaults.EB_UPDATE_PATH.replace(':ID:', $.fn.task.defaults.getAbortCode()),
+                url: $.fn.task.defaults.EB_UPDATE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()),
+                data: [{name:"statusCode", value:$.fn.task.defaults.getAbortCode()}, {name:"failReason" , value:$.fn.task.defaults.getAbortMessage()}],
                 type: "POST",
-                error: function(event, XMLHttpRequest, ajaxOptions, thrownError){
-                    //alert(thrownError + " &&" +event.info);
+                error: function(xhr, ajaxOptions, thrownError){
+                    $.facebox("ERROR: "+ xhr.statusCode + ": "+ xhr.statusText);
                 },
                 success: function(){
+                    //return false;
                     window.location.href = $.fn.task.defaults.SUCCESS_PATH;
                 }
             });
