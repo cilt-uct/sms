@@ -44,6 +44,11 @@ $(document).ready(function() {
         $(document).trigger("selections.clear");
         return false;
     });
+    if($("#statusType").length != 0 ){
+        if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
+            $("#recipientsCmd").removeAttr("disabled");
+        }
+    }
 });
 </script>
 </head>
