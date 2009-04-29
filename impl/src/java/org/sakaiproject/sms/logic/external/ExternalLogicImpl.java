@@ -604,7 +604,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSakaiGroupNameFromId(String siteId, String groupId) {
-		if (! "".equals(groupId)){
+		if (! "".equals(groupId) && ! "".equals(siteId) && groupId != null  && siteId != null){
 			try {
 				return	siteService.getSite(siteId).getGroup(EntityReference.getIdFromRefByKey(groupId, "group")).getTitle();
 			} catch (IdUnusedException e) {
@@ -615,14 +615,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getEntityRealIdFromRefByKey(String entity, String key) {
-		if ( entity != null && key != null ){
+		if ( entity != null && key != null && ! "".equals(entity) && ! "".equals(key)){
 			return EntityReference.getIdFromRefByKey(entity, key);
 		}
 		return null;
 	}
 
 	public String getEntityPrefix(String entity) {
-		if ( entity != null ){
+		if ( entity != null && ! "".equals(entity)){
 			return EntityReference.getPrefix(entity);
 		}
 		return null;
