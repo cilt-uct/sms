@@ -116,26 +116,25 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 							parsedMessage.setSite(sakaiSite);
 							List<String> userIds = externalLogic
 									.getUserIdsFromMobileNumber(mobileNr);
-							if (userIds.size() == 0) {
-								reply = generateInvalidMobileNrMessage(mobileNr);
-							} else {
+							if (userIds.size() != 0) {
 								incomingUserID = userIds.get(0);
-								SmsCommand command = allCommands
-										.getCommand(validCommandMatch
-												.getPattern());
-								try {
+							}
+								
+							SmsCommand command = allCommands
+							.getCommand(validCommandMatch
+									.getPattern());
+							try {
 
-									String[] bodyParameters = smsMessageParser
-											.parseBody(
-													parsedMessage.getBody(),
-													command
-															.getBodyParameterCount());
-									reply = command.execute(sakaiSite,
-											incomingUserID, bodyParameters);
-								} catch (ParseException pe) {
-									// Body parameter count wrong
-									reply = command.getHelpMessage();
-								}
+								String[] bodyParameters = smsMessageParser
+								.parseBody(
+										parsedMessage.getBody(),
+										command
+										.getBodyParameterCount());
+								reply = command.execute(sakaiSite,
+										incomingUserID, mobileNr, bodyParameters);
+							} catch (ParseException pe) {
+								// Body parameter count wrong
+								reply = command.getHelpMessage();
 							}
 						}
 					}

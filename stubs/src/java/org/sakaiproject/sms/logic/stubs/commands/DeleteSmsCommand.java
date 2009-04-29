@@ -8,7 +8,7 @@ public class DeleteSmsCommand implements SmsCommand {
 
 	private static Log log = LogFactory.getLog(UpdateSmsCommand.class);
 
-	public String execute(String siteId, String userId, String... body) {
+	public String execute(String siteId, String userId, String mobileNr, String... body) {
 		log.debug(getCommandKey() + " command called with parameters: ("
 				+ siteId + ", " + userId + ", " + body + ")");
 		return getCommandKey();

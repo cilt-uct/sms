@@ -41,10 +41,11 @@ public interface SmsCommand {
 	 * 
 	 * @param siteId
 	 * @param userId
+	 * @param mobileNr 
 	 * @param body
 	 * @return
 	 */
-	String execute(String siteId, String userId, String... body);
+	String execute(String siteId, String userId, String mobileNr, String... body);
 
 	/**
 	 * Help message to use when no parameters are given
