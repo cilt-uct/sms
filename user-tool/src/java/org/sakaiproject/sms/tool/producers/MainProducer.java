@@ -139,7 +139,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		// Render table headers
 		for (int i=0; i < headers.length; i++){
 			String header = headers[i];
-			UILink.make(tofill, "tasks-" + header, UIMessage.make("ui.tasks.headers." + header), null)
+			UIMessage.make(tofill, "tasks-" + header, "ui.tasks.headers." + header)
 				.decorate(new UITooltipDecorator(UIMessage.make("ui.tasks.headers." + header + ".tooltip")));
 		}
 	}
