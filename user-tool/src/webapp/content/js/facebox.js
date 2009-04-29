@@ -95,7 +95,7 @@
               <td class="body"> \
                 <div class="footer"> \
                   <h3 class="header breadCrumb" style="display:block"></h3> \
-			        <a class="close" href="#" style="padding:5px;" accesskey="x"><img class="close_image" title="close"/></a></div> \
+			        <a class="close" href="#" style="padding:5px;" accesskey="x" rel=closeFB><img class="close_image" title="close"/></a></div> \
                   </a> \
                 </div> \
         <div class="content"> \
@@ -200,7 +200,7 @@
       preload.slice(-1).src = $(this).css('background-image').replace(/url\((.+)\)/, '$1')
     })
 
-    $('#facebox .close').click($.facebox.close)
+    //$('#facebox .close').click($.facebox.close)
     $('#facebox .close_image').attr('src', $.facebox.settings.closeImage)
   }
 

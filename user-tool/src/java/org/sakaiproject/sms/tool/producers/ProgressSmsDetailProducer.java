@@ -8,8 +8,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
@@ -35,6 +39,8 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewParamsReporter {
+	
+	private static Log log = LogFactory.getLog(ProgressSmsDetailProducer.class);
 	
 	public static final String VIEW_ID = "inprogress-sms-detail";
 	public static final String const_Inprogress = "inprogress";
@@ -68,6 +74,12 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
+	
+	private HibernateLogicLocator hibernateLogicLocator;
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -94,19 +106,27 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				String statusCode = smsTask.getStatusCode();
 				UILink.make(status, "sms-status", statusUtils.getStatusIcon(statusCode))
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
+				SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig();
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
+				
+				UIOutput.make(tofill, "sms-status-retries", "Processing attempt number: "+smsTask.getAttemptCount()+" of "+siteConfig.getSmsRetryMaxCount()); //TODO: stick this in message.prop
 				
 				//Insert original user selections
 				List<String> smsEntities = smsTask.getDeliveryEntityList();
 				
-				Map<String, String> groupIds = new HashMap<String, String>();
+				List<String> groups = new ArrayList<String>();
 				List<String> roles = new ArrayList<String>();
-				for ( String entity : smsEntities){
-					//in the format /site/123/role/something
-					if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "role") != null) {
-						roles.add(externalLogic.getEntityRealIdFromRefByKey(entity, "role"));
-					}else if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "group") != null){
-						groupIds.put(externalLogic.getEntityRealIdFromRefByKey(entity, "site"), externalLogic.getEntityRealIdFromRefByKey(entity, "group"));
+				if(smsEntities != null && smsEntities.size() > 0){
+					log.info("Entities: "+ smsEntities.size());
+					for ( String entity : smsEntities){
+						//in the format /site/123/role/something
+						if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "role") != null) {
+							roles.add(externalLogic.getEntityRealIdFromRefByKey(entity, "role"));
+						}else if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "group") != null){
+							groups.add(externalLogic.getSakaiGroupNameFromId(externalLogic.getEntityRealIdFromRefByKey(entity, "site"), externalLogic.getEntityRealIdFromRefByKey(entity, "group")));
+							log.info("site: "+ externalLogic.getEntityRealIdFromRefByKey(entity, "site") +" Group: "+ externalLogic.getEntityRealIdFromRefByKey(entity, "group"));
+						}
 					}
 				}
 				StringBuffer rolesSb = new StringBuffer();
@@ -124,33 +144,30 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 							count ++;
 						}
 					}
-					if ( rolesSb.toString() != null ){
+					if (! "".equals(rolesSb.toString()) ){
 						UIOutput.make(tofill, "selections1", rolesSb.toString());
 					}
 				}
 				
-				if(groupIds.size() > 0){
-					Iterator<Entry<String, String>> selector = groupIds.entrySet().iterator();
+				if(groups.size() > 0){
 					count = 1;
-					while ( selector.hasNext() ) {
-			        	Entry<String, String> pairs = selector.next();
-			        	String siteId = pairs.getKey();
-			        	String groupId = pairs.getValue().toString();
-			        	String groupName = externalLogic.getSakaiGroupNameFromId(siteId, groupId);
-			        	groupsSb.append(groupName);
+					log.info("GRP IDS:"+groups.size());
+					for ( String group : groups ) {
+			        	log.info("groupName: "+group);
+			        	groupsSb.append(group);
 			        	if( count != roles.size()){
 			        		groupsSb.append(", "); 
 						 }
 			        	count ++;
 					}
-					if ( groupsSb.toString() != null ){
+					if (! "".equals(groupsSb.toString()) ){
 						UIOutput.make(tofill, "selections2", groupsSb.toString());
 					}
 				}
 				
 				Set<String> sakaiUserIds = smsTask.getSakaiUserIds();
 				count = 1;
-				if(sakaiUserIds.size() > 0){
+				if(sakaiUserIds != null && sakaiUserIds.size() > 0){
 					for ( String user : sakaiUserIds){
 						usersSb.append(externalLogic.getSakaiUserSortName(user));
 			        	if( count != roles.size()){
@@ -158,14 +175,14 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 						 }
 			        	count ++;
 					}
-					if( usersSb.toString() != null ){
+					if(! "".equals(usersSb.toString()) ){
 						UIOutput.make(tofill, "selections3", usersSb.toString());
 					}
 				}
 					
 				Set<String> numbers = smsTask.getDeliveryMobileNumbersSet();
 				count = 1;
-				if(numbers.size() > 0){
+				if(numbers != null && numbers.size() > 0){
 					for ( String num : numbers){
 						numbersSb.append(num);
 						if( count != roles.size()){
@@ -173,7 +190,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 						 }
 			        	count ++;
 					}
-					if( numbersSb.toString() != null ){
+					if(! "".equals(numbersSb.toString()) ){
 						UIOutput.make(tofill, "selections4", numbersSb.toString());
 					}
 				}
@@ -182,7 +199,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.credits", new Object[] { smsTask.getCreditEstimate() });
 				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { smsTask.getCostEstimate() });
 				
-				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_NEW));
+				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
 				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
 				UIInput.make(tofill, "smsId", null, smsTask.getId() + "")
@@ -192,7 +209,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				 */
 				if ( const_Inprogress.equals(statusToShow)){
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
-					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeActual() });
+					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeEstimate() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
 						.decorate(new UIIDStrategyDecorator("smsStop"));
 					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)

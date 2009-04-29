@@ -187,7 +187,8 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		
 			
 			//copy me checkbox
-			UIBoundBoolean copy = UIBoundBoolean.make(form, "copy-me", Boolean.FALSE);
+			UIBoundBoolean copy = UIBoundBoolean.make(form, "copy-me", smsTask.getSakaiUserIds().contains(currentUserId) ? Boolean.toString(Boolean.TRUE) : Boolean.toString(Boolean.FALSE));
+			copy.fossilize = false;
 			UIMessage.make(form, "copy-me-label", "ui.recipients.choose.copy")
 				.decorate(new UILabelTargetDecorator(copy));
 			

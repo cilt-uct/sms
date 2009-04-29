@@ -25,6 +25,7 @@
 	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">
@@ -47,6 +48,7 @@
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+	<property name="messageLocator" ref="messageLocator" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
@@ -55,6 +57,7 @@
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
   </bean>
 
 <bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>

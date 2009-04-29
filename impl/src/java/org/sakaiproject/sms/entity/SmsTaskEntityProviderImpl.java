@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -110,7 +111,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		Date simpleDate = new Date();
 		if (task.getDateCreated() == null)
 			task.setDateCreated(simpleDate);
-		//Assert date params to task object. Default casting to task doesn't set these. SMS-28
+		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
 		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
 		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
 		while ( selector.hasNext() ) {
@@ -133,6 +134,29 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 				e.printStackTrace();
 			}
 	}
+    	if( "copyMe".equals(paramsKey) ){
+    		boolean addMe = Boolean.parseBoolean(paramsValue);
+    		Set<String> newUserIds = new HashSet<String>();
+    		if( addMe ){
+    			newUserIds.add(task.getSenderUserId());
+	    		if (task.getSakaiUserIds() != null){
+	    			newUserIds.addAll(task.getSakaiUserIds());
+	    			task.setSakaiUserIds(newUserIds);
+	    		}else{
+	    			task.setSakaiUserIds(newUserIds);
+	    		}
+    		}else{
+    			if( task.getSakaiUserIds().contains(task.getSenderUserId()) ){
+    				newUserIds = task.getSakaiUserIds();
+    				newUserIds.remove(task.getSenderUserId());
+    				task.setSakaiUserIds(newUserIds);
+    			}
+    		}
+    	}
+		}
+		
+		for (String u : task.getSakaiUserIds()){
+			log.info("NEW USER id LIST: "+ u);
 		}
 		
 		 String userReference = developerHelperService.getCurrentUserReference();

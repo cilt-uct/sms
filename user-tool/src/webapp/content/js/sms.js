@@ -141,7 +141,9 @@
         },
         isSelectionMade: function(){
             var bool = false;
-            bool = (getSelectedRecipientsList.length("roles") > 0 || getSelectedRecipientsList.length("groups") > 0 || getSelectedRecipientsList.length("names") > 0 || getSelectedRecipientsList.length("numbers") > 0 );
+            bool = (getSelectedRecipientsList.length("roles") > 0 || getSelectedRecipientsList.length("groups") > 0
+                    || getSelectedRecipientsList.length("names") > 0 || getSelectedRecipientsList.length("numbers") > 0
+                    || $("#copy-me:checked").length != 0 );
             return bool;
         }
 };
@@ -219,7 +221,7 @@
                     //log(smsParams(domElements));
                 },
                 success: function(data) {
-                    return true;
+					window.location.href = $("#goto-home").attr('href');
                 }
             });
         }   ,
@@ -441,7 +443,7 @@
      * Getter for recipients page
      * @param filter Search list by {string} variable. Returns a Two Dimensional array
      */
-    function getPeople(filter) {
+function getPeople(filter) {
         //log(filter);
         if (filter != null && (filter == "Roles" || filter == "Groups" || filter == "Names")) {
             if (var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
@@ -449,8 +451,11 @@
             switch (filter) {
                 case "Names":
 				    $.getJSON( '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json' , function(data) {
+                        var userId = $("input[name=senderUserId]").val();
                         $.each(data.membership_collection, function(i, item) {
-                            query.push(new Array(item.userDisplayName, item.userId));
+                            if ( item.userId != userId){
+                                query.push(new Array(item.userDisplayName, item.userId));
+                            }
                         });
                     });
 
@@ -584,13 +589,23 @@
 
         });
 
-        //Clear selectedRecipientsList on facebox exit
-        $(document).bind('afterClose.facebox', function() {
+        //Clear selectedRecipientsList
+        $(document).bind('selections.clear', function() {
             if (selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = new Array();
             if (selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
             if (selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
             if (selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
             $.fn.SMS.get.preserveDomSelections = false;
+            $('span[rel=recipientsSum]').fadeOut();
+            $("#cReportConsole").slideUp('fast');
+            $('div[id^=peopleList] input').each(function(){
+                 //log("Clearing all fields.");
+                    var t = this.type, tag = this.tagName.toLowerCase();
+                    if (t == 'text' || tag == 'textarea')
+                        this.value = '';
+                    else if (t == 'checkbox' || t == 'radio')
+                        this.checked = false;
+            });
         });
 
         //Initialise the Individuals Tab
@@ -869,8 +884,10 @@
                     }
                 });
         }
+		//if the recipients are edited in any way, set copyMe variable to the choose-recipients copy me dom value
+        tempParams.push({name:"copyMe", value:$("#copy-me").length != 0 ? $("#copy-me").val() : $("#taskcopyMe").val()});
         tempParams.push({name:"messageBody", value:$("#messageBody").val()});
-        if($("#statusType").val() != null && $("#statusType").val() == "EDIT"){
+        if($("#statusType").val() == "EDIT"){
             tempParams.push({name:"id", value:$("#smsId").val()});
         }
         //ALWAYS send through a schedule date.
@@ -903,16 +920,16 @@
             $("#"+item).bind('click', function(){
                 if (this.checked){
                     $("#"+item+"Date").slideDown('normal');
-                    frameGrow(50, 'shrink');
+                    frameGrow(50, 'grow');
                 }else{
                     $("#"+item+"Date").slideUp('normal');
-                    frameGrow(50, 'grow');
+                    frameGrow(50, 'shrink');
                 }
             });
             $("#"+item+":checked").each(function(){
                 if (this.checked){
-                    $(this).click();
-                    this.checked;
+                    $(this).triggerHandler('click');
+					//this.checked;
                 }
             });
         });

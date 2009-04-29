@@ -15,8 +15,9 @@ $(document).ready(function() {
         $.fn.SMS.set.processCalculate(domElements);
         $(".loadingImage").hide();
     });
-   $("input[@rel=closeFB]").bind('click', function(){
-        $(document).trigger('close.facebox');
+    $("[rel=closeFB]").bind('click', function(){
+        $("#facebox").fadeOut('fast');
+       $.fn.SMS.get.preserveDomSelections = true;
         return false;
     });
     $("#recipientsCmd").bind('click', function(){
@@ -38,6 +39,11 @@ $(document).ready(function() {
     if ( $("#peopleListNames").height() > 195 ){
         $("#peopleListNames").height(200);
     }
+
+    $("#clearSelections").bind('click', function(){
+        $(document).trigger("selections.clear");
+        return false;
+    });
 });
 </script>
 </head>
@@ -102,7 +108,9 @@ $(document).ready(function() {
         <label rsf:id="copy-me-label">Send me a copy</label>
       </div>
         <div class="act">
-      <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
+      <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" />
+            <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
+            <a rsf:id="msg=ui.recipients.choose.cancel" id="clearSelections" href="#">Clear my selections</a>
         </div>
       <div id="cReportConsole" class="timeCells" style="display:none">
 

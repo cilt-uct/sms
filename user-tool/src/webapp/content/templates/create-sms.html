@@ -62,8 +62,9 @@
                     });
 
                 if($("#statusType").length != 0 ){
-                    $("#smsSend").removeAttr("disabled");
-                    $.fn.SMS.get.preserveDomSelections = true;
+                    if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
+                        $("#smsSend").removeAttr("disabled");
+                    }
                 }
                 /*$("#smsDatesScheduleDate").datepicker({
                     minDate: 0,
@@ -152,13 +153,15 @@
 		          <input rsf:id="taskuserIds" id="taskuserIds" name="taskuserIds" type="hidden" value=""/>
 		          <input rsf:id="taskdeliveryEntityList" id="taskdeliveryEntityList" name="taskdeliveryEntityList" type="hidden" value=""/>
 		          <input rsf:id="taskdeliveryMobileNumbersSet"  id="taskdeliveryMobileNumbersSet" name="taskdeliveryMobileNumbersSet" type="hidden" value=""/>
+		          <input rsf:id="taskcopyMe"  id="taskcopyMe" name="taskcopyMe" type="hidden" value=""/>
 		          <input rsf:id="id" type="hidden" value="" name="id"/>
 
                     <input rsf:id="sakaiSiteId" type="hidden" value="" name="sakaiSiteId"/>
                     <input rsf:id="senderUserName" type="hidden" value="" name="senderUserName"/>
                     <input rsf:id="senderUserId" type="hidden" value="" name="senderUserId"/>
                            <input rsf:id="statusType" type="hidden" value="" name="statusType"/>
-                    <input rsf:id="form-send" type="submit" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
+                    <input rsf:id="form-send" type="button" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
+					<a rsf:id="goto-home" id="goto-home" style="display:none" href="index.html">Go Home</a>
 					<input rsf:id="back" type="button" value="Back" rel="back"/>
                 </div>
             </form>

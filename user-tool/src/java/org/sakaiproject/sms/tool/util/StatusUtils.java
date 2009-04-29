@@ -18,6 +18,7 @@ public class StatusUtils {
 	
 	public static final String statusType_NEW = "NEW";
 	public static final String statusType_EDIT = "EDIT";
+	public static final String statusType_REUSE = "REUSE";
 	
 	private MessageLocator messageLocator;
 	public void setMessageLocator(MessageLocator messageLocator) {

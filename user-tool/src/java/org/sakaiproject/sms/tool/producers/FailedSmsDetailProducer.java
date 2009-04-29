@@ -7,6 +7,9 @@ import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
+
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -51,6 +54,11 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 	public void setStatusUtils(StatusUtils statusUtils) {
 		this.statusUtils = statusUtils;
 	}
+	
+	private MessageLocator messageLocator;
+	public void setMessageLocator(MessageLocator messageLocator) {
+		this.messageLocator = messageLocator;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -76,10 +84,15 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
-				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
+				UIMessage.make(tofill, "sms-sent", "ui.failed.sms.expired", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
+				
+				UIMessage.make(tofill, "reason", "ui.failed.sms.reason", 
+						new Object[] { ( smsTask.getFailReason() == null && "".equals(smsTask.getFailReason()) ) ? 
+								messageLocator.getMessage("ui.failed.sms.reason.none") : smsTask.getFailReason() });
+				
 				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
 				
-				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.statusType_NEW));
+				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
 				
 				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete

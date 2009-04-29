@@ -1,17 +1,21 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.rsf.components.UIBoundBoolean;
+import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
@@ -61,6 +65,12 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 	public void setDateEvolver(FormatAwareDateInputEvolver dateEvolver) {
 		this.dateEvolver = dateEvolver;
 	}
+	
+	private HibernateLogicLocator hibernateLogicLocator;
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -81,7 +91,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 			}
 			
-			UIForm form = UIForm.make(tofill, "form", new SmsParams(MainProducer.VIEW_ID));
+			UIForm form = UIForm.make(tofill, "form");
 			
 			//textarea
 			UIInput messageBody = UIInput.make(form, "form-box", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
@@ -114,11 +124,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 					.decorate(new UILabelTargetDecorator(boolSchedule));
 				dateEvolver.evolveDateInput(scheduleDate, new Date());
 			}else{
-				boolean tick = Boolean.FALSE;
-				if( smsTask.getDateToSend() != null ){
-					tick = smsTask.getDateToSend().after(smsTask.getDateCreated());
-				}
-				UIBoundBoolean boolSchedule = UIBoundBoolean.make(form, "booleanSchedule", tick);
+				UIBoundBoolean boolSchedule = UIBoundBoolean.make(form, "booleanSchedule", Boolean.TRUE);
 				UIMessage.make(form, "booleanSchedule-label", "ui.send.date.schedule")
 					.decorate(new UILabelTargetDecorator(boolSchedule));
 				dateEvolver.evolveDateInput(scheduleDate, smsTask.getDateToSend());
@@ -126,17 +132,22 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			
 
 			UIInput expireDate = UIInput.make(form, "smsDatesExpiryDate:", "dummyBean.smsDatesScheduleDate" ); 
-			if (smsTask.getDateToSend() == null){
+			if (smsTask.getDateToExpire() == null){
 				UIBoundBoolean boolSchedule = UIBoundBoolean.make(form, "booleanExpiry", Boolean.FALSE);
 				UIMessage.make(form, "booleanExpiry-label", "ui.send.date.expiry")
 					.decorate(new UILabelTargetDecorator(boolSchedule));
-				dateEvolver.evolveDateInput(expireDate, new Date());
+				//Set default expiry time
+				SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
+					.getOrCreateSystemSmsConfig();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(new Date());
+				cal.add(Calendar.SECOND, siteConfig.getSmsTaskMaxLifeTime());
+				dateEvolver.evolveDateInput(expireDate, cal.getTime());
 			}else{
-				boolean tick = smsTask.getDateToExpire() == null;
-				UIBoundBoolean boolExpiry = UIBoundBoolean.make(form, "booleanExpiry", tick);
+				UIBoundBoolean boolExpiry = UIBoundBoolean.make(form, "booleanExpiry", Boolean.TRUE);
 				UIMessage.make(form, "booleanExpiry-label", "ui.send.date.expiry")
 					.decorate(new UILabelTargetDecorator(boolExpiry));
-				dateEvolver.evolveDateInput(expireDate, smsTask.getDateToSend());
+				dateEvolver.evolveDateInput(expireDate, smsTask.getDateToExpire());
 			}
 			
 			if ( smsTask.getId() != null ){
@@ -155,6 +166,9 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				UIInput smsId = UIInput.make(form, "id", null, smsTask.getId() + "");
 				smsId.fossilize = false;
 				smsId.decorate(new UIIDStrategyDecorator("smsId"));
+				
+				UIInput.make(form, "taskcopyMe", null, smsTask.getSakaiUserIds().contains(currentUserId) ? Boolean.toString(Boolean.TRUE) : Boolean.toString(Boolean.FALSE))
+						.fossilize = false;
 			}
 			
 			UIInput statusType = UIInput.make(form, "statusType", null, smsParams.status == null ? StatusUtils.statusType_NEW : smsParams.status);
@@ -164,10 +178,11 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				.fossilize = false;
 			UIInput.make(tofill, "senderUserName", null, externalLogic.getSakaiUserDisplayName(currentUserId))
 				.fossilize = false;
-			UIInput.make(tofill, "senderUserId", null, currentUserId)
+			UIInput.make(tofill, "senderUserId", null, currentUserId)  
 				.fossilize = false;
-			UICommand.make(form, "form-send", UIMessage.make("sms.general.send"), null)
+			UICommand.make(form, "form-send", getCommandText(smsParams.status), null)
 				.decorate(new UIIDStrategyDecorator("smsSend"));
+			UIInternalLink.make(form, "goto-home", new SmsParams( MainProducer.VIEW_ID ));
 			UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 		
 		}else{
@@ -198,6 +213,18 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			return sb.toString();
 		}
 		return null;
+	}
+	
+	private UIBoundString getCommandText( String statusType ){
+		if (StatusUtils.statusType_NEW.equals(statusType)){
+			return UIMessage.make("sms.general.send");
+		}else if (StatusUtils.statusType_EDIT.equals(statusType)){
+			return UIMessage.make( "ui.send.save" );
+		}else if (StatusUtils.statusType_REUSE.equals(statusType)){
+			return UIMessage.make( "ui.send.reused" );
+		}else{
+			return null;
+		}
 	}
 
 	public ViewParameters getViewParameters() {

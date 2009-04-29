@@ -46,6 +46,7 @@ import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -606,8 +607,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String getSakaiGroupNameFromId(String siteId, String groupId) {
 		if (! "".equals(groupId) && ! "".equals(siteId) && groupId != null  && siteId != null){
 			try {
-				return	siteService.getSite(siteId).getGroup(EntityReference.getIdFromRefByKey(groupId, "group")).getTitle();
+				Site site = siteService.getSite(siteId);
+				Group group = site.getGroup(EntityReference.getIdFromRefByKey(groupId, "group"));
+				log.info(groupId +" ---- "+ group.getId());
+				return group.getTitle();
 			} catch (IdUnusedException e) {
+				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
+			} catch (NullPointerException e) {
 				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
 			}
 		}
