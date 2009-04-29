@@ -94,7 +94,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
-		List<SmsTask> tasks = smsDao.runQuery("from SmsTask");
+		List<SmsTask> tasks = smsDao.runQuery("from SmsTask ORDER BY DATE_TO_SEND DESC");
 		return tasks;
 	}
 
