@@ -216,13 +216,7 @@
                 url: _url,
                 type: "POST",
                 dataType: "xml",
-                data: smsParams(domElements),
-                beforeSend: function(){
-                    //log(smsParams(domElements));
-                },
-                success: function(data) {
-					window.location.href = $("#goto-home").attr('href');
-                }
+                data: smsParams(domElements)
             });
         }   ,
         setSubmitTaskButton: function(){
