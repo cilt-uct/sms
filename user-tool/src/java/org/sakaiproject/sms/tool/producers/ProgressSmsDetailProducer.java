@@ -220,7 +220,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 						.decorate(new UIIDStrategyDecorator("smsStop")); 
 					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)
 						.decorate(new UIIDStrategyDecorator("abortCode"));
-					UIInput.make(form, "ui.task.aborted", null, messageLocator.getMessage("ui.task.aborted", new String[] { externalLogic.getCurrentUserDisplayId() }) )
+					UIInput.make(form, "ui.task.aborted", null, messageLocator.getMessage("ui.task.aborted", new String[] {  externalLogic.getSakaiUserDisplayName(externalLogic.getCurrentUserId()) }) )
 						.decorate(new UIIDStrategyDecorator("abortMessage"));
 				}else if( const_Scheduled.equals(statusToShow)){
 					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
