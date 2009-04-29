@@ -64,6 +64,7 @@
                 if($("#statusType").length != 0 ){
                     if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
                         $("#smsSend").removeAttr("disabled");
+                        $.fn.SMS.get.preserveDomSelections = true;
                     }
                 }
                 /*$("#smsDatesScheduleDate").datepicker({

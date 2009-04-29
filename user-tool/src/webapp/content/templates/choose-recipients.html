@@ -47,6 +47,7 @@ $(document).ready(function() {
     if($("#statusType").length != 0 ){
         if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
             $("#recipientsCmd").removeAttr("disabled");
+            $.fn.SMS.get.preserveDomSelections = true;
         }
     }
 });
