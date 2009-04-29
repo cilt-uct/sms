@@ -12,7 +12,7 @@ $(document).ready(function() {
     $("#calculateCmd").bind('click', function(){
         $(".loadingImage").show();
          var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
-        $.fn.SMS.set.processCalculate(domElements);
+        $.fn.SMS.set.processCalculate(domElements, this);
         $(".loadingImage").hide();
     });
     $("[rel=closeFB]").click(function(){
@@ -23,7 +23,7 @@ $(document).ready(function() {
     $("#recipientsCmd").bind('click', function(){
         $("#facebox").hide('fast');
         $.fn.SMS.get.preserveDomSelections = true;
-        $.fn.SMS.set.setSubmitTaskButton();
+        $.fn.SMS.set.setSubmitTaskButton(this);
     });
    //envoke checkbox bindings
     $.fn.SMS.get.people();

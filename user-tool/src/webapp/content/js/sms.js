@@ -148,9 +148,10 @@
         }
 };
     $.fn.SMS.set = {
-        processCalculate: function(domElements) {
+        processCalculate: function(domElements, _this) {
            $('#checkNumbers').click(); // Fire numbers check function
             if( $.fn.SMS.get.isSelectionMade() ){
+            _this.disabled = true;
             $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
             var entityList = new Array();
             if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
@@ -172,6 +173,7 @@
                     frameGrow($("#cReportConsole").height(), "shrink");
                 },
                 success: function(data) {
+                    _this.disabled = false;
                     $("#cReportConsole").slideDown('fast', function(){
                             $(this).effect('highlight', 'fast');
                             frameGrow($("#cReportConsole").height(), "grow");
@@ -199,6 +201,7 @@
                 },
                 error: function(xhr, ajaxOptions, thrownError){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
+                    _this.disabled = false;
                     return false;
                 }
             });
@@ -209,7 +212,8 @@
             }
 
         },
-        processSubmitTask: function(domElements){
+        processSubmitTask: function(domElements, _this){
+            _this.disabled = true;
             var _url = "";
             if($("#statusType").val() != null && $("#statusType").val() == "EDIT"){
                 _url = "/direct/sms-task/"+ $("#smsId").val() +"/edit";
@@ -223,7 +227,11 @@
                 data: smsParams(domElements),
                 error: function(xhr, ajaxOptions, thrownError){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
+                    _this.disabled = false;
                     return false;
+                },
+                success: function(){
+                    return true;
                 }
             });
         }   ,
