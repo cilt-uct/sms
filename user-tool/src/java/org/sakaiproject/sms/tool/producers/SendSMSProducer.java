@@ -139,15 +139,6 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				dateEvolver.evolveDateInput(expireDate, smsTask.getDateToSend());
 			}
 			
-			/*UIInput expireDate = UIInput.make(tofill, "smsDatesExpiryDate", null, (smsTask.getDateToExpire() == null ? null : smsTask.getDateToExpire() + "")); 
-			expireDate.decorate(new UIIDStrategyDecorator("smsDatesExpiryDate"));
-			dateEvolver.evolveDateInput(expireDate);*/
-			
-			//notify me checkbox
-			UIBoundBoolean notify = UIBoundBoolean.make(form, "form-notify", Boolean.FALSE);
-			UIMessage.make(form, "form-notify-label", "ui.send.notify")
-				.decorate(new UILabelTargetDecorator(notify));
-			
 			if ( smsTask.getId() != null ){
 				if( smsTask.getDeliveryEntityList() != null){
 					UIInput.make(tofill, "taskdeliveryEntityList", null, toJSONarray(smsTask.getDeliveryEntityList().toArray(new String[] {}))) //turn entity list into a JS Array object
