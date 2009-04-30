@@ -1,14 +1,11 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.awt.TextArea;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
@@ -23,7 +20,6 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
-import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
@@ -35,7 +31,6 @@ import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
-import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
@@ -43,11 +38,8 @@ import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class ChooseRecipientsProducer implements ViewComponentProducer, ViewParamsReporter {
 	
-	public static Log log = LogFactory.getLog(ChooseRecipientsProducer.class);
-	
 	public static final String VIEW_ID = "choose-recipients";
-	
-	
+
 	public String getViewID() {
 		return VIEW_ID;
 	}
@@ -74,7 +66,6 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
-		log.info("VIEW"+VIEW_ID);
 		//view variables
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -134,7 +125,6 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			
 			Map<String, String> groups = new HashMap<String, String>();
 			groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
-			log.info("Found this many grps: "+ groups.size());
 			if ( groups.size() > 0 ){
 			
 				List<String> groupsValues = new ArrayList<String>(); 
@@ -148,10 +138,8 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
                 	Map.Entry<String, String> pairs = selector.next();
                 	String id = (String) pairs.getKey();
                 	groupsValues.add(id);
-                	log.info(id);
                 	String name = (String) pairs.getValue();
                 	groupsLabels.add(name);
-                	log.info(name);
                 	
                 	UIBranchContainer row = UIBranchContainer.make(form, "group-row:", count + "");
                 	UISelectChoice choice = UISelectChoice.make(row, "group-box", groupBoxesId, count);

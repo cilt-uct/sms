@@ -1,15 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
@@ -41,8 +31,6 @@ import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
 public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewParamsReporter {
-	
-	private static Log log = LogFactory.getLog(ProgressSmsDetailProducer.class);
 	
 	public static final String VIEW_ID = "inprogress-sms-detail";
 	public static final String const_Inprogress = "inprogress";
@@ -166,8 +154,6 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				//TODO: show error message since sms.id() is not specified
 			}
 		}
-		
-	
 	}
 
 	public ViewParameters getViewParameters() {
