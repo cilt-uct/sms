@@ -905,7 +905,10 @@ function getPeople(filter) {
                 });
         }
 		//if the recipients are edited in any way, set copyMe variable to the choose-recipients copy me dom value
-        tempParams.push({name:"copyMe", value:$("#copy-me").length != 0 ? $("#copy-me").val() : $("#taskcopyMe").val()});
+        var copyMe = $("#copy-me").length != 0 ? $("#copy-me:checked").length != 0 : $("#taskcopyMe").val();
+		if ( copyMe != null && copyMe ){
+		    tempParams.push({name:"copyMe", value:copyMe});
+        }
         tempParams.push({name:"messageBody", value:$("#messageBody").val()});
         if($("#statusType").val() == "EDIT"){
             tempParams.push({name:"id", value:$("#smsId").val()});
@@ -916,7 +919,7 @@ function getPeople(filter) {
             tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
         }
         return $.param(tempParams);
-            }
+      }
     /**
      * To parse date object into a timestamp. //TODO: This is not yet being used due to tests on the EP SimpleDateFormat converter code.
      * @param _date  ISO8601 format date

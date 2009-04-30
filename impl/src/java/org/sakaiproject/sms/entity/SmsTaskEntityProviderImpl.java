@@ -1,10 +1,7 @@
 package org.sakaiproject.sms.entity;
 
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,7 +14,6 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.transcoders.XMLTranscoder;
-import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -43,6 +39,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 	//TODO these need to come from the services
 	private static String PERMISSION_MANAGE = "sms.manage";
+	
 	private static String DATE_FORMAT_ISO8601 = "yyyy-MM-dd'T'HH:mm:ss";
 
 	/**
@@ -111,55 +108,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		Date simpleDate = new Date();
 		if (task.getDateCreated() == null)
 			task.setDateCreated(simpleDate);
-		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
-		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
-		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
-		while ( selector.hasNext() ) {
-        	Entry<String, Object> pairs = selector.next();
-        	String paramsKey = pairs.getKey();
-        	String paramsValue = pairs.getValue().toString();
-        	if( "dateToSend".equals(paramsKey) ){
-    			try {
-					task.setDateToSend( formatter.parse(paramsValue) );
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	}
-    	if( "dateToExpire".equals(paramsKey) ){
-			try {
-				task.setDateToExpire( formatter.parse(paramsValue) );
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	}
-    	if( "copyMe".equals(paramsKey) ){
-    		boolean addMe = Boolean.parseBoolean(paramsValue);
-    		Set<String> newUserIds = new HashSet<String>();
-    		if( addMe ){
-    			newUserIds.add(task.getSenderUserId());
-	    		if (task.getSakaiUserIds() != null){
-	    			newUserIds.addAll(task.getSakaiUserIds());
-	    			task.setSakaiUserIds(newUserIds);
-	    		}else{
-	    			task.setSakaiUserIds(newUserIds);
-	    		}
-    		}else{
-    			if( task.getSakaiUserIds().contains(task.getSenderUserId()) ){
-    				newUserIds = task.getSakaiUserIds();
-    				newUserIds.remove(task.getSenderUserId());
-    				task.setSakaiUserIds(newUserIds);
-    			}
-    		}
-    	}
-		}
 		
-		for (String u : task.getSakaiUserIds()){
-			log.info("NEW USER id LIST: "+ u);
-		}
+		//Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
+		setPropertyFromParams(task, params);
 		
-		 String userReference = developerHelperService.getCurrentUserReference();
+		String userReference = developerHelperService.getCurrentUserReference();
 		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
          if (!allowedManage) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
@@ -191,7 +144,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 		return null;
 	}
-
 
 	public void updateEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
@@ -282,41 +234,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public String calculate(EntityReference ref, Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) getSampleEntity();
 		//Build smsTask object with received parameters
-		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
-		while ( selector.hasNext() ) {
-        	Entry<String, Object> pairs = selector.next();
-        	String paramsKey = pairs.getKey();
-        	String paramsValue = pairs.getValue().toString();
-        	log.info("key: "+ paramsKey);
-            log.info("Value: "+paramsValue.toString());
-            if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
-        		smsTask.setSakaiSiteId(paramsValue.toString());
-        	}
-        	if( "senderUserId".equals(paramsKey) && ! "".equals( paramsValue)){
-        		smsTask.setSenderUserId(paramsValue.toString());
-        	} 
-        	if( "senderUserName".equals(paramsKey) && ! "".equals( paramsValue)){
-        		smsTask.setSenderUserName(paramsValue.toString());
-        	}  
-        	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
-        		smsTask.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
-        		log.info("key: "+ paramsKey);
-            	log.info("Value: "+paramsValue.toString());
-        	} 
-            if( "sakaiUserIds".equals(paramsKey) && ! "".equals( paramsValue)){
-            	log.info("key: "+ paramsKey);
-            	log.info("Value: "+paramsValue.toString());
-            	List<String> tempListValues = Arrays.asList(paramsValue.split(","));
-        		Set<String> tempSetValues = new HashSet<String>(tempListValues);
-            	smsTask.setSakaiUserIds(tempSetValues);
-        	} 
-        	if( "deliveryMobileNumbersSet".equals(paramsKey) && ! "".equals( paramsValue)){
-        		List<String> tempListValues = Arrays.asList(paramsValue.split(","));
-        		Set<String> tempSetValues = new HashSet<String>(tempListValues);
-        		smsTask.setDeliveryMobileNumbersSet(tempSetValues);
-        	}
-        	
-		}
+		setPropertyFromParams(smsTask, params);
 		
 		if (smsTask.getSakaiSiteId() == null || smsTask.getSenderUserId() == null || smsTask.getSenderUserName() == null){
 			throw new IllegalArgumentException("ALL of these parameters need to be set: sakaiSiteId or senderUserId or senderUserName");
@@ -337,5 +255,78 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new SecurityException("User ("+ smsTask.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
 		}
 		return XMLTranscoder.makeXML(smsTask);
+	}
+	
+	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {
+		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
+		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
+		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		//Save copy boolean and only set it when all params have been iterated and sender ids set
+        	boolean copy = false;
+        	while ( selector.hasNext() ) {
+        	Entry<String, Object> pairs = selector.next();
+        	String paramsKey = pairs.getKey();
+        	String paramsValue = pairs.getValue().toString();
+        	
+        	
+	    	if( "senderUserId".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		task.setSenderUserId(paramsValue.toString());
+	    	}else
+			if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		task.setSakaiSiteId(paramsValue.toString());
+	    	}else 
+	    	if( "senderUserName".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		task.setSenderUserName(paramsValue.toString());
+	    	}else  
+	    	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		task.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
+	    	}else 
+	        if( "sakaiUserIds".equals(paramsKey) && ! "".equals( paramsValue)){
+	        	List<String> tempListValues = Arrays.asList(paramsValue.split(","));
+	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
+	        	task.setSakaiUserIds(tempSetValues);
+	    	}else 
+	    	if( "deliveryMobileNumbersSet".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		List<String> tempListValues = Arrays.asList(paramsValue.split(","));
+	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
+	    		task.setDeliveryMobileNumbersSet(tempSetValues);
+	    	}else
+	    	if( "dateToSend".equals(paramsKey) ){
+    			try {
+					task.setDateToSend( formatter.parse(paramsValue) );
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+	    	}else
+	    	if( "dateToExpire".equals(paramsKey) ){
+				try {
+					task.setDateToExpire( formatter.parse(paramsValue) );
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+	    	}else
+			if( "copyMe".equals(paramsKey) ){
+	    		copy = Boolean.parseBoolean(paramsValue);	
+	    	}
+		}
+        
+        	//Set copy me status
+    	Set<String> newUserIds = new HashSet<String>();
+    		if( copy ){
+    			newUserIds.add(task.getSenderUserId());
+	    		if (task.getSakaiUserIds() != null){
+	    			newUserIds.addAll(task.getSakaiUserIds());
+	    			task.setSakaiUserIds(newUserIds);
+	    		}else{
+	    			task.setSakaiUserIds(newUserIds);
+	    		}
+    		}else{
+    			if( task.getSakaiUserIds().contains(task.getSenderUserId()) ){
+    				newUserIds = task.getSakaiUserIds();
+    				newUserIds.remove(task.getSenderUserId());
+    				task.setSakaiUserIds(newUserIds);
+    			}
+    		}
+	    	
 	}
 }

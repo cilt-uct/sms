@@ -11,7 +11,7 @@ $(document).ready(function() {
     $("#peopleListNamesSuggest").autoCompletefb();
     $("#calculateCmd").bind('click', function(){
         $(".loadingImage").show();
-         var domElements = ["sakaiUserIds", "sakaiSiteId", "id", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
+         var domElements = ["sakaiUserIds", "sakaiSiteId", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
         $.fn.SMS.set.processCalculate(domElements, this);
         $(".loadingImage").hide();
     });
