@@ -17,6 +17,7 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
+import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -86,6 +87,12 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public void setMessageLocator(MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;
 	}
+	
+	private SavedSelectionsRenderer savedSelectionsRenderer;
+	public void setSavedSelectionsRenderer(
+			SavedSelectionsRenderer savedSelectionsRenderer) {
+		this.savedSelectionsRenderer = savedSelectionsRenderer;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -119,87 +126,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				UIOutput.make(tofill, "sms-status-retries", "Processing attempt number: "+smsTask.getAttemptCount()+" of "+siteConfig.getSmsRetryMaxCount()); //TODO: stick this in message.prop
 				
 				//Insert original user selections
-				List<String> smsEntities = smsTask.getDeliveryEntityList();
-				
-				List<String> groups = new ArrayList<String>();
-				List<String> roles = new ArrayList<String>();
-				if(smsEntities != null && smsEntities.size() > 0){
-					log.info("Entities: "+ smsEntities.size());
-					for ( String entity : smsEntities){
-						//in the format /site/123/role/something
-						if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "role") != null) {
-							roles.add(externalLogic.getEntityRealIdFromRefByKey(entity, "role"));
-						}else if ("site".equals(externalLogic.getEntityPrefix(entity)) && externalLogic.getEntityRealIdFromRefByKey(entity, "group") != null){
-							groups.add(externalLogic.getSakaiGroupNameFromId(externalLogic.getEntityRealIdFromRefByKey(entity, "site"), externalLogic.getEntityRealIdFromRefByKey(entity, "group")));
-							log.info("site: "+ externalLogic.getEntityRealIdFromRefByKey(entity, "site") +" Group: "+ externalLogic.getEntityRealIdFromRefByKey(entity, "group"));
-						}
-					}
-				}
-				StringBuffer rolesSb = new StringBuffer();
-				StringBuffer groupsSb = new StringBuffer();
-				StringBuffer usersSb = new StringBuffer();
-				StringBuffer numbersSb = new StringBuffer();
-				int count = 1;
-				if(roles.size() > 0){
-					for ( String role : roles){
-						if ( role != null){
-							rolesSb.append(role);
-							 if( count != roles.size()){
-								 rolesSb.append(", "); 
-							 }
-							count ++;
-						}
-					}
-					if (! "".equals(rolesSb.toString()) ){
-						UIOutput.make(tofill, "selections1", rolesSb.toString());
-					}
-				}
-				
-				if(groups.size() > 0){
-					count = 1;
-					log.info("GRP IDS:"+groups.size());
-					for ( String group : groups ) {
-			        	log.info("groupName: "+group);
-			        	groupsSb.append(group);
-			        	if( count != roles.size()){
-			        		groupsSb.append(", "); 
-						 }
-			        	count ++;
-					}
-					if (! "".equals(groupsSb.toString()) ){
-						UIOutput.make(tofill, "selections2", groupsSb.toString());
-					}
-				}
-				
-				Set<String> sakaiUserIds = smsTask.getSakaiUserIds();
-				count = 1;
-				if(sakaiUserIds != null && sakaiUserIds.size() > 0){
-					for ( String user : sakaiUserIds){
-						usersSb.append(externalLogic.getSakaiUserSortName(user));
-			        	if( count != roles.size()){
-			        		usersSb.append(", "); 
-						 }
-			        	count ++;
-					}
-					if(! "".equals(usersSb.toString()) ){
-						UIOutput.make(tofill, "selections3", usersSb.toString());
-					}
-				}
-					
-				Set<String> numbers = smsTask.getDeliveryMobileNumbersSet();
-				count = 1;
-				if(numbers != null && numbers.size() > 0){
-					for ( String num : numbers){
-						numbersSb.append(num);
-						if( count != roles.size()){
-							numbersSb.append(", "); 
-						 }
-			        	count ++;
-					}
-					if(! "".equals(numbersSb.toString()) ){
-						UIOutput.make(tofill, "selections4", numbersSb.toString());
-					}
-				}
+				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
 				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.credits", new Object[] { smsTask.getCreditEstimate() });

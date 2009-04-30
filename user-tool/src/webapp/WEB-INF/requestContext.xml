@@ -8,6 +8,9 @@
  
   <!--  Renderers -->
   <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer" />
+  <bean id="savedSelectionsRenderer" class="org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer" >
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+  </bean>
 
   <!--  Producers -->
   <bean class="org.sakaiproject.sms.tool.producers.MainProducer">
@@ -47,8 +50,8 @@
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
+	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
-	<property name="messageLocator" ref="messageLocator" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
@@ -56,6 +59,7 @@
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="dateUtil" ref="dateUtil" />
 	<property name="messageLocator" ref="messageLocator" />
+	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />

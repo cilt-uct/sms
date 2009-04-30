@@ -20,7 +20,7 @@
 	<bean id="messageTemplateContributor" parent="templateContributorParent">
 		<property name="baseDirectory" value="content/component-templates/" />
 		<property name="templateNames"
-			value="Messages, navbar" />
+			value="Messages, navbar, SavedSelections" />
 	</bean>
 	
 	<!--
