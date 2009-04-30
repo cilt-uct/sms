@@ -8,6 +8,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
+import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
@@ -81,6 +82,11 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 			SavedSelectionsRenderer savedSelectionsRenderer) {
 		this.savedSelectionsRenderer = savedSelectionsRenderer;
 	}
+	
+	private SmsMessageRenderer smsMessageRenderer;
+	public void setSmsMessageRenderer(SmsMessageRenderer smsMessageRenderer) {
+		this.smsMessageRenderer = smsMessageRenderer;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -96,12 +102,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				//Top links
 				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 				
-				UIMessage.make(tofill, "message-title", "ui.sent.sms.title");
-				UIOutput.make(tofill, "message", smsTask.getMessageBody())
-				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
-					.decorate(new UIFreeAttributeDecorator("rel", smsTask.getId().toString()));
-				UIMessage.make(tofill, "sms-id", "ui.sent.sms.id", new Object[] { smsId });
-				UIMessage.make(tofill, "sms-created", "ui.sent.sms.created", new Object[] { dateUtil.formatDate(smsTask.getDateCreated()) });
+				//Show message
+				smsMessageRenderer.renderMessage(smsTask, tofill, "message:");
 				
 				UIBranchContainer status = UIBranchContainer.make(tofill, "status:");
 				String statusCode = smsTask.getStatusCode();

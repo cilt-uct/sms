@@ -11,6 +11,9 @@
   <bean id="savedSelectionsRenderer" class="org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer" >
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>
+  <bean id="smsMessageRenderer" class="org.sakaiproject.sms.tool.renderers.SmsMessageRenderer" >
+  	<property name="dateUtil" ref="dateUtil" />
+  </bean>
 
   <!--  Producers -->
   <bean class="org.sakaiproject.sms.tool.producers.MainProducer">
@@ -44,6 +47,7 @@
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer">
@@ -52,6 +56,7 @@
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
@@ -63,6 +68,7 @@
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
   </bean>
 
 <bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
