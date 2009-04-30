@@ -943,13 +943,12 @@ function getPeople(filter) {
                     frameGrow(50, 'grow');
                 }else{
                     $("#"+item+"Date").slideUp('normal');
-                    frameGrow(50, 'shrink');
+                    frameGrow(20, 'shrink');
                 }
             });
             $("#"+item+":checked").each(function(){
                 if (this.checked){
                     $(this).triggerHandler('click');
-					//this.checked;
                 }
             });
         });
