@@ -33,9 +33,7 @@ public class UserNavBarRenderer {
 		renderBranch(joint, "1", currentViewID, MainProducer.VIEW_ID,
 				"sms.navbar.messages", true);
 		renderBranch(joint, "2", currentViewID, SendSMSProducer.VIEW_ID,
-				"sms.navbar.new", true);
-		renderBranch(joint, "3", currentViewID, "#",
-				"sms.navbar.permissions", false);
+				"sms.navbar.new", false);
 	}
 
 	private void renderBranch(UIJointContainer joint, String id,
