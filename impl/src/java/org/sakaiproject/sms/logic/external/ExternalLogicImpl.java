@@ -608,12 +608,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (! "".equals(groupId) && ! "".equals(siteId) && groupId != null  && siteId != null){
 			try {
 				Site site = siteService.getSite(siteId);
-				Group group = site.getGroup(EntityReference.getIdFromRefByKey(groupId, "group"));
-				log.info(groupId +" ---- "+ group.getId());
+				Group group = site.getGroup(groupId);
 				return group.getTitle();
 			} catch (IdUnusedException e) {
-				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
-			} catch (NullPointerException e) {
 				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
 			}
 		}
