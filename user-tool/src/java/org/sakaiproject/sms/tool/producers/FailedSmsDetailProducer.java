@@ -93,8 +93,6 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 						new Object[] { smsTask.getFailReason() });
 				}
 
-				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
-				
 				//Insert original user selections
 				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				

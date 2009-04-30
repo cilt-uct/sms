@@ -20,6 +20,9 @@ public class SavedSelectionsRenderer {
 
 	public void renderSelections(SmsTask smsTask, UIContainer tofill, String parentDiv){
 		UIJointContainer parent = new UIJointContainer(tofill, parentDiv, "renderSelections:");
+		
+		UIMessage.make(parent, "recipients", "ui.failed.sms.recipients", new Object[] { smsTask.getGroupSizeEstimate() });
+		
 		//Insert original user selections
 		List<String> smsEntities = smsTask.getDeliveryEntityList();
 		
