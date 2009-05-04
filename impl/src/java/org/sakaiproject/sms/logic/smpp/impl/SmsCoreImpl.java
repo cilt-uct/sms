@@ -39,7 +39,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
+import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
@@ -296,7 +296,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public SmsTask insertTask(SmsTask smsTask)
 			throws SmsTaskValidationException, SmsSendDeniedException,
-			SmsSendDisabledException, ReceiveIncomingSmsDisabledException {
+			SmsSendDisabledException {
 
 		if (!hibernateLogicLocator.getExternalLogic().isUserAllowedInLocation(
 				smsTask.getSenderUserId(), ExternalLogic.SMS_SEND,
@@ -308,15 +308,7 @@ public class SmsCoreImpl implements SmsCore {
 				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException(smsTask);
 		}
-		if (smsTask.getMessageTypeId() == SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) {
-
-			if (!hibernateLogicLocator
-					.getSmsConfigLogic()
-					.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId())
-					.isReceiveIncomingEnabled()) {
-				throw new ReceiveIncomingSmsDisabledException(smsTask);
-			}
-		} else {
+		if (smsTask.getMessageTypeId() != SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) {
 			smsTask
 					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
@@ -431,8 +423,14 @@ public class SmsCoreImpl implements SmsCore {
 
 		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
-		parsedMessage = smsIncomingLogicManager.process(smsMessagebody,
-				mobileNumber);
+		try {
+			parsedMessage = smsIncomingLogicManager.process(smsMessagebody,
+					mobileNumber);
+		} catch (MoDisabledForSiteException exeption) {
+			LOG.error(exeption.getMessage());
+			return;
+
+		}
 		if (parsedMessage != null) {
 			if (parsedMessage.getBody_reply() != null) {
 				smsMessageReplyBody = parsedMessage.getBody_reply();
@@ -472,9 +470,6 @@ public class SmsCoreImpl implements SmsCore {
 			LOG.error(getExceptionStackTraceAsString(e));
 			e.printStackTrace();
 		} catch (SmsSendDisabledException e) {
-			LOG.error(getExceptionStackTraceAsString(e));
-			e.printStackTrace();
-		} catch (ReceiveIncomingSmsDisabledException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
 			e.printStackTrace();
 		}

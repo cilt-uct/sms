@@ -28,12 +28,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
+import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
@@ -46,6 +48,17 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	private static Log log = LogFactory
 			.getLog(SmsIncomingLogicManagerImpl.class);
+
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public HibernateLogicLocator getHibernateLogicLocator() {
+		return hibernateLogicLocator;
+	}
+
+	public void setHibernateLogicLocator(
+			HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
 
 	private ExternalLogic externalLogic;
 
@@ -60,7 +73,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	// TODO: Throw exception if no applicable found?
-	public ParsedMessage process(String smsMessagebody, String mobileNr) {
+	public ParsedMessage process(String smsMessagebody, String mobileNr)
+			throws MoDisabledForSiteException {
 
 		String reply = null;
 		ParsedMessage parsedMessage = null;
@@ -114,24 +128,30 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 									.getSite());
 						} else {
 							parsedMessage.setSite(sakaiSite);
+							// SmsConfig configSite = hibernateLogicLocator
+							// .getSmsConfigLogic()
+							// .getOrCreateSmsConfigBySakaiSiteId(
+							// sakaiSite);
+							//
+							// if (!configSite.isIncomingEnabled()) {
+							// throw new MoDisabledForSiteException(sakaiSite);
+							// }
+
 							List<String> userIds = externalLogic
 									.getUserIdsFromMobileNumber(mobileNr);
 							if (userIds.size() != 0) {
 								incomingUserID = userIds.get(0);
 							}
-								
+
 							SmsCommand command = allCommands
-							.getCommand(validCommandMatch
-									.getPattern());
+									.getCommand(validCommandMatch.getPattern());
 							try {
 
 								String[] bodyParameters = smsMessageParser
-								.parseBody(
-										parsedMessage.getBody(),
-										command
-										.getBodyParameterCount());
+										.parseBody(parsedMessage.getBody(),
+												command.getBodyParameterCount());
 								reply = command.execute(sakaiSite,
-										incomingUserID, mobileNr, bodyParameters);
+										incomingUserID, bodyParameters);
 							} catch (ParseException pe) {
 								// Body parameter count wrong
 								reply = command.getHelpMessage();

@@ -29,6 +29,7 @@ import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
+import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
@@ -86,7 +87,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("something"));
 	}
 
-	public void testDuplicateNotReplace() {
+	public void testDuplicateNotReplace() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("create test body", TEST_MOBILE);
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertEquals("CREATE", msg.getCommand());
@@ -126,7 +127,7 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
-	public void testProcess() {
+	public void testProcess() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("updat test", TEST_MOBILE);
 		assertEquals("UPDATE", msg.getCommand());
 
@@ -149,7 +150,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		}
 	}
 
-	public void testHelpCommand() {
+	public void testHelpCommand() throws MoDisabledForSiteException {
 		assertTrue(manager.isValidCommand("help"));
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
 		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
@@ -184,7 +185,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("DELETE"));
 	}
 
-	public void testHelpMessage() {
+	public void testHelpMessage() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
 		assertEquals(createCmd.getHelpMessage(), msg.getBody_reply());
 
@@ -192,7 +193,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals(updateCmd.getHelpMessage(), msg.getBody_reply());
 	}
 
-	public void testMultipleBody() {
+	public void testMultipleBody() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("MULTIPLE " + TEST_SITE
 				+ " PARAM1 PARAM2", TEST_MOBILE);
 		assertEquals("MULTIPLE", msg.getBody_reply());
@@ -200,7 +201,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals("PARAM2", multipleCmd.param2);
 	}
 
-	public void testMultipleBodyInvalid() {
+	public void testMultipleBodyInvalid() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process(
 				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
 		assertEquals("MULTIPLE HELP", msg.getBody_reply());

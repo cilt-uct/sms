@@ -19,6 +19,7 @@ package org.sakaiproject.sms.logic.incoming;
 
 import java.util.ArrayList;
 
+import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**
@@ -58,7 +59,8 @@ public interface SmsIncomingLogicManager {
 	 * @param message
 	 *            the incoming message received
 	 */
-	public ParsedMessage process(String smsMessagebody, String mobileNr);
+	public ParsedMessage process(String smsMessagebody, String mobileNr)
+			throws MoDisabledForSiteException;
 
 	/**
 	 * Check if command is valid for tool

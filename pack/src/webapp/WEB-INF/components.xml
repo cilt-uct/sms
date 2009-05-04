@@ -123,6 +123,8 @@
 			ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="smsMessageParser"
 			ref="org.sakaiproject.sms.logic.incoming.SmsMessageParser" />
+			<property name="hibernateLogicLocator"
+			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 	</bean>
 	<import resource="external.xml" />
 </beans>

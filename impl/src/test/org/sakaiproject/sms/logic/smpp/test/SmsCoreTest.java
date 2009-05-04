@@ -28,7 +28,6 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -50,9 +49,9 @@ import org.sakaiproject.sms.util.DateUtil;
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
  * from the SMS_TASK table.
- *
+ * 
  * @author etienne@psybergate.co.za
- *
+ * 
  */
 
 public class SmsCoreTest extends AbstractBaseTestCase {
@@ -125,7 +124,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -146,7 +145,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * must pick up the oldest SmsTask with an (pending/incomplete/reply)
 	 * status. The test succeeds if the Smstasks are returned in the proper
 	 * order and the correct amount of delivery reports were received.
-	 *
+	 * 
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
@@ -427,8 +426,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				smsCoreImpl.insertTask(statusUpdateTask);
 			} catch (SmsTaskValidationException e1) {
 				fail(e1.getErrorMessagesAsBlock());
-			} catch (ReceiveIncomingSmsDisabledException e) {
-				fail(e.getErrorMessagesAsBlock());
 			}
 			smsSmppImpl
 					.sendMessagesToGateway(statusUpdateTask.getSmsMessages());
@@ -450,8 +447,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				smsCoreImpl.insertTask(timeOutTask);
 			} catch (SmsTaskValidationException e1) {
 				fail(e1.getErrorMessagesAsBlock());
-			} catch (ReceiveIncomingSmsDisabledException e) {
-				e.getErrorMessagesAsBlock();
 			}
 			smsCoreImpl.processNextTask();
 
@@ -487,8 +482,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
-		insertTask
-				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+		insertTask.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -565,8 +559,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
-		insertTask
-				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+		insertTask.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -592,8 +585,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 	}
 
@@ -614,8 +605,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setMessageTypeId(1);
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
-		insertTask
-				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+		insertTask.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(account.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -644,8 +634,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 	}
 
@@ -657,8 +645,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		insertTask.setSenderUserName(externalLogic.getCurrentUserId());
-		insertTask
-				.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
+		insertTask.setSakaiToolId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		insertTask.setSmsAccountId(smsAccount.getId());
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -716,8 +703,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException e) {
 			assertNotNull(e);
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		// test shouldn't be dependant on eachother

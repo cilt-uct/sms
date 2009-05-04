@@ -8,7 +8,6 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -24,9 +23,9 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
  * SmsScheduler Junit.This class will test various scheduling related scenarios.
- *
+ * 
  * @author Etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsSchedulerTest extends AbstractBaseTestCase {
 
@@ -35,7 +34,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	static SmsSchedulerImpl smsSchedulerImpl = null;
 	static SmsSmppImpl smsSmppImpl = null;
 	static SmsConfigLogicImpl smsConfigLogic = null;
-	static StandaloneSmsDaoImpl hibernateUtil =null;
+	static StandaloneSmsDaoImpl hibernateUtil = null;
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
@@ -47,7 +46,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -91,19 +90,22 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	public void testTaskProcessing() {
 
 		SmsAccount smsAccount = new SmsAccount();
-		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId()+Math.random());
-		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId()+Math.random());
+		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId()
+				+ Math.random());
+		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId()
+				+ Math.random());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
 		smsAccount.setCredits(1000L);
-		smsAccount.setAccountName("accountname"+Math.random());
+		smsAccount.setAccountName("accountname" + Math.random());
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 
 		Calendar now = Calendar.getInstance();
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("smsTask3", new Date(
-				now.getTimeInMillis()), "smsTask3",smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
+				now.getTimeInMillis()), "smsTask3",
+				smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
@@ -115,14 +117,12 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("smsTask2", new Date(
-				now.getTimeInMillis()), "smsTask2MessageBody",
-				smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
+				now.getTimeInMillis()), "smsTask2MessageBody", smsAccount
+				.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 		smsTask2.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask2);
 		try {
@@ -133,13 +133,12 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		now.add(Calendar.MINUTE, -3);
 		SmsTask smsTask1 = smsCoreImpl.getPreliminaryTask("smsTask1", new Date(
-				now.getTimeInMillis()), "smsTask1MessageBody", smsAccount.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
+				now.getTimeInMillis()), "smsTask1MessageBody", smsAccount
+				.getSakaiSiteId(), null, smsAccount.getSakaiUserId());
 		smsTask1.setSmsAccountId(smsAccount.getId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask1);
 		try {
@@ -150,8 +149,6 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
 			fail("SmsSendDisabledException caught");
-		} catch (ReceiveIncomingSmsDisabledException e) {
-			fail("ReceiveIncomingSmsDisabledException caught");
 		}
 
 		try {
