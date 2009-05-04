@@ -346,6 +346,10 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	 *            Message to be persisted
 	 */
 	public void persistSmsMessage(SmsMessage smsMessage) {
+		//Preserve DB integrity by setting sakaiUserId to an empty string
+		if (smsMessage.getSakaiUserId() == null){
+			smsMessage.setSakaiUserId("");
+		}
 		persist(smsMessage);
 	}
 
