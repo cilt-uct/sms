@@ -222,18 +222,6 @@ public class SmsConfig extends BaseModel {
 	}
 
 	/**
-	 * Gets the sms enabled.
-	 * 
-	 * @return the sms enabled
-	 */
-	public Boolean isIncomingEnabled() {
-		if (this.incomingEnabled != null) {
-			return this.incomingEnabled.equals("1") ? true : false;
-		}
-		return null;
-	}
-
-	/**
 	 * Gets the sms retry max count.
 	 * 
 	 * @return the sms retry max count
