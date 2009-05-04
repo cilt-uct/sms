@@ -176,4 +176,6 @@ public class SmsConstants {
 	// The help command is valid for all sms-enabled tools
 	public static final String HELP = "HELP";
 
+	public static final int MO_SCHEDULER_TIMER = 5000;
+
 }

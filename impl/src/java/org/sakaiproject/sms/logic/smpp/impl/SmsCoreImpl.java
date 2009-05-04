@@ -317,35 +317,42 @@ public class SmsCoreImpl implements SmsCore {
 					.isReceiveIncomingEnabled()) {
 				throw new ReceiveIncomingSmsDisabledException(smsTask);
 			}
+		} else {
+			smsTask
+					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
-		
-		//Cross-check account info. {@link org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl NEW does not set this
-		if ( smsTask.getSmsAccountId() == null ){
+
+		// Cross-check account info. {@link
+		// org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl NEW does not
+		// set this
+		if (smsTask.getSmsAccountId() == null) {
 			SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
-			.getSmsAccount(smsTask.getSakaiSiteId(), smsTask.getSenderUserId());
-			if ( account != null ){
+					.getSmsAccount(smsTask.getSakaiSiteId(),
+							smsTask.getSenderUserId());
+			if (account != null) {
 				smsTask.setSmsAccountId(account.getId());
 			}
 		}
-		
-		//Set messageType, expiry date, TTL, report tiemout.
+
+		// Set messageType, expiry date, TTL, report tiemout.
 		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
-		.getOrCreateSystemSmsConfig();
+				.getOrCreateSystemSmsConfig();
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		
+
 		// Set DateToExpire to getMaxTimeToLive if it aint set in the UI
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
-		if (smsTask.getDateToExpire() == null){
+		if (smsTask.getDateToExpire() == null) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(smsTask.getDateToSend());
 			cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 			smsTask.setDateToExpire(cal.getTime());
 		}
-		smsTask.setDelReportTimeoutDuration(systemConfig.getDelReportTimeoutDuration());		
-		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
+		smsTask.setDelReportTimeoutDuration(systemConfig
+				.getDelReportTimeoutDuration());
+
 		smsTask.setAttemptCount(0);
-		
+
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
 		if (errors.size() > 0) {
@@ -479,13 +486,22 @@ public class SmsCoreImpl implements SmsCore {
 				.getNextSmsTask();
 		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup));
 		if (smsTask != null) {
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
 			new ProcessThread(smsTask);
 		}
 	}
 
 	public void processTask(SmsTask smsTask) {
+		smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
+				smsTask.getId());
+		if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_BUSY)) {
+			return;
+		}
+		if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_SENT)) {
+			return;
+		}
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		try {
 			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 					.getOrCreateSystemSmsConfig();
@@ -921,4 +937,15 @@ public class SmsCoreImpl implements SmsCore {
 		LOG.setLevel(level);
 	}
 
+	public void processMOTasks() {
+		List<SmsTask> moTasks = hibernateLogicLocator.getSmsTaskLogic()
+				.getAllMOTasks();
+		if (moTasks != null) {
+			for (SmsTask smsTask : moTasks) {
+
+				processTask(smsTask);
+
+			}
+		}
+	}
 }

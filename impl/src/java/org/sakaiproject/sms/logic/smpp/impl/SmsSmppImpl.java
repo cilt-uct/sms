@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -66,6 +67,7 @@ import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
+import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
@@ -79,11 +81,18 @@ public class SmsSmppImpl implements SmsSmpp {
 	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
+
+	ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
+	ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
 	private BindThread bindTest;
 
 	private boolean gatewayBound = false;
+
+	MOmessageQueueThread mOmessageQueueThread = new MOmessageQueueThread();
+
+	DeliveryReportQueueThread DeliveryReportQueueThread = new DeliveryReportQueueThread();
 
 	private SmsSmppProperties smsSmppProperties = null;
 
@@ -146,15 +155,91 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 	}
 
+	private class MOmessageQueueThread implements Runnable {
+
+		boolean allDone = false;
+
+		MOmessageQueueThread() {
+
+			Thread t = new Thread(this);
+			t.start();
+		}
+
+		public void run() {
+			Work();
+		}
+
+		public void Work() {
+			while (!allDone) {
+				try {
+
+					ArrayList<SmsMOMessage> currentMOmessages = receivedMOmessages;
+					for (int i = 0; i < currentMOmessages.size(); i++) {
+						System.out.println("Processing MO-Message queue of "
+								+ receivedMOmessages.size() + " messages");
+						SmsMOMessage smsMOmessage = currentMOmessages.get(i);
+						smsCore.processIncomingMessage(smsMOmessage
+								.getSmsMessagebody(), smsMOmessage
+								.getMobileNumber());
+						receivedMOmessages.remove(smsMOmessage);
+
+					}
+
+					Thread.sleep(1000);
+
+				} catch (Exception e) {
+
+				}
+			}
+		}
+	}
+
+	private class DeliveryReportQueueThread implements Runnable {
+
+		boolean allDone = false;
+
+		DeliveryReportQueueThread() {
+
+			Thread t = new Thread(this);
+			t.start();
+		}
+
+		public void run() {
+			Work();
+		}
+
+		public void Work() {
+			while (!allDone) {
+				try {
+
+					ArrayList<DeliverSm> currentDeliveryReports = receivedDeliveryReports;
+					for (int i = 0; i < currentDeliveryReports.size(); i++) {
+						System.out.println("Processing MO-Message queue of "
+								+ receivedDeliveryReports.size() + " messages");
+						DeliverSm deliverSm = currentDeliveryReports.get(i);
+						handelDeliveryReport(deliverSm);
+						receivedDeliveryReports.remove(deliverSm);
+
+					}
+
+					Thread.sleep(1000);
+
+				} catch (Exception e) {
+
+				}
+			}
+		}
+	}
+
 	/**
 	 * This listener will receive delivery reports as well as incoming messages
 	 * from the smpp gateway. When we are binded to the gateway, this listener
 	 * will receive tcp packets form the gateway. Note that any of the listeners
 	 * running on a ip address, will receive reports and not just the session
 	 * that sent them!
-	 *
+	 * 
 	 * @author etienne@psybergate.co.za
-	 *
+	 * 
 	 */
 	private class MessageReceiverListenerImpl implements
 			MessageReceiverListener {
@@ -167,94 +252,97 @@ public class SmsSmppImpl implements SmsSmpp {
 
 			if (MessageType.SMSC_DEL_RECEIPT.containedIn(deliverSm
 					.getEsmClass())) {
-				try {
 
-					DeliveryReceipt deliveryReceipt = deliverSm
-							.getShortMessageAsDeliveryReceipt();
-
-					// for future use.
-					if (ALLOW_PROCESS_REMOTELY) {
-						notifyDeliveryReportRemotely(deliveryReceipt);
-						return;
-					}
-					LOG.info("Receiving delivery receipt for message '"
-							+ deliveryReceipt.getId() + " ' from "
-							+ deliverSm.getSourceAddr() + " to "
-							+ deliverSm.getDestAddress() + " : "
-							+ deliveryReceipt);
-					SmsMessage smsMessage = hibernateLogicLocator
-							.getSmsMessageLogic().getSmsMessageBySmscMessageId(
-									deliveryReceipt.getId(),
-									SmsConstants.SMSC_ID);
-					if (smsMessage == null) {
-						for (int i = 0; i < 5; i++) {
-							LOG.warn("SMSC_DEL_RECEIPT retry " + i
-									+ " out of 5 for messageSmscID"
-									+ deliveryReceipt.getId());
-							smsMessage = hibernateLogicLocator
-									.getSmsMessageLogic()
-									.getSmsMessageBySmscMessageId(
-											deliveryReceipt.getId(),
-											SmsConstants.SMSC_ID);
-							if (smsMessage != null) {
-								break;
-							}
-							try {
-								Thread.sleep(5000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-
-					}
-					if (smsMessage != null) {
-						smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
-								.get((deliveryReceipt.getFinalStatus())));
-
-						smsMessage.setDateDelivered(new Date(System
-								.currentTimeMillis()));
-
-						if (smsMessage.getStatusCode().equals(
-								SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
-							smsMessage
-									.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
-
-						} else {
-
-							if (smsDeliveryStatus.get(deliveryReceipt
-									.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
-								smsMessage
-										.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-							} else {
-								smsMessage
-										.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-								hibernateLogicLocator.getSmsTaskLogic()
-										.incrementMessagesDelivered(
-												smsMessage.getSmsTask());
-							}
-						}
-						hibernateLogicLocator.getSmsTaskLogic()
-								.incrementMessagesProcessed(
-										smsMessage.getSmsTask());
-						hibernateLogicLocator.getSmsMessageLogic()
-								.persistSmsMessage(smsMessage);
-
-					} else {
-						LOG
-								.error("Delivery report received for message not in database. MessageSMSCID="
-										+ deliveryReceipt.getId());
-					}
-				} catch (InvalidDeliveryReceiptException e) {
-					LOG.error("Failed getting delivery receipt" + e);
-
-				}
+				receivedDeliveryReports.add(deliverSm);
 
 			} else {
 				LOG.info("Receiving MO message");
-				smsCore.processIncomingMessage(new String(deliverSm
-						.getShortMessage()), deliverSm.getSourceAddr());
+				SmsMOMessage moMessage = new SmsMOMessage();
+				moMessage.setMobileNumber(deliverSm.getSourceAddr());
+				moMessage.setSmsMessagebody(new String(deliverSm
+						.getShortMessage()));
+				receivedMOmessages.add(moMessage);
 
 			}
+		}
+	}
+
+	private void handelDeliveryReport(DeliverSm deliverSm) {
+		try {
+
+			DeliveryReceipt deliveryReceipt = deliverSm
+					.getShortMessageAsDeliveryReceipt();
+
+			// for future use.
+			if (ALLOW_PROCESS_REMOTELY) {
+				notifyDeliveryReportRemotely(deliveryReceipt);
+				return;
+			}
+			LOG.info("Receiving delivery receipt for message '"
+					+ deliveryReceipt.getId() + " ' from "
+					+ deliverSm.getSourceAddr() + " to "
+					+ deliverSm.getDestAddress() + " : " + deliveryReceipt);
+			SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
+					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
+							SmsConstants.SMSC_ID);
+			if (smsMessage == null) {
+				for (int i = 0; i < 5; i++) {
+					LOG.warn("SMSC_DEL_RECEIPT retry " + i
+							+ " out of 20 for messageSmscID"
+							+ deliveryReceipt.getId());
+					smsMessage = hibernateLogicLocator.getSmsMessageLogic()
+							.getSmsMessageBySmscMessageId(
+									deliveryReceipt.getId(),
+									SmsConstants.SMSC_ID);
+					if (smsMessage != null) {
+						break;
+					}
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+			if (smsMessage != null) {
+				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
+						.get((deliveryReceipt.getFinalStatus())));
+
+				smsMessage
+						.setDateDelivered(new Date(System.currentTimeMillis()));
+
+				if (smsMessage.getStatusCode().equals(
+						SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
+					smsMessage
+							.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
+
+				} else {
+
+					if (smsDeliveryStatus.get(deliveryReceipt.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
+						smsMessage
+								.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+					} else {
+						smsMessage
+								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+						hibernateLogicLocator.getSmsTaskLogic()
+								.incrementMessagesDelivered(
+										smsMessage.getSmsTask());
+					}
+				}
+				hibernateLogicLocator.getSmsTaskLogic()
+						.incrementMessagesProcessed(smsMessage.getSmsTask());
+				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+						smsMessage);
+
+			} else {
+				LOG
+						.error("Delivery report received for message not in database. MessageSMSCID="
+								+ deliveryReceipt.getId());
+			}
+		} catch (InvalidDeliveryReceiptException e) {
+			LOG.error("Failed getting delivery receipt" + e);
+
 		}
 	}
 
@@ -262,17 +350,16 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * Bind to the remote gateway using a username and password. If the
 	 * connection is dropped, this service will try and reconnect and specified
 	 * intervals.
-	 *
+	 * 
 	 * @return
 	 */
 	private boolean bind() {
 
 		if (!gatewayBound) {
 
-			LOG.info("Binding to " + properties.getProperty("SMSCadress")
-					+ " on port " + properties.getProperty("SMSCport")
-					+ " with Username "
-					+ properties.getProperty("SMSCUsername"));
+			LOG.info("Binding to " + smsSmppProperties.getSMSCAdress()
+					+ " on port " + smsSmppProperties.getSMSCPort()
+					+ " with Username " + smsSmppProperties.getSMSCUsername());
 			try {
 				session = new SMPPSession();
 				session.connectAndBind(smsSmppProperties.getSMSCAdress(),
@@ -289,7 +376,7 @@ public class SmsSmppImpl implements SmsSmpp {
 								smsSmppProperties.getAddressRange()));
 				if (bindTest != null) {
 					bindTest.allDone = true;
-					bindTest=null;
+					bindTest = null;
 				}
 				gatewayBound = true;
 				session.setEnquireLinkTimer(smsSmppProperties
@@ -582,7 +669,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * Send a list of messages one-by-one to the gateway. Abort if the gateway
 	 * connection is down or when gateway returns an error and mark relevant
 	 * messages as failed. Return message statuses (not reports) back to caller.
-	 *
+	 * 
 	 * @return
 	 */
 	public String sendMessagesToGateway(Set<SmsMessage> messages) {
@@ -620,7 +707,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * This is a future function that could allow an external system to receive
 	 * the delivery report and handle it accordingly. See a code example in
 	 * processOutgoingMessageRemotely.
-	 *
+	 * 
 	 * @param deliveryReceipt
 	 * @return
 	 */
@@ -684,7 +771,9 @@ public class SmsSmppImpl implements SmsSmpp {
 			message
 					.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
 
-			LOG.info("Message submitted, message_id is " + messageId);
+			LOG.info("Message submitted, smsc_id is " + messageId
+					+ "MessageID = " + message.getId() + " TaskID = "
+					+ message.getSmsTask().getId());
 		} catch (PDUException e) {
 			// Invalid PDU parameter
 			message.setDebugInfo("Invalid PDU parameter Message failed");
@@ -747,7 +836,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * NB: This is just example code of a possible implementation. The remote
 	 * service will need to handle the delivery reports. Other possible solution
 	 * is to use web services.
-	 *
+	 * 
 	 * @param smsMessage
 	 * @return
 	 */

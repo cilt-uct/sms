@@ -92,7 +92,10 @@ public class SmsTask extends BaseModel {
 	/** The message body. Already validated for character set, length etc. */
 	private String messageReplyBody;
 
-	/** Type of task, only SO (system originating) for now. */
+	/**
+	 * Type of task, SO (system originating) and MO (mobile originating) for
+	 * now.
+	 */
 	private Integer messageTypeId;
 
 	/**
@@ -341,7 +344,8 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * Gets the date to send. Will return the year as 2200 if this is a draft task.
+	 * Gets the date to send. Will return the year as 2200 if this is a draft
+	 * task.
 	 * 
 	 * @return the date to send
 	 */

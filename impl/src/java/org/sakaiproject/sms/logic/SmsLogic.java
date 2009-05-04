@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -33,6 +34,19 @@ public class SmsLogic extends BaseLogic {
 	 */
 	protected Date getCurrentDate() {
 		return new Date(System.currentTimeMillis());
+	}
+
+	/**
+	 * Gets the current Date with an delay.
+	 * 
+	 * @return the current Date
+	 */
+	protected Date getDelayedCurrentDate(int secondsDelay) {
+		Calendar cal = Calendar.getInstance();
+
+		cal.add(Calendar.SECOND, secondsDelay);
+
+		return cal.getTime();
 	}
 
 }

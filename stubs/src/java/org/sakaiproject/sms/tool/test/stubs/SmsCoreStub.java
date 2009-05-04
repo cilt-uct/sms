@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public class SmsCoreStub implements SmsCore {
@@ -65,7 +64,7 @@ public class SmsCoreStub implements SmsCore {
 		return arg0;
 	}
 
-	public void processIncomingMessage(String arg0,String arg1) {
+	public void processIncomingMessage(String arg0, String arg1) {
 		// TODO Auto-generated method stub
 
 	}
@@ -120,6 +119,11 @@ public class SmsCoreStub implements SmsCore {
 
 	public void abortPendingTask(Long smsTaskID)
 			throws SmsTaskNotFoundException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void processMOTasks() {
 		// TODO Auto-generated method stub
 
 	}

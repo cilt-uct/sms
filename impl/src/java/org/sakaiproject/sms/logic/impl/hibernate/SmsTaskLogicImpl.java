@@ -120,11 +120,15 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	public SmsTask getNextSmsTask() {
 		StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
+		hql.append(" and task.messageTypeId = (:messageTypeId) ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
 		hql.append(" order by task.messageTypeId ,task.dateToSend");
 		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
-				new QueryParameter("today", getCurrentDate(),
-						Hibernate.TIMESTAMP), new QueryParameter("statusCodes",
+				new QueryParameter("today", getDelayedCurrentDate(10),
+						Hibernate.TIMESTAMP), new QueryParameter(
+						"messageTypeId",
+						SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING,
+						Hibernate.INTEGER), new QueryParameter("statusCodes",
 						new Object[] { SmsConst_DeliveryStatus.STATUS_PENDING,
 								SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
 								SmsConst_DeliveryStatus.STATUS_RETRY },
@@ -301,6 +305,31 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 								SmsConst_DeliveryStatus.STATUS_FAIL },
 						Hibernate.STRING));
 		return smsTasks;
+	}
+
+	public List<SmsTask> getAllMOTasks() {
+		StringBuilder hql = new StringBuilder();
+		hql.append(" from SmsTask task where task.dateToSend <= :today ");
+		hql.append(" and task.statusCode IN (:statusCodes) ");
+		hql.append(" and task.messageTypeId = (:messageTypeId) ");
+		hql.append(" order by task.messageTypeId ,task.dateToSend");
+		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
+				new QueryParameter("today", getDelayedCurrentDate(10),
+						Hibernate.TIMESTAMP), new QueryParameter("statusCodes",
+						new Object[] { SmsConst_DeliveryStatus.STATUS_PENDING,
+								SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
+								SmsConst_DeliveryStatus.STATUS_RETRY },
+
+						Hibernate.STRING), new QueryParameter("messageTypeId",
+						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING,
+						Hibernate.INTEGER));
+
+		log.debug("processMOTasks() HQL: " + hql);
+		if (tasks != null && tasks.size() > 0) {
+			// Gets the oldest dateToSend. I.e the first to be processed.
+			return tasks;
+		}
+		return null;
 	}
 
 }
