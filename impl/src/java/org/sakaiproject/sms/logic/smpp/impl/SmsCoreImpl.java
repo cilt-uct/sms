@@ -449,7 +449,7 @@ public class SmsCoreImpl implements SmsCore {
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				new Date(), parsedMessage.getSite(), null,
-				SmsConstants.DEFAULT_MO_SENDER);
+				SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 
 		if (smsTask == null) {
 			return;
