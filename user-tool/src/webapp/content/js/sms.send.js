@@ -14,10 +14,8 @@ $(document).ready(function(){
                         .click();
 
                     $("#smsAddRecipients").bind('click',function() {
-                        if($.fn.SMS.get.preserveDomSelections && ! ($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE") ){
-                           if ($("#facebox").length != 0) {
-                                $("#facebox").fadeIn('fast');
-                          }
+                        if($.fn.SMS.get.preserveDomSelections && $("#facebox").length != 0 ){
+                           $("#facebox").fadeIn('fast');
                         }else{
                             $.facebox({ajax: this.href});
                         }

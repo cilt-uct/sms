@@ -30,16 +30,9 @@ $(document).ready(function() {
    //Re-select saved selections
     $.fn.SMS.set.savedTaskEntities();
     //Customize tab Content height if neccessary
-    if ( $("#peopleListGroups").height() > 195 ){
-        $("#peopleListGroups").height(200);
+    if ( $("div[id^=peopleList]").height() > 195 ){
+        $("div[id^=peopleList]").height(200);
     }
-    if ( $("#peopleListRoles").height() > 195 ){
-        $("#peopleListRoles").height(200);
-    }
-    if ( $("#peopleListNames").height() > 195 ){
-        $("#peopleListNames").height(200);
-    }
-
     $("#clearSelections").bind('click', function(){
         $(document).trigger("selections.clear");
         return false;

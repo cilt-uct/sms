@@ -80,8 +80,6 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		
-		//Top links
-		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 		
 		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
 			
@@ -89,6 +87,13 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			SmsTask smsTask = new SmsTask();
 			if ( smsParams.id != null && ! "".equals(smsParams.id) ){
 				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
+				//Top links
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", null);	
+				UIMessage.make(tofill, "sms-header", "ui.edit.sms.header");
+			}else{
+				//Top links
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				UIMessage.make(tofill, "sms-header", "ui.create.sms.header");
 			}
 			
 			UIForm form = UIForm.make(tofill, "form");

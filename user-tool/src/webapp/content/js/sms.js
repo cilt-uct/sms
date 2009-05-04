@@ -266,7 +266,7 @@
                 var values = $("#savedEntityList").val().toString().split(',');
                 $.each(values, function(i, entity){
                     if(entity != "" && entity != null){
-                       var elem = 'input[value='+ entity +']:eq(0)';
+                       var elem = 'input[type=checkbox][value='+ entity +']';
                        $(elem).each(function(){
                                 this.checked = true;
                                 checkEntityboxAction(this, entity.split("/")[3] + "s");
@@ -281,7 +281,7 @@
                 values = $("#savedUserIds").val().toString().split(',');
                 $.each(values, function(i, entityId){
                     if(entityId != "" && entityId != null){
-                        $('input[value='+ entityId +']:eq(0)').each(function(){
+                        $('input[type=checkbox][value='+ entityId +']').each(function(){
                             this.checked = true;
                             checkNameboxAction(this);
                         });

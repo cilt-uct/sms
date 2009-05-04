@@ -43,7 +43,7 @@ public class UserNavBarRenderer {
 		UIBranchContainer cell = UIBranchContainer.make(joint,
 				"navigation-cell:", id);
 
-		if (currentViewID.equals(linkViewID)) {
+		if (currentViewID != null && currentViewID.equals(linkViewID)) {
 			UIMessage.make(cell, "item-text", message);
 		} else {
 			UIInternalLink.make(cell, "item-link", UIMessage.make(message),
