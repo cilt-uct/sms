@@ -226,13 +226,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 
 	private String toJSONarray(String[] entities) {
 		if ( ! "".equals(entities) ){
-			String jsonList = "";
-			StringBuilder sb = new StringBuilder(jsonList);
+			StringBuilder sb = new StringBuilder();
 			int count = 1;
 			for (String entity : entities){
 				sb.append(entity);
-				//jsonList += entity;
-				if ( count == entities.length -1 ){
+				if ( count < entities.length ){
 					sb.append(",");
 				}
 				count++;
