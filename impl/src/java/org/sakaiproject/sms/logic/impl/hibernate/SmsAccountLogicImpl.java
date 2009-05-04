@@ -37,7 +37,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 /**
  * The data service will handle all sms Account database transactions for the
  * sms tool in Sakai.
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
@@ -56,7 +56,6 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
-
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -66,7 +65,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Gets a SmsAccount entity for the given id
-	 *
+	 * 
 	 * @param Long
 	 *            sms account id
 	 * @return sms congiguration
@@ -77,7 +76,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Gets all the sms account records
-	 *
+	 * 
 	 * @return List of SmsAccount objects
 	 */
 	public List<SmsAccount> getAllSmsAccounts() {
@@ -87,10 +86,10 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * This method will persists the given object.
-	 *
+	 * 
 	 * If the object is a new entity then it will be created on the DB. If it is
 	 * an existing entity then the record will be updates on the DB.
-	 *
+	 * 
 	 * @param sms
 	 *            account to be persisted
 	 */
@@ -107,7 +106,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Checks if account has unique Sakai site id
-	 *
+	 * 
 	 * @param smsAccount
 	 * @return
 	 */
@@ -124,7 +123,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Checks if account has unique Sakai user id
-	 *
+	 * 
 	 * @param smsAccount
 	 * @return
 	 */
@@ -142,7 +141,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	/**
 	 * This is a test method to insert a sms account.It is only used during
 	 * development.
-	 *
+	 * 
 	 * @param sakaiSiteID
 	 * @param sakaiUserID
 	 * @return
@@ -178,14 +177,14 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * If the property account.checkSiteIdBeforeUserId == false then it will
 	 * behave as described above but will first try find the account by sakai
 	 * user id before the sakai site id.
-	 *
+	 * 
 	 * @param sakaiSiteId
 	 *            the sakai site id. Can be null.
 	 * @param SakaiUserId
 	 *            the sakai user id. Can be null.
-	 *
+	 * 
 	 * @return sms configuration
-	 *
+	 * 
 	 */
 	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
@@ -205,18 +204,33 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			account = getAccountBySakaiUserId(SakaiUserId);
 		}
 
+		if (account == null
+				&& sakaiSiteId.equals(SmsConstants.SAKAI_ADMIN_ACCOUNT)) {
+			SmsAccount smsAccount = new SmsAccount();
+			smsAccount.setAccountEnabled(true);
+			smsAccount.setAccountName(SmsConstants.DEFAULT_MO_ACCOUNT_NAME);
+			smsAccount.setCredits(0l);
+			smsAccount.setOverdraftLimit(0l);
+			smsAccount.setMessageTypeCode(SmsConstants.MESSAGE_TYPE_CODE);
+			smsAccount.setStartdate(new Date());
+			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_ADMIN_ACCOUNT);
+			persistSmsAccount(smsAccount);
+
+			return getSmsAccount(sakaiSiteId, SakaiUserId);
+		}
+
 		// may return null if acc does not exist
 		return account;
 	}
 
 	/**
 	 * Gets the account by sakai site id.
-	 *
+	 * 
 	 * @param sakaiSiteId
 	 *            the sakai site id
-	 *
+	 * 
 	 * @return the account by sakai site id
-	 *
+	 * 
 	 * @throws MoreThanOneAccountFoundException
 	 *             the more than one account found exception
 	 */
@@ -229,9 +243,11 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		hql
 				.append(" from SmsAccount account where (account.enddate is null or account.enddate > :today) ");
 		hql.append(" and (account.sakaiSiteId = :sakaiSiteId)");
-		List<SmsAccount> accounts = smsDao.runQuery(hql.toString(), new QueryParameter("sakaiSiteId", sakaiSiteId, Hibernate.STRING),
-																		   new QueryParameter("today", new Date(),Hibernate.DATE));
-		
+		List<SmsAccount> accounts = smsDao
+				.runQuery(hql.toString(), new QueryParameter("sakaiSiteId",
+						sakaiSiteId, Hibernate.STRING), new QueryParameter(
+						"today", new Date(), Hibernate.DATE));
+
 		if (accounts != null && accounts.size() > 0) {
 			account = accounts.get(0);
 		}
@@ -240,12 +256,12 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Gets the account by sakai site id.
-	 *
+	 * 
 	 * @param sakaiUserId
 	 *            the sakai user id
-	 *
+	 * 
 	 * @return the account by sakai site id
-	 *
+	 * 
 	 */
 	private SmsAccount getAccountBySakaiUserId(String sakaiUserId) {
 		if (sakaiUserId == null || sakaiUserId.trim().equals("")) {
@@ -256,8 +272,10 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		hql
 				.append(" from SmsAccount account where (account.enddate is null or account.enddate > :today) ");
 		hql.append(" and (account.sakaiUserId = :sakaiUserId)");
-		List<SmsAccount> accounts = smsDao.runQuery(hql.toString(), new QueryParameter("today", new Date(),Hibernate.DATE),
-																		   new QueryParameter("sakaiUserId", sakaiUserId, Hibernate.STRING));
+		List<SmsAccount> accounts = smsDao
+				.runQuery(hql.toString(), new QueryParameter("today",
+						new Date(), Hibernate.DATE), new QueryParameter(
+						"sakaiUserId", sakaiUserId, Hibernate.STRING));
 		if (accounts != null && accounts.size() > 0) {
 			account = accounts.get(0);
 		}
@@ -266,7 +284,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	/**
 	 * Recalculate balance for a specific account.
-	 *
+	 * 
 	 * @param accountId
 	 *            the account id
 	 * @param account

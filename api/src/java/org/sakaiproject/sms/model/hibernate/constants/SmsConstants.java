@@ -180,4 +180,10 @@ public class SmsConstants {
 
 	public static final String DEFAULT_MO_SENDER_USERNAME = "admin";
 
+	public static final String SAKAI_ADMIN_ACCOUNT = "!admin";
+
+	public static final String DEFAULT_MO_ACCOUNT_NAME = "defaultMOAccount";
+
+	public static final String MESSAGE_TYPE_CODE = "SO";
+
 }
