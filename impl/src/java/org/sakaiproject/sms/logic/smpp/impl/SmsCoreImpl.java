@@ -259,9 +259,8 @@ public class SmsCoreImpl implements SmsCore {
 
 	// We answer back by creating a new sms task with one sms message attached
 	// to it. The task will then be handled like any other MO task.
-	private SmsTask getPreliminaryMOTask(String mobilenumber,
-			String SakaiUserId, Date dateToSend, String sakaiSiteID,
-			String sakaiToolId, String sakaiSenderID) {
+	private SmsTask getPreliminaryMOTask(String mobilenumber, Date dateToSend,
+			String sakaiSiteID, String sakaiToolId, String sakaiSenderID) {
 		Set<String> number = new HashSet<String>();
 		number.add(mobilenumber);
 		SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
@@ -449,7 +448,8 @@ public class SmsCoreImpl implements SmsCore {
 				smsMessageReplyBody);
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				"admin", new Date(), parsedMessage.getSite(), null, "admin");
+				new Date(), parsedMessage.getSite(), null,
+				SmsConstants.DEFAULT_MO_SENDER);
 
 		if (smsTask == null) {
 			return;

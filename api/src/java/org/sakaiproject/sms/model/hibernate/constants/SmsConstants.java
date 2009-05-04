@@ -178,4 +178,6 @@ public class SmsConstants {
 
 	public static final int MO_SCHEDULER_TIMER = 5000;
 
+	public static final String DEFAULT_MO_SENDER = "admin";
+
 }
