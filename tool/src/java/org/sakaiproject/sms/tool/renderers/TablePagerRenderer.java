@@ -56,7 +56,7 @@ public class TablePagerRenderer {
 		
 		UIOutput.make(joint, "page-count", " Page " + (currentStart)  + " of " + (currentCount) + " ");
 
-		if(currentStart != currentCount){
+		if(!currentStart.equals(currentCount)){
 			new_params = sortParams.copyBase();		
 			((SortPagerViewParams)new_params).current_start += 1;
 			UIInternalLink.make(joint, "next", new_params);
