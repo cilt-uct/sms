@@ -225,7 +225,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 	}
 
 	private String toJSONarray(String[] entities) {
-		if ( ! "".equals(entities) ){
+		if ( entities != null){
 			StringBuilder sb = new StringBuilder();
 			int count = 1;
 			for (String entity : entities){

@@ -203,7 +203,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 	}
 	
 	private String toJSONarray(String[] entities) {
-		if ( ! "".equals(entities) ){
+		if ( entities != null ){
 			String jsonList = "";
 			StringBuilder sb = new StringBuilder(jsonList);
 			int count = 1;
