@@ -642,4 +642,44 @@ public class SakaiPersonStub implements SakaiPerson {
 		return null;
 	}
 
+	public String getFavouriteBooks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFavouriteMovies() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFavouriteQuotes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getFavouriteTvShows() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setFavouriteBooks(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setFavouriteMovies(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setFavouriteQuotes(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setFavouriteTvShows(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
