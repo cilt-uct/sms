@@ -81,7 +81,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		
 		//Render console summary
 		if ( smsAccount != null){
-			if(! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
+			if(! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
 			UIOutput.make(tofill, "send");
 			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});

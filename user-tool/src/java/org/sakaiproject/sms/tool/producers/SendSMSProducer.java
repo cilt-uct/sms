@@ -81,7 +81,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		
 		
-		if ( ! "".equals(smsAccount.getCredits()) && smsAccount.getCredits() != 0 ){
+		if ( ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
 			
 			SmsParams smsParams = (SmsParams) viewparams;
 			SmsTask smsTask = new SmsTask();
