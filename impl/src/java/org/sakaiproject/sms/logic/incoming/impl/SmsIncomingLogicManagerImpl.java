@@ -151,7 +151,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 										.parseBody(parsedMessage.getBody(),
 												command.getBodyParameterCount());
 								reply = command.execute(sakaiSite,
-										incomingUserID, bodyParameters);
+										incomingUserID, mobileNr,
+										bodyParameters);
 							} catch (ParseException pe) {
 								// Body parameter count wrong
 								reply = command.getHelpMessage();
