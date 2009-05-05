@@ -128,4 +128,9 @@ public class SmsCoreStub implements SmsCore {
 
 	}
 
+	public void processTaskInThread(SmsTask smsTask, ThreadGroup threadGroup) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

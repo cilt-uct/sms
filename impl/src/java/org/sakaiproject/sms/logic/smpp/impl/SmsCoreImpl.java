@@ -62,14 +62,13 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsCoreImpl implements SmsCore {
 
 	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
-	private static final String THREAD_GROUP_NAME = "sms";
 
 	private static final int moOverdraftEmailInterval = 2;
 
 	private Calendar lastSendMoOverdraftEmail = null;
 
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
-			THREAD_GROUP_NAME);
+			SmsConstants.SMS_TASK_PROCESSING_THREAD_GROUP_NAME);
 
 	private SmsMessageParser smsMessageParser;
 
@@ -135,10 +134,9 @@ public class SmsCoreImpl implements SmsCore {
 	private class ProcessThread implements Runnable {
 
 		SmsTask smsTask;
-
-		ProcessThread(SmsTask smsTask) {
+		ProcessThread(SmsTask smsTask, ThreadGroup threadGroup) {
 			this.smsTask = smsTask;
-			Thread t = new Thread(smsThreadGroup, this);
+			Thread t = new Thread(threadGroup, this);
 			t.start();
 
 		}
@@ -149,6 +147,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		public void Work() {
 			processTask(smsTask);
+
 		}
 	}
 
@@ -434,7 +433,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (parsedMessage != null) {
 			if (parsedMessage.getBody_reply() != null) {
 				smsMessageReplyBody = parsedMessage.getBody_reply();
-				LOG.info((parsedMessage.getCommand() != null ? "Command "
+				LOG.debug((parsedMessage.getCommand() != null ? "Command "
 						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
 			}
@@ -454,7 +453,7 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		smsMessage.setSmsTask(smsTask);
 		// TODO: who must te sakai user Id be for the reply?
-		smsMessage.setSakaiUserId("admin");
+		smsMessage.setSakaiUserId(SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
 		smsMessage.setMessageBody(smsMessagebody);
@@ -479,10 +478,10 @@ public class SmsCoreImpl implements SmsCore {
 	public synchronized void processNextTask() {
 		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getNextSmsTask();
-		LOG.info("Number of active Threads :" + getThreadCount(smsThreadGroup));
-		if (smsTask != null) {
 
-			new ProcessThread(smsTask);
+		if (smsTask != null) {
+			LOG.debug("Processing next task");
+			processTaskInThread(smsTask, smsThreadGroup);
 		}
 	}
 
@@ -812,18 +811,7 @@ public class SmsCoreImpl implements SmsCore {
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
-			LOG.info("Number of active SMS threads :"
-					+ getThreadCount(smsThreadGroup));
-			int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
-					.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-			if (getThreadCount(smsThreadGroup) < maxThreadCount) {
-				new ProcessThread(smsTask);
-			} else {
-				LOG
-						.info("Maximum allowed SMS threads of "
-								+ maxThreadCount
-								+ " reached. Task will be scheduled for later processing.");
-			}
+			processTaskInThread(smsTask, smsThreadGroup);
 		}
 	}
 
@@ -938,9 +926,24 @@ public class SmsCoreImpl implements SmsCore {
 		if (moTasks != null) {
 			for (SmsTask smsTask : moTasks) {
 
-				processTask(smsTask);
+				processTaskInThread(smsTask, smsThreadGroup);
 
 			}
 		}
+	}
+
+	public void processTaskInThread(SmsTask smsTask, ThreadGroup threadGroup) {
+
+		LOG.debug("Number of active threads in processTaskInThread:"
+				+ getThreadCount(threadGroup));
+		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
+		if (getThreadCount(threadGroup) < maxThreadCount) {
+			new ProcessThread(smsTask, threadGroup);
+		} else {
+			LOG.debug("Maximum allowed SMS threads of " + maxThreadCount
+					+ " reached. Task will be scheduled for later processing.");
+		}
+
 	}
 }

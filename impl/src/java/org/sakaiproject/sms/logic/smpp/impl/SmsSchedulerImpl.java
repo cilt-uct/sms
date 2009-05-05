@@ -22,7 +22,6 @@ import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.springframework.util.Assert;
 
 public class SmsSchedulerImpl implements SmsScheduler {
@@ -37,7 +36,6 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	public SmsCore smsCore = null;
 
 	public SmsSchedulerThread smsSchedulerThread = null;
-	public MOSchedulerThread mOSchedulerThread = null;
 
 	public SmsSchedulerImpl() {
 
@@ -60,16 +58,13 @@ public class SmsSchedulerImpl implements SmsScheduler {
 				.getOrCreateSystemSmsConfig();
 		smsSchedulerThread = new SmsSchedulerThread();
 		System.out.println("Init of SmsScheduler complete");
-		mOSchedulerThread = new MOSchedulerThread();
-		System.out.println("Init of MoScheduler complete");
+
 	}
 
 	public void destroy() {
 		smsSchedulerThread.stop();
 		smsSchedulerThread = null;
 
-		mOSchedulerThread.stop();
-		mOSchedulerThread = null;
 	}
 
 	public SmsCore getSmsCore() {
@@ -104,8 +99,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					if (stopScheduler) {
 						return;
 					}
-
-					LOG.info("Searching for tasks to process");
+					smsCore.processMOTasks();
 					smsCore.processNextTask();
 					smsCore.processTimedOutDeliveryReports();
 					smsCore.checkAndSetTasksCompleted();
@@ -114,43 +108,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					Thread.sleep(smsConfig.getSchedulerInterval() * 1000);
 				}
 			} catch (Exception e) {
-				LOG.error("SOScheduler encountered an error : "
-						+ e.getMessage());
-			}
-		}
-	}
-
-	private class MOSchedulerThread implements Runnable {
-
-		boolean stopScheduler = false;
-		Thread t;
-
-		MOSchedulerThread() {
-			t = new Thread(this);
-			t.start();
-		}
-
-		public void run() {
-			Work();
-		}
-
-		public void stop() {
-			t.interrupt();
-		}
-
-		public void Work() {
-			try {
-				while (true) {
-					if (stopScheduler) {
-						return;
-					}
-
-					LOG.info("Searching for MO tasks to process");
-					smsCore.processMOTasks();
-					Thread.sleep(SmsConstants.MO_SCHEDULER_TIMER);
-				}
-			} catch (Exception e) {
-				LOG.error("MOScheduler encountered an error : "
+				LOG.error("SoScheduler encountered an error : "
 						+ e.getMessage());
 			}
 		}

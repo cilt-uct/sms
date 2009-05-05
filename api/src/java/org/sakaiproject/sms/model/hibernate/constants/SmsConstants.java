@@ -176,14 +176,42 @@ public class SmsConstants {
 	// The help command is valid for all sms-enabled tools
 	public static final String HELP = "HELP";
 
-	public static final int MO_SCHEDULER_TIMER = 5000;
-
+	/**
+	 * The default user name used when sending a MO
+	 */
 	public static final String DEFAULT_MO_SENDER_USERNAME = "admin";
 
+	/**
+	 * The default sakai admin account name
+	 */
 	public static final String SAKAI_ADMIN_ACCOUNT = "!admin";
-
+	/**
+	 * The default sms account name to create if none exists.
+	 */
 	public static final String DEFAULT_MO_ACCOUNT_NAME = "defaultMOAccount";
-
+	/**
+	 * System originating
+	 */
 	public static final String MESSAGE_TYPE_CODE = "SO";
+	/**
+	 * The thread group responsible for receiving MO's
+	 */
+	public static final String SMS_MO_RECEIVING_THREAD_GROUP = "moReceiving";
+	/**
+	 * The thread group responsible for receiving delivery reports
+	 */
+	public static final String SMS_DELIVERY_REPORT_THREAD_GROUP = "deliveryReports";
+	/**
+	 * The number of threads the delivery report Process can spawn.
+	 */
+	public static final String SMS_TASK_PROCESSING_THREAD_GROUP_NAME = "smsTaskProcessing";
+	/**
+	 * The number of threads the delivery report Process can spawn.
+	 */
+	public static final int SMS_DELIVERY_REPORT_MAX_THREAD_COUNT = 20;
+	/**
+	 *The number of threads the MO receiving process can spawn.
+	 */
+	public static final int SMS_MO_MAX_THREAD_COUNT = 10;
 
 }

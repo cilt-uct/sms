@@ -94,7 +94,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
-		List<SmsTask> tasks = smsDao.runQuery("from SmsTask ORDER BY DATE_TO_SEND DESC");
+		List<SmsTask> tasks = smsDao
+				.runQuery("from SmsTask ORDER BY DATE_TO_SEND DESC");
 		return tasks;
 	}
 
@@ -316,9 +317,9 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 				new QueryParameter("today", getDelayedCurrentDate(10),
 						Hibernate.TIMESTAMP), new QueryParameter("statusCodes",
-						new Object[] { SmsConst_DeliveryStatus.STATUS_PENDING,
-								SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
-								SmsConst_DeliveryStatus.STATUS_RETRY },
+						new Object[] {
+
+						SmsConst_DeliveryStatus.STATUS_RETRY },
 
 						Hibernate.STRING), new QueryParameter("messageTypeId",
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING,

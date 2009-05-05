@@ -82,6 +82,11 @@ public class SmsSmppImpl implements SmsSmpp {
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 
+	private final ThreadGroup moReceivingThread = new ThreadGroup(
+			SmsConstants.SMS_MO_RECEIVING_THREAD_GROUP);
+	private final ThreadGroup deliveryReportThreadGroup = new ThreadGroup(
+			SmsConstants.SMS_DELIVERY_REPORT_THREAD_GROUP);
+
 	ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
 	ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
@@ -175,13 +180,14 @@ public class SmsSmppImpl implements SmsSmpp {
 
 					ArrayList<SmsMOMessage> currentMOmessages = receivedMOmessages;
 					for (int i = 0; i < currentMOmessages.size(); i++) {
-						System.out.println("Processing MO-Message queue of "
-								+ receivedMOmessages.size() + " messages");
-						SmsMOMessage smsMOmessage = currentMOmessages.get(i);
-						smsCore.processIncomingMessage(smsMOmessage
-								.getSmsMessagebody(), smsMOmessage
-								.getMobileNumber());
-						receivedMOmessages.remove(smsMOmessage);
+
+						if (moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT) {
+							SmsMOMessage smsMOmessage = currentMOmessages
+									.get(i);
+							receivedMOmessages.remove(smsMOmessage);
+
+							new MOProcessThread(smsMOmessage, moReceivingThread);
+						}
 
 					}
 
@@ -191,6 +197,33 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				}
 			}
+		}
+	}
+
+	private class MOProcessThread implements Runnable {
+
+		boolean allDone = false;
+		SmsMOMessage smsMOmessage;
+		ThreadGroup threadGroup;
+
+		MOProcessThread(SmsMOMessage smsMOmessage, ThreadGroup threadGroup) {
+			this.smsMOmessage = smsMOmessage;
+			this.threadGroup = threadGroup;
+			Thread t = new Thread(threadGroup, this);
+			t.start();
+		}
+
+		public void run() {
+			Work();
+		}
+
+		public void Work() {
+
+			LOG.info("Processing MO-Message queue of "
+					+ receivedMOmessages.size() + " messages there is "
+					+ moReceivingThread.activeCount() + " threads running");
+			smsCore.processIncomingMessage(smsMOmessage.getSmsMessagebody(),
+					smsMOmessage.getMobileNumber());
 		}
 	}
 
@@ -214,11 +247,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 					ArrayList<DeliverSm> currentDeliveryReports = receivedDeliveryReports;
 					for (int i = 0; i < currentDeliveryReports.size(); i++) {
-						System.out.println("Processing MO-Message queue of "
-								+ receivedDeliveryReports.size() + " messages");
-						DeliverSm deliverSm = currentDeliveryReports.get(i);
-						handelDeliveryReport(deliverSm);
-						receivedDeliveryReports.remove(deliverSm);
+						if (deliveryReportThreadGroup.activeCount() <= SmsConstants.SMS_DELIVERY_REPORT_MAX_THREAD_COUNT) {
+							DeliverSm deliverSm = currentDeliveryReports.get(i);
+							receivedDeliveryReports.remove(deliverSm);
+							new DeliveryReportProcessThread(deliverSm,
+									deliveryReportThreadGroup);
+						}
 
 					}
 
@@ -228,6 +262,33 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				}
 			}
+		}
+	}
+
+	private class DeliveryReportProcessThread implements Runnable {
+
+		boolean allDone = false;
+		DeliverSm deliverSm;
+		ThreadGroup threadGroup;
+
+		DeliveryReportProcessThread(DeliverSm deliverSm, ThreadGroup threadGroup) {
+			this.deliverSm = deliverSm;
+			this.threadGroup = threadGroup;
+			Thread t = new Thread(threadGroup, this);
+			t.start();
+		}
+
+		public void run() {
+			Work();
+		}
+
+		public void Work() {
+
+			LOG.debug("Processing Delivery Report queue of "
+					+ receivedDeliveryReports.size() + " messages");
+
+			handelDeliveryReport(deliverSm);
+
 		}
 	}
 
@@ -256,7 +317,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				receivedDeliveryReports.add(deliverSm);
 
 			} else {
-				LOG.info("Receiving MO message");
+				LOG.info("Received MO message from: "
+						+ deliverSm.getSourceAddr() + " adding it into queue.");
 				SmsMOMessage moMessage = new SmsMOMessage();
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				moMessage.setSmsMessagebody(new String(deliverSm
@@ -472,16 +534,16 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	public void init() {
-		LOG.info("SmsSmpp implementation is starting up");
+		LOG.debug("SmsSmpp implementation is starting up");
 		loadPropertiesFile();
 		loadSmsSmppProperties();
 		connectToGateway();
 		setupStatusBridge();
-		LOG.info("SmsSmpp implementation is started");
+		LOG.debug("SmsSmpp implementation is started");
 	}
 
 	public void destroy() {
-		LOG.info("Attempting to shut down SmsSmpp");
+		LOG.debug("Attempting to shut down SmsSmpp");
 		disconnectGateWay();
 	}
 
@@ -771,8 +833,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			message
 					.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
 
-			LOG.info("Message submitted, smsc_id is " + messageId
-					+ "MessageID = " + message.getId() + " TaskID = "
+			LOG.info("Message submitted, smsc_id = " + messageId
+					+ " MessageID = " + message.getId() + " TaskID = "
 					+ message.getSmsTask().getId());
 		} catch (PDUException e) {
 			// Invalid PDU parameter
@@ -877,5 +939,16 @@ public class SmsSmppImpl implements SmsSmpp {
 	public boolean notifyDeliveryReportRemotely(SmsMessage smsMessage) {
 		// TODO To be discussed with UCT
 		return false;
+	}
+
+	/**
+	 * Counts all the acctive threads in a threadGroup
+	 * 
+	 * @param threadgroup
+	 * @return
+	 */
+	private int getThreadCount(ThreadGroup threadgroup) {
+		return threadgroup.activeCount();
+
 	}
 }

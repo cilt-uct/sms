@@ -183,6 +183,20 @@ public interface SmsCore {
 	public void processTask(SmsTask smsTask);
 
 	/**
+	 * Process is specific persisted task in a separate thread. A task can be
+	 * retried if a previous send attempt was unsuccessful due to gateway
+	 * connection problems. A retry will be re-scheduled some time in the
+	 * future. When the max retry attempts are reached or if credits are
+	 * insufficient, the task is marked as failed.
+	 * 
+	 * The task will also expire if it cannot be processed in a specified time.
+	 * See http://jira.sakaiproject.org/jira/browse/SMS-9
+	 * 
+	 * @param smsTask
+	 */
+	public void processTaskInThread(SmsTask smsTask, ThreadGroup threadGroup);
+
+	/**
 	 * If a new task is scheduled for immediate processing, then we try to
 	 * process it in real-time. If it is not possible (for e.g. too many
 	 * threads) then the task will be handled by the scheduler. If the scheduler
