@@ -8,7 +8,8 @@ public class CreateSmsCommand implements SmsCommand {
 
 	private static Log log = LogFactory.getLog(CreateSmsCommand.class);
 
-	public String execute(String siteId, String userId, String mobileNr, String... body) {
+	public String execute(String siteId, String userId, String mobileNr,
+			String... body) {
 		log.debug(getCommandKey() + " command called with parameters: ("
 				+ siteId + ", " + userId + ", " + body + ")");
 		return getCommandKey();
@@ -30,4 +31,7 @@ public class CreateSmsCommand implements SmsCommand {
 		return 1;
 	}
 
+	public boolean isEnabled() {
+		return true;
+	}
 }

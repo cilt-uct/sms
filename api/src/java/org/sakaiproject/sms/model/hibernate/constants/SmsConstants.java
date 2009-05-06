@@ -214,4 +214,9 @@ public class SmsConstants {
 	 */
 	public static final int SMS_MO_MAX_THREAD_COUNT = 10;
 
+	/**
+	 * If this string is returned the MO message must not be processed.
+	 */
+	public static final String SMS_MO_EMPTY_REPLY_BODY = "";
+
 }

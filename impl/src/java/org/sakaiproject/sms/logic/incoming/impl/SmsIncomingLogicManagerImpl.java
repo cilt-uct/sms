@@ -81,17 +81,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		String incomingUserID = null;
 		SmsPatternSearchResult validCommandMatch = null;
 		String sakaiSite = null;
-		// TODO: Awaiting feedback from UCT about which site to
-		// bill for help commands
-		String defaultBillingSite = "!admin";
+
+		String defaultBillingSite = SmsConstants.SAKAI_ADMIN_ACCOUNT;
 
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
 		} catch (ParseException e) {
 			parsedMessage = new ParsedMessage();
 			reply = generateUnknownCommandMessage(parsedMessage);
-			// TODO: Awaiting feedback from UCT about which site to bill for
-			// invalid commands and help command
 			parsedMessage.setSite(defaultBillingSite);
 		}
 

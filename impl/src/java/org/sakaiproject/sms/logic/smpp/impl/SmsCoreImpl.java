@@ -134,6 +134,7 @@ public class SmsCoreImpl implements SmsCore {
 	private class ProcessThread implements Runnable {
 
 		SmsTask smsTask;
+
 		ProcessThread(SmsTask smsTask, ThreadGroup threadGroup) {
 			this.smsTask = smsTask;
 			Thread t = new Thread(threadGroup, this);
@@ -431,14 +432,20 @@ public class SmsCoreImpl implements SmsCore {
 
 		}
 		if (parsedMessage != null) {
-			if (parsedMessage.getBody_reply() != null) {
+			if (parsedMessage.getBody_reply() != null
+					&& !parsedMessage.getBody_reply().equals(
+							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 				smsMessageReplyBody = parsedMessage.getBody_reply();
 				LOG.debug((parsedMessage.getCommand() != null ? "Command "
 						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
+
+			} else if (parsedMessage.getBody_reply().equals(
+					SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
+				return;
+			} else {
+				smsMessageReplyBody = "No tool found.";
 			}
-		} else {
-			smsMessageReplyBody = "No tool found.";
 		}
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber,

@@ -126,5 +126,21 @@
 			<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 	</bean>
+	
+	<bean id="org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper"
+		class="org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper" init-method="init" >
+		<property name="incomingLogicManager" ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
+		<property name="toolKey" value="sms" />
+		<property name="commands">
+			<list>
+				<bean class="org.sakaiproject.sms.logic.command.SmsAdminCommand">
+				<property name="hibernateLogicLocator"
+			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+					
+				</bean>
+				
+			</list>
+		</property>
+	</bean>	
 	<import resource="external.xml" />
 </beans>

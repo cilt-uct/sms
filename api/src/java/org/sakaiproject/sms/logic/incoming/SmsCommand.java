@@ -41,11 +41,12 @@ public interface SmsCommand {
 	 * 
 	 * @param siteId
 	 * @param userId
-	 * @param mobileNr 
+	 * @param mobileNr
 	 * @param body
 	 * @return
 	 */
-	String execute(String siteId, String userId, String mobileNr, String... body);
+	String execute(String siteId, String userId, String mobileNr,
+			String... body);
 
 	/**
 	 * Help message to use when no parameters are given
@@ -60,4 +61,11 @@ public interface SmsCommand {
 	 * @return
 	 */
 	int getBodyParameterCount();
+
+	/**
+	 * Returns if the command is enabled.
+	 * 
+	 * @return
+	 */
+	boolean isEnabled();
 }
