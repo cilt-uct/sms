@@ -170,7 +170,7 @@
                 beforeSend: function(){
                     $("#alertInsufficient").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
-                    frameGrow($("#cReportConsole").height(), "shrink");
+                    frameGrow($("#cReportConsole").height() - 100 , "shrink"); //subtract 100px to totally get rid of scrollbar
                 },
                 success: function(data) {
                     _this.disabled = false;

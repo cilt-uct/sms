@@ -6,7 +6,12 @@
 <title rsf:id="page-title">Sms Items</title>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#facebox .body .header").text($(".portletBody .insColor:eq(0)").text());
+    $("#facebox .body .header").text($("#chooseTitle").text());
+    $("div[id^=peopleList]").each(function(){
+            if ( $(this).height() > 195 ){
+                    $(this).height(200);
+                }
+            });
     $("#peopleList").tabs();
     $("#peopleListNamesSuggest").autoCompletefb();
     $("#calculateCmd").bind('click', function(){
@@ -29,10 +34,6 @@ $(document).ready(function() {
     $.fn.SMS.get.people();
    //Re-select saved selections
     $.fn.SMS.set.savedTaskEntities();
-    //Customize tab Content height if neccessary
-    if ( $("div[id^=peopleList]").height() > 195 ){
-        $("div[id^=peopleList]").height(200);
-    }
     $("#clearSelections").bind('click', function(){
         $(document).trigger("selections.clear");
         return false;
@@ -43,12 +44,18 @@ $(document).ready(function() {
             $.fn.SMS.get.preserveDomSelections = true;
         }
     }
+    //Customize tab Content height if neccessary   TODO: Make this work.It works if in Frebug Console but not in this HTML
+    $("div[id^=peopleList]").each(function(){
+    if ( $(this).height() > 195 ){
+            $(this).height(200);
+        }
+    });
 });
 </script>
 </head>
 <body>
 <div class="portletBody">
-<h3 rsf:id="msg=ui.recipients.choose.title" class="insColor clear insBak insBorder" style="display:none">Choose Recipients</h3>
+<h3 rsf:id="msg=ui.recipients.choose.title" id="chooseTitle" class="insColor clear insBak insBorder" style="display:none">Choose Recipients</h3>
   <div class="alertMessage" style="display:none">
     <ul style="margin:0px;">
       <li>Message for user here</li>
