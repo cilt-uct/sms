@@ -15,6 +15,12 @@ NOTES:
   These are in a generic way so that we can test the smpp service thoroughly.
  
 
+SETTING DATABASE INDEXES
+========================
+
+mysql_database_indexes.sql must be run after the initial build to create the indexes.If the script is not run performance issues might occur during high sms usage.
+
+
 SETTING SMPP PROPERTIES
 =======================
 The smpp service can be configured by editing smpp.properties. This file contain gateway credentials and must therefore be stored in a 
