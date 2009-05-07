@@ -71,7 +71,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		
-		if ( ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
+		if ( smsAccount != null && ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
 			
 			SmsParams smsParams = (SmsParams) viewparams;
 			SmsTask smsTask = new SmsTask();
@@ -89,75 +89,18 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			Map<String, String> roles = new HashMap<String, String>();
 			roles = externalLogic.getSakaiRolesForSite(currentSiteId);
 			if ( roles.size() > 0 ){
-			
-				List<String> rolesValues = new ArrayList<String>(); 
-				List<String> rolesLabels = new ArrayList<String>(); 
-				UISelect rolesBoxes = UISelect.makeMultiple(form, "role-holder", new String[] {}, null, smsTask.getId() == null ? new String[] {} : new String[] {} ); //TODO: Retrieve list of user Role selections
-				String rolesBoxesId = rolesBoxes.getFullID();
-				
-				Iterator<Map.Entry<String, String>> selector = roles.entrySet().iterator();
-				int count = 0;
-				while ( selector.hasNext() ) {
-                	Map.Entry<String, String> pairs = selector.next();
-                	String id = (String) pairs.getKey();
-                	rolesValues.add(id);
-                	String name = (String) pairs.getValue();
-                	rolesLabels.add(name);
-                	
-                	UIBranchContainer row = UIBranchContainer.make(form, "role-row:", count + "");
-                	UISelectChoice choice = UISelectChoice.make(row, "role-box", rolesBoxesId, count);
-                	choice.decorate(new UITooltipDecorator(name));
-                	UISelectLabel label = UISelectLabel.make(row, "role-label", rolesBoxesId, count);
-                	label.decorate(new UIFreeAttributeDecorator("rolesname", name));
-                	label.decorate(new UIFreeAttributeDecorator("name", name));
-                	label.decorate(new UIFreeAttributeDecorator("rolesid", id));
-                    UILabelTargetDecorator.targetLabel(label, choice);
-                	count ++;
-				}
-				
-				rolesBoxes.optionlist = UIOutputMany.make(rolesValues.toArray( new String[rolesValues.size()] ));
-				rolesBoxes.optionnames = UIOutputMany.make(rolesLabels.toArray( new String[rolesLabels.size()] ));
-				rolesBoxes.selection.fossilize = false;
-				}
-			else{
-				//TODO: Show message that there are no roles in site
+				renderCheckBoxes("role", roles, form, smsTask);
 			}
-			
+			else{
+				UIMessage.make(form, "error-no-roles", "ui.error.no.roles");
+			}	
 			Map<String, String> groups = new HashMap<String, String>();
 			groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
 			if ( groups.size() > 0 ){
-			
-				List<String> groupsValues = new ArrayList<String>(); 
-				List<String> groupsLabels = new ArrayList<String>(); 
-				UISelect groupsBoxes = UISelect.makeMultiple(form, "group-holder", new String[] {}, null, smsTask.getId() == null ? new String[] {} : new String[] {} ); //TODO: Retrieve list of user group selections
-				String groupBoxesId = groupsBoxes.getFullID();
-				
-				Iterator<Map.Entry<String, String>> selector = groups.entrySet().iterator();
-				int count = 0;
-				while ( selector.hasNext() ) {
-                	Map.Entry<String, String> pairs = selector.next();
-                	String id = (String) pairs.getKey();
-                	groupsValues.add(id);
-                	String name = (String) pairs.getValue();
-                	groupsLabels.add(name);
-                	
-                	UIBranchContainer row = UIBranchContainer.make(form, "group-row:", count + "");
-                	UISelectChoice choice = UISelectChoice.make(row, "group-box", groupBoxesId, count);
-                	choice.decorate(new UITooltipDecorator(name));
-                	UISelectLabel label = UISelectLabel.make(row, "group-label", groupBoxesId, count);
-                	label.decorate(new UIFreeAttributeDecorator("groupsname", name));
-                	label.decorate(new UIFreeAttributeDecorator("name", name));
-                	label.decorate(new UIFreeAttributeDecorator("groupsid", id));
-                    UILabelTargetDecorator.targetLabel(label, choice);
-                	count ++;
-				}
-				
-				groupsBoxes.optionlist = UIOutputMany.make(groupsValues.toArray( new String[groupsValues.size()] ));
-				groupsBoxes.optionnames = UIOutputMany.make(groupsLabels.toArray( new String[groupsLabels.size()] ));
-				groupsBoxes.selection.fossilize = false;
-				}
+				renderCheckBoxes("group", groups, form, smsTask);
+			}
 			else{
-				//TODO: Show message that there are no groups in site
+				UIMessage.make(form, "error-no-groups", "ui.error.no.groups");
 			}
 			//Textearee for the numbers
 			UIInput textarea = UIInput.make(form, "peopleListNumbersBox", null);
@@ -224,8 +167,38 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		
 	}
 
+	private void renderCheckBoxes(String type, Map<String, String> typeMap, UIForm form, SmsTask smsTask) {
+		List<String> boxValues = new ArrayList<String>(); 
+		List<String> boxLabels = new ArrayList<String>(); 
+		UISelect boxes = UISelect.makeMultiple(form, type + "-holder", new String[] {}, null, new String[] {} );
+		String boxesId = boxes.getFullID();
+		
+		Iterator<Map.Entry<String, String>> selector = typeMap.entrySet().iterator();
+		int count = 0;
+		while ( selector.hasNext() ) {
+        	Map.Entry<String, String> pairs = selector.next();
+        	String id = (String) pairs.getKey();
+        	boxValues.add(id);
+        	String name = (String) pairs.getValue();
+        	boxLabels.add(name);
+        	
+        	UIBranchContainer row = UIBranchContainer.make(form, type + "-row:", count + "");
+        	UISelectChoice choice = UISelectChoice.make(row, type + "-box", boxesId, count);
+        	choice.decorate(new UITooltipDecorator(name));
+        	UISelectLabel label = UISelectLabel.make(row, type + "-label", boxesId, count);
+        	label.decorate(new UIFreeAttributeDecorator(type + "sname", name));
+        	label.decorate(new UIFreeAttributeDecorator("name", name));
+        	label.decorate(new UIFreeAttributeDecorator(type + "sid", id));
+            UILabelTargetDecorator.targetLabel(label, choice);
+        	count ++;
+		}
+		boxes.optionlist = UIOutputMany.make(boxValues.toArray( new String[boxValues.size()] ));
+		boxes.optionnames = UIOutputMany.make(boxLabels.toArray( new String[boxLabels.size()] ));
+		boxes.selection.fossilize = false;
+	}
+
 	private String toJSONarray(String[] entities) {
-		if ( entities != null){
+		 if ( entities != null){
 			StringBuilder sb = new StringBuilder();
 			int count = 1;
 			for (String entity : entities){

@@ -76,17 +76,19 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
 		
-		//Top links
-		userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-		
 		//Render console summary
 		if ( smsAccount != null){
 			if(! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
+				//Top links
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				
 			UIOutput.make(tofill, "send");
 			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
 			UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
 		}else{
+			//Top links
+			userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, false);
 			UIMessage.make(tofill, "console-credits", "ui.console.credits.none");
 		}
 		UIMessage.make(tofill, "console-purchase", "ui.console.help");
@@ -130,6 +132,9 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		}
 		}else
 		{
+			//Top links
+			userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, false);
+			UIMessage.make(tofill, "error-credits", "ui.console.credits.none");
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");
 		}		
 	}

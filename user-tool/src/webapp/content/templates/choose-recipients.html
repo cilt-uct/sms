@@ -67,7 +67,7 @@ $(document).ready(function() {
 <input rsf:id="error-back" type="button" value="cancel" class="close"/>
   <form rsf:id="chooseForm" action="/direct/sms-task/new" method="POST">
     <div id="people">
-      <div id="peopleList">
+      <div id="peopleList" style="width: 100%;">
         <ul>
           <li rsf:id="roles:" id="peopleTabsRoles"> <a rsf:id="roles-title" href="#peopleListRoles">Select by role</a> <span rsf:id="roles-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
           <li rsf:id="groups:" id="peopleTabsGroups"> <a rsf:id="groups-title" href="#peopleListGroups">Select by group</a> <span rsf:id="groups-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
@@ -75,15 +75,17 @@ $(document).ready(function() {
           <li rsf:id="numbers:" id="peopleTabsNumbers"> <a rsf:id="numbers-title" href="#peopleListNumbers">Numbers</a> <span rsf:id="numbers-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
         </ul>
           <div id="peopleListRoles">
+              <div rsf:id="error-no-roles" class="alertMessage">None</div>
           		<span rsf:id="role-holder" />
-                  <div rsf:id="role-row:" rel="Roles">
+                  <div rsf:id="role-row:" rel="Roles" class="columnBoxes">
                       <input rsf:id="role-box" type="checkbox" name="students" value="1233" id="peopleList-students-12"/>
                       <label rsf:id="role-label" for="peopleList-students-12">students </label>
                   </div>
           </div>
         <div id="peopleListGroups">
+            <div rsf:id="error-no-groups" class="alertMessage">None</div>
         	<span rsf:id="group-holder" />
-           <div rsf:id="group-row:" rel="Groups">
+           <div rsf:id="group-row:" rel="Groups" class="columnBoxes">
                <input rsf:id="group-box" type="checkbox" name="Group 1" value="433443" id="group-students-12"/>
                <label rsf:id="group-label" for="peopleList-students-12">students </label>
            </div>

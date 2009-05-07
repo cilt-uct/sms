@@ -13,6 +13,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class UserNavBarRenderer {
 	
+	private boolean hasCredits = true;
 	
 	/**
 	 * Renders navigation bar
@@ -23,6 +24,7 @@ public class UserNavBarRenderer {
 	 *            ID of div
 	 * @param currentViewID
 	 *            View ID currently being viewed
+	 * @param b 
 	 */
 	public void makeNavBar(UIContainer tofill, String divID,
 			String currentViewID) {
@@ -32,8 +34,15 @@ public class UserNavBarRenderer {
 
 		renderBranch(joint, "1", currentViewID, MainProducer.VIEW_ID,
 				"sms.navbar.messages", true);
-		renderBranch(joint, "2", currentViewID, SendSMSProducer.VIEW_ID,
-				"sms.navbar.new", false);
+		if( hasCredits ){
+			renderBranch(joint, "2", currentViewID, SendSMSProducer.VIEW_ID,
+					"sms.navbar.new", false);
+		}
+	}
+	public void makeNavBar(UIContainer tofill, String divID,
+			String currentViewID, boolean hasCredits) {
+		this.hasCredits = hasCredits;
+		makeNavBar(tofill, divID, currentViewID);
 	}
 
 	private void renderBranch(UIJointContainer joint, String id,

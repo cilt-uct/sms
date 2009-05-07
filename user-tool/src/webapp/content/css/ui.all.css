@@ -17,7 +17,6 @@
 	float: left;
 	position: relative;
 	z-index: 1;
-	border-right: 1px solid #77d5f7;
 	bottom: -1px;
 }
 .ui-tabs-nav ul {
