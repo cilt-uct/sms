@@ -25,6 +25,15 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
+/**
+ * This is a example of an sms admin command. It can be used by administrators
+ * to retrieve sms info. It will not show up in the help list and it will also
+ * stay silent of incorrectly used. To disable it, simply return false for
+ * isEnabled Usage: SMS <site> bal <account id>
+ * 
+ * @author etienne@psybergate.co.za
+ * 
+ */
 public class SmsAdminCommand implements SmsCommand {
 
 	private static Log log = LogFactory.getLog(SmsAdminCommand.class);
