@@ -27,7 +27,7 @@ import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 /**
  * This class is used to do various validations involving SmsTasks. It is called
  * from the UI and also when a test is persisted.
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 12-Jan-2009
@@ -46,30 +46,33 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 
 	/**
 	 * Check sufficient credits.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,boolean overDraftCheck) {
+	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,
+			boolean overDraftCheck) {
 		ArrayList<String> errors = new ArrayList<String>();
 		// check for sufficient balance
 		;
-		boolean sufficientCredits = smsBilling.checkSufficientCredits(smsTask
-				.getSmsAccountId(), smsTask.getCreditEstimate(),overDraftCheck);
+		boolean sufficientCredits = smsBilling
+				.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
+						.getCreditEstimate(), overDraftCheck);
 		if (!sufficientCredits) {
-			errors.add(ValidationConstants.INSUFFICIENT_CREDIT);
+			errors.add(ValidationConstants.INSUFFICIENT_CREDIT
+					+ " in account id " + smsTask.getSmsAccountId());
 		}
 		return errors;
 	}
 
 	/**
 	 * Validate insert task.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the sms task
-	 *
+	 * 
 	 * @return the array list< string>
 	 */
 	public ArrayList<String> validateInsertTask(SmsTask smsTask) {
@@ -112,8 +115,7 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 		}
 
 		// Check message body
-		if (smsTask.getMessageBody() != null
-				&& !smsTask.getMessageBody().trim().equals("")) {
+		if (smsTask.getMessageBody() != null) {
 			// Check length of messageBody
 			if (smsTask.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH) {
 				errors.add(ValidationConstants.MESSAGE_BODY_TOO_LONG);
