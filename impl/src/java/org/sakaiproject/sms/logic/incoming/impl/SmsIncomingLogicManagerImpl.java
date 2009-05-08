@@ -93,72 +93,82 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		}
 
 		if (toolCmdsMap.size() != 0) { // No tools registered
-			String suppliedCommand = parsedMessage.getCommand().toUpperCase();
+			if (parsedMessage.getCommand() == null) {
+				// an empty sms was received
+				reply = generateHelpMessage();
+				parsedMessage.setBody("");
+			} else {
+				String suppliedCommand = parsedMessage.getCommand()
+						.toUpperCase();
+				validCommandMatch = findValidCommand(suppliedCommand,
+						allCommands);
+				if ((validCommandMatch.getPattern() != null)
+						&& (validCommandMatch.getMatchResult() != null)) {
+					if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
+							.getPattern())) {
+						parsedMessage.setSite(defaultBillingSite);
+						reply = generateHelpMessage();
 
-			validCommandMatch = findValidCommand(suppliedCommand, allCommands);
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.NO_MATCHES)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches());
+					} else if (validCommandMatch.getMatchResult().equals(
+							SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
+						reply = generateAssistMessage(validCommandMatch
+								.getPossibleMatches());
+					} else { // Command is valid
+						if (parsedMessage.getSite() == null
+								|| parsedMessage.getBody() == null) {
+							reply = allCommands.getCommand(
+									validCommandMatch.getPattern())
+									.getHelpMessage();
+						} else { // VALID command
+							sakaiSite = getValidSite(parsedMessage.getSite());
+							if (sakaiSite == null) {
+								reply = generateInvalidSiteMessage(parsedMessage
+										.getSite());
+							} else {
+								parsedMessage.setSite(sakaiSite);
+								// SmsConfig configSite = hibernateLogicLocator
+								// .getSmsConfigLogic()
+								// .getOrCreateSmsConfigBySakaiSiteId(
+								// sakaiSite);
+								//
+								// if (!configSite.isIncomingEnabled()) {
+								// throw new
+								// MoDisabledForSiteException(sakaiSite);
+								// }
 
-			if ((validCommandMatch.getPattern() != null)
-					&& (validCommandMatch.getMatchResult() != null)) {
-				if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
-						.getPattern())) {
-					parsedMessage.setSite(defaultBillingSite);
-					reply = generateHelpMessage();
+								List<String> userIds = externalLogic
+										.getUserIdsFromMobileNumber(mobileNr);
+								if (userIds.size() != 0) {
+									incomingUserID = userIds.get(0);
+								}
 
-				} else if (validCommandMatch.getMatchResult().equals(
-						SmsPatternSearchResult.NO_MATCHES)) {
-					reply = generateAssistMessage(validCommandMatch
-							.getPossibleMatches());
-				} else if (validCommandMatch.getMatchResult().equals(
-						SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
-					reply = generateAssistMessage(validCommandMatch
-							.getPossibleMatches());
-				} else { // Command is valid
-					if (parsedMessage.getSite() == null
-							|| parsedMessage.getBody() == null) {
-						reply = allCommands.getCommand(
-								validCommandMatch.getPattern())
-								.getHelpMessage();
-					} else { // VALID command
-						sakaiSite = getValidSite(parsedMessage.getSite());
-						if (sakaiSite == null) {
-							reply = generateInvalidSiteMessage(parsedMessage
-									.getSite());
-						} else {
-							parsedMessage.setSite(sakaiSite);
-							// SmsConfig configSite = hibernateLogicLocator
-							// .getSmsConfigLogic()
-							// .getOrCreateSmsConfigBySakaiSiteId(
-							// sakaiSite);
-							//
-							// if (!configSite.isIncomingEnabled()) {
-							// throw new MoDisabledForSiteException(sakaiSite);
-							// }
+								SmsCommand command = allCommands
+										.getCommand(validCommandMatch
+												.getPattern());
+								try {
 
-							List<String> userIds = externalLogic
-									.getUserIdsFromMobileNumber(mobileNr);
-							if (userIds.size() != 0) {
-								incomingUserID = userIds.get(0);
-							}
-
-							SmsCommand command = allCommands
-									.getCommand(validCommandMatch.getPattern());
-							try {
-
-								String[] bodyParameters = smsMessageParser
-										.parseBody(parsedMessage.getBody(),
-												command.getBodyParameterCount());
-								reply = command.execute(sakaiSite,
-										incomingUserID, mobileNr,
-										bodyParameters);
-							} catch (ParseException pe) {
-								// Body parameter count wrong
-								reply = command.getHelpMessage();
+									String[] bodyParameters = smsMessageParser
+											.parseBody(
+													parsedMessage.getBody(),
+													command
+															.getBodyParameterCount());
+									reply = command.execute(sakaiSite,
+											incomingUserID, mobileNr,
+											bodyParameters);
+								} catch (ParseException pe) {
+									// Body parameter count wrong
+									reply = command.getHelpMessage();
+								}
 							}
 						}
 					}
+				} else {
+					reply = generateUnknownCommandMessage(parsedMessage);
 				}
-			} else {
-				reply = generateUnknownCommandMessage(parsedMessage);
 			}
 		}
 

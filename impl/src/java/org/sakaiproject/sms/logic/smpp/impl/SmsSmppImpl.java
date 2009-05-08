@@ -321,10 +321,15 @@ public class SmsSmppImpl implements SmsSmpp {
 						+ deliverSm.getSourceAddr() + " adding it into queue.");
 				SmsMOMessage moMessage = new SmsMOMessage();
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
-				moMessage.setSmsMessagebody(new String(deliverSm
-						.getShortMessage()));
+				String messageBody = "";
+				if (deliverSm.getShortMessage() != null) {
+					messageBody = new String(deliverSm.getShortMessage());
+				} else {
+					// persone sended a blank sms
+					messageBody = SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
+				}
+				moMessage.setSmsMessagebody(messageBody);
 				receivedMOmessages.add(moMessage);
-
 			}
 		}
 	}

@@ -21,7 +21,7 @@ public class ParsedMessage {
 
 	private String command;
 	private String site;
-	private final String body;
+	private String body;
 	private String body_reply;
 	private String incomingUserId;
 
@@ -69,6 +69,10 @@ public class ParsedMessage {
 
 	public boolean hasBody() {
 		return (body != null);
+	}
+
+	public void setBody(String body) {
+		this.body = body;
 	}
 
 	public String getBody_reply() {
