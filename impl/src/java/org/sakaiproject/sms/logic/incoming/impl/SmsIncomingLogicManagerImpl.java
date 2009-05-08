@@ -118,13 +118,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						reply = generateAssistMessage(validCommandMatch
 								.getPossibleMatches());
 					} else { // Command is valid
+						sakaiSite = getValidSite(parsedMessage.getSite());
 						if (parsedMessage.getSite() == null
 								|| parsedMessage.getBody() == null) {
 							reply = allCommands.getCommand(
 									validCommandMatch.getPattern())
 									.getHelpMessage();
 						} else { // VALID command
-							sakaiSite = getValidSite(parsedMessage.getSite());
 							if (sakaiSite == null) {
 								reply = generateInvalidSiteMessage(parsedMessage
 										.getSite());
@@ -191,6 +191,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * @return
 	 */
 	private String getValidSite(String suppliedSiteId) {
+		if (suppliedSiteId == null) {
+			return null;
+		}
 		if (externalLogic.isValidSite(suppliedSiteId)) {
 			return suppliedSiteId;
 		} else {
