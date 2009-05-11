@@ -48,6 +48,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -629,5 +630,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 			return EntityReference.getPrefix(entity);
 		}
 		return null;
+	}
+
+	public String getSmsContactEmail() {
+		String email = serverConfigurationService.getString("sms.support", serverConfigurationService.getString("support.email"));;
+		return email;
 	}
 }

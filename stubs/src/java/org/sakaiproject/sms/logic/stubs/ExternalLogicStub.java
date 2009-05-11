@@ -253,5 +253,10 @@ public class ExternalLogicStub implements ExternalLogic {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public String getSmsContactEmail() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
