@@ -364,8 +364,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				SmsConst_DeliveryStatus.STATUS_FAIL));
 		assertEquals(true, smsTaskUpdate.getAttemptCount() == 5);
 		assertEquals(true, smsTaskUpdate.getMessagesWithStatus(
-				SmsConst_DeliveryStatus.STATUS_FAIL).size() == (smsTask
-				.getSmsMessages().size()));
+				SmsConst_DeliveryStatus.STATUS_FAIL).size() > 0);
 
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
 		LOG.info("Reconnecting to server after fail test ");

@@ -440,8 +440,9 @@ public class SmsCoreImpl implements SmsCore {
 						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
 
-			} else if (parsedMessage.getBody_reply().equals(
-					SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
+			} else if ((parsedMessage.getBody_reply() == null)
+					|| parsedMessage.getBody_reply().equals(
+							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 				return;
 			} else {
 				smsMessageReplyBody = "No tool found.";

@@ -41,7 +41,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -156,7 +156,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	 * Test empty message body.
 	 */
 	public void testMessageBody_empty() {
-		smsTask.setMessageBody("");
+		smsTask.setMessageBody(null);
 		errors = smsTaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertTrue(errors.contains(ValidationConstants.MESSAGE_BODY_EMPTY));
@@ -181,16 +181,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		errors = smsTaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertTrue(errors.contains(ValidationConstants.MESSAGE_BODY_TOO_LONG));
-	}
-
-	/**
-	 * Test empty message body (with whitespace).
-	 */
-	public void testMessageBody_whitespace() {
-		smsTask.setMessageBody("   ");
-		errors = smsTaskValidator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertTrue(errors.contains(ValidationConstants.MESSAGE_BODY_EMPTY));
 	}
 
 	/**
