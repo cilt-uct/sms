@@ -96,8 +96,14 @@ public class SmsServiceStub implements SmsService {
 		return false;
 	}
 
-	public String[] sendSms(String[] userIds, String fromId, String siteId,
+	public String[] sendSmsToUserIds(String[] userIds, String fromId, String siteId,
 			String toolId, String message) {
 		return userIds;
+	}
+
+	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId,
+			String siteId, String toolId, String message) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

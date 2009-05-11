@@ -204,7 +204,7 @@ public interface SmsService {
 	/**
 	 * Send SMS to array of userIds. Tools that implement SMS must use this
 	 * method to send out messages. For example the posting of an announcement
-	 * may also trigger SMS delivery. See QNA for how to use.
+	 * may also trigger SMS delivery.
 	 * 
 	 * @param userId
 	 *            array of user ids to send to
@@ -218,7 +218,25 @@ public interface SmsService {
 	 *            message to send
 	 * @return an array of userIds SMS was sent to
 	 */
-	public String[] sendSms(String[] userIds, String fromId, String siteId,
+	public String[] sendSmsToUserIds(String[] userIds, String fromId, String siteId,
 			String toolId, String message);
-
+	
+	/**
+	 * Send SMS to array of mobile numbers
+	 * 
+	 * @param mobileNrs
+	 * 				array of mobile numbers
+	 * @param fromId
+	 * 				user id to set as sender
+	 * @param siteId
+	 * 				site id
+	 * @param toolId
+	 * 				tool id
+	 * @param message
+	 * 				message to send
+	 * @return an array of mobile numbers SMS was sent to
+	 */
+	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId, String siteId, String toolId, String message);
+	
+	
 }

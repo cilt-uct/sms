@@ -247,15 +247,54 @@ public class SmsServiceImpl implements SmsService {
 	}
 
 	/**
-	 * @see SmsService#sendSms(String[], String, String, String, String)
+	 * @see SmsService#sendSmsToUserIds(String[], String, String, String, String)
 	 */
-	public String[] sendSms(String[] userIds, String fromId, String siteId,
+	public String[] sendSmsToUserIds(String[] userIds, String fromId, String siteId,
 			String toolId, String message) {
 		Set<String> ids = new HashSet<String>();
 		ids.addAll(Arrays.asList(userIds));
 
 		SmsTask task = getPreliminaryTask(ids, new Date(), message, siteId,
 				toolId, fromId);
+		doSend(task);
+
+		if (task.getSmsMessages() != null) {
+			String[] sendIds = new String[task.getSmsMessages().size()];
+			int i = 0;
+			for (SmsMessage msg : task.getSmsMessages()) {
+				sendIds[i] = msg.getSakaiUserId();
+				i++;
+			}
+			return sendIds;
+		} else {
+			return new String[] {};
+		}
+	}
+	/**
+	 * @see SmsService#sendSmsToMobileNumbers(String[], String, String, String, String)
+	 */
+	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId, String siteId, String toolId, String message) {
+		Set<String> numbers = new HashSet<String>();
+		numbers.addAll(Arrays.asList(mobileNrs));
+		
+		SmsTask task = getPreliminaryTask(new Date(), message, siteId, toolId, fromId, numbers);
+		doSend(task);
+		
+		if (task.getSmsMessages() != null) {
+			String[] sendNrs = new String[task.getSmsMessages().size()];
+			int i = 0;
+			for (SmsMessage msg : task.getSmsMessages()) {
+				sendNrs[i] = msg.getMobileNumber();
+				i++;
+			}
+			return sendNrs;
+		} else {
+			return new String[] {};
+		}
+	}
+	
+	// calculate group size and send
+	private void doSend(SmsTask task) {
 		calculateEstimatedGroupSize(task);
 		try {
 			insertTask(task);
@@ -268,18 +307,6 @@ public class SmsServiceImpl implements SmsService {
 		} catch (ReceiveIncomingSmsDisabledException e) {
 			// Shouldn't happen
 			log.error(e.getMessage());
-		}
-
-		if (task.getSmsMessages() != null) {
-			String[] sendIds = new String[task.getSmsMessages().size()];
-			int i = 0;
-			for (SmsMessage msg : task.getSmsMessages()) {
-				sendIds[i] = msg.getSakaiUserId();
-				i++;
-			}
-			return sendIds;
-		} else {
-			return new String[] {};
 		}
 	}
 }
