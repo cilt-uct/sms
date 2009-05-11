@@ -134,7 +134,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeEstimate() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
-						.decorate(new UIIDStrategyDecorator("smsStop")); 
+						.decorate(new UIIDStrategyDecorator("smsStop"));
+					UIMessage.make(tofill, "actionAbort", "ui.action.confirm.sms.abort", new String[] { smsTask.getMessageBody() });
 					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)
 						.decorate(new UIIDStrategyDecorator("abortCode"));
 					UIInput.make(form, "abortMessage", null, messageLocator.getMessage("ui.task.aborted", new Object[] { externalLogic.getSakaiUserDisplayName(externalLogic.getCurrentUserId()) }) )
@@ -145,6 +146,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 						.decorate(new UIIDStrategyDecorator("smsEdit"));
 					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
 						.decorate(new UIIDStrategyDecorator("smsDelete"));
+					UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
 				}else{
 					throw new IllegalArgumentException("Cannot act on this status type: " + statusToShow);
 				}

@@ -111,6 +111,8 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 					.decorate(new UIIDStrategyDecorator("smsDelete"));
 				UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 				
+				UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
+				
 			}else{
 				//TODO: show error message since sms.id() is not specified
 			}

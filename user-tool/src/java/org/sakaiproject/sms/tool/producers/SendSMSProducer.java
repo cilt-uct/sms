@@ -21,15 +21,14 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
+import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
-import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
 import uk.org.ponder.rsf.evolvers.FormatAwareDateInputEvolver;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
-import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
@@ -71,6 +70,11 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
+	
+	private SmsConfig smsConfig;
+	public void setSmsConfig(SmsConfig smsConfig) {
+		this.smsConfig = smsConfig;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -79,12 +83,27 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
+		SmsParams smsParams = (SmsParams) viewparams;
+		SmsTask smsTask = new SmsTask();
+		if ( smsParams.id != null && ! "".equals(smsParams.id) ){
+			smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
+		}
+		String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
 		
+		boolean hasAccount = smsAccount != null;
+		boolean hasAccountDisabled = smsAccount.getAccountEnabled();
+		boolean hasCredits = ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0;
+		boolean isEditing = StatusUtils.statusType_EDIT.equals(smsParams.status);
 		
-		if ( ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
+		if (! hasAccount && ! isEditing ){
+			UIMessage.make(tofill, "error-account", "ui.error.no.account");
+			renderFooter(tofill);
+		}else if( hasAccountDisabled  && ! isEditing ){
+			UIMessage.make(tofill, "error-account-disabled", "ui.error.bisabled.account");
+			renderFooter(tofill);
+		}else{
+			if ( hasCredits  || isEditing){
 			
-			SmsParams smsParams = (SmsParams) viewparams;
-			SmsTask smsTask = new SmsTask();
 			if ( smsParams.id != null && ! "".equals(smsParams.id) ){
 				smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 				//Top links
@@ -114,9 +133,9 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			}
 			//mini report console
 			UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(form, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
-			UIMessage.make(form, "console-help", "ui.console.help");
-			UIOutput.make(form, "console-email"); //TODO show email for credit purchases
+			UIMessage.make(form, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()});
+			UIMessage.make(tofill, "console-purchase", "ui.console.help");
+			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			
 			//TODO Add dateTime pickers
 			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
@@ -190,18 +209,20 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			UIInternalLink.make(form, "goto-home", new SmsParams( MainProducer.VIEW_ID ));
 			UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 		
-		}else{
-			
-			UIMessage.make(tofill, "error", "ui.error.cannot.create");
-			UIInternalLink.make(tofill, "error-back", UIMessage.make("sms.general.back"), new SimpleViewParameters(MainProducer.VIEW_ID));
-			UIMessage.make(tofill, "error-help", "ui.console.help");
-			UIOutput.make(tofill, "error-email"); //TODO show email for credit purchases
-		}
-		
-		
+			}else{
+				UIMessage.make(tofill, "error", "ui.error.cannot.create");
+				renderFooter(tofill);
+			}
+		}	
 		
 	}
 	
+	private void renderFooter(UIContainer tofill) {
+		UICommand.make(tofill, "back2", UIMessage.make("sms.general.back"));
+		UIMessage.make(tofill, "error-help", "ui.console.help");
+		//IOutput.make(tofill, "error-email"); //TODO show email for credit purchases
+	}
+
 	private String toJSONarray(String[] entities) {
 		if ( entities != null ){
 			String jsonList = "";

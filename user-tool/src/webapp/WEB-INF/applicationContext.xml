@@ -40,6 +40,8 @@
 	<bean id="statusUtils" class="org.sakaiproject.sms.tool.util.StatusUtils">
 		<property name="messageLocator" ref="messageLocator" />
 	</bean>
+	
+	 <bean id="smsConfig" class="org.sakaiproject.sms.model.hibernate.SmsConfig" />
 
 
 </beans>

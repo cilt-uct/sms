@@ -8,6 +8,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
@@ -67,6 +68,11 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		this.userNavBarRenderer = userNavBarRenderer;
 	}
 	
+	private SmsConfig smsConfig;
+	public void setSmsConfig(SmsConfig smsConfig) {
+		this.smsConfig = smsConfig;
+	}
+	
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		
@@ -75,28 +81,35 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
+		boolean hasAccount = smsAccount != null;
+		boolean hasAccountDisabled = hasAccount ? smsAccount.getAccountEnabled() : Boolean.FALSE;
+		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
+		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
+		boolean hasTasks = smsTasks.size() > 0;
 		
-		//Render console summary
-		if ( smsAccount != null){
-			if(! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
+		if (! hasAccount ){
+			UIMessage.make(tofill, "error-account", "ui.error.no.account");
+		}else if( hasAccountDisabled ){
+			UIMessage.make(tofill, "error-account-disabled", "ui.error.bisabled.account");
+		}else{
+			if ( hasCredits ){
 				//Top links
 				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
-				
-			UIOutput.make(tofill, "send");
-			UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
-			UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()}); //TODO: How to calculate value of credits
-		}else{
-			//Top links
-			userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, false);
-			UIMessage.make(tofill, "console-credits", "ui.console.credits.none");
+				UIOutput.make(tofill, "send");
+				UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
+				UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {credits});
+				UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {credits});
+				String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
+				log.info("EMAIL: "+email);
+				UIMessage.make(tofill, "console-purchase", "ui.console.help");
+				UILink.make(tofill, "console-email", email, "mailto:"+ email);
+			}else{
+				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
+			}
 		}
-		UIMessage.make(tofill, "console-purchase", "ui.console.help");
-		UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 		
-		if ( smsTasks.size() > 0 ){
-			
-			
+		if ( hasTasks ){
+			UIMessage.make(tofill, "tasks-title", "ui.tasks.title");
 			UIOutput.make(tofill, "tasks-table");
 			fillTableHeaders( tofill, new String[] {"message", "status", "author", "time", "recipients", "cost"});
 
@@ -126,17 +139,12 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				statusIcon.decorate(new UITooltipDecorator(statusUtils.getStatusFullName(status))); 
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
-				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeEstimate()}); //TODO Verify that these sms variables give what's expected
+				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeEstimate()}); 
 				UIOutput.make(row, "task-cost", sms.getCostEstimate() + "");				
 			}
-		}
-		}else
-		{
-			//Top links
-			userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, false);
-			UIMessage.make(tofill, "error-credits", "ui.console.credits.none");
+		}else{
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");
-		}		
+		}
 	}
 	private void fillTableHeaders(UIContainer tofill, String[] headers) {
 		// Render table headers

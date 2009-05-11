@@ -70,8 +70,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
-		
-		if ( smsAccount != null && ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0 ){
+		boolean hasCredits = ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0;
+				
+		if ( hasCredits ){
 			
 			SmsParams smsParams = (SmsParams) viewparams;
 			SmsTask smsTask = new SmsTask();

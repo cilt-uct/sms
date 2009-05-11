@@ -460,6 +460,7 @@ function getPeople(filter) {
             var query = new Array();
             switch (filter) {
                 case "Names":
+				if($('input[name=sakaiSiteId]').val() != null){
 				    $.ajax({
                         url: '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json',
                         dataType: "json",
@@ -478,7 +479,7 @@ function getPeople(filter) {
                             return false;
                         }
                     });
-
+					}
                     break;
             }
 
@@ -943,7 +944,7 @@ function getPeople(filter) {
             $("#"+item).bind('click', function(){
                 if (this.checked){
                     $("#"+item+"Date").slideDown('normal');
-                    frameGrow(50, 'grow');
+                    frameGrow(70, 'grow');
                 }else{
                     $("#"+item+"Date").slideUp('normal');
                     frameGrow(20, 'shrink');

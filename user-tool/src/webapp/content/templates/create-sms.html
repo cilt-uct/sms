@@ -44,10 +44,9 @@
                     </li>
                 </ul>
             </div>
-            <div rsf:id="error" class="">
-                You have no messages to moderate
-            </div>
-            <a rsf:id="error-back" href="index.html">Back</a>
+             <p rsf:id="error-account" class="alertMessage">None</p>
+ 			 <p rsf:id="error-account-disabled" class="alertMessage">None</p>
+  			<p rsf:id="error-credits" class="alertMessage">None</p><a rsf:id="error-back" href="index.html">Back</a>
             <span rsf:id="error-purchase">To purchase SMS credits, please email </span>
             <a rsf:id="error-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
             <form rsf:id="form" action="" method="POST">
@@ -113,10 +112,11 @@
                     <input rsf:id="senderUserId" type="hidden" value="" name="senderUserId"/>
                            <input rsf:id="statusType" type="hidden" value="" name="statusType"/>
                     <input rsf:id="form-send" type="button" class="active" disabled="disabled" id="smsSend" value="Send SMS" /> <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
-					<a rsf:id="goto-home" id="goto-home" style="display:none" href="index.html">Go Home</a>
 					<input rsf:id="back" type="button" value="Back" rel="back"/>
                 </div>
             </form>
+			<br />
+			<input rsf:id="back2" type="button" value="Back" rel="back"/>
         </div>
     </body>
 </html>

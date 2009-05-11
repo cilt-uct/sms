@@ -28,19 +28,12 @@ $(document).ready(function(){
         EB_DELETE_PATH: "/direct/sms-task/:ID:/delete",
         EB_UPDATE_PATH: "/direct/sms-task/:ID:/edit",
         SUCCESS_PATH: "index",
-        getSmsId: function(){
-            return $("#smsId").val();
-        },
-        getAbortCode: function(){
-            return $("#abortCode").val();
-        },
-        getAbortMessage: function(){
-            return $("#abortMessage").val();
-        }
+        getSmsId: $("#smsId").val(),
+        getAbortCode: $("#abortCode").val(),
+        getAbortMessage: $("#abortMessage").val()
     }
 
      function init(_that) {
-         console.log(_that.id);
          if(_that.id == "smsDelete"){
              smsDelete(_that);
          }else if(_that.id == "smsStop"){
@@ -49,7 +42,7 @@ $(document).ready(function(){
      }
 
     function smsDelete(_that){
-        if(smsConfirm("Sure?")){
+        if(smsConfirm($("#actionDelete").text())){
             $.ajax({
                 url: $.fn.task.defaults.EB_DELETE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()),
                 type: "DELETE",
@@ -65,7 +58,7 @@ $(document).ready(function(){
 
 
     function smsStop(_that){
-        if(smsConfirm("Sure to stop?")){
+        if(smsConfirm($("#actionStop").text())){
             $.ajax({
                 url: $.fn.task.defaults.EB_UPDATE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()),
                 data: [{name:"statusCode", value:$.fn.task.defaults.getAbortCode()}, {name:"failReason" , value:$.fn.task.defaults.getAbortMessage()}],

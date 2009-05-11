@@ -5,7 +5,7 @@
 <beans>
 
   <!-- Binding  Beans -->
- 
+
   <!--  Renderers -->
   <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer" />
   <bean id="savedSelectionsRenderer" class="org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer" >
@@ -23,6 +23,7 @@
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+  	<property name="smsConfig" ref="smsConfig" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SendSMSProducer">
@@ -32,6 +33,7 @@
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+	<property name="smsConfig" ref="smsConfig" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.ChooseRecipientsProducer">

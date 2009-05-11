@@ -3,6 +3,10 @@
  */
 
 $(document).ready(function(){
+	$("input[@rel=back]").bind('click', function(){
+        history.go(-1);
+        return false;
+    });
                 //$(document).SMS().bind('reveal.facebox', function(){
 					//$.get( "/direct/membership/site/" + $('input[name=sakaiSiteId]').val() + ".json" );
                    	$.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
@@ -39,13 +43,4 @@ $(document).ready(function(){
                         $.fn.SMS.get.preserveDomSelections = true;
                     }
                 }
-                /*$("#smsDatesScheduleDate").datepicker({
-                    minDate: 0,
-                    maxDate: '+3M +10D'
-                });
-                $("#smsDatesExpiryDate").datepicker({
-                    minDate: 0,
-                    maxDate: '+3M +10D'
-                });*///$('a[rel=*getReport]').SMS();
-                //jQuery.facebox('some html');
             });

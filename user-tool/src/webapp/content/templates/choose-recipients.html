@@ -7,11 +7,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $("#facebox .body .header").text($("#chooseTitle").text());
-    $("div[id^=peopleList]").each(function(){
-            if ( $(this).height() > 195 ){
-                    $(this).height(200);
-                }
-            });
     $("#peopleList").tabs();
     $("#peopleListNamesSuggest").autoCompletefb();
     $("#calculateCmd").bind('click', function(){
@@ -44,12 +39,6 @@ $(document).ready(function() {
             $.fn.SMS.get.preserveDomSelections = true;
         }
     }
-    //Customize tab Content height if neccessary   TODO: Make this work.It works if in Frebug Console but not in this HTML
-    $("div[id^=peopleList]").each(function(){
-    if ( $(this).height() > 195 ){
-            $(this).height(200);
-        }
-    });
 });
 </script>
 </head>
