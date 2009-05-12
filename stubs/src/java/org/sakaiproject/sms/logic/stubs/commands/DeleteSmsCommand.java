@@ -34,4 +34,8 @@ public class DeleteSmsCommand implements SmsCommand {
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	public boolean isVisible() {
+		return true;
+	}
 }

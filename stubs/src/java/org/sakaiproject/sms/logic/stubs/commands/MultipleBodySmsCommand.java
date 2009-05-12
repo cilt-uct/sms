@@ -40,5 +40,9 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	public boolean isVisible() {
+		return true;
+	}
 
 }

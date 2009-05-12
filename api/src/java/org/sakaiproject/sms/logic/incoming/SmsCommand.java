@@ -68,4 +68,11 @@ public interface SmsCommand {
 	 * @return
 	 */
 	boolean isEnabled();
+	
+	/**
+	 * Specifies if the command must be on help list or return help message
+	 * 
+	 * @return
+	 */
+	boolean isVisible();
 }

@@ -4,9 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
-public class UpdateSmsCommand implements SmsCommand {
+public class HiddenSmsCommand implements SmsCommand {
 
-	private static Log log = LogFactory.getLog(UpdateSmsCommand.class);
+	private static Log log = LogFactory.getLog(HiddenSmsCommand.class);
 
 	public String execute(String siteId, String userId, String mobileNr,
 			String... body) {
@@ -16,11 +16,11 @@ public class UpdateSmsCommand implements SmsCommand {
 	}
 
 	public String[] getAliases() {
-		return new String[] { "U" };
+		return new String[] { "D" };
 	}
 
 	public String getCommandKey() {
-		return "UPDATE";
+		return "HIDDEN";
 	}
 
 	public String getHelpMessage() {
@@ -28,14 +28,14 @@ public class UpdateSmsCommand implements SmsCommand {
 	}
 
 	public int getBodyParameterCount() {
-		return 1;
+		return 2;
 	}
 
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	public boolean isVisible() {
-		return true;
+		return false;
 	}
 }

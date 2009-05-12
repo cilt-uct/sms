@@ -97,4 +97,8 @@ public class SmsAdminCommand implements SmsCommand {
 		return true;
 	}
 
+	public boolean isVisible() {
+		return false;
+	}
+
 }

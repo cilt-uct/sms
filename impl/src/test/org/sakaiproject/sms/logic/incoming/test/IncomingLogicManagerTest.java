@@ -34,6 +34,7 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
 import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
+import org.sakaiproject.sms.logic.stubs.commands.HiddenSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
@@ -50,6 +51,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	private UpdateSmsCommand updateCmd;
 	private DeleteSmsCommand deleteCmd;
 	private MultipleBodySmsCommand multipleCmd;
+	private HiddenSmsCommand hiddenCmd;
 
 	private static String TEST_MOBILE = "1234";
 	private static String TEST_SITE = "SakaiSiteID";
@@ -65,6 +67,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		updateCmd = new UpdateSmsCommand();
 		deleteCmd = new DeleteSmsCommand();
 		multipleCmd = new MultipleBodySmsCommand();
+		hiddenCmd = new HiddenSmsCommand();
 
 		manager.register("TEST", createCmd);
 		manager.register("TEST", updateCmd);
@@ -157,13 +160,6 @@ public class IncomingLogicManagerTest extends TestCase {
 				.getBody_reply());
 	}
 
-	// public void testHelpCommandInvalidBody() {
-	// assertTrue(manager.isValidCommand("help"));
-	// String value = manager.process("help " + TEST_SITE + " something",
-	// TEST_MOBILE).getBody_reply();
-	// assertEquals("Invalid tool", value);
-	// }
-
 	public void testGenerateAssistMessage() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("CREATE");
@@ -206,4 +202,47 @@ public class IncomingLogicManagerTest extends TestCase {
 				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
 		assertEquals("MULTIPLE HELP", msg.getBody_reply());
 	}
+
+	/**
+	 * Hidden command must not show up command list
+	 */
+	public void testHiddenSmsCommandHelp() throws MoDisabledForSiteException {
+		manager.register("TEST", hiddenCmd);
+		ParsedMessage msg = manager.process("help", TEST_MOBILE);
+		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
+				.getBody_reply());
+	}
+
+	/**
+	 * Hidden commands must not return help
+	 */
+	public void testHiddenSmsCommandNullBodyNoMessage()
+			throws MoDisabledForSiteException {
+		manager.register("TEST", hiddenCmd);
+		ParsedMessage msg = manager.process("hidden " + TEST_SITE, TEST_MOBILE);
+		assertEquals(null, msg.getBody_reply());
+	}
+
+	/**
+	 * Hidden commands must not return help
+	 */
+	public void testHiddenSmsCommandNotEnoughBodyNoMessage()
+			throws MoDisabledForSiteException {
+		manager.register("TEST", hiddenCmd);
+		ParsedMessage msg = manager.process("hidden " + TEST_SITE + " param1",
+				TEST_MOBILE);
+		assertEquals(null, msg.getBody_reply());
+	}
+
+	/**
+	 * Hidden commands must be processed
+	 */
+	public void testHiddenSmsCommandValidProcess()
+			throws MoDisabledForSiteException {
+		manager.register("TEST", hiddenCmd);
+		ParsedMessage msg = manager.process("hidden " + TEST_SITE
+				+ " param1 param2", TEST_MOBILE);
+		assertEquals("HIDDEN", msg.getCommand());
+	}
+
 }

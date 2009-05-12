@@ -121,9 +121,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						sakaiSite = getValidSite(parsedMessage.getSite());
 						if (parsedMessage.getSite() == null
 								|| parsedMessage.getBody() == null) {
-							reply = allCommands.getCommand(
-									validCommandMatch.getPattern())
-									.getHelpMessage();
+							SmsCommand cmd = allCommands
+									.getCommand(validCommandMatch.getPattern());
+							if (cmd.isVisible()) {
+								reply = cmd.getHelpMessage();
+							}
 						} else { // VALID command
 							if (sakaiSite == null) {
 								reply = generateInvalidSiteMessage(parsedMessage
@@ -160,8 +162,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 											incomingUserID, mobileNr,
 											bodyParameters);
 								} catch (ParseException pe) {
-									// Body parameter count wrong
-									reply = command.getHelpMessage();
+									if (command.isVisible()) {
+										// Body parameter count wrong
+										reply = command.getHelpMessage();
+									}
 								}
 							}
 						}
@@ -430,9 +434,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
 			String command = i.next();
-			body.append(command);
+			if (allCommands.getCommand(command).isVisible()) {
+				body.append(command);
+			}
+
 			if (i.hasNext()) {
 				body.append(", ");
+			} else { // This happens if last command happens to be invisible
+				if (", ".equals(body.substring(body.length() - 2))) {
+					body.delete(body.length() - 2, body.length());
+				}
 			}
 		}
 
