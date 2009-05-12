@@ -55,16 +55,10 @@ public class SmsAdminCommand implements SmsCommand {
 				+ siteId + ", " + userId + ", " + body + ")");
 		if (body[0] == null || "".equals(body[0].trim())) {
 			return SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
-		} else {
-			if (body[1] == null || "".equals(body[1].trim())) {
-				return SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
-
-			}
-
 		}
 		try {
 			SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
-					.getSmsAccount(Long.parseLong(body[1]));
+					.getSmsAccount(Long.parseLong(body[0]));
 			String returnValue = "AccountName=" + smsAccount.getAccountName()
 					+ " Credits=" + smsAccount.getCredits() + " OverDraft= "
 					+ smsAccount.getOverdraftLimit();
@@ -90,7 +84,7 @@ public class SmsAdminCommand implements SmsCommand {
 	}
 
 	public int getBodyParameterCount() {
-		return 2;
+		return 1;
 	}
 
 	public boolean isEnabled() {
