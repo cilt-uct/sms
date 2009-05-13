@@ -91,14 +91,17 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
 		
 		boolean hasAccount = smsAccount != null;
-		boolean hasAccountDisabled = smsAccount.getAccountEnabled();
-		boolean hasCredits = ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0;
+		boolean hasAccountEnabled = Boolean.FALSE;
+		if ( hasAccount ){
+			hasAccountEnabled = smsAccount.getAccountEnabled().booleanValue();
+		}
+		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
 		boolean isEditing = StatusUtils.statusType_EDIT.equals(smsParams.status);
 		
 		if (! hasAccount && ! isEditing ){
 			UIMessage.make(tofill, "error-account", "ui.error.no.account");
 			renderFooter(tofill);
-		}else if( hasAccountDisabled  && ! isEditing ){
+		}else if(! hasAccountEnabled  && ! isEditing ){
 			UIMessage.make(tofill, "error-account-disabled", "ui.error.bisabled.account");
 			renderFooter(tofill);
 		}else{

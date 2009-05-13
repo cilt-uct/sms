@@ -82,14 +82,17 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
 		boolean hasAccount = smsAccount != null;
-		boolean hasAccountDisabled = hasAccount ? smsAccount.getAccountEnabled() : Boolean.FALSE;
+		boolean hasAccountEnabled = Boolean.FALSE;
+		if ( hasAccount ){
+			hasAccountEnabled = smsAccount.getAccountEnabled().booleanValue();
+		}
 		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
 		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
 		boolean hasTasks = smsTasks.size() > 0;
 		
 		if (! hasAccount ){
 			UIMessage.make(tofill, "error-account", "ui.error.no.account");
-		}else if( hasAccountDisabled ){
+		}else if(! hasAccountEnabled ){
 			UIMessage.make(tofill, "error-account-disabled", "ui.error.bisabled.account");
 		}else{
 			if ( hasCredits ){
@@ -99,15 +102,15 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 				UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {credits});
 				UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {credits});
-				String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
-				log.info("EMAIL: "+email);
-				UIMessage.make(tofill, "console-purchase", "ui.console.help");
-				UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			}else{
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
 			}
+			
+			String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
+			log.info("EMAIL: "+email);
+			UIMessage.make(tofill, "console-purchase", "ui.console.help");
+			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 		}
-		
 		if ( hasTasks ){
 			UIMessage.make(tofill, "tasks-title", "ui.tasks.title");
 			UIOutput.make(tofill, "tasks-table");
