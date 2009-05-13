@@ -143,7 +143,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeEstimate()}); 
-				UIOutput.make(row, "task-cost", sms.getCostEstimate() + "");				
+				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");				
 			}
 		}else{
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");

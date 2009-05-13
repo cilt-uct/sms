@@ -28,19 +28,19 @@ public class StatusUtils {
 	//populate status icon library
 	private Map<String, String> getStatusLibrary(){
 		Map<String, String> lib = new HashMap<String, String>();
-		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, "cancel");
+		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, "cross");
 		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, "bullet_go");
 		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, "tick");
-		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, "cancel");
-		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, "cancel");
-		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, "cancel");
+		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, "cross");
+		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, "cross");
+		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, "cross");
 		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "bullet_go");
 		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "bullet_go");
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "time");
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "bullet_go");
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "tick");
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cancel");	
+		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cross");	
 		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	
 		return lib;	
 	}

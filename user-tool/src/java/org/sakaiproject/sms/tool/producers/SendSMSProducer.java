@@ -212,7 +212,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			UICommand.make(form, "form-send", getCommandText(smsParams.status), null)
 				.decorate(new UIIDStrategyDecorator("smsSend"));
 			UIInternalLink.make(form, "goto-home", new SmsParams( MainProducer.VIEW_ID ));
-			UICommand.make(form, "back", UIMessage.make("sms.general.back"));
+			UICommand.make(form, "back", UIMessage.make("sms.general.cancel"));
 		
 			}else{
 				UIMessage.make(tofill, "error", "ui.error.cannot.create");
