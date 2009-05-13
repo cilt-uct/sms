@@ -533,12 +533,12 @@ function getPeople(filter) {
         var map = var_getEveryoneInSite_participants;
         var elem = "";
         for (var n in map) {
-            elem += '\
-                   <div rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />\
-                   <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + item + 'Name="' + map[n][0] + '" ' + item + 'Id="' + map[n][1] + '">' + map[n][0] + '\
-                   </label>\
-                   </input></div>\
-                   ';
+        elem += '\
+               <div rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />\
+               <label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + item + 'Name="' + map[n][0] + '" ' + item + 'Id="' + map[n][1] + '">' + map[n][0] + '\
+               </label>\
+               </input></div>\
+               ';
         }
         return elem;
     }
@@ -631,6 +631,7 @@ function getPeople(filter) {
 
         //Initialise the Individuals Tab
         if (var_getEveryoneInSite_participants.length > 16) {
+			$("#instructionsNames").show();
             $("#peopleListNamesSuggest").autoCompletefb();
         } else if (var_getEveryoneInSite_participants.length > 0) {
             $("#peopleListNamesSuggest")
@@ -667,6 +668,10 @@ function getPeople(filter) {
                 // log(selectedRecipientsList.names.toString());
             });
 
+        }else{
+            $('#peopleListNamesSuggest').hide();
+			$('#peopleListNamesSuggest p').hide();
+			$('#errorNoNames').show();
         }
 
         //Events for the Numbers textarea

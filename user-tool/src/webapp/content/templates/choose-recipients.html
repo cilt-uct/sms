@@ -80,12 +80,13 @@ $(document).ready(function() {
            </div>
         </div>
         <div id="peopleListNames">
-          <p>Mauris eleifend est et turpis. Duis id erat. </p>
+        	<div id="errorNoNames" rsf:id="msg=ui.error.no.names" class="alertMessage" style="display:none">This site has are no groups to choose from.</div>
+          <span id="instructionsNames" rsf:id="msg=ui.recipients.choose.names.instructions" style="display:none">Mauris eleifend est et turpis. Duis id erat. </span>
           <ul id="peopleListNamesSuggest" class="first acfb-holder">
             <input rsf:id="names-box" type="text" class="acfb-input"/>
           </ul>
         </div>
-        <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. </span>
+        <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. </span>
           <table width="100%" border="0" cellspacing="5" cellpadding="5">
             <tr>
               <td><div id="numbersInvalid"> <span rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg" style="display:none"> Correct these numbers:</span>
@@ -172,7 +173,6 @@ $(document).ready(function() {
           <input rsf:id="savedEntityList" id="savedEntityList" name="savedEntityList" type="hidden" value=""/>
           <input rsf:id="savedDeliveryMobileNumbersSet"  id="savedDeliveryMobileNumbersSet" name="savedDeliveryMobileNumbersSet" type="hidden" value=""/>
           <input rsf:id="id" type="hidden" value="" name="id"/>
-        <!-- <input type="hidden" value="" name="deliveryUserId" id="deliveryUserId"/>  -->
         <input id="sakaiUserIds" name="sakaiUserIds" type="hidden"/>
         <input id="deliveryEntityList" name="deliveryEntityList" type="hidden"/>
         <input id="deliveryMobileNumbersSet" name="deliveryMobileNumbersSet" type="hidden"/>

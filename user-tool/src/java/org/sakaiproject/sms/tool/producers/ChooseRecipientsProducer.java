@@ -70,9 +70,6 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
-		boolean hasCredits = ! "".equals(smsAccount.getCredits().toString()) && smsAccount.getCredits() != 0;
-				
-		if ( hasCredits ){
 			
 			SmsParams smsParams = (SmsParams) viewparams;
 			SmsTask smsTask = new SmsTask();
@@ -128,7 +125,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
 			UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
 			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0 + "" : smsTask.getCostEstimate() + "");
-			UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
+			if(smsAccount != null){
+				UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
+			}
 			UIMessage.make(tofill, "console-purchase", "ui.console.help");
 			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
 			
@@ -154,17 +153,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				.fossilize = false;
 			UIInput.make(tofill, "senderUserId", null, currentUserId)
 				.fossilize = false;
-			
+			UIMessage.make(tofill, "errorNoNames","ui.error.no.names");
+		
 			UICommand.make(tofill, "cancel", UIMessage.make("sms.general.cancel"));
 			UICommand.make(form, "continue", UIMessage.make("ui.recipients.choose.continue"), null)
 				.decorate(new UIIDStrategyDecorator("recipientsCmd"));
-			
-		}else{
-			UIMessage.make(tofill, "error", "ui.error.cannot.create");
-			UICommand.make(tofill, "error-back", UIMessage.make("sms.general.cancel"));
-			UIMessage.make(tofill, "error-help", "ui.console.help");
-			UIOutput.make(tofill, "error-email"); //TODO show email for credit purchases
-		}
 		
 	}
 
