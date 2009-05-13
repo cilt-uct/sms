@@ -135,10 +135,12 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 					.decorate(new UIIDStrategyDecorator("smsAddRecipients"));	
 			}
 			//mini report console
-			UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(form, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()});
-			UIMessage.make(tofill, "console-purchase", "ui.console.help");
-			UILink.make(tofill, "console-email", email, "mailto:"+ email);
+			if ( hasAccount ){
+				UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
+				UIMessage.make(form, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()});
+				UIMessage.make(tofill, "console-purchase", "ui.console.help");
+				UILink.make(tofill, "console-email", email, "mailto:"+ email);
+			}
 			
 			//TODO Add dateTime pickers
 			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
