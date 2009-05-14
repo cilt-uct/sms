@@ -199,11 +199,11 @@
                     $("#recipientsCmd").removeAttr("disabled");
                     return false;
                 },
-                error: function(xhr, ajaxOptions, thrownError){
+                /*error: function(xhr, ajaxOptions, thrownError){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
                     _this.disabled = false;
                     return false;
-                }
+                }*/
             });
             }else{
                 alert("Make a selection first.");
@@ -225,11 +225,11 @@
                 type: "POST",
                 dataType: "xml",
                 data: smsParams(domElements),
-                error: function(xhr, ajaxOptions, thrownError){
+                /*error: function(xhr, ajaxOptions, thrownError){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
                     _this.disabled = false;
                     return false;
-                },
+                },*/
                 success: function(){
                     return true;
                 }
