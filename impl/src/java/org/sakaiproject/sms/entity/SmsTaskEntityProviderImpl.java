@@ -164,6 +164,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 
         SmsTask task = (SmsTask) entity;
+        //Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
+        setPropertyFromParams(task, params);
+        
         boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
         if (!allowedManage) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
