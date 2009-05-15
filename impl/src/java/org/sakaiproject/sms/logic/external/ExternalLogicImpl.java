@@ -48,7 +48,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -138,8 +137,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public void setAliasService(AliasService aliasService) {
 		this.aliasService = aliasService;
 	}
-	
+
 	private TimeService timeService;
+
 	public void setTimeService(TimeService ts) {
 		timeService = ts;
 	}
@@ -339,12 +339,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 				message.setSmsTask(smsTask);
 				messages.add(message);
 			}
-		} 
+		}
 		if (smsTask.getDeliveryUserId() != null) {
 			// a single sakai user id, for incoming messages
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryUserId(), getMobileNumbers));
-		} 
+		}
 		if (smsTask.getSakaiUserIds() != null) {
 			for (String userId : smsTask.getSakaiUserIds()) {
 				String mobileNr = getSakaiMobileNumber(userId);
@@ -367,9 +367,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (isValidUser(userId)) { // user may NOT be null or not a Sakai user
 			try {
 				result = userDirectoryService.getUser(userId).getDisplayName();
-				if ( "".equals(result) || result == null) { //Display Name does not exits. Get the username
-					result = userDirectoryService.getUser(userId).getDisplayId() == null ? 
-							userDirectoryService.getUser(userId).getEid() : userDirectoryService.getUser(userId).getDisplayId();
+				if ("".equals(result) || result == null) { // Display Name does
+					// not exits. Get
+					// the username
+					result = userDirectoryService.getUser(userId)
+							.getDisplayId() == null ? userDirectoryService
+							.getUser(userId).getEid() : userDirectoryService
+							.getUser(userId).getDisplayId();
 				}
 			} catch (UserNotDefinedException e) {
 				log
@@ -505,8 +509,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	public SmsSmppProperties getSmppProperties(
-			SmsSmppProperties smsSmppProperties) {
+	public SmsSmppProperties getSmppProperties() {
+		SmsSmppProperties smsSmppProperties = new SmsSmppProperties();
 		try {
 			smsSmppProperties.setSMSCAdress(serverConfigurationService
 					.getString("sms.SMSCAdress"));
@@ -518,6 +522,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setSMSCPassword(serverConfigurationService
 					.getString("sms.SMSCPassword"));
 		} catch (Exception e) {
+			return null;
 			// smpp properties is not set up in sakai.properties, so we are
 			// going to use smpp.properties
 		}
@@ -564,11 +569,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String result = null;
 		if (isValidUser(sakaiUserId)) { // user may be null or not a Sakai user
 			try {
-				result = userDirectoryService.getUser(sakaiUserId).getSortName();
+				result = userDirectoryService.getUser(sakaiUserId)
+						.getSortName();
 			} catch (UserNotDefinedException e) {
-				log
-						.warn("Cannot getSakaiUserSortName for user id "
-								+ sakaiUserId);
+				log.warn("Cannot getSakaiUserSortName for user id "
+						+ sakaiUserId);
 			}
 		}
 		return result;
@@ -578,8 +583,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		// TODO Auto-generated method stub
 		Map<String, String> groups = new HashMap<String, String>();
 		try {
-			Collection<Group> groupsCollection = siteService.getSite(siteId).getGroups();
-			for ( Group grp : groupsCollection ){
+			Collection<Group> groupsCollection = siteService.getSite(siteId)
+					.getGroups();
+			for (Group grp : groupsCollection) {
 				groups.put(grp.getReference(), grp.getTitle());
 			}
 		} catch (IdUnusedException e) {
@@ -594,8 +600,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		Map<String, String> roles = new HashMap<String, String>();
 		try {
 			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
-			for ( Role r : rolesCollection ){
-				String siteReference = siteService.getSite(siteId).getReference();
+			for (Role r : rolesCollection) {
+				String siteReference = siteService.getSite(siteId)
+						.getReference();
 				roles.put(siteReference + "/role/" + r.getId(), r.getId());
 			}
 		} catch (IdUnusedException e) {
@@ -606,34 +613,39 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSakaiGroupNameFromId(String siteId, String groupId) {
-		if (! "".equals(groupId) && ! "".equals(siteId) && groupId != null  && siteId != null){
+		if (!"".equals(groupId) && !"".equals(siteId) && groupId != null
+				&& siteId != null) {
 			try {
 				Site site = siteService.getSite(siteId);
 				Group group = site.getGroup(groupId);
 				return group.getTitle();
 			} catch (IdUnusedException e) {
-				log.warn("Group: "+ groupId +" was not found in site: "+ siteId);
+				log.warn("Group: " + groupId + " was not found in site: "
+						+ siteId);
 			}
 		}
 		return null;
 	}
 
 	public String getEntityRealIdFromRefByKey(String entity, String key) {
-		if ( entity != null && key != null && ! "".equals(entity) && ! "".equals(key)){
+		if (entity != null && key != null && !"".equals(entity)
+				&& !"".equals(key)) {
 			return EntityReference.getIdFromRefByKey(entity, key);
 		}
 		return null;
 	}
 
 	public String getEntityPrefix(String entity) {
-		if ( entity != null && ! "".equals(entity)){
+		if (entity != null && !"".equals(entity)) {
 			return EntityReference.getPrefix(entity);
 		}
 		return null;
 	}
 
 	public String getSmsContactEmail() {
-		String email = serverConfigurationService.getString("sms.support", serverConfigurationService.getString("support.email"));;
+		String email = serverConfigurationService.getString("sms.support",
+				serverConfigurationService.getString("support.email"));
+		;
 		return email;
 	}
 }

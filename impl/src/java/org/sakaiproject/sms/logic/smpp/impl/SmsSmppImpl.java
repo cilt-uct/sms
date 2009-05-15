@@ -588,7 +588,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		try {
 			smsSmppProperties = hibernateLogicLocator.getExternalLogic()
-					.getSmppProperties(smsSmppProperties);
+					.getSmppProperties();
 			if (smsSmppProperties == null) {
 				smsSmppProperties = new SmsSmppProperties();
 			}

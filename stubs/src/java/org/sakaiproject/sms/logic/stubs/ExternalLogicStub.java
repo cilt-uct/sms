@@ -200,9 +200,8 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	}
 
-	public SmsSmppProperties getSmppProperties(
-			SmsSmppProperties smsSmppProperties) {
-		return smsSmppProperties;
+	public SmsSmppProperties getSmppProperties() {
+		return null;
 	}
 
 	public String getSiteFromAlias(String alias) {
@@ -258,5 +257,5 @@ public class ExternalLogicStub implements ExternalLogic {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }
