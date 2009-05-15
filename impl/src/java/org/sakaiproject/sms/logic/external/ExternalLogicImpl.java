@@ -514,7 +514,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			String smscAdress = (serverConfigurationService
 					.getString("sms.SMSCAdress"));
-			if (smscAdress.equals(null)) {
+			if (smscAdress.equals(null) || smscAdress.equals("")) {
 				return null;
 			} else {
 				smsSmppProperties.setSMSCAdress(smscAdress);
@@ -523,7 +523,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			String smscPort = serverConfigurationService
 					.getString("sms.SMSCPort");
 
-			if (smscPort.equals(null)) {
+			if (smscPort.equals(null) || smscPort.equals("")) {
 				return null;
 			} else {
 				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
@@ -532,7 +532,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			String smscUserName = serverConfigurationService
 					.getString("sms.SMSCUserName");
 
-			if (smscUserName.equals(null)) {
+			if (smscUserName.equals(null) || smscUserName.equals("")) {
 				return null;
 			} else {
 				smsSmppProperties.setSMSCUsername(smscUserName);
@@ -541,7 +541,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			String smscPassword = serverConfigurationService
 					.getString("sms.SMSCPassword");
 
-			if (smscPassword.equals(null)) {
+			if (smscPassword.equals(null) || smscPassword.equals("")) {
 				return null;
 			} else {
 				smsSmppProperties.setSMSCPassword(smscPassword);
