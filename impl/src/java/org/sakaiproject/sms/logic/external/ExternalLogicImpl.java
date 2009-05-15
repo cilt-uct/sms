@@ -512,15 +512,40 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public SmsSmppProperties getSmppProperties() {
 		SmsSmppProperties smsSmppProperties = new SmsSmppProperties();
 		try {
-			smsSmppProperties.setSMSCAdress(serverConfigurationService
+			String smscAdress = (serverConfigurationService
 					.getString("sms.SMSCAdress"));
-			smsSmppProperties.setSMSCPort(Integer
-					.valueOf(serverConfigurationService
-							.getString("sms.SMSCPort")));
-			smsSmppProperties.setSMSCUsername(serverConfigurationService
-					.getString("sms.SMSCUserName"));
-			smsSmppProperties.setSMSCPassword(serverConfigurationService
-					.getString("sms.SMSCPassword"));
+			if (smscAdress.equals(null)) {
+				return null;
+			} else {
+				smsSmppProperties.setSMSCAdress(smscAdress);
+			}
+
+			String smscPort = serverConfigurationService
+					.getString("sms.SMSCPort");
+
+			if (smscPort.equals(null)) {
+				return null;
+			} else {
+				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
+			}
+
+			String smscUserName = serverConfigurationService
+					.getString("sms.SMSCUserName");
+
+			if (smscUserName.equals(null)) {
+				return null;
+			} else {
+				smsSmppProperties.setSMSCUsername(smscUserName);
+			}
+
+			String smscPassword = serverConfigurationService
+					.getString("sms.SMSCPassword");
+
+			if (smscPassword.equals(null)) {
+				return null;
+			} else {
+				smsSmppProperties.setSMSCPassword(smscPassword);
+			}
 		} catch (Exception e) {
 			return null;
 			// smpp properties is not set up in sakai.properties, so we are
