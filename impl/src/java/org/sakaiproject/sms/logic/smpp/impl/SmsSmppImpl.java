@@ -97,7 +97,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	MOmessageQueueThread mOmessageQueueThread = new MOmessageQueueThread();
 
-	DeliveryReportQueueThread DeliveryReportQueueThread = new DeliveryReportQueueThread();
+	DeliveryReportQueueThread deliveryReportQueueThread = new DeliveryReportQueueThread();
 
 	private SmsSmppProperties smsSmppProperties = null;
 
@@ -424,12 +424,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		if (!gatewayBound) {
 
-			LOG.info("Binding to " + smsSmppProperties.getSMSCAdress()
+			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
 					+ " on port " + smsSmppProperties.getSMSCPort()
 					+ " with Username " + smsSmppProperties.getSMSCUsername());
 			try {
 				session = new SMPPSession();
-				session.connectAndBind(smsSmppProperties.getSMSCAdress(),
+				session.connectAndBind(smsSmppProperties.getSMSCAddress(),
 						smsSmppProperties.getSMSCPort(), new BindParameter(
 								BindType.BIND_TRX, smsSmppProperties
 										.getSMSCUsername(), smsSmppProperties
@@ -517,7 +517,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		if (gatewayBound) {
 			LOG.info("The server is currently binded to "
-					+ smsSmppProperties.getSMSCAdress() + "  "
+					+ smsSmppProperties.getSMSCAddress() + "  "
 					+ String.valueOf(smsSmppProperties.getSMSCPort()));
 		} else {
 			LOG.info("The server is not currently binded");
@@ -595,25 +595,17 @@ public class SmsSmppImpl implements SmsSmpp {
 			// for in case bindThreadTimer is not set
 			smsSmppProperties.setBindThreadTimer(5 * 1000);
 
-			if ((smsSmppProperties.getSMSCAdress() == null)
-					|| smsSmppProperties.getSMSCAdress().equals("")) {
-				smsSmppProperties.setSMSCAdress(properties
-						.getProperty("SMSCAdress"));
-			}
-			if (smsSmppProperties.getSMSCPort() == 0) {
-				smsSmppProperties.setSMSCPort(Integer.parseInt(properties
-						.getProperty("SMSCPort")));
-			}
-			if ((smsSmppProperties.getSMSCUsername() == null)
-					|| (smsSmppProperties.getSMSCUsername().equals(""))) {
-				smsSmppProperties.setSMSCUsername(properties
-						.getProperty("SMSCUserName"));
-			}
-			if ((smsSmppProperties.getSMSCPassword() == null)
-					|| (smsSmppProperties.getSMSCPassword().equals(""))) {
-				smsSmppProperties.setSMSCPassword((properties
-						.getProperty("SMSCPassword")));
-			}
+			smsSmppProperties.setSMSCAddress(properties
+					.getProperty("SMSCAddress"));
+
+			smsSmppProperties.setSMSCPort(Integer.parseInt(properties
+					.getProperty("SMSCPort")));
+
+			smsSmppProperties.setSMSCUsername(properties
+					.getProperty("SMSCUserName"));
+
+			smsSmppProperties.setSMSCPassword((properties
+					.getProperty("SMSCPassword")));
 
 			smsSmppProperties.setSystemType(properties
 					.getProperty("systemType"));
@@ -642,7 +634,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			smsSmppProperties.setEnquireLinkTimeOut(Integer.parseInt(properties
 					.getProperty("enquireLinkTimeOutSecondes")) * 1000);
 			smsSmppProperties.setBindThreadTimer(Integer.parseInt(properties
-					.getProperty("bindThreadTimerSecondes")) * 1000);
+					.getProperty("bindThreadTimerSeconds")) * 1000);
 			smsSmppProperties.setAddressRange(properties
 					.getProperty("addressRange"));
 

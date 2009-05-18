@@ -26,12 +26,12 @@ SETTING SMPP PROPERTIES
 The smpp service can be configured by editing smpp.properties. This file contain gateway credentials and must therefore be stored in a 
 secure location. The important settings are:
 
-* SMSCadress: The IP address of the gateway or simulator
+* SMSCaddress: The IP address of the gateway or simulator
 * SMSCport: The port to use on the gateway.
 * SMSCUsername: Username to bind with gateway
 * SMSCPassword: Password to bind with gateway
 * enquireLinkTimeOutSecondes: Interval in seconds  to poll the gateway to keep the session binded. 
-* bindThreadTimerSecondes: Interval in seconds trying to reconnect if connection is down. 
+* bindThreadTimerSeconds: Interval in seconds trying to reconnect if connection is down. 
 * sourceAddress: The unique id of the Sakai instance to whom the gateway will reply
 
 
@@ -49,7 +49,7 @@ Also note that SmsHibernateConstants.SMS_DEV_MODE must be set to true when runni
 2.1 Build the sms_smpp project: mvn clean install
 2.2 Check that the simulator and test are running on the same port:
 2.3 See SMSCport in smpp.properties and SMPP_PORT in smppsim.props
-2.4 Also make sure of the simulator ip address with SMSCadress in smpp.properties 
+2.4 Also make sure of the simulator ip address with SMSCaddress in smpp.properties 
 2.5 Run SmppAPITest.java. This will test the basic smpp gateway API.
 2.6 Run SmsSmppImplTest.java to test the sending of messages to gateway.
 2.7 Run SmppThreadingTest.java to test concurrent gateway connections with concurrent sending of messages.

@@ -512,12 +512,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public SmsSmppProperties getSmppProperties() {
 		SmsSmppProperties smsSmppProperties = new SmsSmppProperties();
 		try {
-			String smscAdress = (serverConfigurationService
-					.getString("sms.SMSCAdress"));
-			if (smscAdress.equals(null) || smscAdress.equals("")) {
+			String smscAddress = (serverConfigurationService
+					.getString("sms.SMSCAddress"));
+			if (smscAddress.equals(null) || smscAddress.equals("")) {
 				return null;
 			} else {
-				smsSmppProperties.setSMSCAdress(smscAdress);
+				smsSmppProperties.setSMSCAddress(smscAddress);
 			}
 
 			String smscPort = serverConfigurationService

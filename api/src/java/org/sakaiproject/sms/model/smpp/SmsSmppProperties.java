@@ -18,16 +18,16 @@
 package org.sakaiproject.sms.model.smpp;
 
 /**
- *
+ * 
  * @author Etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsSmppProperties {
 
 	private byte destAddressNPI;
 	private byte destAddressTON;
 	private int enquireLinkTimeOut;
-	private String SMSCAdress;
+	private String SMSCAddress;
 	private String SMSCPassword;
 	private String SMSCUsername;
 	private int SMSCPort;
@@ -44,7 +44,6 @@ public class SmsSmppProperties {
 	private int transactionTimer;
 	private int sendingDelay;
 	private int bindThreadTimer;
-
 
 	public byte getDestAddressNPI() {
 		return destAddressNPI;
@@ -70,14 +69,12 @@ public class SmsSmppProperties {
 		this.enquireLinkTimeOut = enquireLinkTimeOut;
 	}
 
-
-
-	public String getSMSCAdress() {
-		return SMSCAdress;
+	public String getSMSCAddress() {
+		return SMSCAddress;
 	}
 
-	public void setSMSCAdress(String adress) {
-		SMSCAdress = adress;
+	public void setSMSCAddress(String address) {
+		SMSCAddress = address;
 	}
 
 	public String getSMSCPassword() {
@@ -111,7 +108,6 @@ public class SmsSmppProperties {
 	public void setBindThreadTimer(int bindThreadTimer) {
 		this.bindThreadTimer = bindThreadTimer;
 	}
-
 
 	public byte getPriorityFlag() {
 		return priorityFlag;
@@ -184,7 +180,6 @@ public class SmsSmppProperties {
 	public void setSystemType(String systemType) {
 		this.systemType = systemType;
 	}
-
 
 	public String getAddressRange() {
 		return addressRange;
