@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registration>
-	<tool id="sakai.sms.user.tool"
-		title="SMS for Users"
-		description="SMS user facing tool">
+	<tool id="sakai.sms.user"
+		title="SMS Messages"
+		description="For sending SMS text messages">
 		<category name="course" />
 		<category name="project" />
 	</tool>	
