@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registration>
-	<tool id="sakai.sms"
+	<tool id="sakai.sms.admin"
 		title="SMS Admin"
 		description="For managing SMS accounts and messages">
 		<category name="course" />
