@@ -24,6 +24,16 @@ package org.sakaiproject.sms.model.smpp;
  */
 public class SmsSmppProperties {
 
+	public static final int DEFAULT_TRANSACTION_TIMER_INTERVAL = 30;
+
+	public static final int DEFAULT_SMSC_PORT = 2775;
+
+	public static final int DEFAULT_ENQUIRELINK_TIMEOUT = 60;
+
+	public static final int DEFAULT_BINDTHREAD_TIMER = 5;
+
+	public static final int DEFAULT_SENDING_DELAY = 10;
+
 	private byte destAddressNPI;
 	private byte destAddressTON;
 	private int enquireLinkTimeOut;

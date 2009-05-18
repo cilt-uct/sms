@@ -18,33 +18,21 @@ package org.sakaiproject.sms.logic.smpp.exception;
  *
  **********************************************************************************/
 
-import java.util.ArrayList;
-
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
  * Exception that will be thrown when the receiving of incoming sms messages is
  * disabled for the site.
- *
+ * 
  * @author Etienne@psybergate.com
  * @version 1.0
  * @created 5-March-2009
  */
 public class ReceiveIncomingSmsDisabledException extends Exception {
 
-	/** The error messages. */
-	private ArrayList<String> errorMessages;
-
-	/** The Constant newLineChar. */
-	private final static String newLineChar = "\n";
-
-	/** The Constant lineSpace. */
-	private final static String lineSpace = " ";
-
-	/** The Constant format. */
-	private final static String format = newLineChar + lineSpace;
-
-	/** The Constant serialVersionUID. */
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	public ReceiveIncomingSmsDisabledException(SmsTask smsTask) {
@@ -52,16 +40,4 @@ public class ReceiveIncomingSmsDisabledException extends Exception {
 				+ smsTask.getSakaiSiteId().toString());
 	}
 
-	/**
-	 * Gets the error messages as a block string.
-	 *
-	 * @return the error messages as a block string.
-	 */
-	public String getErrorMessagesAsBlock() {
-		StringBuilder sb = new StringBuilder();
-		for (String error : errorMessages) {
-			sb.append(format).append(error);
-		}
-		return sb.toString();
-	}
 }

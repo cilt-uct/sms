@@ -67,6 +67,7 @@ import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
+import org.sakaiproject.sms.logic.smpp.exception.PropertyZeroOrSmallerException;
 import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -597,10 +598,32 @@ public class SmsSmppImpl implements SmsSmpp {
 
 			smsSmppProperties.setSMSCAddress(properties
 					.getProperty("SMSCAddress"));
+			try {
+				smsSmppProperties.setSMSCPort(Integer.parseInt(properties
+						.getProperty("SMSCPort")));
+				if (smsSmppProperties.getSMSCPort() <= 0) {
 
-			smsSmppProperties.setSMSCPort(Integer.parseInt(properties
-					.getProperty("SMSCPort")));
+					throw new PropertyZeroOrSmallerException("SMSCPort");
+				}
 
+			} catch (PropertyZeroOrSmallerException e) {
+				LOG.error(e);
+				LOG.warn("SMSC Port defaulting to port "
+						+ SmsSmppProperties.DEFAULT_SMSC_PORT);
+
+				smsSmppProperties
+						.setSMSCPort(SmsSmppProperties.DEFAULT_SMSC_PORT);
+
+			} catch (NumberFormatException e) {
+
+				LOG.error(e);
+				LOG.warn("SMSC Port defaulting to port "
+						+ SmsSmppProperties.DEFAULT_SMSC_PORT);
+
+				smsSmppProperties
+						.setSMSCPort(SmsSmppProperties.DEFAULT_SMSC_PORT);
+
+			}
 			smsSmppProperties.setSMSCUsername(properties
 					.getProperty("SMSCUserName"));
 
@@ -631,21 +654,122 @@ public class SmsSmppImpl implements SmsSmpp {
 					.getProperty("replaceIfPresentFlag")));
 			smsSmppProperties.setSmDefaultMsgId(Byte.parseByte(properties
 					.getProperty("smDefaultMsgId")));
-			smsSmppProperties.setEnquireLinkTimeOut(Integer.parseInt(properties
-					.getProperty("enquireLinkTimeOutSecondes")) * 1000);
-			smsSmppProperties.setBindThreadTimer(Integer.parseInt(properties
-					.getProperty("bindThreadTimerSeconds")) * 1000);
+
+			try {
+
+				smsSmppProperties
+						.setEnquireLinkTimeOut(Integer.parseInt(properties
+								.getProperty("enquireLinkTimeOutSecondes")) * 1000);
+				if (smsSmppProperties.getEnquireLinkTimeOut() <= 0) {
+
+					throw new PropertyZeroOrSmallerException(
+							"EnquireLinkTimeOut");
+				}
+			} catch (PropertyZeroOrSmallerException e) {
+				LOG.error(e);
+				LOG.warn("EnquireLinkTimeOut defaulting to  "
+						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
+						+ " secondes");
+
+				smsSmppProperties
+						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT);
+
+			} catch (NumberFormatException e) {
+				LOG.error(e);
+				LOG.warn("EnquireLinkTimeOut defaulting to  "
+						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
+						+ " secondes");
+
+				smsSmppProperties
+						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT);
+			}
+			try {
+				smsSmppProperties.setBindThreadTimer(Integer
+						.parseInt(properties
+								.getProperty("bindThreadTimerSeconds")) * 1000);
+				if (smsSmppProperties.getBindThreadTimer() <= 0) {
+
+					throw new PropertyZeroOrSmallerException("BindThreadTimer");
+				}
+			} catch (PropertyZeroOrSmallerException e) {
+				LOG.error(e);
+				LOG.warn("BindThreadTimer defaulting to  "
+						+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER
+						+ " secondes");
+
+				smsSmppProperties
+						.setBindThreadTimer((SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER) * 1000);
+
+			} catch (NumberFormatException e) {
+				LOG.error(e);
+				LOG.warn("BindThreadTimer defaulting to  "
+						+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER
+						+ " secondes");
+
+				smsSmppProperties
+						.setBindThreadTimer(SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER * 1000);
+			}
+
 			smsSmppProperties.setAddressRange(properties
 					.getProperty("addressRange"));
 
-			smsSmppProperties.setTransactionTimer(Integer.parseInt(properties
-					.getProperty("transactionTimer")) * 1000);
+			try {
+				smsSmppProperties
+						.setTransactionTimer(Integer.parseInt(properties
+								.getProperty("transactionTimer")) * 1000);
+				if (smsSmppProperties.getTransactionTimer() <= 0) {
 
-			smsSmppProperties.setSendingDelay(Integer.parseInt(properties
-					.getProperty("sendingDelay")));
+					throw new PropertyZeroOrSmallerException("TransactionTimer");
+				}
+			} catch (PropertyZeroOrSmallerException e) {
+				LOG.error(e);
+				LOG.warn("TransactionTimer defaulting to  "
+						+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
+						+ " secondes");
 
-		} catch (Exception e) {
-			LOG.error("Properies faild to load" + e);
+				smsSmppProperties
+						.setTransactionTimer(SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL * 1000);
+
+			} catch (NumberFormatException e) {
+				LOG.error(e);
+				LOG.warn("TransactionTimer defaulting to  "
+						+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
+						+ " secondes");
+
+				smsSmppProperties
+						.setTransactionTimer(SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL * 1000);
+			}
+
+			try {
+				smsSmppProperties.setSendingDelay(Integer.parseInt(properties
+						.getProperty("sendingDelay")));
+				if (smsSmppProperties.getSendingDelay() <= 0) {
+
+					throw new PropertyZeroOrSmallerException("SendingDelay");
+				}
+			} catch (PropertyZeroOrSmallerException e) {
+				LOG.error(e);
+				LOG.warn("SendingDelay defaulting to  "
+						+ SmsSmppProperties.DEFAULT_SENDING_DELAY
+						+ " millisecondes");
+
+				smsSmppProperties
+						.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
+
+			} catch (NumberFormatException e) {
+				LOG.error(e);
+				LOG.warn("SendingDelay defaulting to  "
+						+ SmsSmppProperties.DEFAULT_SENDING_DELAY
+						+ " millisecondes");
+
+				smsSmppProperties
+						.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
+			}
+
+		}
+
+		catch (Exception e) {
+			LOG.error("Failed to load all properties" + e);
 		}
 
 	}

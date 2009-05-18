@@ -1,5 +1,5 @@
 /***********************************************************************************
- * MoDisabledForSiteException.java
+ * TransactionTimerException.java
  * Copyright (c) 2008 Sakai Project/Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
@@ -22,12 +22,12 @@ package org.sakaiproject.sms.logic.smpp.exception;
  * @author etienne@psybergate.co.za
  * 
  */
-public class MoDisabledForSiteException extends Exception {
+public class PropertyZeroOrSmallerException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public MoDisabledForSiteException(String siteID) {
-		super("MO receiving is disabled for site :" + siteID);
+	public PropertyZeroOrSmallerException(String propertyName) {
+		super(propertyName + " must be larger then 0");
 	}
 
 }
