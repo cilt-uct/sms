@@ -356,7 +356,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			if (smsMessage == null) {
 				for (int i = 0; i < 5; i++) {
 					LOG.warn("SMSC_DEL_RECEIPT retry " + i
-							+ " out of 20 for messageSmscID"
+							+ " out of 5 for messageSmscID"
 							+ deliveryReceipt.getId());
 					smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 							.getSmsMessageBySmscMessageId(
@@ -447,8 +447,16 @@ public class SmsSmppImpl implements SmsSmpp {
 					bindTest = null;
 				}
 				gatewayBound = true;
+				LOG.info("EnquireLinkTimer is set to "
+						+ smsSmppProperties.getEnquireLinkTimeOut()
+						+ " miliseconds");
 				session.setEnquireLinkTimer(smsSmppProperties
 						.getEnquireLinkTimeOut());
+
+				gatewayBound = true;
+				LOG.info("TransactionTimer is set to "
+						+ smsSmppProperties.getTransactionTimer()
+						+ " miliseconds");
 				session.setTransactionTimer(smsSmppProperties
 						.getTransactionTimer());
 				session
@@ -545,7 +553,6 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	public void init() {
 		LOG.info("init()");
-		
 		loadPropertiesFile();
 		loadSmsSmppProperties();
 		connectToGateway();
@@ -595,50 +602,44 @@ public class SmsSmppImpl implements SmsSmpp {
 		try {
 			smsSmppProperties = hibernateLogicLocator.getExternalLogic()
 					.getSmppProperties();
-
 			if (smsSmppProperties == null) {
-				
 				smsSmppProperties = new SmsSmppProperties();
 
 				smsSmppProperties.setSMSCAddress(properties.getProperty(
-				"SMSCAddress").trim());
+						"SMSCAddress").trim());
 				try {
 					smsSmppProperties.setSMSCPort(Integer.parseInt(properties
 							.getProperty("SMSCPort").trim()));
 					if (smsSmppProperties.getSMSCPort() <= 0) {
-		
+
 						throw new PropertyZeroOrSmallerException("SMSCPort");
 					}
-		
+
 				} catch (PropertyZeroOrSmallerException e) {
 					LOG.error(e);
 					LOG.warn("SMSC Port defaulting to port "
 							+ SmsSmppProperties.DEFAULT_SMSC_PORT);
-		
+
 					smsSmppProperties
 							.setSMSCPort(SmsSmppProperties.DEFAULT_SMSC_PORT);
-		
+
 				} catch (NumberFormatException e) {
-		
+
 					LOG.error(e);
 					LOG.warn("SMSC Port defaulting to port "
 							+ SmsSmppProperties.DEFAULT_SMSC_PORT);
-		
+
 					smsSmppProperties
 							.setSMSCPort(SmsSmppProperties.DEFAULT_SMSC_PORT);
-		
+
 				}
 				smsSmppProperties.setSMSCUsername(properties.getProperty(
 						"SMSCUserName").trim());
-		
+
 				smsSmppProperties.setSMSCPassword(properties.getProperty(
 						"SMSCPassword").trim());
-			
 			}
-			
-			// for in case bindThreadTimer is not set
 			smsSmppProperties.setBindThreadTimer(5 * 1000);
-
 			smsSmppProperties.setSystemType(properties
 					.getProperty("systemType").trim());
 			smsSmppProperties.setServiceType(properties.getProperty(
