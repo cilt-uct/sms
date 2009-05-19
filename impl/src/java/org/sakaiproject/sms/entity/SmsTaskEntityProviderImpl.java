@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.azeckoski.reflectutils.transcoders.XMLTranscoder;
+import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -23,6 +23,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
+import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
@@ -198,7 +199,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 
     public String[] getHandledOutputFormats() {
-        return new String[] {Formats.XML};
+        return new String[] {Formats.XML, Formats.JSON};
     }
 
     public String[] getHandledInputFormats() {
@@ -255,9 +256,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          smsService.calculateEstimatedGroupSize(smsTask);
          
         if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
-			throw new SecurityException("User ("+ smsTask.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
+			throw new EntityException("User ("+ smsTask.getSenderUserId() +") has insuficient credit to send sms task: " + ref, ref.toString(), 406); //TODO: call static HttpServletResponse.SC_METHOD_NOT_ALLOWED
 		}
-		return XMLTranscoder.makeXML(smsTask);
+		return JSONTranscoder.makeJSON(smsTask);
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {
