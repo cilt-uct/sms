@@ -157,7 +157,17 @@ $(document).ready(function() {
                         100
                     </span>
           </div>
-          <div id="alertInsufficient" style="display:none;">
+
+      </div>
+    <div id="errorStatus403" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.forbidden">
+                        100
+                    </span>
+          </div>
+        <div id="errorStatus406" style="display:none;">
                     <span rsf:id="msg=ui.console.alert">
                         Alert:
                     </span>
@@ -165,8 +175,14 @@ $(document).ready(function() {
                         100
                     </span>
           </div>
-      </div>
-    
+        <div id="errorStatusOther" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.general">
+                        100
+                    </span>
+          </div>
       <div class="act">
           <!-- DOM elements for re-opening a task -->
           <input rsf:id="savedUserIds" id="savedUserIds" name="savedUserIds" type="hidden" value=""/>

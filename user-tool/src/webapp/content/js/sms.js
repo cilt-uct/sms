@@ -165,49 +165,60 @@
             $.ajax({
                 url: "/direct/sms-task/calculate",
                 type: "POST",
-                dataType: "xml",
+                dataType: "json",
                 data: smsParams(domElements),
                 beforeSend: function(){
-                    $("#alertInsufficient").slideUp('fast');
+                    $("[id^=errorStatus]").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
                     frameGrow($("#cReportConsole").height() - 100 , "shrink"); //subtract 100px to totally get rid of scrollbar
                 },
-                success: function(data) {
+                success: function(json) {
                     _this.disabled = false;
                     $("#cReportConsole").slideDown('fast', function(){
                             $(this).effect('highlight', 'fast');
                             frameGrow($("#cReportConsole").height(), "grow");
                     });
-                    var xml = $(data);
-                    var cSelected = xml.find("groupSizeEstimate").text();
-                    var cCredits = xml.find("creditEstimate").text();
-                    var cCost = xml.find("costEstimate").text();
+                    var cSelected =  json.groupSizeEstimate;
+                    var cCredits =  json.creditEstimate;
+                    var cCost =  json.costEstimate;
                     var cTotal = $("#cReportConsole .console-total").text();
-
                     $("#cReportConsole .console-selected").text(cSelected);
                     $("#cReportConsole .console-credits").text(cCredits);
                     $("#cReportConsole .console-cost").text(cCost);
 
-                    if (cCredits > cTotal){
-                        $("#alertInsufficient").slideDown('fast', function(){
+                    $("#recipientsCmd").removeAttr("disabled");
+                    $("#recipientsCmd").removeAttr("disabled");
+                    return false;
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    if(xhr.status == 406){
+                        //status is 406 - NOT ACCEPTABLE
+                        _this.disabled = false;
+                        $("#errorStatus406").slideDown('fast', function(){
+                            $(this).effect('highlight', 'slow');
+                        });
+                        $("#recipientsCmd").attr("disabled", "disabled");
+                    }else if(xhr.status == 403){
+                        //status is 403 - FORBIDDEN
+                        _this.disabled = false;
+                        $("#errorStatus403").slideDown('fast', function(){
                             $(this).effect('highlight', 'slow');
                         });
                         $("#recipientsCmd").attr("disabled", "disabled");
                     }else{
-                        $("#recipientsCmd").removeAttr("disabled");
+                        $("#errorStatusOther").slideDown('fast', function(){
+                            $(this).effect('highlight', 'slow');
+                        });
+                        $("#recipientsCmd").attr("disabled", "disabled");
+                        frameGrow($("#cReportConsole").height(), "grow");
+                        _this.disabled = false;
                     }
-                    $("#recipientsCmd").removeAttr("disabled");
                     return false;
-                },
-                /*error: function(xhr, ajaxOptions, thrownError){
-                    $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
-                    _this.disabled = false;
-                    return false;
-                }*/
+                }
             });
             }else{
                 alert("Make a selection first.");
-                 $("#alertInsufficient").slideUp('fast');
+                 $("[id^=errorStatus]").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
             }
 
@@ -223,7 +234,6 @@
             $.ajax({
                 url: _url,
                 type: "POST",
-                dataType: "xml",
                 data: smsParams(domElements),
                 /*error: function(xhr, ajaxOptions, thrownError){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
