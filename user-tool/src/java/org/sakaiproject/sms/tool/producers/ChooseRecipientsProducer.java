@@ -197,7 +197,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			int count = 1;
 			for (String entity : entities){
 				sb.append(entity);
-				if ( count < entities.length ){
+				if( count != entities.length){
 					sb.append(",");
 				}
 				count++;

@@ -111,6 +111,13 @@
         },
 
         preserveDomSelections: false,
+        preserveNewDomSelections: false,
+        selectionsHaveChanged: false,
+
+        previousSelectionsRoles: [],
+        previousSelectionsNumbers: [],
+        previousSelectionsGroups: [],
+        previousSelectionsNames: [],
 
         people: function() {
             renderPeople();
@@ -127,7 +134,7 @@
         },
         getSelectedRecipientsListIDs : function(filter){
             var type = getSelectedRecipientsList.array(filter);
-            var tempIDs = new Array();
+            var tempIDs = [];
             if (filter == "numbers"){
             for ( var i = 0; i < type.length ; i++){
                 tempIDs.push(type[i]);
@@ -148,12 +155,25 @@
         }
 };
     $.fn.SMS.set = {
+        init: function(){
+          selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
+        roles:
+                []
+        ,
+        groups: []
+        ,
+        names: []
+        ,
+        numbers: []
+
+    }
+        },
         processCalculate: function(domElements, _this) {
            $('#checkNumbers').click(); // Fire numbers check function
             if( $.fn.SMS.get.isSelectionMade() ){
             _this.disabled = true;
             $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
-            var entityList = new Array();
+            var entityList = [];
             if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
                 entityList.push($.fn.SMS.get.getSelectedRecipientsListIDs("groups"));
             }
@@ -168,7 +188,7 @@
                 dataType: "json",
                 data: smsParams(domElements),
                 beforeSend: function(){
-                    $("[id^=errorStatus]").slideUp('fast');
+                    $("div[id^=errorStatus]").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
                     frameGrow($("#cReportConsole").height() - 100 , "shrink"); //subtract 100px to totally get rid of scrollbar
                 },
@@ -248,15 +268,55 @@
         }   ,
         setSubmitTaskButton: function(){
             //log($("#messageBody").val().length);
-            if ( $.fn.SMS.get.preserveDomSelections && $("#messageBody").val().length != 0 ) {
+            if ($.fn.SMS.get.preserveNewDomSelections){
+                $.fn.SMS.set.restoreSelections();
+            }
+            if (   (
+                    $.fn.SMS.get.getSelectedRecipientsListIDs("roles").length > 0 ||
+                    $.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0 ||
+                    $.fn.SMS.get.getSelectedRecipientsListIDs("names").length > 0 ||
+                    $.fn.SMS.get.getSelectedRecipientsListIDs("numbers").length > 0
+                    )
+                    && $("#messageBody").val().length != 0 ) {
                 $("#smsSend").removeAttr("disabled");
             } else {
                 $("#smsSend").attr("disabled", "disabled");
             }
         },
-        setSelectedRecipientsListName: function(array) {
-            selectedRecipientsList.names.push(array);
+        /*setSelectedRecipientsListRoles: function(array) {
+            selectedRecipientsList.roles = array;
             return true;
+        },
+        setSelectedRecipientsListNumbers: function(array) {
+            selectedRecipientsList.numbers = array;
+            return true;
+        },
+        setSelectedRecipientsListGroups: function(array) {
+            selectedRecipientsList.groups = array;
+            return true;
+        },*/
+        setSelectedRecipientsListName: function(array) {
+            selectedRecipientsList.names = array;
+            return true;
+        },
+        restoreTaskSelections: function(){
+             $.fn.SMS.set.init();
+            var entities = ( $("#savedEntityList").length != 0 && $("#savedEntityList").val() != null ) ? $("#savedEntityList").val().toString().split(',') : null;
+            var names = ( $("#savedUserIds").length != 0 && $("#savedUserIds").val() != null ) ? $("#savedUserIds").val().toString().split(',') : null;
+            var numbers = ( $("#savedDeliveryMobileNumbersSet").length != 0 && $("#savedDeliveryMobileNumbersSet").val() != null ) ? $("#savedDeliveryMobileNumbersSet").val().toString().split(',') : null;
+            $.fn.SMS.set.savedTaskEntities(entities,names,numbers);
+        },
+        restoreSelections: function(){
+            //$.fn.SMS.set.setSelectedRecipientsListRoles($.fn.SMS.get.previousSelectionsRoles);
+            ///$.fn.SMS.set.setSelectedRecipientsListNumbers($.fn.SMS.get.previousSelectionsNumbers);
+            //$.fn.SMS.set.setSelectedRecipientsListGroups($.fn.SMS.get.previousSelectionsGroups);
+            //$.fn.SMS.set.setSelectedRecipientsListName($.fn.SMS.get.previousSelectionsNames);
+             $.fn.SMS.set.init();
+            $.fn.SMS.set.savedTaskEntities(
+                    $.fn.SMS.get.previousSelectionsRoles.concat($.fn.SMS.get.previousSelectionsGroups),
+                    $.fn.SMS.get.previousSelectionsNames,
+                    $.fn.SMS.get.previousSelectionsNumbers);
+            $.fn.SMS.get.preserveNewDomSelections = false;
         },
         sliceSelectedRecipientsListName: function(id) {
             $.each(selectedRecipientsList.names, function(i, parent) {
@@ -267,14 +327,14 @@
                 }
             });
        },
-        savedTaskEntities: function(){
+        savedTaskEntities: function(entities, userIds, numbers){
             if ($("#id").length != 0 && $("#id").val() != ""){
                 $("#cReportConsole").show();
             }
 //Re-select saved Entity selections   ie: roles and groups
-            if ( $("#savedEntityList").length != 0 ){
+            if ( entities != null && entities.length != 0 ){
                 //Render saved entity selections
-                var values = $("#savedEntityList").val().toString().split(',');
+                var values = entities;
                 $.each(values, function(i, entity){
                     if(entity != "" && entity != null){
                        var elem = 'input[type=checkbox][value='+ entity +']';
@@ -287,9 +347,9 @@
             }
 
 //Re-select saved users selections ie: individuals
-            if ( $("#savedUserIds").length != 0 && $("#savedUserIds").val() != null ){
+            if ( userIds != null && userIds.length != 0 ){
                 //Render saved entity selections
-                values = $("#savedUserIds").val().toString().split(',');
+                values = userIds;
                 $.each(values, function(i, entityId){
                     if(entityId != "" && entityId != null){
                         $('input[type=checkbox][value='+ entityId +']').each(function(){
@@ -300,11 +360,11 @@
                 });
             }
 
-    if ( $("#savedDeliveryMobileNumbersSet").length != 0 && $("#savedDeliveryMobileNumbersSet").val() != null ){
+    if ( numbers != null && numbers.length != 0 ){
                 //Render saved numbers
-                values = $("#savedDeliveryMobileNumbersSet").val();
+                values = numbers;
                 if ( values != null && values.length > 0 ){
-                    $("#peopleListNumbersBox").text(values.toString().split(',').join('\n'));
+                    $("#peopleListNumbersBox").text(values.join('\n'));
                     $('#checkNumbers').click();
                 }
             }
@@ -357,10 +417,6 @@
                 "fdelay": "0"
             },
                 {
-                    "fname": "setEveryoneInSite()",
-                    "fdelay": "1"
-                },
-                {
                     "fname": "setDateListners()",
                     "fdelay": "0"
                 }
@@ -377,34 +433,20 @@
      */
 
     var var_getEveryoneInSite;     // to hold full people list
-    var var_getEveryoneInSite_participants = new Array();     // to hold full participants list
+    var var_getEveryoneInSite_participants = [];     // to hold full participants list
       var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
         roles:
-                new Array()
+                []
         ,
-        groups: new Array()
+        groups: []
         ,
-        names: new Array()
+        names: []
         ,
-        numbers: new Array()
+        numbers: []
 
     }
 
-    /**
-     *  Method used to retrieve full people list
-     */
-
-    function setEveryoneInSite() {
-       // $.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE, function(data) {
-            //        var_getEveryoneInSite = data;
-            //    });
-				//TODO: re-enable this see line 303
-        //$.getJSON($.fn.SMS.settings.URL_EB_GET_PEOPLE_PARTICIPANTS, function(data) {
-                   // var_getEveryoneInSite_participants = data;
-                //});
-    }
-    ;
-
+   
     function getEveryoneInSite(filter) {
         if(filter && filter == "names")
             return var_getEveryoneInSite_participants;
@@ -458,7 +500,6 @@
                     break;
             }
         }
-        //toString: function(){return selectedRecipientsList}
     }
     /**
      * Getter for recipients page
@@ -468,25 +509,21 @@ function getPeople(filter) {
         //log(filter);
         if (filter != null && (filter == "Roles" || filter == "Groups" || filter == "Names")) {
             if (var_getEveryoneInSite == null)init($.fn.SMS.settings.initList);
-            var query = new Array();
+            var query = [];
             switch (filter) {
                 case "Names":
 				if($('input[name=sakaiSiteId]').val() != null){
 				    $.ajax({
                         url: '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json',
                         dataType: "json",
-                        cache: true,
+                        cache: false,
                         success: function(data) {
-                        var userId = $("input[name=senderUserId]").val();
                             $.each(data.membership_collection, function(i, item) {
-                                if ( item.userId != userId){
-                                    query.push(new Array(item.userDisplayName, item.userId));
-                                }
+                               query.push(new Array(item.userDisplayName, item.userId));
                             });
                         },
                         error: function(xhr, ajaxOptions, thrownError){
-                            $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText +
-                                      "<h3> An error occured and you will not have ability to select participants by their NAMES.</h3>");
+                            alert("An error occured and you will not have ability to select participants by their names");
                             return false;
                         }
                     });
@@ -498,6 +535,7 @@ function getPeople(filter) {
             return query;
 
         }
+        return null;
     }
 
     function returnThis(d) {
@@ -564,6 +602,7 @@ function getPeople(filter) {
 
         //for the Roles Tab
         $('#peopleListRoles > div[@rel=Roles] input').bind('click', function() {
+            $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {
                 checkEntityboxAction(this, "Roles")
@@ -592,6 +631,7 @@ function getPeople(filter) {
 
         //for the Groups Tab
         $('#peopleListGroups > div[@rel=Groups] input').bind('click', function() {
+            $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {
                 checkEntityboxAction(this, "Groups");
@@ -623,10 +663,10 @@ function getPeople(filter) {
 
         //Clear selectedRecipientsList
         $(document).bind('selections.clear', function() {
-            if (selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = new Array();
-            if (selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = new Array();
-            if (selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = new Array();
-            if (selectedRecipientsList.names.length > 0) selectedRecipientsList.names = new Array();
+            if (selectedRecipientsList.roles.length > 0) selectedRecipientsList.roles = [];
+            if (selectedRecipientsList.groups.length > 0) selectedRecipientsList.groups = [];
+            if (selectedRecipientsList.numbers.length > 0) selectedRecipientsList.numbers = [];
+            if (selectedRecipientsList.names.length > 0) selectedRecipientsList.names = [];
             $.fn.SMS.get.preserveDomSelections = false;
             $('span[rel=recipientsSum]').fadeOut();
             $("#cReportConsole").slideUp('fast');
@@ -650,6 +690,7 @@ function getPeople(filter) {
                     .html(renderPeopleAsCheckboxes("Names"));
             $('#peopleListNamesSuggest > div[@rel=Names] input').click(function() {
                  var id = $(this).val();
+                $.fn.SMS.get.selectionsHaveChanged = true;
                //Fn for the check event
                 if (this.checked) {
                     checkNameboxAction(this);
@@ -690,9 +731,10 @@ function getPeople(filter) {
         $('#checkNumbers').bind('click', function() {
             var that = $('#peopleListNumbersBox');
             var that2 = $('#peopleListNumbersBox2');
+            $.fn.SMS.get.selectionsHaveChanged = true;
             if (that.val()) {
                 var numbers = that.val().split("\n");
-                var nums_invalid = new Array();
+                var nums_invalid = [];
 
                 $.each(numbers, function(i, item) {
                     var num = item.split(' ').join('');
@@ -709,9 +751,7 @@ function getPeople(filter) {
                     //log(nums_invalid.length);
                     if (nums_invalid.length > 0) {
                         that.val(nums_invalid.toString().split(',').join('\n'));
-                        $("#numbersInvalid .msg")
-                                .addClass('highlight')
-                                .fadeIn('fast', function() {
+                        $("#numbersInvalid .msg").fadeIn('fast', function() {
                             $(this).effect("highlight", 'slow');
                         });
                         //log('Not empty');
@@ -752,12 +792,16 @@ function getPeople(filter) {
                             $(this).remove();
                         });
                         showSelectedNumbersInDOM();
+                        that.focus();
                         //log(selectedRecipientsList.numbers.toString());
                     });
-                }
+                }else{
+                $("#numbersInvalid .msg").fadeIn('fast');
+                that.focus();
+            }
             }else{
-            $("#numbersInvalid .msg").fadeOut();
-            that.focus();
+                $("#numbersInvalid .msg").fadeOut('fast');
+                that.focus();
             }
             //log(selectedRecipientsList.numbers.toString());
             return false;
@@ -766,16 +810,10 @@ function getPeople(filter) {
         function showSelectedNumbersInDOM() {
             if (getSelectedRecipientsList.length('numbers') > 0) {
                 //Log report on valid numbers
+                var realText = $("#peopleListNumbersLogText").text().replace('XXX', getSelectedRecipientsList.length('numbers'));
                 $('#peopleListNumbersLog')
-                        .slideDown()
-                        .addClass('')
-                        .html('\
-                    You have ' + getSelectedRecipientsList.length('numbers') + ' valid number(s).\
-                    <br /> \
-                    \
-                    \
-                  ');
-                $('#checkNumbers').text("Check new/edited numbers again");
+                        .fadeIn('fast')
+                        .text(realText);
                 //Refresh {selectedRecipients} Number on TAB
                 $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('numbers'));
             } else
@@ -847,7 +885,7 @@ function getPeople(filter) {
             var serial = "";
             var filterValues = new Array('roles', 'groups', 'names', 'numbers');
             $.each(filterValues, function(n, filter) {
-                var tempArray = new Array();
+                var tempArray = [];
                 if (getSelectedRecipientsList.length(filter) > 0) {
                     $.each(getSelectedRecipientsList.array(filter), function(i, item) {
                         tempArray.push(item[0]);
@@ -865,6 +903,7 @@ function getPeople(filter) {
 
     function checkNameboxAction(_this) {
         //Save data into selectedRecipientsList
+        $.fn.SMS.get.selectionsHaveChanged = true;
         selectedRecipientsList.names.push(new Array($(_this).val(), $(_this).attr('title')));
         //Refresh {selectedRecipients} Number on TAB
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
@@ -872,6 +911,7 @@ function getPeople(filter) {
 
     function checkEntityboxAction(_this, type) {
         //Save data into selectedRecipientsList
+        $.fn.SMS.get.selectionsHaveChanged = true;
         if (type.toLowerCase() == "Groups".toLowerCase()){
             selectedRecipientsList.groups.push(new Array($(_this).val(), $(_this).attr('title')));
             //Refresh {selectedRecipients} Number on TAB
@@ -904,7 +944,7 @@ function getPeople(filter) {
                 $.each(domElements, function(i, item) {
                     var val = $('[name=' + item + ']').val() ;
                     if (val != null) {
-                        if (val != '')    // Don't combine if statements to avoid RSF template translation error
+                        if (val != '')
                             tempParams.push({name:item, value:val});
                         //log(item +" ----- "+ val);
                     }
@@ -938,7 +978,7 @@ function getPeople(filter) {
         return $.param(tempParams);
       }
     /**
-     * To parse date object into a timestamp. //TODO: This is not yet being used due to tests on the EP SimpleDateFormat converter code.
+     * To parse date object into a timestamp. NB:This is not yet being used due to tests on the EP SimpleDateFormat converter code.
      * @param _date  ISO8601 format date
      */
       function parseIsoToTimestamp(_date) {

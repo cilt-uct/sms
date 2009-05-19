@@ -16,8 +16,9 @@ $(document).ready(function() {
         $(".loadingImage").hide();
     });
     $("[rel=closeFB]").click(function(){
-        $("#facebox").fadeOut('fast');
-       $.fn.SMS.get.preserveDomSelections = true;
+        $(document).trigger("close.facebox");
+       $.fn.SMS.get.preserveDomSelections = false;
+        $.fn.SMS.get.preserveNewDomSelections = true;
         return false;
     });
     $("#recipientsCmd").bind('click', function(){
@@ -28,15 +29,17 @@ $(document).ready(function() {
    //envoke checkbox bindings
     $.fn.SMS.get.people();
    //Re-select saved selections
-    $.fn.SMS.set.savedTaskEntities();
-    $("#clearSelections").bind('click', function(){
-        $(document).trigger("selections.clear");
-        return false;
-    });
+    if ($.fn.SMS.get.preserveNewDomSelections){
+        $.fn.SMS.set.restoreSelections();
+    }
+
     if($("#statusType").length != 0 ){
         if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
             $("#recipientsCmd").removeAttr("disabled");
             $.fn.SMS.get.preserveDomSelections = true;
+            if($("#facebox").length != 0){
+                $.fn.SMS.set.restoreTaskSelections();
+            }
         }
     }
 });
@@ -87,9 +90,9 @@ $(document).ready(function() {
           </ul>
         </div>
         <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. </span>
-          <table width="100%" border="0" cellspacing="5" cellpadding="5">
+          <table width="100%" border="0" cellspacing="2" cellpadding="2">
             <tr>
-              <td><div id="numbersInvalid"> <span rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg" style="display:none"> Correct these numbers:</span>
+              <td><div id="numbersInvalid"> <div rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg highlight" style="display:none"> Correct these numbers:</div>
                   <textarea rsf:id="peopleListNumbersBox" id="peopleListNumbersBox" name="deliveryMobileNumbersSet" cols="22" rows="5">+2275456357826</textarea>   <!-- TODO: change in sms.js from peopleListNumbersBox to deliveryMobileNumbersSet -->
                 </div></td>
               <td><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
@@ -97,8 +100,9 @@ $(document).ready(function() {
                 </ul></td>
             </tr>
           </table>
-          <h3 id="peopleListNumbersLog" style="display:none"></h3>
-          <div><a rsf:id="checkNumbers" href="#" id="checkNumbers">Check numbers</a></div>
+            <span rsf:id="msg=ui.recipients.choose.numbers.total" id="peopleListNumbersLogText" style="display:none"></span>
+            <span id="peopleListNumbersLog" style="display:none"></span>
+            <div><a rsf:id="checkNumbers" href="#" id="checkNumbers">Check numbers</a></div>
         </div>
       </div>
       <div class="clear">

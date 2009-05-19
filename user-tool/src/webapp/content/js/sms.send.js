@@ -18,7 +18,13 @@ $(document).ready(function(){
                         .click();
 
                     $("#smsAddRecipients").bind('click',function() {
-                        if($.fn.SMS.get.preserveDomSelections && $("#facebox").length != 0 ){
+                        if($.fn.SMS.get.preserveDomSelections && $.fn.SMS.get.selectionsHaveChanged && $("#facebox").length != 0 ){
+                            
+                            $.fn.SMS.get.previousSelectionsRoles = $.fn.SMS.get.getSelectedRecipientsListIDs("roles");
+                            $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
+                            $.fn.SMS.get.previousSelectionsGroups = $.fn.SMS.get.getSelectedRecipientsListIDs("groups");
+                            $.fn.SMS.get.previousSelectionsNames = $.fn.SMS.get.getSelectedRecipientsListIDs("names");
+
                            $("#facebox").fadeIn('fast');
                         }else{
                             $.facebox({ajax: this.href});
@@ -26,6 +32,7 @@ $(document).ready(function(){
                         return false;
                     });
                 //});
+
 
                 $("#smsSend").bind('click', function(){
                     //validate variables

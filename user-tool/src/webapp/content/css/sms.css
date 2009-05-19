@@ -164,7 +164,7 @@ text-align:right;
 
 /* all DIV tags with an ID ending in ModuleContent */
 div[id^='peopleList'] {
-    height: 160px;
+    height: 200px;
     margin-bottom:55px;
 width:542px;
 }

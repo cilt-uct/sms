@@ -79,7 +79,7 @@
     settings: {
       opacity      : 0,
       overlay      : false, //if Using overlay, Disable overlay FB event so as not to loose DOM selections see use of $.fn.SMS.get.preserveDomSelections
-      loadingImage : '/library/image/sakai/s.gif',
+      loadingImage : '/library/image/sakai/spinner.gif',
       closeImage   : '/library/image/sakai/cross.png',
       imageTypes   : [ 'png', 'jpg', 'jpeg', 'gif' ],
       faceboxHtml  : '\
