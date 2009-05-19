@@ -142,7 +142,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				statusIcon.decorate(new UITooltipDecorator(statusUtils.getStatusFullName(status))); 
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
-				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeEstimate()}); 
+				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual() == null ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
 				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");				
 			}
 		}else{

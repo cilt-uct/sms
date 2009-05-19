@@ -132,7 +132,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				 */
 				if ( const_Inprogress.equals(statusToShow)){
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
-					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesProcessed(), smsTask.getGroupSizeEstimate() });
+					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeActual() == null ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
 						.decorate(new UIIDStrategyDecorator("smsStop"));
 					UIMessage.make(tofill, "actionAbort", "ui.action.confirm.sms.abort", new String[] { smsTask.getMessageBody() });
