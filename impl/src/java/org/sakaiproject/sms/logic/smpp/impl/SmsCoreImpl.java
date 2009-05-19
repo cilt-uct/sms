@@ -844,7 +844,7 @@ public class SmsCoreImpl implements SmsCore {
 										SmsConst_DeliveryStatus.STATUS_FAIL)) {
 							smsTask
 									.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-							smsTask.setFailReason(smsMessages.getDebugInfo());
+							smsTask.setFailReason(smsMessages.getFailReason());
 							hibernateLogicLocator.getSmsTaskLogic()
 									.persistSmsTask(smsTask);
 						}
