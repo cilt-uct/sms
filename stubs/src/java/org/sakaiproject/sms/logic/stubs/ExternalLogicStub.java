@@ -258,4 +258,10 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public SmsSmppProperties getSmppProperties(
+			SmsSmppProperties smsSmppProperties) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
