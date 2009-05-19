@@ -505,6 +505,10 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * possible. For unit testing purposes.
 	 */
 	public void disconnectGateWay() {
+		bindTest.allDone = true;
+		bindTest = null;
+		mOmessageQueueThread.allDone = true;
+		mOmessageQueueThread = null;
 		disconnectGateWayCalled = true;
 		session.unbindAndClose();
 		gatewayBound = false;
@@ -596,11 +600,11 @@ public class SmsSmppImpl implements SmsSmpp {
 			// for in case bindThreadTimer is not set
 			smsSmppProperties.setBindThreadTimer(5 * 1000);
 
-			smsSmppProperties.setSMSCAddress(properties
-					.getProperty("SMSCAddress"));
+			smsSmppProperties.setSMSCAddress(properties.getProperty(
+					"SMSCAddress").trim());
 			try {
 				smsSmppProperties.setSMSCPort(Integer.parseInt(properties
-						.getProperty("SMSCPort")));
+						.getProperty("SMSCPort").trim()));
 				if (smsSmppProperties.getSMSCPort() <= 0) {
 
 					throw new PropertyZeroOrSmallerException("SMSCPort");
@@ -624,42 +628,42 @@ public class SmsSmppImpl implements SmsSmpp {
 						.setSMSCPort(SmsSmppProperties.DEFAULT_SMSC_PORT);
 
 			}
-			smsSmppProperties.setSMSCUsername(properties
-					.getProperty("SMSCUserName"));
+			smsSmppProperties.setSMSCUsername(properties.getProperty(
+					"SMSCUserName").trim());
 
-			smsSmppProperties.setSMSCPassword((properties
-					.getProperty("SMSCPassword")));
+			smsSmppProperties.setSMSCPassword(properties.getProperty(
+					"SMSCPassword").trim());
 
 			smsSmppProperties.setSystemType(properties
-					.getProperty("systemType"));
-			smsSmppProperties.setServiceType(properties
-					.getProperty("serviceType"));
-			smsSmppProperties.setSourceAddress((properties
-					.getProperty("sourceAddress")));
+					.getProperty("systemType").trim());
+			smsSmppProperties.setServiceType(properties.getProperty(
+					"serviceType").trim());
+			smsSmppProperties.setSourceAddress(properties.getProperty(
+					"sourceAddress").trim());
 			smsSmppProperties.setSourceAddressNPI((Byte.parseByte(properties
-					.getProperty("sourceAddressNPI"))));
+					.getProperty("sourceAddressNPI").trim())));
 			smsSmppProperties.setSourceAddressTON((Byte.parseByte(properties
-					.getProperty("sourceAddressTON"))));
+					.getProperty("sourceAddressTON").trim())));
 
 			smsSmppProperties.setDestAddressNPI((Byte.parseByte(properties
-					.getProperty("destAddressNPI"))));
+					.getProperty("destAddressNPI").trim())));
 			smsSmppProperties.setDestAddressTON((Byte.parseByte(properties
-					.getProperty("destAddressTON"))));
+					.getProperty("destAddressTON").trim())));
 
 			smsSmppProperties.setProtocolId(Byte.parseByte(properties
-					.getProperty("protocolId")));
+					.getProperty("protocolId").trim()));
 			smsSmppProperties.setPriorityFlag(Byte.parseByte(properties
-					.getProperty("priorityFlag")));
+					.getProperty("priorityFlag").trim()));
 			smsSmppProperties.setReplaceIfPresentFlag(Byte.parseByte(properties
-					.getProperty("replaceIfPresentFlag")));
+					.getProperty("replaceIfPresentFlag").trim()));
 			smsSmppProperties.setSmDefaultMsgId(Byte.parseByte(properties
-					.getProperty("smDefaultMsgId")));
+					.getProperty("smDefaultMsgId").trim()));
 
 			try {
 
-				smsSmppProperties
-						.setEnquireLinkTimeOut(Integer.parseInt(properties
-								.getProperty("enquireLinkTimeOutSecondes")) * 1000);
+				smsSmppProperties.setEnquireLinkTimeOut(Integer
+						.parseInt(properties.getProperty(
+								"enquireLinkTimeOutSecondes").trim()) * 1000);
 				if (smsSmppProperties.getEnquireLinkTimeOut() <= 0) {
 
 					throw new PropertyZeroOrSmallerException(
@@ -685,8 +689,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			try {
 				smsSmppProperties.setBindThreadTimer(Integer
-						.parseInt(properties
-								.getProperty("bindThreadTimerSeconds")) * 1000);
+						.parseInt(properties.getProperty(
+								"bindThreadTimerSeconds").trim()) * 1000);
 				if (smsSmppProperties.getBindThreadTimer() <= 0) {
 
 					throw new PropertyZeroOrSmallerException("BindThreadTimer");
@@ -710,13 +714,13 @@ public class SmsSmppImpl implements SmsSmpp {
 						.setBindThreadTimer(SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER * 1000);
 			}
 
-			smsSmppProperties.setAddressRange(properties
-					.getProperty("addressRange"));
+			smsSmppProperties.setAddressRange(properties.getProperty(
+					"addressRange").trim());
 
 			try {
-				smsSmppProperties
-						.setTransactionTimer(Integer.parseInt(properties
-								.getProperty("transactionTimer")) * 1000);
+				smsSmppProperties.setTransactionTimer(Integer
+						.parseInt(properties.getProperty("transactionTimer")
+								.trim()) * 1000);
 				if (smsSmppProperties.getTransactionTimer() <= 0) {
 
 					throw new PropertyZeroOrSmallerException("TransactionTimer");
@@ -742,7 +746,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 			try {
 				smsSmppProperties.setSendingDelay(Integer.parseInt(properties
-						.getProperty("sendingDelay")));
+						.getProperty("sendingDelay").trim()));
 				if (smsSmppProperties.getSendingDelay() <= 0) {
 
 					throw new PropertyZeroOrSmallerException("SendingDelay");
