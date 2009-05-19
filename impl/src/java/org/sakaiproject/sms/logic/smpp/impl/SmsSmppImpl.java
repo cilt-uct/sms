@@ -668,7 +668,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				smsSmppProperties.setEnquireLinkTimeOut(Integer
 						.parseInt(properties.getProperty(
-								"enquireLinkTimeOutSecondes").trim()) * 1000);
+								"enquireLinkTimeOutSeconds").trim()) * 1000);
 				if (smsSmppProperties.getEnquireLinkTimeOut() <= 0) {
 
 					throw new PropertyZeroOrSmallerException(
@@ -678,7 +678,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("EnquireLinkTimeOut defaulting to  "
 						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
@@ -687,7 +687,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("EnquireLinkTimeOut defaulting to  "
 						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
@@ -704,7 +704,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("BindThreadTimer defaulting to  "
 						+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setBindThreadTimer((SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER) * 1000);
@@ -713,7 +713,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("BindThreadTimer defaulting to  "
 						+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setBindThreadTimer(SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER * 1000);
@@ -734,7 +734,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("TransactionTimer defaulting to  "
 						+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setTransactionTimer(SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL * 1000);
@@ -743,7 +743,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("TransactionTimer defaulting to  "
 						+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
-						+ " secondes");
+						+ " seconds");
 
 				smsSmppProperties
 						.setTransactionTimer(SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL * 1000);
@@ -760,7 +760,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("SendingDelay defaulting to  "
 						+ SmsSmppProperties.DEFAULT_SENDING_DELAY
-						+ " millisecondes");
+						+ " milliseconds");
 
 				smsSmppProperties
 						.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
@@ -769,7 +769,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error(e);
 				LOG.warn("SendingDelay defaulting to  "
 						+ SmsSmppProperties.DEFAULT_SENDING_DELAY
-						+ " millisecondes");
+						+ " milliseconds");
 
 				smsSmppProperties
 						.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
@@ -778,7 +778,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		catch (Exception e) {
-			LOG.error("Failed to load all properties" + e);
+			LOG.error("Failed to load all properties", e);
 		}
 
 	}
