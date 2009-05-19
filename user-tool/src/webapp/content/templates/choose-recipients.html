@@ -110,6 +110,31 @@ $(document).ready(function() {
             <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
             <!-- <a rsf:id="msg=ui.recipients.choose.cancel" id="clearSelections" href="#">Clear my selections</a> -->
         </div>
+
+        <div id="errorStatus403" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.forbidden">
+                        100
+                    </span>
+          </div>
+        <div id="errorStatus406" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.insufficient">
+                        100
+                    </span>
+          </div>
+        <div id="errorStatusOther" style="display:none;">
+                    <span rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </span>
+                    <span rsf:id="msg=ui.console.alert.general">
+                        100
+                    </span>
+          </div>
       <div id="cReportConsole" class="timeCells" style="display:none">
 
           <div>
@@ -159,30 +184,7 @@ $(document).ready(function() {
           </div>
 
       </div>
-    <div id="errorStatus403" style="display:none;">
-                    <span rsf:id="msg=ui.console.alert">
-                        Alert:
-                    </span>
-                    <span rsf:id="msg=ui.console.alert.forbidden">
-                        100
-                    </span>
-          </div>
-        <div id="errorStatus406" style="display:none;">
-                    <span rsf:id="msg=ui.console.alert">
-                        Alert:
-                    </span>
-                    <span rsf:id="msg=ui.console.alert.insufficient">
-                        100
-                    </span>
-          </div>
-        <div id="errorStatusOther" style="display:none;">
-                    <span rsf:id="msg=ui.console.alert">
-                        Alert:
-                    </span>
-                    <span rsf:id="msg=ui.console.alert.general">
-                        100
-                    </span>
-          </div>
+
       <div class="act">
           <!-- DOM elements for re-opening a task -->
           <input rsf:id="savedUserIds" id="savedUserIds" name="savedUserIds" type="hidden" value=""/>

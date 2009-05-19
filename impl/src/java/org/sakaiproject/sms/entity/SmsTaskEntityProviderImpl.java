@@ -23,7 +23,6 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
-import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
@@ -254,10 +253,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          }
 
          smsService.calculateEstimatedGroupSize(smsTask);
-         
-        if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
-			throw new EntityException("User ("+ smsTask.getSenderUserId() +") has insuficient credit to send sms task: " + ref, ref.toString(), 406); //TODO: call static HttpServletResponse.SC_METHOD_NOT_ALLOWED
-		}
+       
 		return JSONTranscoder.makeJSON(smsTask);
 	}
 	

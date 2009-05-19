@@ -186,19 +186,20 @@
                     $("#cReportConsole .console-credits").text(cCredits);
                     $("#cReportConsole .console-cost").text(cCost);
 
-                    $("#recipientsCmd").removeAttr("disabled");
-                    $("#recipientsCmd").removeAttr("disabled");
-                    return false;
-                },
-                error: function(xhr, ajaxOptions, thrownError){
-                    if(xhr.status == 406){
+                    if(cTotal < cCredits){
                         //status is 406 - NOT ACCEPTABLE
                         _this.disabled = false;
                         $("#errorStatus406").slideDown('fast', function(){
                             $(this).effect('highlight', 'slow');
                         });
                         $("#recipientsCmd").attr("disabled", "disabled");
-                    }else if(xhr.status == 403){
+                    }else{
+                        $("#recipientsCmd").removeAttr("disabled");
+                    }
+                    return false;
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    if(xhr.status == 403){
                         //status is 403 - FORBIDDEN
                         _this.disabled = false;
                         $("#errorStatus403").slideDown('fast', function(){
