@@ -69,8 +69,6 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		
-		log.info("Paras"+ viewparams);
-		
 		if ( viewparams != null ){
 			SmsParams statusParams = (SmsParams) viewparams;
 			if ( statusParams != null && statusParams.id != null){
@@ -97,10 +95,13 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 				UIMessage.make(tofill, "status-header", "ui.sent.sms.header.status");
 				
 				Set<SmsMessage> smses = smsTask.getSmsMessages();
-				log.info("SMSes found = "+smses.size());
 				for (SmsMessage sms : smses){
 					UIBranchContainer row = UIBranchContainer.make(tofill, "sms-row:");
-					UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(sms.getSakaiUserId()));
+					if (sms.getSakaiUserId() == null || "".equals(sms.getSakaiUserId()) ){
+						UIOutput.make(row, "sms-recipient", sms.getMobileNumber());
+					}else{
+						UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(sms.getSakaiUserId()));	
+					}
 					String userStatusCode = sms.getStatusCode();
 					UILink.make(row, "sms-recipient-status", statusUtils.getStatusIcon(userStatusCode))
 						.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(userStatusCode)));
