@@ -42,6 +42,7 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.exception.IdUnusedException;
@@ -178,9 +179,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			String context = toolManager.getCurrentPlacement().getContext();
 			location = context;
-			// Site s = siteService.getSite( context );
-			// location = s.getReference(); // get the entity reference to the
-			// site
 		} catch (Exception e) {
 			// sakai failed to get us a location so we can assume we are not
 			// inside the portal
@@ -205,13 +203,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public boolean isUserAllowedInLocation(String userId, String permission,
 			String locationId) {
 
-		log.debug("isUserAllowedInLocation(" + userId + ", " + permission + ","
-				+ locationId + ")");
+		log.debug("isUserAllowedInLocation(" + userId + ", " + permission + ", " + locationId + ")");
+		
+		if (permission == null || locationId == null)
+			return false;
+		
+		String locationRef = locationId.startsWith(Entity.SEPARATOR) ? locationId : siteService.siteReference(locationId);
+	
 		Boolean allowed = true;
 		if (userId != null)
-			allowed = securityService.unlock(userId, permission, locationId);
+			allowed = securityService.unlock(userId, permission, locationRef);
 		else
-			allowed = securityService.unlock(permission, locationId);
+			allowed = securityService.unlock(permission, locationRef);
 
 		log.debug("allowed: " + allowed);
 
