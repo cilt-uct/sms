@@ -88,8 +88,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		if ( smsParams.id != null && ! "".equals(smsParams.id) ){
 			smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 		}
-		String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
-		
+		String email = externalLogic.getSmsContactEmail();
 		boolean hasAccount = smsAccount != null;
 		boolean hasAccountEnabled = Boolean.FALSE;
 		if ( hasAccount ){

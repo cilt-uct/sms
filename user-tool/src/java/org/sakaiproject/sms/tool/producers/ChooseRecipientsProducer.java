@@ -128,8 +128,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			if(smsAccount != null){
 				UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
 			}
+			String email = externalLogic.getSmsContactEmail();
 			UIMessage.make(tofill, "console-purchase", "ui.console.help");
-			UIOutput.make(tofill, "console-email"); //TODO show email for credit purchases
+			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			
 			if ( smsTask.getId() != null ){
 				if( smsTask.getDeliveryEntityList() != null){

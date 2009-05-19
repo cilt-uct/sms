@@ -106,8 +106,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
 			}
 			
-			String email = smsConfig.getNotificationEmail() == null ? smsConfig.getNotificationEmail() : smsConfig.getNotificationEmail();
-			log.info("EMAIL: "+email);
+			String email = externalLogic.getSmsContactEmail();
 			UIMessage.make(tofill, "console-purchase", "ui.console.help");
 			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 		}

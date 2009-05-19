@@ -223,4 +223,6 @@ public interface ExternalLogic {
 	public String getEntityRealIdFromRefByKey(String entity, String key);
 
 	public String getEntityPrefix(String entity);
+
+	public String getSmsContactEmail();
 }
