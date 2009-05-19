@@ -511,10 +511,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public SmsSmppProperties getSmppProperties() {
 		SmsSmppProperties smsSmppProperties = new SmsSmppProperties();
+		
+		log.debug("Reading properties from ServerConfigurationService");
+		
 		try {
 			String smscAddress = (serverConfigurationService
 					.getString("sms.SMSCAddress").trim());
 			if (smscAddress.equals(null) || smscAddress.equals("")) {
+				log.debug("sms.SMSCAddress not found");
 				return null;
 			} else {
 				smsSmppProperties.setSMSCAddress(smscAddress);
@@ -524,6 +528,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					"sms.SMSCPort").trim();
 
 			if (smscPort.equals(null) || smscPort.equals("")) {
+				log.debug("sms.SMSCPort not found");
 				return null;
 			} else {
 				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
@@ -533,6 +538,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					"sms.SMSCUserName").trim();
 
 			if (smscUserName.equals(null) || smscUserName.equals("")) {
+				log.debug("sms.SMSCUserName not found");
 				return null;
 			} else {
 				smsSmppProperties.setSMSCUsername(smscUserName);
@@ -542,17 +548,21 @@ public class ExternalLogicImpl implements ExternalLogic {
 					"sms.SMSCPassword").trim();
 
 			if (smscPassword.equals(null) || smscPassword.equals("")) {
+				log.debug("sms.SMSCPassword not found");
 				return null;
 			} else {
 				smsSmppProperties.setSMSCPassword(smscPassword);
 			}
 		} catch (Exception e) {
-			return null;
 			// smpp properties is not set up in sakai.properties, so we are
 			// going to use smpp.properties
+			log.warn("Error reading SMPP properties", e);
+			return null;
 		}
+		
+		log.debug("Read properties from ServerConfigurationService");
+		
 		return smsSmppProperties;
-
 	}
 
 	public String getSiteFromAlias(String alias) {
