@@ -23,7 +23,9 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
@@ -37,8 +39,10 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
 
-	//TODO these need to come from the services
-	private static String PERMISSION_MANAGE = "sms.manage";
+	/**
+	 *	Permission to send SMS messages in a site, therefore also create and manage the resulting tasks  
+	 */
+	private static String PERMISSION_SEND = ExternalLogic.SMS_SEND;
 	
 	private static String DATE_FORMAT_ISO8601 = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -85,15 +89,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	        }
 
 		 String currentUserId = developerHelperService.getCurrentUserId();
-		 boolean allowedManage = false;
+		 boolean allowedSend = false;
 		 if (! developerHelperService.isEntityRequestInternal(ref+"")) {
 	            // not an internal request so we require user to be logged in
 	            if (currentUserId == null) {
 	                throw new SecurityException("User must be logged in in order to access sms task: " + ref);
 	            } else {
 	                String userReference = developerHelperService.getCurrentUserReference();
-	                allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
-	                if (!allowedManage) {
+	                allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+	                if (!allowedSend) {
 	                    throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
 	                }
 	            }
@@ -113,8 +117,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		setPropertyFromParams(task, params);
 		
 		String userReference = developerHelperService.getCurrentUserReference();
-		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
-         if (!allowedManage) {
+		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+         if (!allowedSend) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
          }
          
@@ -167,8 +171,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         //Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
         setPropertyFromParams(task, params);
         
-        boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
-        if (!allowedManage) {
+        boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+        if (!allowedSend) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
 
@@ -189,8 +193,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         }
 
 		String userReference = developerHelperService.getCurrentUserReference();
-		boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + task.getSakaiSiteId());
-        if (!allowedManage) {
+		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+        if (!allowedSend) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
 
@@ -247,8 +251,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
 		
 		String userReference = developerHelperService.getCurrentUserReference();
-		 boolean allowedManage = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_MANAGE, "/site/" + smsTask.getSakaiSiteId());
-         if (!allowedManage) {
+		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(smsTask.getSakaiSiteId()));
+         if (!allowedSend) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
          }
 

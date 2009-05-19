@@ -10,11 +10,8 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
-import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		RESTful, AutoRegisterEntityProvider {
@@ -22,11 +19,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 	public String getEntityPrefix() {
 		return ENTITY_PREFIX;
 	}
-	
-	//TODO these need to come from the services
-	private static String PERMISSION_MANAGE = "sms.manage";
 
-	
 	private DeveloperHelperService developerHelperService;
 	public void setDeveloperHelperService(DeveloperHelperService developerHelperService) {
 		this.developerHelperService = developerHelperService;
