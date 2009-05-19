@@ -676,7 +676,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						+ " secondes");
 
 				smsSmppProperties
-						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT);
+						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
 
 			} catch (NumberFormatException e) {
 				LOG.error(e);
@@ -685,7 +685,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						+ " secondes");
 
 				smsSmppProperties
-						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT);
+						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
 			}
 			try {
 				smsSmppProperties.setBindThreadTimer(Integer
