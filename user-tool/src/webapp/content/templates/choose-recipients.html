@@ -109,13 +109,13 @@ $(document).ready(function() {
         <input rsf:id="copy-me" type="checkbox" name="copyMe" id="copyMe" />
         <label rsf:id="copy-me-label">Send me a copy</label>
       </div>
-        <div class="act">
+        <div>
       <input rsf:id="calculate" type="button" class="active"  id="calculateCmd" value="Calculate" />
             <img class="loadingImage" style="display:none;" src="/library/image/sakai/spinner.gif" alt="Loading" />
             <!-- <a rsf:id="msg=ui.recipients.choose.cancel" id="clearSelections" href="#">Clear my selections</a> -->
         </div>
 
-        <div id="errorStatus403" style="display:none;">
+        <div id="errorStatus403" style="display:none;" class="alertMessage">
                     <span rsf:id="msg=ui.console.alert">
                         Alert:
                     </span>
@@ -123,7 +123,7 @@ $(document).ready(function() {
                         100
                     </span>
           </div>
-        <div id="errorStatus406" style="display:none;">
+        <div id="errorStatus406" style="display:none;" class="alertMessage">
                     <span rsf:id="msg=ui.console.alert">
                         Alert:
                     </span>
@@ -131,7 +131,7 @@ $(document).ready(function() {
                         100
                     </span>
           </div>
-        <div id="errorStatusOther" style="display:none;">
+        <div id="errorStatusOther" style="display:none;" class="alertMessage">
                     <span rsf:id="msg=ui.console.alert">
                         Alert:
                     </span>

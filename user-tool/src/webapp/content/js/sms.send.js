@@ -41,7 +41,6 @@ $(document).ready(function(){
                     $(".loadingImage").show();
                          var domElements = [ "sakaiUserIds", "deliveryEntityList", "deliveryMobileNumbersSet", "sakaiSiteId", "senderUserName", "senderUserId", "messageBody"];
                         $.fn.SMS.set.processSubmitTask(domElements, this);
-                        window.location.href = $("#goto-home").attr('href');
                     });
 
                 if($("#statusType").length != 0 ){

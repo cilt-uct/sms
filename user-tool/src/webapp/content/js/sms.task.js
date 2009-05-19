@@ -27,7 +27,7 @@ $(document).ready(function(){
     $.fn.task.defaults = {
         EB_DELETE_PATH: "/direct/sms-task/:ID:/delete",
         EB_UPDATE_PATH: "/direct/sms-task/:ID:/edit",
-        SUCCESS_PATH: "index",
+        SUCCESS_PATH: "index" + "?id=" + _id + "&status=" + Number(new Date());,
         getSmsId: $("#smsId").val(),
         getAbortCode: $("#abortCode").val(),
         getAbortMessage: $("#abortMessage").val()
@@ -58,7 +58,7 @@ $(document).ready(function(){
 
 
     function smsStop(_that){
-        if(smsConfirm($("#actionStop").text())){
+        if(smsConfirm($("#actionAbort").text())){
             $.ajax({
                 url: $.fn.task.defaults.EB_UPDATE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()),
                 data: [{name:"statusCode", value:$.fn.task.defaults.getAbortCode()}, {name:"failReason" , value:$.fn.task.defaults.getAbortMessage()}],

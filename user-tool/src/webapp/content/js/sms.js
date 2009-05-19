@@ -188,6 +188,7 @@
                 dataType: "json",
                 data: smsParams(domElements),
                 beforeSend: function(){
+            		$("#facebox .loadingImage").show();
                     $("div[id^=errorStatus]").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
                     frameGrow($("#cReportConsole").height() - 100 , "shrink"); //subtract 100px to totally get rid of scrollbar
@@ -216,6 +217,7 @@
                     }else{
                         $("#recipientsCmd").removeAttr("disabled");
                     }
+                    $("#facebox .loadingImage").hide();
                     return false;
                 },
                 error: function(xhr, ajaxOptions, thrownError){
@@ -234,6 +236,7 @@
                         frameGrow($("#cReportConsole").height(), "grow");
                         _this.disabled = false;
                     }
+                    $("#facebox .loadingImage").hide();
                     return false;
                 }
             });
@@ -256,12 +259,30 @@
                 url: _url,
                 type: "POST",
                 data: smsParams(domElements),
-                /*error: function(xhr, ajaxOptions, thrownError){
-                    $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
-                    _this.disabled = false;
+                beforeSend: function(){
+	        		$(".loadingImage").show();
+            	},
+            	error: function(xhr, ajaxOptions, thrownError){
+                    if(xhr.status == 403){
+                        //status is 403 - FORBIDDEN
+                        _this.disabled = false;
+                        $("#errorSend403").slideDown('fast', function(){
+                            $(this).effect('highlight', 'slow');
+                        });
+                        frameGrow(50, 'grow');
+                    }else{
+                        $("#errorSendOther").slideDown('fast', function(){
+                            $(this).effect('highlight', 'slow');
+                        });
+                        frameGrow(50, 'grow');
+                    }
+                    $(".loadingImage").hide();
                     return false;
-                },*/
-                success: function(){
+                },
+                success: function(_id){
+                	$("[id^=errorStatus]").slideUp('fast');
+                	window.location.href = $("#goto-home").attr('href') + "?id=" + _id + "&status=" + Number(new Date());
+                	$(".loadingImage").hide();
                     return true;
                 }
             });
@@ -283,18 +304,6 @@
                 $("#smsSend").attr("disabled", "disabled");
             }
         },
-        /*setSelectedRecipientsListRoles: function(array) {
-            selectedRecipientsList.roles = array;
-            return true;
-        },
-        setSelectedRecipientsListNumbers: function(array) {
-            selectedRecipientsList.numbers = array;
-            return true;
-        },
-        setSelectedRecipientsListGroups: function(array) {
-            selectedRecipientsList.groups = array;
-            return true;
-        },*/
         setSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names = array;
             return true;
@@ -307,11 +316,7 @@
             $.fn.SMS.set.savedTaskEntities(entities,names,numbers);
         },
         restoreSelections: function(){
-            //$.fn.SMS.set.setSelectedRecipientsListRoles($.fn.SMS.get.previousSelectionsRoles);
-            ///$.fn.SMS.set.setSelectedRecipientsListNumbers($.fn.SMS.get.previousSelectionsNumbers);
-            //$.fn.SMS.set.setSelectedRecipientsListGroups($.fn.SMS.get.previousSelectionsGroups);
-            //$.fn.SMS.set.setSelectedRecipientsListName($.fn.SMS.get.previousSelectionsNames);
-             $.fn.SMS.set.init();
+            $.fn.SMS.set.init();
             $.fn.SMS.set.savedTaskEntities(
                     $.fn.SMS.get.previousSelectionsRoles.concat($.fn.SMS.get.previousSelectionsGroups),
                     $.fn.SMS.get.previousSelectionsNames,
@@ -923,7 +928,7 @@ function getPeople(filter) {
         }
     }
     function frameGrow(height, updown) {
-        var _height = height == "" ? 250 : parseInt(height);
+        var _height = height == "" ? 280 : parseInt(height) + 40;
         var frame = parent.document.getElementById(window.name);
         try {
             if (frame) {
