@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -34,6 +35,10 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
 
@@ -112,41 +117,39 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		Date simpleDate = new Date();
 		if (task.getDateCreated() == null)
 			task.setDateCreated(simpleDate);
+
+		User user = UserDirectoryService.getCurrentUser();
 		
-		//Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
+		// Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
 		setPropertyFromParams(task, params);
 		
-		String userReference = developerHelperService.getCurrentUserReference();
-		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
-         if (!allowedSend) {
-             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
+         if (!SecurityService.unlock(PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()))) {
+        	 throw new SecurityException("User " + user.getEid() + " not allowed to create SMS task in site " + task.getSakaiSiteId());
          }
          
          smsService.calculateEstimatedGroupSize(task);
 		
 		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate(),false)) {
-			throw new SecurityException("User ("+ task.getSenderUserId() +") has insuficient credit to send sms task: " + ref);
+			throw new SecurityException("User "+ task.getSenderUserId() +" has insufficient credit to send SMS task");
 		}
 
 		try {
 			smsService.insertTask(task);
-			return task.getId().toString();
-
 		} catch (SmsTaskValidationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IllegalArgumentException("Task parameters failed validation");
 		} catch (SmsSendDeniedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new SecurityException("Not allowed to send");
 		} catch (SmsSendDisabledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO better return code
+			throw new IllegalArgumentException("SMS Send Disabled");		
 		} catch (ReceiveIncomingSmsDisabledException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO better return code
+			throw new IllegalArgumentException("Incoming SMS disabled");		
 		}
-
-		return null;
+		
+		// Success
+		
+		return task.getId().toString();
 	}
 
 	public void updateEntity(EntityReference ref, Object entity,
@@ -262,26 +265,22 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {
+
 		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
 		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
-		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		
 		//Save copy boolean and only set it when all params have been iterated and sender ids set
-        	boolean copy = false;
-        	while ( selector.hasNext() ) {
-        	Entry<String, Object> pairs = selector.next();
-        	String paramsKey = pairs.getKey();
-        	String paramsValue = pairs.getValue().toString();
-        	
-        	
-	    	if( "senderUserId".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		task.setSenderUserId(paramsValue.toString());
-	    	}else
+		boolean copy = false;
+
+		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		while ( selector.hasNext() ) {
+			Entry<String, Object> pairs = selector.next();
+			String paramsKey = pairs.getKey();
+			String paramsValue = pairs.getValue().toString();
+
 			if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
 	    		task.setSakaiSiteId(paramsValue.toString());
 	    	}else 
-	    	if( "senderUserName".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		task.setSenderUserName(paramsValue.toString());
-	    	}else  
 	    	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
 	    		task.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
 	    	}else 
@@ -314,23 +313,29 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	    	}
 		}
         
-        	//Set copy me status
-    	Set<String> newUserIds = new HashSet<String>();
-    		if( copy ){
-    			newUserIds.add(task.getSenderUserId());
-	    		if (task.getSakaiUserIds() != null){
-	    			newUserIds.addAll(task.getSakaiUserIds());
-	    			task.setSakaiUserIds(newUserIds);
-	    		}else{
-	    			task.setSakaiUserIds(newUserIds);
-	    		}
-    		}else{
-    			if( task.getSakaiUserIds().contains(task.getSenderUserId()) ){
-    				newUserIds = task.getSakaiUserIds();
-    				newUserIds.remove(task.getSenderUserId());
-    				task.setSakaiUserIds(newUserIds);
-    			}
-    		}
-	    	
+		// Set user info - only allow sending as someone else if admin
+		User user = UserDirectoryService.getCurrentUser();
+
+		task.setSenderUserName(user.getDisplayName());
+		task.setSenderUserId(user.getId());
+		
+		// Set copy me status
+		Set<String> newUserIds = new HashSet<String>();
+		if (copy) {
+			newUserIds.add(task.getSenderUserId());
+			if (task.getSakaiUserIds() != null) {
+				newUserIds.addAll(task.getSakaiUserIds());
+				task.setSakaiUserIds(newUserIds);
+			} else {
+				task.setSakaiUserIds(newUserIds);
+			}
+		} else {
+			if (task.getSakaiUserIds().contains(task.getSenderUserId())) {
+				newUserIds = task.getSakaiUserIds();
+				newUserIds.remove(task.getSenderUserId());
+				task.setSakaiUserIds(newUserIds);
+			}
+		}
+
 	}
 }
