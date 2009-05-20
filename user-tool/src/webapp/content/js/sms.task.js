@@ -27,10 +27,10 @@ $(document).ready(function(){
     $.fn.task.defaults = {
         EB_DELETE_PATH: "/direct/sms-task/:ID:/delete",
         EB_UPDATE_PATH: "/direct/sms-task/:ID:/edit",
-        SUCCESS_PATH: "index" + "?id=" + _id + "&status=" + Number(new Date());,
-        getSmsId: $("#smsId").val(),
-        getAbortCode: $("#abortCode").val(),
-        getAbortMessage: $("#abortMessage").val()
+        SUCCESS_PATH: function(){return "index?status=" + Number(new Date())},
+        getSmsId: function(){return $("#smsId").val();},
+        getAbortCode: function(){return $("#abortCode").val()},
+        getAbortMessage: function(){return $("#abortMessage").val()}
     }
 
      function init(_that) {
@@ -50,7 +50,7 @@ $(document).ready(function(){
                     $.facebox("ERROR:: "+ xhr.status + ": "+ xhr.statusText);
                 },
                 success: function(){
-                    window.location.href = $.fn.task.defaults.SUCCESS_PATH;
+                    window.location.href = $.fn.task.defaults.SUCCESS_PATH();
                 }
             });
         }
@@ -67,8 +67,7 @@ $(document).ready(function(){
                     $.facebox("ERROR: "+ xhr.statusCode + ": "+ xhr.statusText);
                 },
                 success: function(){
-                    //return false;
-                    window.location.href = $.fn.task.defaults.SUCCESS_PATH;
+                    window.location.href = $.fn.task.defaults.SUCCESS_PATH();
                 }
             });
         }
