@@ -513,10 +513,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	 * possible. For unit testing purposes.
 	 */
 	public void disconnectGateWay() {
-		bindTest.allDone = true;
-		bindTest = null;
-		mOmessageQueueThread.allDone = true;
-		mOmessageQueueThread = null;
+
 		disconnectGateWayCalled = true;
 		session.unbindAndClose();
 		gatewayBound = false;
@@ -562,6 +559,27 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	public void destroy() {
 		LOG.debug("Attempting to shut down SmsSmpp");
+
+		if (bindTest != null) {
+			LOG.debug("Stopping Bind Thread....");
+			bindTest.allDone = true;
+			bindTest = null;
+			LOG.debug("Stopped....");
+		}
+		if (mOmessageQueueThread != null) {
+			LOG.debug("Stopping MO MessageQueueThread....");
+			mOmessageQueueThread.allDone = true;
+			mOmessageQueueThread = null;
+			LOG.debug("Stopped....");
+		}
+		if (deliveryReportQueueThread != null) {
+			LOG.debug("Stopping DeliveryReportQueueThread....");
+			deliveryReportQueueThread.allDone = true;
+			deliveryReportQueueThread = null;
+			LOG.debug("Stopped....");
+		}
+		deliveryReportThreadGroup.destroy();
+		moReceivingThread.destroy();
 		disconnectGateWay();
 	}
 
@@ -871,7 +889,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			return SmsConst_DeliveryStatus.STATUS_RETRY;
 
 		}
-
+			
 		for (SmsMessage message : messages) {
 			if (!gatewayBound) {
 				return (SmsConst_DeliveryStatus.STATUS_INCOMPLETE);

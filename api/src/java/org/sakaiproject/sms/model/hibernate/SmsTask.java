@@ -769,7 +769,7 @@ public class SmsTask extends BaseModel {
 	 * @param smsMessages
 	 *            the new sms messages
 	 */
-	private void setSmsMessages(Set<SmsMessage> smsMessages) {
+	public void setSmsMessages(Set<SmsMessage> smsMessages) {
 		this.smsMessages = smsMessages;
 	}
 

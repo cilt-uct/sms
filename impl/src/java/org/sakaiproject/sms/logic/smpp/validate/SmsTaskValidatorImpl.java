@@ -52,8 +52,8 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,
-			boolean overDraftCheck) {
+	public synchronized ArrayList<String> checkSufficientCredits(
+			SmsTask smsTask, boolean overDraftCheck) {
 		ArrayList<String> errors = new ArrayList<String>();
 		// check for sufficient balance
 		;

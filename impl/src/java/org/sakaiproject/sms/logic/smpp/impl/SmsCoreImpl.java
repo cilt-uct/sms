@@ -51,6 +51,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -312,9 +313,14 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask
 					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
+		Set<SmsMessage> smsMessages = (Set<SmsMessage>) ((HashSet<SmsMessage>) smsTask
+				.getSmsMessages()).clone();
+
+		smsTask.setSmsMessages(null);
 
 		// Cross-check account info. {@link
-		// org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl NEW does not
+		// org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl NEW does
+		// not
 		// set this
 		if (smsTask.getSmsAccountId() == null) {
 			SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
@@ -358,11 +364,14 @@ public class SmsCoreImpl implements SmsCore {
 			throw validationException;
 		}
 
-		// we set the date again due to time laps between getPreliminaryTask and
+		// we set the date again due to time laps between getPreliminaryTask
+		// and
 		// insertask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
-		// We do this because if there the invalid values in the task then the
-		// checkSufficientCredits() will throw unexpected exceptions. Check for
+		// We do this because if there the invalid values in the task then
+		// the
+		// checkSufficientCredits() will throw unexpected exceptions. Check
+		// for
 		// sufficient credit only if the task is valid
 		errors.clear();
 		if (smsTask.getMessageTypeId().equals(
@@ -398,6 +407,16 @@ public class SmsCoreImpl implements SmsCore {
 					false));
 		}
 
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+		if (!smsBilling.reserveCredits(smsTask)) {
+			ArrayList<String> insufficientCredit = new ArrayList<String>();
+			insufficientCredit.add(ValidationConstants.INSUFFICIENT_CREDIT
+					+ " in account id " + smsTask.getSmsAccountId());
+			errors.addAll(insufficientCredit);
+
+		}
+
 		if (errors.size() > 0) {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
@@ -407,14 +426,20 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask
 					.setFailReason(validationException
 							.getErrorMessagesAsBlock());
+
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			LOG.error(MessageCatalog
 					.getMessage("messages.sms.errors.task.validationFailed")
 					+ ": " + validationException.getErrorMessagesAsBlock());
+
 			throw validationException;
+		} else {
+			smsTask.setSmsMessages(smsMessages);
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			tryProcessTaskRealTime(smsTask);
 		}
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-		smsBilling.reserveCredits(smsTask);
-		tryProcessTaskRealTime(smsTask);
+
 		return smsTask;
 	}
 
@@ -471,8 +496,7 @@ public class SmsCoreImpl implements SmsCore {
 		try {
 			insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
-			LOG.error(getExceptionStackTraceAsString(e));
-			e.printStackTrace();
+
 		} catch (SmsSendDeniedException e) {
 			LOG.error(getExceptionStackTraceAsString(e));
 			e.printStackTrace();
@@ -494,6 +518,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void processTask(SmsTask smsTask) {
+
 		smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				smsTask.getId());
 		if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_BUSY)) {
@@ -949,6 +974,8 @@ public class SmsCoreImpl implements SmsCore {
 		if (getThreadCount(threadGroup) < maxThreadCount) {
 			new ProcessThread(smsTask, threadGroup);
 		} else {
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			LOG.debug("Maximum allowed SMS threads of " + maxThreadCount
 					+ " reached. Task will be scheduled for later processing.");
 		}

@@ -59,7 +59,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	/**
 	 * Deletes and the given entity from the DB
 	 */
-	public void deleteSmsAccount(SmsAccount smsAccount) {
+	public synchronized void deleteSmsAccount(SmsAccount smsAccount) {
 		delete(smsAccount);
 	}
 
@@ -70,7 +70,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 *            sms account id
 	 * @return sms congiguration
 	 */
-	public SmsAccount getSmsAccount(Long smsAccountId) {
+	public synchronized SmsAccount getSmsAccount(Long smsAccountId) {
 		return (SmsAccount) findById(SmsAccount.class, smsAccountId);
 	}
 
@@ -79,7 +79,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * 
 	 * @return List of SmsAccount objects
 	 */
-	public List<SmsAccount> getAllSmsAccounts() {
+	public  List<SmsAccount> getAllSmsAccounts() {
 		List<SmsAccount> accounts = smsDao.runQuery("from SmsAccount");
 		return accounts;
 	}
@@ -93,7 +93,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param sms
 	 *            account to be persisted
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount) {
+	public  void persistSmsAccount(SmsAccount smsAccount) {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
 			throw new DuplicateUniqueFieldException("sakaiSiteId");
 		}
@@ -110,7 +110,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param smsAccount
 	 * @return
 	 */
-	private boolean hasUniqueSakaiSiteId(SmsAccount smsAccount) {
+	private  boolean hasUniqueSakaiSiteId(SmsAccount smsAccount) {
 		SmsAccount accBySite = getAccountBySakaiSiteId(smsAccount
 				.getSakaiSiteId());
 
@@ -127,7 +127,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param smsAccount
 	 * @return
 	 */
-	private boolean hasUniqueSakaiUserId(SmsAccount smsAccount) {
+	private  boolean hasUniqueSakaiUserId(SmsAccount smsAccount) {
 		SmsAccount accByUser = getAccountBySakaiUserId(smsAccount
 				.getSakaiUserId());
 
@@ -186,7 +186,8 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @return sms configuration
 	 * 
 	 */
-	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId) {
+	public synchronized SmsAccount getSmsAccount(String sakaiSiteId,
+			String SakaiUserId) {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
@@ -234,7 +235,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @throws MoreThanOneAccountFoundException
 	 *             the more than one account found exception
 	 */
-	private SmsAccount getAccountBySakaiSiteId(String sakaiSiteId) {
+	private synchronized SmsAccount getAccountBySakaiSiteId(String sakaiSiteId) {
 		if (sakaiSiteId == null || sakaiSiteId.trim().equals("")) {
 			return null;
 		}
@@ -263,7 +264,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @return the account by sakai site id
 	 * 
 	 */
-	private SmsAccount getAccountBySakaiUserId(String sakaiUserId) {
+	private synchronized SmsAccount getAccountBySakaiUserId(String sakaiUserId) {
 		if (sakaiUserId == null || sakaiUserId.trim().equals("")) {
 			return null;
 		}
@@ -290,7 +291,8 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param account
 	 *            the account
 	 */
-	public void recalculateAccountBalance(Long accountId, SmsAccount account) {
+	public synchronized void recalculateAccountBalance(Long accountId,
+			SmsAccount account) {
 		// Use account instead of id?
 		if (account == null) {
 			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
