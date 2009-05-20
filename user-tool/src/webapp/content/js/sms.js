@@ -242,7 +242,7 @@
             });
             }else{
                 alert("Make a selection first.");
-                 $("[id^=errorStatus]").slideUp('fast');
+                 $("div[id^=errorStatus]").slideUp('fast');
                     $("#cReportConsole").slideUp('fast');
             }
 
@@ -280,7 +280,7 @@
                     return false;
                 },
                 success: function(_id){
-                	$("[id^=errorStatus]").slideUp('fast');
+                	$("div[id^=errorStatus]").slideUp('fast');
                 	window.location.href = $("#goto-home").attr('href') + "?id=" + _id + "&status=" + Number(new Date());
                 	$(".loadingImage").hide();
                     return true;
