@@ -25,7 +25,7 @@
         },
 
         peopleByName: function(type) {
-            if (type === null) {
+            if (type == null) {    //putting 3 equal signs (ie: ===) will break this check
                 var_getEveryoneInSite_participants = getPeople('Names');
             }
             return var_getEveryoneInSite_participants;
@@ -65,6 +65,7 @@
             $('#checkNumbers').click(); // Fire numbers check function
             if ($.fn.SMS.get.isSelectionMade()) {
                 _this.disabled = true;
+                $(".loadingImage").show();
                 $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
                 var entityList = [];
                 if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
@@ -81,10 +82,8 @@
                     dataType: "json",
                     data: smsParams(domElements),
                     beforeSend: function() {
-                        $("#facebox .loadingImage").show();
                         $("div[id^=errorStatus]").slideUp('fast');
                         $("#cReportConsole").slideUp('fast');
-                        frameGrow($("#cReportConsole").height() - 100, "shrink"); //subtract 100px to totally get rid of scrollbar
                     },
                     success: function(json) {
                         _this.disabled = false;
@@ -109,7 +108,7 @@
                         } else {
                             $("#recipientsCmd").removeAttr("disabled");
                         }
-                        $("#facebox .loadingImage").hide();
+                        $(".loadingImage").hide();
                         return false;
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
@@ -128,7 +127,7 @@
                             frameGrow($("#cReportConsole").height(), "grow");
                             _this.disabled = false;
                         }
-                        $("#facebox .loadingImage").hide();
+                        $(".loadingImage").hide();
                         return false;
                     }
                 });
@@ -282,9 +281,9 @@
         inited:  false,
         initList: ({
             "items": [{
-                "fname": "init_smsBoxCounter",
-                "fdelay": 0
-            },
+                    "fname": "init_smsBoxCounter",
+                    "fdelay": 0
+                },
                 {
                     "fname": "setDateListners",
                     "fdelay": 0

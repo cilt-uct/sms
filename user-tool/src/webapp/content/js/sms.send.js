@@ -33,7 +33,7 @@ $(document).ready(function() {
     $("#smsSend").bind('click', function() {
         //Bind EB submit action
         $(".loadingImage").show();
-        var domElements = [ "sakaiUserIds", "deliveryEntityList", "deliveryMobileNumbersSet", "sakaiSiteId", "senderUserName", "senderUserId", "messageBody"];
+        var domElements = [ "sakaiUserIds", "deliveryEntityList", "deliveryMobileNumbersSet", "sakaiSiteId", "senderUserName", "senderUserId"];
         $.fn.SMS.set.processSubmitTask(domElements, this);
     });
 

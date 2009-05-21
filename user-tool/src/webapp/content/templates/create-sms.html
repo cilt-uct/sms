@@ -54,17 +54,17 @@
                 <div rsf:id="msg=ui.send.message">
                     Your message:
                 </div>
-                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <b id="smsBoxCounter">160</b></div>
+                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <span style="font-weight:bold;" id="smsBoxCounter">160</span></div>
         <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
                 </textarea>
                 <div>
                     <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
                 </div>
+                <br />
 
 
 
-
-                <div id="reportConsole" class="timeCells">
+                <div id="reportConsole" class="">
                     <div rsf:id="console-credits">
                         Credits remaining: 100 credits
                     </div>
@@ -195,6 +195,8 @@
             </form>
 			<br />
 			<input rsf:id="back2" type="button" value="Back" rel="back"/>
+            <!--A few line braeks to get rid of the scrollbar when facebox pops up.-->
+            <br /><br /><br />
         </div>
     </body>
 </html>

@@ -162,11 +162,15 @@ text-align:right;
 	color: #666666;
 }
 
-/* all DIV tags with an ID ending in ModuleContent */
+/* all DIV tags with an ID starting with peopleList */
 div[id^='peopleList'] {
     height: 200px;
     margin-bottom:55px;
 width:542px;
+}
+/* all spans tags with a class starting with console */
+span[class^='console-'] {
+    font-weight:bold;
 }
 
 .columnBoxes{
