@@ -125,9 +125,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			//Render console summary  console-selected  console-selected-figure
 			UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
 			UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
-			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
+			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0.00 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
 			if(smsAccount != null){
-				UIOutput.make(tofill, "console-total", smsAccount.getCredits() + "");
+				UIOutput.make(tofill, "console-total", smsAccount.getCredits().toString() );
 			}
 			String email = externalLogic.getSmsContactEmail();
 			UIMessage.make(tofill, "console-purchase", "ui.console.help");

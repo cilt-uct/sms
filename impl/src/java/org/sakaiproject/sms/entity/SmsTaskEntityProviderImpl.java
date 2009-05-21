@@ -24,6 +24,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
+import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -130,21 +131,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          smsService.calculateEstimatedGroupSize(task);
 		
 		if (!smsService.checkSufficientCredits(task.getSakaiSiteId(), task.getSenderUserId(), task.getGroupSizeEstimate(),false)) {
-			throw new SecurityException("User "+ task.getSenderUserId() +" has insufficient credit to send SMS task");
+			throw new EntityException("User "+ task.getSenderUserId() +" has insufficient credit to send SMS task", ref.getReference(), 406); //406 - NOT ACCEPTABLE
 		}
 
 		try {
 			smsService.insertTask(task);
 		} catch (SmsTaskValidationException e) {
-			throw new IllegalArgumentException("Task parameters failed validation");
+			throw new EntityException("Task parameters failed validation", ref.getReference(), 400); //400 - ERROR
 		} catch (SmsSendDeniedException e) {
-			throw new SecurityException("Not allowed to send");
+			throw new EntityException("Not allowed to send", ref.getReference(), 405); //405 - METHOD NOT ALLOWED	
 		} catch (SmsSendDisabledException e) {
-			// TODO better return code
-			throw new IllegalArgumentException("SMS Send Disabled");		
+			throw new EntityException("SMS Send Disabled", ref.getReference(), 401); //401 - UNAUTHORIZED	
 		} catch (ReceiveIncomingSmsDisabledException e) {
-			// TODO better return code
-			throw new IllegalArgumentException("Incoming SMS disabled");		
+			throw new EntityException("Incoming SMS disabled", ref.getReference(), 401); //401 - UNAUTHORIZED			
 		}
 		
 		// Success

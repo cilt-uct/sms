@@ -131,13 +131,12 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			}
 			//mini report console
 			if ( hasAccount ){
-				UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-				UIMessage.make(form, "console-value", "ui.console.value", new Object[] { new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) });
+				UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits()});
+				UIMessage.make(form, "console-value", "ui.console.value", new Object[] { smsTask.getCostEstimate() == null ? 0.00 : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) });
 				UIMessage.make(tofill, "console-purchase", "ui.console.help");
 				UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			}
 			
-			//TODO Add dateTime pickers
 			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
 
 			UIInput scheduleDate = UIInput.make(form, "smsDatesScheduleDate:", "dummyBean.smsDatesScheduleDate" ); 

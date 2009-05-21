@@ -110,7 +110,7 @@
                         $(".loadingImage").hide();
                         return false;
                     },
-                    error: function(xhr, ajaxOptions, thrownError) {
+                    error: function(xhr) {
                         if (xhr.status === 403) {
                             //status is 403 - FORBIDDEN
                             _this.disabled = false;
@@ -152,11 +152,32 @@
                 beforeSend: function() {
                     $(".loadingImage").show();
                 },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    if (xhr.status === 403) {
-                        //status is 403 - FORBIDDEN
+                error: function(xhr) {
+                    if (xhr.status === 400) {
+                        //status is 400 - ERROR
                         _this.disabled = false;
-                        $("#errorSend403").slideDown('fast', function() {
+                        $("#errorSend400").slideDown('fast', function() {
+                            $(this).effect('highlight', 'slow');
+                        });
+                        $.fn.SMS.set.frameGrow(50, 'grow');
+                    }else if (xhr.status === 401) {
+                        //status is 401 - UNAUTHORIZED
+                        _this.disabled = false;
+                        $("#errorSend401").slideDown('fast', function() {
+                            $(this).effect('highlight', 'slow');
+                        });
+                        $.fn.SMS.set.frameGrow(50, 'grow');
+                    }else if (xhr.status === 405) {
+                        //status is 405 - METHOD NOT ALLOWED
+                        _this.disabled = false;
+                        $("#errorSend405").slideDown('fast', function() {
+                            $(this).effect('highlight', 'slow');
+                        });
+                        $.fn.SMS.set.frameGrow(50, 'grow');
+                    }else if (xhr.status === 406) {
+                        //status is 406 - NOT ACCEPTABLE
+                        _this.disabled = false;
+                        $("#errorSend406").slideDown('fast', function() {
                             $(this).effect('highlight', 'slow');
                         });
                         $.fn.SMS.set.frameGrow(50, 'grow');
