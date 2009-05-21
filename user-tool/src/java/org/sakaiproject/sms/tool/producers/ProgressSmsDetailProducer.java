@@ -1,5 +1,7 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.DecimalFormat;
+
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
@@ -113,14 +115,14 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				.getOrCreateSystemSmsConfig();
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
-				UIOutput.make(tofill, "sms-status-retries", "Processing attempt number: "+smsTask.getAttemptCount()+" of "+siteConfig.getSmsRetryMaxCount()); //TODO: stick this in message.prop
+				UIMessage.make(tofill, "sms-status-retries", "ui.inprogress.retries", new Object[] { smsTask.getAttemptCount(), siteConfig.getSmsRetryMaxCount() } );
 				
 				//Insert original user selections
 				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
 				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.credits", new Object[] { smsTask.getCreditEstimate() });
-				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { smsTask.getCostEstimate() });
+				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { new DecimalFormat("#0.00").format( smsTask.getCostEstimate() ) });
 				
 				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;

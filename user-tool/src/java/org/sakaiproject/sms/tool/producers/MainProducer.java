@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -8,7 +9,6 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
@@ -68,11 +68,6 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		this.userNavBarRenderer = userNavBarRenderer;
 	}
 	
-	private SmsConfig smsConfig;
-	public void setSmsConfig(SmsConfig smsConfig) {
-		this.smsConfig = smsConfig;
-	}
-	
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		
@@ -101,7 +96,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIOutput.make(tofill, "send");
 				UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 				UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {credits});
-				UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] {credits});
+				UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] { smsAccountLogic.getAccountBalance(credits) });
 			}else{
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
 			}
@@ -142,7 +137,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual() == null ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
-				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");				
+				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");
 			}
 		}else{
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");

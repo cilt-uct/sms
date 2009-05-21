@@ -20,6 +20,7 @@
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsDao" ref="org.sakaiproject.sms.dao.SmsDao" />
+		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 	</bean>
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl">

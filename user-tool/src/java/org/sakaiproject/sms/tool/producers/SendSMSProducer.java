@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -70,11 +71,6 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-	
-	private SmsConfig smsConfig;
-	public void setSmsConfig(SmsConfig smsConfig) {
-		this.smsConfig = smsConfig;
-	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -136,7 +132,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			//mini report console
 			if ( hasAccount ){
 				UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits().toString()});
-				UIMessage.make(form, "console-value", "ui.console.value", new Object[] {smsAccount.getCredits().toString()});
+				UIMessage.make(form, "console-value", "ui.console.value", new Object[] { new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) });
 				UIMessage.make(tofill, "console-purchase", "ui.console.help");
 				UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			}

@@ -18,6 +18,7 @@
 
 package org.sakaiproject.sms.logic.impl.hibernate;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,10 +30,13 @@ import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+
+import sun.management.StringFlag;
 
 /**
  * The data service will handle all sms Account database transactions for the
@@ -54,6 +58,11 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+	
+	private SmsBilling smsBilling;
+	public void setSmsBilling(SmsBilling smsBilling) {
+		this.smsBilling = smsBilling;
 	}
 
 	/**
@@ -321,5 +330,13 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		}
 		account.setCredits(credits);
 		persistSmsAccount(account);
+	}
+
+	public String getAccountBalance(Long credits) {
+		float balance = 0F;
+		if ( credits != null ){
+			balance = smsBilling.convertCreditsToAmount(credits);
+		}
+		return new DecimalFormat("#0.00").format(balance);
 	}
 }
