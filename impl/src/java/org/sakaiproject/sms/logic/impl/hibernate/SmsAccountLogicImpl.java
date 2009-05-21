@@ -36,8 +36,6 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
-import sun.management.StringFlag;
-
 /**
  * The data service will handle all sms Account database transactions for the
  * sms tool in Sakai.
