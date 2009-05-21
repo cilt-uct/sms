@@ -40,7 +40,8 @@ import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**
- * Unit test for registering of commands
+ * Unit test for registering of commands.This unit test must be run from
+ * Eclipse.
  */
 public class IncomingLogicManagerTest extends TestCase {
 

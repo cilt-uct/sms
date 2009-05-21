@@ -368,19 +368,15 @@ public class SmsCoreImpl implements SmsCore {
 		// and
 		// insertask
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
-		// We do this because if there the invalid values in the task then
-		// the
-		// checkSufficientCredits() will throw unexpected exceptions. Check
-		// for
-		// sufficient credit only if the task is valid
 		errors.clear();
-		if (smsTask.getMessageTypeId().equals(
-				SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING)) {
-
-			ArrayList<String> sufficiantCredits = smsTaskValidator
-					.checkSufficientCredits(smsTask, true);
-			if (sufficiantCredits.size() > 0) {
-
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+		if (!smsBilling.reserveCredits(smsTask)) {
+			ArrayList<String> insufficientCredit = new ArrayList<String>();
+			insufficientCredit.add(ValidationConstants.INSUFFICIENT_CREDIT
+					+ " in account id " + smsTask.getSmsAccountId());
+			if (smsTask.getMessageTypeId().equals(
+					SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING)) {
 				if (lastSendMoOverdraftEmail == null) {
 					sendEmailNotification(smsTask,
 							SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
@@ -401,18 +397,6 @@ public class SmsCoreImpl implements SmsCore {
 
 				}
 			}
-			errors.addAll(sufficiantCredits);
-		} else {
-			errors.addAll(smsTaskValidator.checkSufficientCredits(smsTask,
-					false));
-		}
-
-		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-		if (!smsBilling.reserveCredits(smsTask)) {
-			ArrayList<String> insufficientCredit = new ArrayList<String>();
-			insufficientCredit.add(ValidationConstants.INSUFFICIENT_CREDIT
-					+ " in account id " + smsTask.getSmsAccountId());
 			errors.addAll(insufficientCredit);
 
 		}

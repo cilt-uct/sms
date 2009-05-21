@@ -30,6 +30,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 // TODO: Auto-generated Javadoc
@@ -270,6 +271,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
+		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
@@ -291,7 +293,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	public void testSettleCreditDifference() {
 		int creditEstimate = 50;
-		float origionalAccBalance = 0;
+		float origionalAccBalance = 150;
 
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("3");
@@ -319,6 +321,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		smsTask.setGroupSizeActual(0);
+		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
@@ -376,6 +379,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody("messageBody");
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
+		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		Calendar cal = Calendar.getInstance();

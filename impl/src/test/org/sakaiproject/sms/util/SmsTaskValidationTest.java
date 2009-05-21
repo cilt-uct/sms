@@ -60,7 +60,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 
 	/**
 	 * setUp to run before every test. Create SmsMessage + validator + errors
-	 *
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override
@@ -192,8 +192,8 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	public void testMessageBody_empty() {
 		smsTask.setMessageBody("");
 		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.MESSAGE_BODY_EMPTY, errors.get(0));
+		assertTrue(errors.size() == 0);
+
 	}
 
 	/**
@@ -223,8 +223,8 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	public void testMessageBody_whitespace() {
 		smsTask.setMessageBody("   ");
 		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.MESSAGE_BODY_EMPTY, errors.get(0));
+		assertTrue(errors.size() == 0);
+
 	}
 
 	/**
