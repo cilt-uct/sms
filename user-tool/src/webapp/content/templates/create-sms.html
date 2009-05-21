@@ -44,11 +44,12 @@
                     </li>
                 </ul>
             </div>
-             <p rsf:id="error-account" class="alertMessage">None</p>
- 			 <p rsf:id="error-account-disabled" class="alertMessage">None</p>
-  			<p rsf:id="error-credits" class="alertMessage">None</p><a rsf:id="error-back" href="index.html">Back</a>
+             <p rsf:id="error-account" class="smsAlert">None</p>
+ 			 <p rsf:id="error-account-disabled" class="smsAlert">None</p>
+  			<p rsf:id="error-credits" class="smsAlert">None</p><a rsf:id="error-back" href="index.html">Back</a>
             <span rsf:id="error-purchase">To purchase SMS credits, please email </span>
             <a rsf:id="error-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
+            
             <form rsf:id="form" action="" method="POST">
                 <div rsf:id="msg=ui.send.message">
                     Your message:
@@ -59,7 +60,11 @@
                 <div>
                     <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
                 </div>
-                <div id="reportConsole" class="">
+
+
+
+
+                <div id="reportConsole" class="timeCells">
                     <div rsf:id="console-credits">
                         Credits remaining: 100 credits
                     </div>
@@ -70,7 +75,79 @@
                         <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
                         <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
                     </div>
+                    <div class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.maychange">
+                        100
+                    </span>
+          </div>
                 </div>
+
+
+         <!--TODO:Replace console above with the one in choose recip. view
+                 <div id="reportConsole" class="timeCells" style="display:none">
+
+          <div>
+                    <span rsf:id="msg=ui.console.selected">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-selected" class="console-selected">
+                        100
+                    </span>
+          </div>
+
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.credits">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-credits" class="console-credits">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.cost">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-cost" class="console-cost">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.credits.total">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-total" class="console-total">
+                        100
+                    </span>
+          </div>
+          <div>
+          <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
+          <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
+          </div>
+          <div class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.maychange">
+                        100
+                    </span>
+          </div>
+
+      </div>-->
+
+
+
+
+
+
+
+
+
+
+
+
                 <div id="smsDates">
                     <div id="smsDatesSchedule">
                         <h4 class="schedule">Schedule for a later date/time</h4>
@@ -99,30 +176,6 @@
                         </div>
                     </div>
                 </div>
-                <div id="errorSend403" style="display:none;" class="alertMessage">
-                    <span rsf:id="msg=ui.console.alert">
-                        Alert:
-                    </span>
-                    <span rsf:id="msg=ui.console.alert.forbidden">
-                        100
-                    </span>
-		          </div>
-		        <div id="errorSend406" style="display:none;" class="alertMessage">
-		                    <span rsf:id="msg=ui.console.alert">
-		                        Alert:
-		                    </span>
-		                    <span rsf:id="msg=ui.console.alert.insufficient">
-		                        100
-		                    </span>
-		          </div>
-		        <div id="errorSendOther" style="display:none;" class="alertMessage">
-		                    <span rsf:id="msg=ui.console.alert">
-		                        Alert:
-		                    </span>
-		                    <span rsf:id="msg=ui.console.alert.general">
-		                        100
-		                    </span>
-		          </div>
                 <div class="act">
                 <!-- DOM elements for re-opening a task -->
 		          <input rsf:id="taskuserIds" id="taskuserIds" name="taskuserIds" type="hidden" value=""/>

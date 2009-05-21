@@ -174,3 +174,27 @@ width:542px;
 text-align:left;
 width:250px;
 }
+
+.smsAlert {
+background:transparent url(../images/exclamation.gif) no-repeat scroll 0 50%;
+color:#FF5555;
+padding:3px 3px 3px 20px;
+}
+
+.smsAlert div{
+   float:left;
+font-weight:bold;
+margin-right:5px;
+}
+
+.smsGreen{
+   color: green;
+}
+
+.smsRed{
+    color: red;
+}
+
+.smsOrange{
+    color: orange;
+}
