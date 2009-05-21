@@ -93,7 +93,7 @@
                         });
                         var cSelected = json.groupSizeEstimate;
                         var cCredits = json.creditEstimate;
-                        var cCost = json.costEstimate;
+                        var cCost = roundOffNumber(json.costEstimate, 2);
                         var cTotal = $("#cReportConsole .console-total").text();
                         $("#cReportConsole .console-selected").text(cSelected);
                         $("#cReportConsole .console-credits").text(cCredits);
@@ -824,6 +824,22 @@
             });
         });
     });
+
+    /**
+     * Rounding off to any number of decimal places. 
+     * http://www.xfriday.com/support/index.php?_m=knowledgebase&_a=viewarticle&kbarticleid=3
+     * @param myNum    Actual number to be rounded off
+     * @param numOfDec   Number of decimal places
+     */
+    function roundOffNumber(myNum, numOfDec)
+    {
+        var decimal = 1;
+        for (i = 1; i <= numOfDec; i++){
+            decimal = decimal * 10
+        }
+        var myFormattedNum = (Math.round(myNum * decimal) / decimal).toFixed(numOfDec)
+        return(myFormattedNum)
+    }
 
     /**
      * @param functionList {JSON Object} A list of function names to be initialised on application load. Has fname {String} and fdelay {Int} as child values.
