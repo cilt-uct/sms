@@ -5,7 +5,6 @@
 (function($) {
     // Define class
     $.fn.SMS = function(options) {
-        init($.fn.SMS.settings.initList);
         // build main options before class instantiation
         $.extend({}, $.fn.SMS.defaults, options);
     };
@@ -89,7 +88,7 @@
                         _this.disabled = false;
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
-                            frameGrow($("#cReportConsole").height(), "grow");
+                            $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
                         });
                         var cSelected = json.groupSizeEstimate;
                         var cCredits = json.creditEstimate;
@@ -124,7 +123,7 @@
                                 $(this).effect('highlight', 'slow');
                             });
                             $("#recipientsCmd").attr("disabled", "disabled");
-                            frameGrow($("#cReportConsole").height(), "grow");
+                            $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
                             _this.disabled = false;
                         }
                         $(".loadingImage").hide();
@@ -160,12 +159,12 @@
                         $("#errorSend403").slideDown('fast', function() {
                             $(this).effect('highlight', 'slow');
                         });
-                        frameGrow(50, 'grow');
+                        $.fn.SMS.set.frameGrow(50, 'grow');
                     } else {
                         $("#errorSendOther").slideDown('fast', function() {
                             $(this).effect('highlight', 'slow');
                         });
-                        frameGrow(50, 'grow');
+                        $.fn.SMS.set.frameGrow(50, 'grow');
                     }
                     $(".loadingImage").hide();
                     return false;
@@ -183,12 +182,8 @@
             if ($.fn.SMS.get.preserveNewDomSelections) {
                 $.fn.SMS.set.restoreSelections();
             }
-            if (((
-                    $.fn.SMS.get.getSelectedRecipientsListIDs("roles").length > 0 ||
-                    $.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0 ||
-                    $.fn.SMS.get.getSelectedRecipientsListIDs("names").length > 0 ||
-                    $.fn.SMS.get.getSelectedRecipientsListIDs("numbers").length > 0
-                    ) || ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE")) && $("#messageBody").val().length !== 0 ) {
+            var isRecipientsChosen = ($.fn.SMS.get.isSelectionMade() || $("input[id^=task]").length > 0);
+            if ( isRecipientsChosen && $("#messageBody").val().length > 0 ) {
                 $("#smsSend").removeAttr("disabled");
             } else {
                 $("#smsSend").attr("disabled", "disabled");
@@ -260,7 +255,24 @@
                     $('#checkNumbers').click();
                 }
             }
+        },
+        frameGrow: function(height, updown) {
+        var _height = height === "" ? 280 : Number(height) + 40;
+        var frame = parent.document.getElementById(window.name);
+        try {
+            if (frame) {
+                var clientH = '';
+                if (updown === 'shrink') {
+                    clientH = document.body.clientHeight - _height;
+                }
+                else {
+                    clientH = document.body.clientHeight + _height;
+                }
+                $(frame).height(clientH);
+            }
+        } catch(e) {
         }
+    }
     };
 
     // SMS class defaults
@@ -277,20 +289,7 @@
                 progress: ['bullet_go.png','Progress'],
                 edit: ['page_white_edit.png','Edit']
             }
-        },
-        inited:  false,
-        initList: ({
-            "items": [{
-                    "fname": "init_smsBoxCounter",
-                    "fdelay": 0
-                },
-                {
-                    "fname": "setDateListners",
-                    "fdelay": 0
-                }
-            ]
-        })
-
+        }
     };
     // end of public methods
 
@@ -354,9 +353,6 @@
     function getPeople(filter) {
         //log(filter);
         if (filter !== null && (filter === "Roles" || filter === "Groups" || filter === "Names")) {
-            if (var_getEveryoneInSite === null){
-                init($.fn.SMS.settings.initList);
-            }
             var query = [];
             if (filter === "Names") {
                     if ($('input[name=sakaiSiteId]').val() !== null) {
@@ -399,7 +395,7 @@
             alert($obj);
         }
     }
-
+    
     /**
      * @param string Takes one of these strings: "Roles", "Groups", "Names"
      */
@@ -648,36 +644,6 @@
         }
     }
 
-    $(document).bind('init_smsBoxCounter', function(){
-        //Counter for the SMS Textarea
-        $("#messageBody")
-                .change(function(e) {
-            $(this).keypress();
-        })
-                .keyup(function(e) {
-            $(this).keypress();
-        })
-                .keydown(function(e) {
-            $(this).keypress();
-        })
-                .focus(function(e) {
-            $(this).keypress();
-        })
-                .click(function(e) {
-            $(this).keypress();
-        })
-                .keypress(function(e) {
-            var limit = 160;
-            var len = $(this).val().length;
-            if (len <= limit && len >= 0) {
-                $('#smsBoxCounter').text(limit - len);
-            } else {
-                $(this).val($(this).val().substr(0, limit));
-            }
-            $.fn.SMS.set.setSubmitTaskButton();
-        });
-    });
-
     /**
      * Serialise all recipient values
      */
@@ -726,24 +692,6 @@
             selectedRecipientsList.roles.push([$(_this).val(), $(_this).attr('title')]);
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
-        }
-    }
-
-    function frameGrow(height, updown) {
-        var _height = height === "" ? 280 : Number(height) + 40;
-        var frame = parent.document.getElementById(window.name);
-        try {
-            if (frame) {
-                var clientH = '';
-                if (updown === 'shrink') {
-                    clientH = document.body.clientHeight - _height;
-                }
-                else {
-                    clientH = document.body.clientHeight + _height;
-                }
-                $(frame).height(clientH);
-            }
-        } catch(e) {
         }
     }
 
@@ -805,26 +753,6 @@
         return null;
     }
 
-
-    $(document).bind('setDateListners', function(){
-        $.each(["booleanSchedule", "booleanExpiry"], function(i, item) {
-            $("#" + item).bind('click', function() {
-                if (this.checked) {
-                    $("#" + item + "Date").slideDown('normal');
-                    frameGrow(70, 'grow');
-                } else {
-                    $("#" + item + "Date").slideUp('normal');
-                    frameGrow(20, 'shrink');
-                }
-            });
-            $("#" + item + ":checked").each(function() {
-                if (this.checked) {
-                    $(this).triggerHandler('click');
-                }
-            });
-        });
-    });
-
     /**
      * Rounding off to any number of decimal places. 
      * http://www.xfriday.com/support/index.php?_m=knowledgebase&_a=viewarticle&kbarticleid=3
@@ -839,25 +767,6 @@
         }
         var myFormattedNum = (Math.round(myNum * decimal) / decimal).toFixed(numOfDec)
         return(myFormattedNum)
-    }
-
-    /**
-     * @param functionList {JSON Object} A list of function names to be initialised on application load. Has fname {String} and fdelay {Int} as child values.
-     */
-
-    function init(functionList) {
-        $.each(functionList.items, function(i, item) {
-            if (item.fname !== null && item.fdelay !== null) {
-                setTimeout(function() {
-                    $(document).trigger(item.fname);
-                }, item.fdelay);
-                $.fn.SMS.settings.inited = true;
-            } else
-            {
-                $.fn.SMS.settings.inited = false;
-            }
-
-        });
     }
 
 })(jQuery);

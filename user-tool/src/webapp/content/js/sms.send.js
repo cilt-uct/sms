@@ -10,6 +10,34 @@ $(document).ready(function() {
     });
     $.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
 
+    //Counter for the SMS Textarea
+        $("#messageBody")
+                .change(function(e) {
+            $(this).keypress();
+        })
+                .keyup(function(e) {
+            $(this).keypress();
+        })
+                .keydown(function(e) {
+            $(this).keypress();
+        })
+                .focus(function(e) {
+            $(this).keypress();
+        })
+                .click(function(e) {
+            $(this).keypress();
+        })
+                .keypress(function(e) {
+            var limit = 160;
+            var len = $(this).val().length;
+            if (len <= limit && len >= 0) {
+                $('#smsBoxCounter').text(limit - len);
+            } else {
+                $(this).val($(this).val().substr(0, limit));
+            }
+            $.fn.SMS.set.setSubmitTaskButton();
+        });
+
     //focus on messageBody and update char counter
     $("#messageBody")
             .focus()
@@ -43,4 +71,23 @@ $(document).ready(function() {
             $.fn.SMS.get.preserveDomSelections = true;
         }
     }
+
+    // setup the Date listners
+        $.each(["booleanSchedule", "booleanExpiry"], function(i, item) {
+            $("#" + item).bind('click', function() {
+                if (this.checked) {
+                    $("#" + item + "Date").slideDown('normal');
+                    $.fn.SMS.set.frameGrow(70, 'grow');
+                } else {
+                    $("#" + item + "Date").slideUp('normal');
+                    $.fn.SMS.set.frameGrow(20, 'shrink');
+                }
+            });
+            $("#" + item + ":checked").each(function() {
+                if (this.checked) {
+                    $(this).triggerHandler('click');
+                }
+            });
+        });
+
 });
