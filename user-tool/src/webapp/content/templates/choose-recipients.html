@@ -8,7 +8,21 @@
 $(document).ready(function() {
     $("#facebox .body .header").text($("#chooseTitle").text());
     $("#peopleList").tabs();
-    $("#peopleListNamesSuggest").autoCompletefb();
+    $("#peopleListNamesSuggest").autoCompletefb({
+            urlLookup  : $.fn.SMS.get.peopleByName('array'),
+            acOptions  : {
+                minChars: 1,
+                matchContains:  true,
+                selectFirst:    false,
+                width:  300,
+                formatItem: function(row) {
+                    return row[0];
+                }
+            },
+            foundClass : ".acfb-data",
+            inputClass : ".acfb-input",
+            deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
+    });
     $("#calculateCmd").bind('click', function(){
         $(".loadingImage").show();
          var domElements = ["sakaiUserIds", "sakaiSiteId", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
@@ -25,8 +39,8 @@ $(document).ready(function() {
         $("#facebox").hide('fast');
         $.fn.SMS.get.preserveDomSelections = true;
         $.fn.SMS.set.setSubmitTaskButton(this);
-        //Update report console
-        $("#reportConsole").html($("#cReportConsole").html());
+        //Update billing report
+        $('#reportConsole').html( $('#cReportConsole').html() );
     });
    //envoke checkbox bindings
     $.fn.SMS.get.people();
@@ -44,6 +58,10 @@ $(document).ready(function() {
             }
         }
     }
+    //preload small cancel icon. Dimensions are not important
+    var preload1 = new Image(12,12);
+    preload1.src = $.fn.SMS.settings.images.deleteAutocompleteImage;
+    
 });
 </script>
 </head>
@@ -86,10 +104,12 @@ $(document).ready(function() {
         </div>
         <div id="peopleListNames">
         	<div id="errorNoNames" rsf:id="msg=ui.error.no.names" class="smsAlert" style="display:none">This site has are no groups to choose from.</div>
-          <span id="instructionsNames" rsf:id="msg=ui.recipients.choose.names.instructions" style="display:none">Mauris eleifend est et turpis. Duis id erat. </span>
-          <ul id="peopleListNamesSuggest" class="first acfb-holder">
-            <input rsf:id="names-box" type="text" class="acfb-input"/>
-          </ul>
+          <span id="instructionsNames" rsf:id="msg=ui.recipients.choose.names.instructions" style="display:none">Enter the names of any site members: </span>
+          <div class="autocompleteParent">
+            <ul id="peopleListNamesSuggest" class="first acfb-holder">
+			    <input type="text" class="city acfb-input"/>
+            </ul>
+          </div>
         </div>
         <div id="peopleListNumbers"> <span rsf:id="msg=ui.recipients.choose.numbers.instructions">Mauris eleifend est et turpis. Duis id erat. </span>
           <table width="100%" border="0" cellspacing="2" cellpadding="2">
@@ -97,7 +117,7 @@ $(document).ready(function() {
               <td><div id="numbersInvalid"> <div rsf:id="msg=ui.recipients.choose.numbers.incorrect" class="msg highlight" style="display:none"> Correct these numbers:</div>
                   <textarea rsf:id="peopleListNumbersBox" id="peopleListNumbersBox" name="deliveryMobileNumbersSet" cols="22" rows="5">+2275456357826</textarea>
                 </div></td>
-              <td><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
+              <td valign="top"><div rsf:id="msg=ui.recipients.choose.numbers.correct" id="numbersValid" style="display:none">These numbers are fine:</div>
                 <ul id="peopleListNumbersBox2">
                 </ul></td>
             </tr>
@@ -175,10 +195,6 @@ $(document).ready(function() {
                     <span rsf:id="console-total" class="console-total">
                         100
                     </span>
-          </div>
-          <div>
-          <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
-          <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
           </div>
           <div class="smsAlert">
                     <div rsf:id="msg=ui.console.alert">

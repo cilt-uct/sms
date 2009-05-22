@@ -27,6 +27,7 @@ import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
+import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
@@ -38,6 +39,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public static final String VIEW_ID = "inprogress-sms-detail";
 	public static final String const_Inprogress = "inprogress";
 	public static final String const_Scheduled = "scheduled";
+	public static final String const_Normal = "normal";
 	
 	public String getViewID() {
 		return VIEW_ID;
@@ -113,7 +115,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 					.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(statusCode)));
 				SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
+				
+				UIOutput statusText = UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
 				UIMessage.make(tofill, "sms-status-retries", "ui.inprogress.retries", new Object[] { smsTask.getAttemptCount(), siteConfig.getSmsRetryMaxCount() } );
 				
@@ -121,8 +124,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
-				UIMessage.make(tofill, "cost-credits", "ui.inprogress.sms.credits", new Object[] { smsTask.getCreditEstimate() });
-				UIMessage.make(tofill, "cost-cost", "ui.inprogress.sms.cost", new Object[] { new DecimalFormat("#0.00").format( smsTask.getCostEstimate() ) });
+				UIOutput.make(tofill, "cost-credits",smsTask.getCreditEstimate().toString() );
+				UIOutput.make(tofill, "cost-cost", new DecimalFormat("#0.00").format( smsTask.getCostEstimate() ) );
 				
 				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
@@ -133,8 +136,9 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				 * The action buttons are handled by JS. RSF is only needed for i18N
 				 */
 				if ( const_Inprogress.equals(statusToShow)){
+					statusText.decorate(new UIStyleDecorator("smsGreenish"));
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
-					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeActual() == null ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
+					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesDelivered(), (smsTask.getGroupSizeActual() == null || smsTask.getGroupSizeActual() == 0) ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
 					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
 						.decorate(new UIIDStrategyDecorator("smsStop"));
 					UIMessage.make(tofill, "actionAbort", "ui.action.confirm.sms.abort", new String[] { smsTask.getMessageBody() });
@@ -143,6 +147,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 					UIInput.make(form, "abortMessage", null, messageLocator.getMessage("ui.task.aborted", new Object[] { externalLogic.getSakaiUserDisplayName(externalLogic.getCurrentUserId()) }) )
 						.decorate(new UIIDStrategyDecorator("abortMessage"));
 				}else if( const_Scheduled.equals(statusToShow)){
+					statusText.decorate(new UIStyleDecorator("smsOrange"));
 					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
 						.decorate(new UIIDStrategyDecorator("smsEdit"));

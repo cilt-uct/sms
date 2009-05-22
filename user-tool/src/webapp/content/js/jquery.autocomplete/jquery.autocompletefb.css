@@ -1,7 +1,7 @@
 .ac_results {
 	padding: 0px;
-	border: 1px solid black;
-	background-color: Window;
+	border: 1px solid #cccccc;
+	background-color: #F6F6F6;
 	overflow: hidden;
 	z-index: 99999;
 }
@@ -26,11 +26,12 @@
 	background : Window url('indicator.gif') right center no-repeat;
 }
 .ac_odd {
-	background-color: #eee;
+	//background-color: #eee;
 }
 .ac_over {
-	background-color: #0A246A;
-	color: HighlightText;
+	background:#666666 none repeat scroll 0 0;
+border:1px solid #FFFFFF;
+color:highlighttext;
 }
 .ac_moreItems {
 	text-align: center;
@@ -69,12 +70,11 @@
 }
 ul.acfb-holder { 
 	margin  : 0; 
-	padding : 4px 5px 0; 
+	padding : 5px 5px 0;
 	border  : 1px solid #999; 
-	/*height  : auto !important;*/ 
-	height  : 1%; 
-	overflow: hidden; 
-	font    : 11px "Lucida Grande", "Verdana"; 
+	height  : auto !important;
+	overflow: auto; 
+	font    : 11px; 
 }
 ul.acfb-holder li { 
 	float   : left; 

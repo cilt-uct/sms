@@ -92,10 +92,9 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 					UIMessage.make(tofill, "reason", "ui.failed.sms.reason", 
 						new Object[] { smsTask.getFailReason() });
 				}
-
-				//Insert original user selections
-				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				
+				UIMessage.make(tofill, "recipients", "ui.failed.sms.recipients", new Object[]{ smsTask.getMessagesDelivered() });
+
 				UIForm form = UIForm.make(tofill, "editForm", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;
 				

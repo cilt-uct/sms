@@ -24,6 +24,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
+import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
@@ -129,12 +130,12 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 						new SmsParams(ChooseRecipientsProducer.VIEW_ID, smsTask.getId() + ""))
 					.decorate(new UIIDStrategyDecorator("smsAddRecipients"));	
 			}
-			//mini report console
+			
 			if ( hasAccount ){
-				UIMessage.make(form, "console-credits", "ui.console.credits.available", new Object[] {smsAccount.getCredits()});
-				UIMessage.make(form, "console-value", "ui.console.value", new Object[] { smsTask.getCostEstimate() == null ? 0.00 : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) });
-				UIMessage.make(tofill, "console-purchase", "ui.console.help");
-				UILink.make(tofill, "console-email", email, "mailto:"+ email);
+				//Render billing report
+				UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
+				UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
+				UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0.00 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
 			}
 			
 			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);

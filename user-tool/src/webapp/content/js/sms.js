@@ -50,7 +50,8 @@
             var bool = false;
             bool = (getSelectedRecipientsList.length("roles") > 0 || getSelectedRecipientsList.length("groups") > 0 || getSelectedRecipientsList.length("names") > 0 || getSelectedRecipientsList.length("numbers") > 0 || $("#copy-me:checked").length !== 0 );
             return bool;
-        }
+        },
+        errorEb: null
     };
     $.fn.SMS.set = {
         init: function() {
@@ -210,8 +211,8 @@
                 $("#smsSend").attr("disabled", "disabled");
             }
         },
-        setSelectedRecipientsListName: function(array) {
-            selectedRecipientsList.names = array;
+        addSelectedRecipientsListName: function(array) {
+            selectedRecipientsList.names.push([array[1],array[0]]);
             return true;
         },
         restoreTaskSelections: function() {
@@ -372,7 +373,6 @@
      * @param filter Search list by {string} variable. Returns a Two Dimensional array
      */
     function getPeople(filter) {
-        //log(filter);
         if (filter !== null && (filter === "Roles" || filter === "Groups" || filter === "Names")) {
             var query = [];
             if (filter === "Names") {
@@ -387,7 +387,7 @@
                                 });
                             },
                             error: function(xhr, ajaxOptions, thrownError) {
-                                alert("An error occured and you will not have ability to select participants by their names");
+                                $.fn.SMS.get.errorEb = $("#errorEb").text();
                                 return false;
                             }
                         });
@@ -425,7 +425,7 @@
         var elem = "";
         for (var n in map) {
             if (n !== null && n.length !== 0) {
-                elem += '<div rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />' +
+                elem += '<div class="columnBoxes" rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />' +
                         '<label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + item + 'Name="' + map[n][0] + '" ' + item + 'Id="' + map[n][1] + '">' + map[n][0] + '' +
                         '</label></input></div>';
             }
@@ -527,8 +527,7 @@
 
         //Initialise the Individuals Tab
         if (var_getEveryoneInSite_participants.length > 16) {
-            $("#instructionsNames").show();
-            $("#peopleListNamesSuggest").autoCompletefb();
+            $("#instructionsNames").show();       
         } else if (var_getEveryoneInSite_participants.length > 0) {
             $("#peopleListNamesSuggest")
                     .removeClass('first acfb-holder')
@@ -566,7 +565,13 @@
         } else {
             $('#peopleListNamesSuggest').hide();
             $('#peopleListNamesSuggest p').hide();
-            $('#errorNoNames').show();
+            if( $.fn.SMS.get.errorEb == null){
+                $('#errorNoNames').show();
+            }else{
+                 $('#errorNoNames')
+                    .text($.fn.SMS.get.errorEb)
+                    .show();
+            }
         }
 
         //Events for the Numbers textarea
@@ -582,12 +587,16 @@
                 $.each(numbers, function(i, item) {
                     var num = item.split(' ').join('');
                     if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
-                        selectedRecipientsList.numbers.push([item]);
+                        selectedRecipientsList.numbers.push(item);
                     } else {
                         nums_invalid.push(item);
                     }
 
                 });
+
+                //Remove duplicates
+                selectedRecipientsList.numbers = unique(selectedRecipientsList.numbers);
+
                 //Log report on valid numbers
                 if (getSelectedRecipientsList.length('numbers') > 0) {
                     showSelectedNumbersInDOM();
@@ -601,20 +610,14 @@
                     } else {
                         that.val('');
                         $("#numbersInvalid .msg").fadeOut();
-                    }
+                    }                                                                                                       
                     var temp = "";
                     $.each(selectedRecipientsList.numbers, function(i, item) {
-                        temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
+                        temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" rel="' + item + '" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
                     });
                     that2
                             .show()
-                            .css({
-                        border: 'none',
-                        height: '100px',
-                        overflow: 'auto',
-                        width: '180px'
-                    })
-                            .addClass('acfb-holder')
+                            .addClass('numbers-holder')
                             .html(temp);
 
                     $("#numbersValid")
@@ -625,9 +628,9 @@
 
                     //bind delete image event
                     that2.find('li img.numberDel').bind('click', function() {
-                        var tempText = $(this).parent().find('span').text();
+                        var number = $(this).attr('rel');
                         $.each(selectedRecipientsList.numbers, function(i, item) {
-                            if (item && item === tempText) {
+                            if (item && item == number) {
                                 selectedRecipientsList.numbers.splice(i, 1);
                             }
                         });
@@ -720,24 +723,20 @@
         var tempParams = [];
         $.each(domElements, function(i, item) {
             var val = $('[name=' + item + ']').val() ;
-            if (val !== null) {
-                if (val !== '') {
+            if (val !== null && val !== '' && val !== undefined) {
                     tempParams.push({name:item, value:val});
-                //log(item +" ----- "+ val);
+                //log(item +" --domElements--- "+ val);
                 }
-            }
         });
         //set defaults for some params
         var savedElements = ["tasksakaiUserIds", "taskdeliveryEntityList", "taskdeliveryMobileNumbersSet"];
         if ($("#facebox").length === 0) {
             $.each(savedElements, function(i, item) {
                 var val = $('[name=' + item + ']').val() ;
-                if (val !== null) {
-                    if (val !== ''){    // Don't combine if statements to avoid RSF template translation error
+                if (val !== null && val !== '' && val !== undefined) {
                         tempParams.push({name:item.replace("task", ""), value:val});
-                    //log(item +" ----- "+ val);
+                    //log(item +" ---savedElements-- "+ val);
                     }
-                }
             });
         }
         //if the recipients are edited in any way, set copyMe variable to the choose-recipients copy me dom value
@@ -789,5 +788,18 @@
         var myFormattedNum = (Math.round(myNum * decimal) / decimal).toFixed(numOfDec)
         return(myFormattedNum)
     }
+
+        function unique(a)
+        {
+            var r = [];
+            o:for(var i = 0, n = a.length; i < n; i++) {
+                for(var x = i + 1 ; x < n; x++)
+                {
+                    if(a[x]==a[i]) continue o;
+                }
+                r[r.length] = a[i];
+            }
+           return r;
+        }
 
 })(jQuery);

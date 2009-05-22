@@ -52,105 +52,50 @@
             <a rsf:id="error-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
             
             <form rsf:id="form" action="" method="POST">
-                <div rsf:id="msg=ui.send.message">
+                <h4 rsf:id="msg=ui.send.message">
                     Your message:
-                </div>
-                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <span style="font-weight:bold;" id="smsBoxCounter">160</span></div>
+                </h4>
+                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <span style="font-weight:bold;" id="smsBoxCounter">0</span>/<span id="smsBoxCounterMax">160</span></div>
         <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
                 </textarea>
                 <div>
                     <h3 class="addItem"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>
                 </div>
-                <br />
-
-
+                <br/>
 
                 <div id="reportConsole" class="">
-                    <div rsf:id="console-credits">
-                        Credits remaining: 100 credits
-                    </div>
-                    <div rsf:id="console-value">
-                        Estimated value: R100.00
-                    </div>
+
                     <div>
-                        <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
-                        <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
-                    </div>
-                    <div class="smsAlert">
-                    <div rsf:id="msg=ui.console.alert">
-                        Alert:
-                    </div>
-                    <span rsf:id="msg=ui.console.alert.maychange">
-                        100
-                    </span>
-          </div>
-                </div>
-
-
-         <!--TODO:Replace console above with the one in choose recip. view
-                 <div id="reportConsole" class="timeCells" style="display:none">
-
-          <div>
                     <span rsf:id="msg=ui.console.selected">
                         Credits remaining:
                     </span>
                     <span rsf:id="console-selected" class="console-selected">
                         100
                     </span>
-          </div>
+                    </div>
 
-          <div>
+                    <div>
                     <span rsf:id="msg=ui.console.estimated.credits">
                         Credits remaining:
                     </span>
                     <span rsf:id="console-credits" class="console-credits">
                         100
                     </span>
-          </div>
-          <div>
+                    </div>
+
+                    <div>
                     <span rsf:id="msg=ui.console.estimated.cost">
                         Credits remaining:
                     </span>
                     <span rsf:id="console-cost" class="console-cost">
                         100
                     </span>
-          </div>
-          <div>
-                    <span rsf:id="msg=ui.console.credits.total">
-                        Credits remaining:
-                    </span>
-                    <span rsf:id="console-total" class="console-total">
-                        100
-                    </span>
-          </div>
-          <div>
-          <span rsf:id="console-purchase">To purchase SMS credits, please email </span>
-          <a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
-          </div>
-          <div class="smsAlert">
-                    <div rsf:id="msg=ui.console.alert">
-                        Alert:
                     </div>
-                    <span rsf:id="msg=ui.console.alert.maychange">
-                        100
-                    </span>
-          </div>
+                    
+                 </div>
 
-      </div>-->
-
-
-
-
-
-
-
-
-
-
-
-
-                <div id="smsDates">
-                    <div id="smsDatesSchedule">
+                    <div id="smsDates">
+                        <div id="smsDatesSchedule">
                         <h4 class="schedule">Schedule for a later date/time</h4>
                         <input rsf:id="booleanSchedule" type="checkbox" name="booleanSchedule" id="booleanSchedule" />
                         <label rsf:id="booleanSchedule-label">
@@ -217,8 +162,12 @@
                         100
                     </span>
           </div>
+                <div rsf:id="msg=ui.error.eb.names" id="errorEb" style="display:none;">
+                    An error occurred retrieving the names of people in this site
+                </div>
                 <div class="act">
                 <!-- DOM elements for re-opening a task -->
+
 		          <input rsf:id="taskuserIds" id="taskuserIds" name="taskuserIds" type="hidden" value=""/>
 		          <input rsf:id="taskdeliveryEntityList" id="taskdeliveryEntityList" name="taskdeliveryEntityList" type="hidden" value=""/>
 		          <input rsf:id="taskdeliveryMobileNumbersSet"  id="taskdeliveryMobileNumbersSet" name="taskdeliveryMobileNumbersSet" type="hidden" value=""/>

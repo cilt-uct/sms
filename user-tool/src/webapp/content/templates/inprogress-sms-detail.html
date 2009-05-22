@@ -25,16 +25,30 @@
   </div>
     <div rsf:id="message:" />
   <h2 rsf:id="status:" class="title"> <img rsf:id="sms-status" src="../images/calx.gif" alt="Delivered" />
-    <span rsf:id="sms-status-title" class="smsOrange">Delivered</span>
+    <span rsf:id="sms-status-title" class="">Delivered</span>
   </h2>
-  <span rsf:id="sms-status-retries" class="instruction textPanelFooter">(3 of 5)</span>
+  <!--<span rsf:id="sms-status-retries" class="instruction textPanelFooter">(3 of 5)</span>-->
   <div rsf:id="sms-started">Sending started: 10/12/2009 11.15pm</div>
   <div rsf:id="sms-finish">Expires: 10/12/2009 11.15pm</div>
   <h3 rsf:id="delivered">Messages delivered: 34 of 56</h3>
   <div rsf:id="savedSelections:" />
     <h3 rsf:id="cost">Cost</h3>
-  	<div rsf:id="cost-credits">Estimated cerdits required: 23</div>
-   <div rsf:id="cost-cost">Estimated cost: R34</div>
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.credits">
+                        Estimated cerdits required:
+                    </span>
+                    <span rsf:id="cost-credits" class="console-credits">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.estimated.cost">
+                      Estimated cost:
+                    </span>
+                    <span rsf:id="cost-cost" class="console-cost">
+                        100
+                    </span>
+          </div>
   <form rsf:id="form">
   <div class="act">
   	<span rsf:id="actionDelete" id="" style="display:none;">Are you sure?</span>

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer;
+import org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer;
 import org.sakaiproject.sms.tool.producers.SendSMSProducer;
 import org.sakaiproject.sms.tool.producers.SentSmsDetailProducer;
 
@@ -13,8 +14,12 @@ import uk.org.ponder.messageutil.MessageLocator;
 public class StatusUtils {
 	
 	private static final String statusIconDirectory = "/library/image/silk/";
+	private static final String localImageDirectory = "../images/";
 	
 	private static final String statusIconExtension = ".png";
+	
+	//Special case for custom progress icon that is not included in the silk library 
+	private static final String inprogressIcon = "phone_go";
 	
 	public static final String statusType_NEW = "NEW";
 	public static final String statusType_EDIT = "EDIT";
@@ -29,15 +34,15 @@ public class StatusUtils {
 	private Map<String, String> getStatusLibrary(){
 		Map<String, String> lib = new HashMap<String, String>();
 		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, "bullet_go");
+		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, inprogressIcon);
 		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, "cross");
 		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, "cross");
 		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "bullet_go");
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "bullet_go");
+		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, inprogressIcon);
+		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, inprogressIcon);
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "time");
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "bullet_go");
+		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, inprogressIcon);
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cross");	
@@ -68,15 +73,15 @@ public class StatusUtils {
 	private Map<String, String> getStatusProducer(){
 		Map<String, String> lib = new HashMap<String, String>();
 		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, "inprogress");
+		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, ProgressSmsDetailProducer.const_Inprogress);
 		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, FailedSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, FailedSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "inprogress");
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "inprogress");
-		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "scheduled");
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "inprogress");
+		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, ProgressSmsDetailProducer.const_Inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, ProgressSmsDetailProducer.const_Inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, ProgressSmsDetailProducer.const_Scheduled);
+		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, ProgressSmsDetailProducer.const_Inprogress);
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, SentSmsDetailProducer.VIEW_ID);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, FailedSmsDetailProducer.VIEW_ID);
@@ -91,7 +96,9 @@ public class StatusUtils {
 	 */
 	public String getStatusIcon(String statusCode) {
 		String icon = getStatusLibrary().get(statusCode);
-		return statusIconDirectory + icon + statusIconExtension;
+		return inprogressIcon.equals(icon) ? 
+				localImageDirectory + inprogressIcon + statusIconExtension 
+				: statusIconDirectory + icon + statusIconExtension;
 	}
 	
 	/**

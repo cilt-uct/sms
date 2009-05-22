@@ -31,7 +31,7 @@ $(document).ready(function() {
             var limit = 160;
             var len = $(this).val().length;
             if (len <= limit && len >= 0) {
-                $('#smsBoxCounter').text(limit - len);
+                $('#smsBoxCounter').text(len);
             } else {
                 $(this).val($(this).val().substr(0, limit));
             }
@@ -80,7 +80,7 @@ $(document).ready(function() {
                     $.fn.SMS.set.frameGrow(70, 'grow');
                 } else {
                     $("#" + item + "Date").slideUp('normal');
-                    $.fn.SMS.set.frameGrow(20, 'shrink');
+                    $.fn.SMS.set.frameGrow(-20, 'shrink');
                 }
             });
             $("#" + item + ":checked").each(function() {

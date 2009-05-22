@@ -5,7 +5,7 @@
 }
 .addItem {
 background:transparent url(/library/image/silk/add.png) no-repeat scroll left center;
-padding-left:2em;
+padding-left:1.5em;
 }
 .selectedItem {
 background:transparent url(/library/image/silk/tick.png) no-repeat scroll left center;
@@ -146,7 +146,7 @@ text-align:right;
 	font-size: 18px;
 	font-weight: bold;
 	background-color: #333333;
-	color: #CCCCCC;
+	color: #FFFFFF;
 	border: 1px solid #FFFFFF;
 	padding-right: 2px;
 	padding-left: 2px;
@@ -159,7 +159,7 @@ text-align:right;
 }
 .Counter {
 	text-indent: 270px;
-	color: #666666;
+    margin-top:-17px;
 }
 
 /* all DIV tags with an ID starting with peopleList */
@@ -195,6 +195,10 @@ margin-right:5px;
    color: green;
 }
 
+.smsGreenish{
+   color: #45D7DD;
+}
+
 .smsRed{
     color: red;
 }
@@ -202,3 +206,32 @@ margin-right:5px;
 .smsOrange{
     color: orange;
 }
+.autocompleteParent{
+    height: 180px; overflow: auto;
+}
+
+ul.numbers-holder {
+	margin  : 0;
+	padding : 5px 5px 0;
+	height  : 100px;
+	overflow: auto;
+	font    : 11px;
+    border: none;
+    height: 100px;
+    overflow: auto;
+    width: 230px
+}
+ul.numbers-holder li {
+	float   : left;
+	margin  : 0 5px 4px 0;
+	list-style-type: none;
+}
+ul.numbers-holder li.acfb-data {
+	border-radius         : 6px;
+	-moz-border-radius    : 6px;
+	-webkit-border-radius : 6px;
+	border     : 1px solid #CAD8F3;
+	padding    : 1px 5px 2px;
+	background : #DEE7F8;
+}
+

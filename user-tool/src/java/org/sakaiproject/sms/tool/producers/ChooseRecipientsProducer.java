@@ -122,16 +122,13 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UIMessage.make(form, "copy-me-label", "ui.recipients.choose.copy")
 				.decorate(new UILabelTargetDecorator(copy));
 			
-			//Render console summary  console-selected  console-selected-figure
+			//Render billing report
 			UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
 			UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
 			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0.00 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
 			if(smsAccount != null){
 				UIOutput.make(tofill, "console-total", smsAccount.getCredits().toString() );
 			}
-			String email = externalLogic.getSmsContactEmail();
-			UIMessage.make(tofill, "console-purchase", "ui.console.help");
-			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 			
 			if ( smsTask.getId() != null ){
 				if( smsTask.getDeliveryEntityList() != null){
@@ -215,7 +212,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			String tab = tabCapitalised.toLowerCase();
 			UIOutput.make(tofill, tab)
 				.decorate(new UIIDStrategyDecorator("peopleTabs" + tabCapitalised));
-			UILink.make(tofill, tab + "-title", messageLocator.getMessage("ui.recipients.choose.prefix") + messageLocator.getMessage("ui.recipients.choose." + tab + ".title"), null);
+			UILink.make(tofill, tab + "-title", messageLocator.getMessage("ui.recipients.choose." + tab + ".title"), null);
 			UIOutput.make(tofill, tab + "-selected", 0 + "")
 				.decorate(new UITooltipDecorator(UIMessage.make("ui.recipients.choose.selected.tooltip", new Object[] { messageLocator.getMessage("ui.recipients.choose." + tab + ".title") })));
 		}

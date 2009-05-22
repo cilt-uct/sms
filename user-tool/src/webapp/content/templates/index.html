@@ -29,7 +29,7 @@
 <body>
 <div class="portletBody">
   <div rsf:id="navIntraTool:" class="navIntraTool"/>
-  <h3 rsf:id="send" class="insColor addItem insBak insBorder"><a rsf:id="send-link" href="create-sms.html">Create SMS
+  <h3 rsf:id="send" class="insColor clear addItem insBak insBorder"><a rsf:id="send-link" href="create-sms.html">Create SMS
   </a></h3>
   <div rsf:id="message-for:*" class="alertMessage">
     <ul style="margin:0px;">
@@ -40,9 +40,24 @@
   <p rsf:id="error-account-disabled" class="smsAlert">None</p>
   <p rsf:id="error-credits" class="smsAlert">None</p>
   <div id="reportConsole" class="">
-    <div rsf:id="console-credits">Credits remaining: 100 credits</div>
-    <div rsf:id="console-value"> Estimated value: R100.00</div>
-    <div>
+       <div>
+                    <span rsf:id="msg=ui.console.credits.available">
+                        Credits remaining:
+                    </span>
+                    <span rsf:id="console-credits" class="console-credits">
+                        100
+                    </span>
+          </div>
+          <div>
+                    <span rsf:id="msg=ui.console.value">
+                      Estimated value:
+                    </span>
+                    <span rsf:id="console-value" class="console-value">
+                        100
+                    </span>
+          </div>
+      
+    <div class="clear">
     	<span rsf:id="console-purchase">To purchase SMS credits, please email </span>
 		<a rsf:id="console-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
 	</div>

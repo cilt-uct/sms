@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -95,15 +94,11 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 				UIOutput.make(tofill, "send");
 				UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
-				UIMessage.make(tofill, "console-credits", "ui.console.credits.available", new Object[] {credits});
-				UIMessage.make(tofill, "console-value", "ui.console.value", new Object[] { smsAccountLogic.getAccountBalance(credits) });
+				UIOutput.make(tofill, "console-credits", credits.toString() );
+				UIOutput.make(tofill, "console-value", smsAccountLogic.getAccountBalance(credits) );
 			}else{
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
 			}
-			
-			String email = externalLogic.getSmsContactEmail();
-			UIMessage.make(tofill, "console-purchase", "ui.console.help");
-			UILink.make(tofill, "console-email", email, "mailto:"+ email);
 		}
 		if ( hasTasks ){
 			UIMessage.make(tofill, "tasks-title", "ui.tasks.title");
@@ -115,28 +110,35 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIBranchContainer row = UIBranchContainer.make(tofill, "task-row:");
 				String status = sms.getStatusCode();
 				String detailView = statusUtils.getStatusProducer(status);
+				String statusFullName = statusUtils.getStatusFullName(status);
 				SmsParams statusParams = new SmsParams();
 				
-				//Fix additional string in params. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
-				if ("inprogress".equals(detailView)){
+				//Fix additional parameter. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
+				if (ProgressSmsDetailProducer.const_Inprogress.equals(detailView)){
 					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
-					statusParams.status = "inprogress";
-				}else if ("scheduled".equals(detailView)){
+					statusParams.status = ProgressSmsDetailProducer.const_Inprogress;
+				}else if (ProgressSmsDetailProducer.const_Scheduled.equals(detailView)){
 					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
-					statusParams.status = "scheduled";
+					statusParams.status = ProgressSmsDetailProducer.const_Scheduled;
 				}else{
 					statusParams.viewID = detailView;
-					statusParams.status = "normal";
+					statusParams.status = ProgressSmsDetailProducer.const_Normal;
 				}
 				
 				statusParams.setId(sms.getId() + "");
 				UIInternalLink.make(row, "task-message", sms.getMessageBody(), statusParams);
 				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(status));
-				statusIcon.decorate(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(status))); 
-				statusIcon.decorate(new UITooltipDecorator(statusUtils.getStatusFullName(status))); 
+				statusIcon.decorate(new UIAlternativeTextDecorator(statusFullName)); 
+				statusIcon.decorate(new UITooltipDecorator(statusFullName)); 
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
-				UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
-				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), sms.getGroupSizeActual() == null ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
+				
+				if ( ProgressSmsDetailProducer.const_Inprogress.equals(detailView)){
+					UIMessage.make(row, "task-time", statusFullName);
+				}else{
+					UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
+				}
+
+				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), (sms.getGroupSizeActual() == null || sms.getGroupSizeActual() == 0) ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
 				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");
 			}
 		}else{

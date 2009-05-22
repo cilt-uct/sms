@@ -89,7 +89,7 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 				UIOutput.make(status, "sms-status-title", statusUtils.getStatusFullName(statusCode));
 				
 				UIMessage.make(tofill, "sms-sent", "ui.sent.sms.completed", new Object[] { dateUtil.formatDate(smsTask.getDateProcessed()) });
-				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), smsTask.getGroupSizeActual() == null ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
+				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), (smsTask.getGroupSizeActual() == null || smsTask.getGroupSizeActual() == 0) ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
 				
 				UIMessage.make(tofill, "recipient-header", "ui.sent.sms.header.recipients");
 				UIMessage.make(tofill, "status-header", "ui.sent.sms.header.status");

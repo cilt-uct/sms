@@ -49,8 +49,6 @@ public class SavedSelectionsRenderer {
 					rolesSb.append(role);
 					 if( count != roles.size()){
 						 rolesSb.append(", "); 
-					 }else{
-						 rolesSb.append(".");
 					 }
 					count ++;
 				}
@@ -65,8 +63,6 @@ public class SavedSelectionsRenderer {
 	        	groupsSb.append(group);
 	        	if( count < groups.size()){
 	        		groupsSb.append(", "); 
-				 }else{
-					 groupsSb.append(".");
 				 }
 	        	count ++;
 			}
@@ -82,8 +78,6 @@ public class SavedSelectionsRenderer {
 				usersSb.append(externalLogic.getSakaiUserSortName(user));
 	        	if( count != sakaiUserIds.size()){
 	        		usersSb.append(", "); 
-				 }else{
-					 usersSb.append(".");
 				 }
 	        	count ++;
 			}
@@ -99,8 +93,6 @@ public class SavedSelectionsRenderer {
 				numbersSb.append(num);
 				if( count != numbers.size()){
 					numbersSb.append(", "); 
-				 }else{
-					 numbersSb.append(".");
 				 }
 	        	count ++;
 			}

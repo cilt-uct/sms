@@ -22,21 +22,10 @@ jQuery.fn.autoCompletefb = function(options)
     var settings =
     {
         ul         : tmp,
-        urlLookup  : $.fn.SMS.get.peopleByName("array"),//$.fn.SMS.get.peopleByName(),
-        acOptions  : {
-            minChars: 1,
-            matchContains:  true,
-            //mustMatch:  true,
-            selectFirst:    false,
-            width:  300,
-            formatItem: function(row, i, max, term) {
-                //return '<b>' + row[0] + '</b><br><span style="font-size: 80%;">' + row[1] + '</span>';
-                return row[0];
-            }
-        },
+        urlLookup  : [],
+        acOptions  : {},
         foundClass : ".acfb-data",
-        inputClass : ".acfb-input",
-        deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
+        inputClass : ".acfb-input"
     }
     if (options) jQuery.extend(settings, options);
 
@@ -96,8 +85,7 @@ jQuery.fn.autoCompletefb = function(options)
             acfb.removeFind(this);
         });
         $(settings.inputClass, tmp).val('').focus();
-        $.fn.SMS.set.setSelectedRecipientsListName(d);
-        //$(settings.inputBox).val($.fn.SMS.getSelectedRecipientsListNames.length);
+        $.fn.SMS.set.addSelectedRecipientsListName(d);
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
     });
     $(settings.inputClass, tmp).focus();
