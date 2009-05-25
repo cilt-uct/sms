@@ -7,7 +7,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.external.MobileNumberHelperImpl;
-import org.sakaiproject.sms.logic.stubs.ProfileManagerStub;
 
 public class MobileNumberHelperTest extends TestCase {
 	
