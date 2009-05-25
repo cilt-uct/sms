@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.sakaiproject.api.app.profile.Profile;
-import org.sakaiproject.api.app.profile.ProfileManager;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
 
@@ -37,12 +35,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 
 	private static final Logger LOG = Logger
 			.getLogger(MobileNumberHelperImpl.class);
-	private ProfileManager profileManager;
-	private SakaiPersonManager sakaiPersonManager;
 
-	public void setProfileManager(ProfileManager profileManager) {
-		this.profileManager = profileManager;
-	}
+	private SakaiPersonManager sakaiPersonManager;
 
 	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
 		this.sakaiPersonManager = sakaiPersonManager;
@@ -52,9 +46,9 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
 	public String getUserMobileNumber(String userid) {
-		Profile profile = profileManager.getUserProfileById(userid);
-		if (profile != null) {
-			return profile.getSakaiPerson().getMobile();
+		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid, sakaiPersonManager.getUserMutableType());
+		if (sp != null) {
+			return sp.getMobile();
 		} else {
 			LOG.error("Profile not found for userid: " + userid);
 			return null;

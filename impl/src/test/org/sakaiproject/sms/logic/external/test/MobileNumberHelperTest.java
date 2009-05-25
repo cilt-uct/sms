@@ -16,7 +16,7 @@ public class MobileNumberHelperTest extends TestCase {
 	@Override
 	public void setUp() {
 		mobileNumberHelper = new MobileNumberHelperImpl();
-		mobileNumberHelper.setProfileManager(new ProfileManagerStub());
+		
 	}
 	
 	public void testGetMobile() {
