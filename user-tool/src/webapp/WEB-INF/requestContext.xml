@@ -54,7 +54,6 @@
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
-	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
   </bean>
