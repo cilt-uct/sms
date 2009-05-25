@@ -22,7 +22,6 @@ import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
-import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
@@ -85,7 +84,6 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 		if ( smsParams.id != null && ! "".equals(smsParams.id) ){
 			smsTask = smsTaskLogic.getSmsTask(Long.parseLong(smsParams.id));
 		}
-		String email = externalLogic.getSmsContactEmail();
 		boolean hasAccount = smsAccount != null;
 		boolean hasAccountEnabled = Boolean.FALSE;
 		if ( hasAccount ){

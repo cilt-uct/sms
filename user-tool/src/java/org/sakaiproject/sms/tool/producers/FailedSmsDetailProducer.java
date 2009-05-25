@@ -3,7 +3,6 @@ package org.sakaiproject.sms.tool.producers;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
-import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
 import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.DateUtil;
@@ -51,12 +50,6 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 	private StatusUtils statusUtils;
 	public void setStatusUtils(StatusUtils statusUtils) {
 		this.statusUtils = statusUtils;
-	}
-
-	private SavedSelectionsRenderer savedSelectionsRenderer;
-	public void setSavedSelectionsRenderer(
-			SavedSelectionsRenderer savedSelectionsRenderer) {
-		this.savedSelectionsRenderer = savedSelectionsRenderer;
 	}
 	
 	private SmsMessageRenderer smsMessageRenderer;
