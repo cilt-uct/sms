@@ -558,7 +558,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	public void destroy() {
-		LOG.debug("Attempting to shut down SmsSmpp");
+		LOG.info("destroy()");
 
 		if (bindTest != null) {
 			LOG.debug("Stopping Bind Thread....");
