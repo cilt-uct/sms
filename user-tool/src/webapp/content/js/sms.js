@@ -97,7 +97,7 @@
                         var cTotal = $("#cReportConsole .console-total").text();
                         $("#cReportConsole .console-selected").text(cSelected);
                         $("#cReportConsole .console-credits").text(cCredits);
-                        $("#cReportConsole .console-cost").text(cCost);
+                        $("#cReportConsole .console-cost").text($("#currency").val() + cCost);
 
                         if (cTotal < cCredits) {
                             _this.disabled = false;

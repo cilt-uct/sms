@@ -13,6 +13,7 @@ import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
+import org.sakaiproject.sms.tool.util.CurrencyUtil;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
@@ -63,6 +64,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 	private SmsTaskLogic smsTaskLogic;
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
+	}
+	
+	private CurrencyUtil currencyUtil;
+	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
+		this.currencyUtil = currencyUtil;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
@@ -125,7 +131,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			//Render billing report
 			UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
 			UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
-			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0.00 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
+			UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? currencyUtil.toServerLocale(0) + "" : currencyUtil.toServerLocale((smsTask.getCostEstimate())) );
 			if(smsAccount != null){
 				UIOutput.make(tofill, "console-total", smsAccount.getCredits().toString() );
 			}
@@ -152,6 +158,9 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				.fossilize = false;
 			UIInput.make(tofill, "senderUserId", null, currentUserId)
 				.fossilize = false;
+			UIInput currencyVal = UIInput.make(tofill, "currency", null, currencyUtil.currency);
+			currencyVal.fossilize = false;
+			currencyVal.decorate(new UIIDStrategyDecorator("currency"));
 			UIMessage.make(tofill, "errorNoNames","ui.error.no.names");
 		
 			UICommand.make(tofill, "cancel", UIMessage.make("sms.general.cancel"));

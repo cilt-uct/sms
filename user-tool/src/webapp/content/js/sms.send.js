@@ -69,7 +69,9 @@ $(document).ready(function() {
         if ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE") {
             $("#smsSend").removeAttr("disabled");
             $.fn.SMS.get.preserveDomSelections = true;
-        }
+        }else{
+			$("#reportConsole").hide();
+		}
     }
 
     // setup the Date listners

@@ -21,6 +21,7 @@
 	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="dateUtil" ref="dateUtil" />
+  	<property name="currencyUtil" ref="currencyUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
   </bean>
@@ -31,6 +32,7 @@
 	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
+	<property name="currencyUtil" ref="currencyUtil" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
   </bean>
   
@@ -39,6 +41,7 @@
 	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
  	<property name="messageLocator" ref="messageLocator" />
+	<property name="currencyUtil" ref="currencyUtil" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SentSmsDetailProducer">

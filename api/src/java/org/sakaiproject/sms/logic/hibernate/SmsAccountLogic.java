@@ -101,5 +101,5 @@ public interface SmsAccountLogic {
 	 * 			the credits
 	 * @return currency balance
 	 */
-	public String getAccountBalance(Long credits);
+	public float getAccountBalance(Long credits);
 }

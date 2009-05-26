@@ -1,7 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.text.DecimalFormat;
-
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
@@ -12,6 +10,7 @@ import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
 import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
+import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
@@ -25,7 +24,6 @@ import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
-import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.request.EarlyRequestParser;
@@ -91,6 +89,11 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public void setSmsMessageRenderer(SmsMessageRenderer smsMessageRenderer) {
 		this.smsMessageRenderer = smsMessageRenderer;
 	}
+	
+	private CurrencyUtil currencyUtil;
+	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
+		this.currencyUtil = currencyUtil;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -125,7 +128,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
 				UIOutput.make(tofill, "cost-credits",smsTask.getCreditEstimate().toString() );
-				UIOutput.make(tofill, "cost-cost", new DecimalFormat("#0.00").format( smsTask.getCostEstimate() ) );
+				UIOutput.make(tofill, "cost-cost", currencyUtil.toServerLocale(( smsTask.getCostEstimate() )) );
 				
 				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 				form.type = EarlyRequestParser.RENDER_REQUEST;

@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,6 +12,7 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
+import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.rsf.components.UIBoundBoolean;
@@ -70,6 +70,11 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+	
+	private CurrencyUtil currencyUtil;
+	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
+		this.currencyUtil = currencyUtil;
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
@@ -133,7 +138,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				//Render billing report
 				UIOutput.make(tofill, "console-selected", ( smsTask.getGroupSizeEstimate() == null )? 0 + "" : smsTask.getGroupSizeEstimate() + "");
 				UIOutput.make(tofill, "console-credits", ( smsTask.getCreditEstimate() == null )? 0 + "" : smsTask.getCreditEstimate() + "");
-				UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? 0.00 + "" : new DecimalFormat("#0.00").format(smsTask.getCostEstimate()) );
+				UIOutput.make(tofill, "console-cost", ( smsTask.getCostEstimate() == null )? currencyUtil.toServerLocale(0) + "" : currencyUtil.toServerLocale((smsTask.getCostEstimate())) );
 			}
 			
 			dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);

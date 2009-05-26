@@ -21,8 +21,10 @@ package org.sakaiproject.sms.logic.impl.hibernate;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.hibernate.Hibernate;
 import org.sakaiproject.sms.logic.SmsLogic;
@@ -330,11 +332,11 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		persistSmsAccount(account);
 	}
 
-	public String getAccountBalance(Long credits) {
+	public float getAccountBalance(Long credits) {
 		float balance = 0F;
 		if ( credits != null ){
 			balance = smsBilling.convertCreditsToAmount(credits);
 		}
-		return new DecimalFormat("#0.00").format(balance);
+		return balance;
 	}
 }

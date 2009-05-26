@@ -40,5 +40,7 @@
 	<bean id="statusUtils" class="org.sakaiproject.sms.tool.util.StatusUtils">
 		<property name="messageLocator" ref="messageLocator" />
 	</bean>
+	
+	<bean id="currencyUtil" class="org.sakaiproject.sms.tool.util.CurrencyUtil" />
 
 </beans>

@@ -11,6 +11,7 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
+import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
@@ -50,6 +51,11 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 	private DateUtil dateUtil;
 	public void setDateUtil(DateUtil dateUtil) {
 		this.dateUtil = dateUtil;
+	}
+
+	private CurrencyUtil currencyUtil;
+	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
+		this.currencyUtil = currencyUtil;
 	}
 
 	private SmsTaskLogic smsTaskLogic;
@@ -95,7 +101,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIOutput.make(tofill, "send");
 				UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 				UIOutput.make(tofill, "console-credits", credits.toString() );
-				UIOutput.make(tofill, "console-value", smsAccountLogic.getAccountBalance(credits) );
+				UIOutput.make(tofill, "console-value", currencyUtil.toServerLocale(smsAccountLogic.getAccountBalance(credits)) );
 			}else{
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");
 			}
