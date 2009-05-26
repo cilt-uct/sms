@@ -68,6 +68,7 @@
 	<property name="messageLocator" ref="messageLocator" />
 	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
   	<property name="statusUtils" ref="statusUtils" />
+	<property name="currencyUtil" ref="currencyUtil" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
