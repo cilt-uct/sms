@@ -133,7 +133,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				
 				if ( ProgressSmsDetailProducer.const_Inprogress.equals(detailView)){
-					UIMessage.make(row, "task-time", statusFullName);
+					UIOutput.make(row, "task-time", statusFullName);
 				}else{
 					UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
 				}
