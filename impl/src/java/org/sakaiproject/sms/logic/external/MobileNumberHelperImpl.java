@@ -50,7 +50,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		if (sp != null) {
 			return sp.getMobile();
 		} else {
-			LOG.error("Profile not found for userid: " + userid);
+			//this is to be expected not all Sakai Users have profiles
+			LOG.info("Profile not found for userid: " + userid);
 			return null;
 		}
 	}
