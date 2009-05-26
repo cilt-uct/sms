@@ -288,7 +288,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.debug("Processing Delivery Report queue of "
 					+ receivedDeliveryReports.size() + " messages");
 
-			handelDeliveryReport(deliverSm);
+			handleDeliveryReport(deliverSm);
 
 		}
 	}
@@ -335,7 +335,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 	}
 
-	private void handelDeliveryReport(DeliverSm deliverSm) {
+	private void handleDeliveryReport(DeliverSm deliverSm) {
 		try {
 
 			DeliveryReceipt deliveryReceipt = deliverSm
