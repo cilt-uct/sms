@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -97,7 +96,8 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				renderCheckBoxes("role", roles, form, smsTask);
 			}
 			else{
-				UIMessage.make(form, "error-no-roles", "ui.error.no.roles");
+				UIMessage.make(form, "error-no-roles", "ui.error.no.roles")
+					.decorate( new UIIDStrategyDecorator("error-no-roles"));
 			}	
 			Map<String, String> groups = new HashMap<String, String>();
 			groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
@@ -105,7 +105,8 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 				renderCheckBoxes("group", groups, form, smsTask);
 			}
 			else{
-				UIMessage.make(form, "error-no-groups", "ui.error.no.groups");
+				UIMessage.make(form, "error-no-groups", "ui.error.no.groups")
+					.decorate( new UIIDStrategyDecorator("error-no-groups"));
 			}
 			//Textearee for the numbers
 			UIInput textarea = UIInput.make(form, "peopleListNumbersBox", null);

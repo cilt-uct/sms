@@ -294,7 +294,17 @@
             }
         } catch(e) {
         }
-    }
+    },
+        disableTab: function(tabName, tabErrorElement){
+            var err = $('#'+ tabErrorElement ).text() === "" ? $('#'+ tabErrorElement ).val() : $('#'+ tabErrorElement ).text();
+            $('#' + tabName + ' a')
+                    .css($.fn.SMS.settings.css.tabDisabled)
+                    .attr('title', err)
+                    .unbind('click')
+                    .bind('click', function(){
+                return false;
+            });
+        }
     };
 
     // SMS class defaults
@@ -310,6 +320,13 @@
                 scheduled: ['time.png','Scheduled'],
                 progress: ['bullet_go.png','Progress'],
                 edit: ['page_white_edit.png','Edit']
+            }
+        },
+        css: {
+            tabDisabled: {
+                'background-color':'#999999',
+                'background-image': 'none',
+                color: '#666666'
             }
         }
     };
@@ -387,7 +404,6 @@
                                 });
                             },
                             error: function(xhr, ajaxOptions, thrownError) {
-                                $.fn.SMS.get.errorEb = $("#errorEb").text();
                                 return false;
                             }
                         });
@@ -565,13 +581,7 @@
         } else {
             $('#peopleListNamesSuggest').hide();
             $('#peopleListNamesSuggest p').hide();
-            if( $.fn.SMS.get.errorEb == null){
-                $('#errorNoNames').show();
-            }else{
-                 $('#errorNoNames')
-                    .text($.fn.SMS.get.errorEb)
-                    .show();
-            }
+            $.fn.SMS.set.disableTab('peopleTabsNames', 'errorEb');
         }
 
         //Events for the Numbers textarea

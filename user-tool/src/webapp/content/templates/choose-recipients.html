@@ -8,6 +8,15 @@
 $(document).ready(function() {
     $("#facebox .body .header").text($("#chooseTitle").text());
     $("#peopleList").tabs();
+
+    //disable tabs that contain no entries in them eg. if there are no groups in site
+    if ( $('#peopleListRoles > div[@rel=Roles] input').length === 0 ){
+        $.fn.SMS.set.disableTab('peopleTabsRoles', 'error-no-roles');
+        }
+    if ( $('#peopleListGroups > div[@rel=Groups] input').length === 0 ){
+        $.fn.SMS.set.disableTab('peopleTabsGroups', 'error-no-groups');
+       }
+
     $("#peopleListNamesSuggest").autoCompletefb({
             urlLookup  : $.fn.SMS.get.peopleByName('array'),
             acOptions  : {
@@ -40,7 +49,9 @@ $(document).ready(function() {
         $.fn.SMS.get.preserveDomSelections = true;
         $.fn.SMS.set.setSubmitTaskButton(this);
         //Update billing report
-        $('#reportConsole').html( $('#cReportConsole').html() );
+        $('#reportConsole')
+                .show()
+                .html( $('#cReportConsole').html() );
     });
    //envoke checkbox bindings
     $.fn.SMS.get.people();
