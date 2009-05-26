@@ -11,19 +11,6 @@
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
-<script type="text/javascript" src="../js/sms.js"></script>
-<script type="text/javascript" src="../js/jquery.tablesorter.js"></script>
-<script type="text/javascript">
-        $(document).ready(function() {
-            //$('a[rel=*getReport]').SMS();
-            $(document).SMS({
-                test: 'Hello!'
-        });
-            $.fn.SMS.settings.test = 'hey';
-            
-        })
-        ;
-    </script>
 <title rsf:id="page-title">Sms Items</title>
 </head>
 <body>
@@ -41,20 +28,10 @@
   <p rsf:id="error-credits" class="smsAlert">None</p>
   <div id="reportConsole" class="">
        <div>
-                    <span rsf:id="msg=ui.console.credits.available">
-                        Credits remaining:
-                    </span>
-                    <span rsf:id="console-credits" class="console-credits">
-                        100
-                    </span>
+                    <span rsf:id="msg=ui.console.credits.available">Credits remaining:</span><span rsf:id="console-credits" class="console-credits">100</span>
           </div>
           <div>
-                    <span rsf:id="msg=ui.console.value">
-                      Estimated value:
-                    </span>
-                    <span rsf:id="console-value" class="console-value">
-                        100
-                    </span>
+                    <span rsf:id="msg=ui.console.value">Estimated value:</span><span rsf:id="console-value" class="console-value">100</span>
           </div>
       
     <div class="clear">
