@@ -108,6 +108,12 @@
                         } else {
                             $("#recipientsCmd").removeAttr("disabled");
                         }
+                        if( entityList.length > 0 ){
+                            //Show the may change alert message since we have selected at least one group/role
+                            $("#cReportConsole .mayChange").show();
+                        }else{
+                            $("#cReportConsole .mayChange").hide();
+                        }
                         $(".loadingImage").hide();
                         return false;
                     },
