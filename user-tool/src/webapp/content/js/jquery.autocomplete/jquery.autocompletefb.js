@@ -87,6 +87,7 @@ jQuery.fn.autoCompletefb = function(options)
         $(settings.inputClass, tmp).val('').focus();
         $.fn.SMS.set.addSelectedRecipientsListName(d);
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text($('#peopleListNamesSuggest > li').length);
+         $.fn.SMS.set.disableContinue();
     });
     $(settings.inputClass, tmp).focus();
     return acfb;

@@ -15,6 +15,7 @@ import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
+import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBoundBoolean;
 import uk.org.ponder.rsf.components.UIBoundString;
 import uk.org.ponder.rsf.components.UICommand;
@@ -24,6 +25,7 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIFreeAttributeDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UILabelTargetDecorator;
@@ -76,6 +78,11 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
 		this.currencyUtil = currencyUtil;
 	}
+	
+	private MessageLocator messageLocator;
+	public void setMessageLocator(MessageLocator messageLocator) {
+		this.messageLocator = messageLocator;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -125,9 +132,12 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 			messageBody.decorate(new UIFreeAttributeDecorator("name", "messageBody"));
 			
 			if (smsTask.getId() == null){
-				UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"),
-					new SmsParams(ChooseRecipientsProducer.VIEW_ID))
-					.decorate(new UIIDStrategyDecorator("smsAddRecipients"));
+				UIInternalLink smsAddRecipients = UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"),
+					new SmsParams(ChooseRecipientsProducer.VIEW_ID));
+				DecoratorList addLinkDecoratorList = new DecoratorList();
+				addLinkDecoratorList.add(new UIIDStrategyDecorator("smsAddRecipients"));
+				addLinkDecoratorList.add(new UIFreeAttributeDecorator( "rel", messageLocator.getMessage("ui.send.message.add") + "," + messageLocator.getMessage("ui.send.message.edit")));
+				smsAddRecipients.decorators = addLinkDecoratorList;
 			}else{
 				UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.edit"),
 						new SmsParams(ChooseRecipientsProducer.VIEW_ID, smsTask.getId() + ""))

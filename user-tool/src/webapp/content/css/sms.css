@@ -3,6 +3,19 @@
   color:#3333FF; 
   text-decoration: underline;
 }
+
+.smsMessageSuccess {
+background-color:#DDEECC;
+background-image:url(/library/skin/images/accept.png);
+border:1px solid #99CC66;
+    background-position:3px 3px;
+background-repeat:no-repeat;
+clear:both;
+height:100%;
+margin:0.5em 0;
+overflow:hidden;
+padding:3px 3px 3px 2em;
+}
 .addItem {
 background:transparent url(/library/image/silk/add.png) no-repeat scroll left center;
 padding-left:1.5em;

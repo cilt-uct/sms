@@ -138,7 +138,7 @@
                     }
                 });
             } else {
-                alert("Make a selection first.");
+                alert($("#errorNoSelections").text());
                 $("div[id^=errorStatus]").slideUp('fast');
                 $("#cReportConsole").slideUp('fast');
             }
@@ -310,6 +310,10 @@
                     .bind('click', function(){
                 return false;
             });
+        },
+        disableContinue: function(){
+            //Disable the continue button and force user to calculate before saving any new changes
+            $("#recipientsCmd").attr("disabled", "disabled");
         }
     };
 
@@ -484,6 +488,7 @@
                 else{
                     $('#peopleTabsRoles span[rel=recipientsSum]').fadeOut();
                 }
+                 $.fn.SMS.set.disableContinue();
             }
 
         });
@@ -514,6 +519,7 @@
                 else  {
                     $('#peopleTabsGroups span[rel=recipientsSum]').fadeOut();
                 }
+                 $.fn.SMS.set.disableContinue();
             }
 
         });
@@ -580,6 +586,7 @@
                     else    {
                         $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
                     }
+                     $.fn.SMS.set.disableContinue();
                 }
                 // log(selectedRecipientsList.names.toString());
             });
@@ -616,6 +623,9 @@
                 //Log report on valid numbers
                 if (getSelectedRecipientsList.length('numbers') > 0) {
                     showSelectedNumbersInDOM();
+
+                    $.fn.SMS.set.disableContinue();
+
                     //log(nums_invalid.length);
                     if (nums_invalid.length > 0) {
                         that.val(nums_invalid.toString().split(',').join('\n'));
@@ -637,7 +647,7 @@
                             .html(temp);
 
                     $("#numbersValid")
-                            .addClass('messageSuccess')
+                            .addClass('smsMessageSuccess')
                             .fadeIn('fast', function() {
                         $(this).effect("highlight", 'slow');
                     });
@@ -654,6 +664,7 @@
                             $(this).remove();
                         });
                         showSelectedNumbersInDOM();
+                         $.fn.SMS.set.disableContinue();
                         that.focus();
                         //log(selectedRecipientsList.numbers.toString());
                     });
@@ -680,6 +691,8 @@
                 $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('numbers'));
             } else{
                 $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
+                $("#numbersValid").fadeOut();
+                $("#peopleListNumbersLog").fadeOut();
             }
         }
     }
@@ -719,6 +732,7 @@
         selectedRecipientsList.names.push([$(_this).val(), $(_this).attr('title')]);
         //Refresh {selectedRecipients} Number on TAB
         $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
+         $.fn.SMS.set.disableContinue();
     }
 
     function checkEntityboxAction(_this, type) {
@@ -733,6 +747,7 @@
             //Refresh {selectedRecipients} Number on TAB
             $('#peopleTabsRoles span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('roles'));
         }
+         $.fn.SMS.set.disableContinue();
     }
 
     function smsParams(domElements) {

@@ -50,6 +50,7 @@ $(document).ready(function() {
             $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
             $.fn.SMS.get.previousSelectionsGroups = $.fn.SMS.get.getSelectedRecipientsListIDs("groups");
             $.fn.SMS.get.previousSelectionsNames = $.fn.SMS.get.getSelectedRecipientsListIDs("names");
+            $("#recipientsCmd").attr("disabled", "disabled");
             $("#facebox").fadeIn('fast');
         } else {
             $.facebox({ajax: this.href});

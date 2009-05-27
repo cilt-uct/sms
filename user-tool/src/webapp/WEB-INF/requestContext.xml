@@ -33,6 +33,7 @@
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
 	<property name="dateEvolver" ref="myFieldDateInputEvolver" />
 	<property name="currencyUtil" ref="currencyUtil" />
+	<property name="messageLocator" ref="messageLocator" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
   </bean>
   
