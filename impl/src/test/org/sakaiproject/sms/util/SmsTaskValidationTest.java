@@ -75,10 +75,10 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 
 		account = new SmsAccount();
-		account.setSakaiSiteId("sakaiSiteId");
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
-		account.setAccountName("account name");
+		account.setAccountName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME);
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -89,14 +89,14 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		msg = new SmsMessage();
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
 
-		smsTask.setSakaiSiteId("sakaiSiteId");
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(account.getId());
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
-		smsTask.setSenderUserName("senderUserName");
+		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
+		smsTask.setSenderUserName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.getSmsMessages().add(msg);

@@ -48,7 +48,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	public void testOnetimeSetup() {
 		StandaloneSmsDaoImpl.createSchema();
 		account = new SmsAccount();
-		account.setSakaiSiteId("sakaiSiteId");
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
 		account.setAccountName("account name");
@@ -67,12 +67,12 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		// smsTask = new SmsTask();
 		smsTask = smsCoreImpl.getPreliminaryTestTask();
 		smsTask.setSmsAccountId(account.getId());
-		smsTask.setSakaiSiteId("sakaiSiteId");
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
+		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setDelReportTimeoutDuration(1);

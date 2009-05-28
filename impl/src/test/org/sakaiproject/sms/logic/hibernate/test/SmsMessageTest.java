@@ -32,13 +32,14 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	static {
 		insertTask = new SmsTask();
-		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageBody");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(1);
 		insertTask.setDelReportTimeoutDuration(1);
@@ -145,13 +146,14 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	public void testGetMessagesForCriteria() {
 
 		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageCrit");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("messageCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
@@ -207,7 +209,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	public void testGetMessageWithNullDeliveryDate() {
 
 		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -266,7 +268,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		int recordsToInsert = 93;
 
 		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));

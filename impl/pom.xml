@@ -63,6 +63,12 @@
          	<version>5.1.5</version>
         <scope>test</scope> </dependency>
 		<dependency>
+    <groupId>hsqldb</groupId>
+    <artifactId>hsqldb</artifactId>
+    <version>1.8.0.1</version>
+		<scope>test</scope></dependency>
+		
+		<dependency>
 			<groupId>net.sourceforge.groboutils</groupId>
 			<artifactId>groboutils-core</artifactId>
 		</dependency>
@@ -179,64 +185,6 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>hibernate3-maven-plugin</artifactId>
-				<version>2.2</version>
-
-
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>hbm2ddl</goal>
-							<!--<goal>hbm2java</goal>-->
-
-						</goals>
-					</execution>
-
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-						<version>5.1.5</version>
-					</dependency>
-				</dependencies>
-
-				<configuration>
-					<outputDirectory>
-						<!--
-							<hbm2cfgxml>/src/java/resources</hbm2cfgxml>
-							<hbm2java>/src/java/org/sakaiproject/sms/hibernate/model</hbm2java>
-						-->
-					</outputDirectory>
-					<components>
-						<component>
-							<name>hbm2ddl</name>
-							<implementation>configuration</implementation>
-						</component>
-					</components>
-					<componentProperties>
-						<!--
-							Can ignore this, it will use the hibernate.properties file
-							automatically
-						-->
-						<!--<propertyFile>target/classes/hibernate.properties</propertyFile>-->
-						<!--
-							<configurationfile>target/classes/hibernate.cfg.xml</configurationfile>
-						-->
-						<persistenceunit>Default</persistenceunit>
-						<outputfilename>schema.ddl</outputfilename>
-						<drop>false</drop>
-						<create>true</create>
-						<update>true</update>
-						<export>true</export>
-						<format>true</format>
-					</componentProperties>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

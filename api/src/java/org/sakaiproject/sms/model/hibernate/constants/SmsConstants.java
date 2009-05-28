@@ -219,4 +219,21 @@ public class SmsConstants {
 	 */
 	public static final String SMS_MO_EMPTY_REPLY_BODY = "";
 
+	/**
+	 * Default sakai site id to use for junits or development
+	 */
+	public static final String SMS_DEV_DEFAULT_SAKAI_SITE_ID = "sakaiSiteID";
+	/**
+	 * Default sakai user id to use for junits or development
+	 */
+	public static final String SMS_DEV_DEFAULT_SAKAI_USER_ID = "sakaiUserID";
+	/**
+	 * Default sakai account name to use for junits or development
+	 */
+	public static final String SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME = "sakaiAccountName";
+	/**
+	 * Default sms message body to use for junits or development
+	 */
+	public static final String SMS_DEV_DEFAULT_SMS_MESSAGE_BODY = "messageBody";
+
 }

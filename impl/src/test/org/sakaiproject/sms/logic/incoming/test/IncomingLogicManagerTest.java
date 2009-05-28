@@ -37,6 +37,7 @@ import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.HiddenSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**
@@ -55,7 +56,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	private HiddenSmsCommand hiddenCmd;
 
 	private static String TEST_MOBILE = "1234";
-	private static String TEST_SITE = "SakaiSiteID";
+	private static String TEST_SITE = SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;
 
 	@Override
 	public void setUp() {

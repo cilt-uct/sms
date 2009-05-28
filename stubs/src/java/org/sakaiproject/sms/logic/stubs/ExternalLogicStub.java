@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 /**
@@ -54,7 +55,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	/**
 	 * The default sakai_Site_id to be used in development mode.
 	 */
-	public static final String SMS_DEV_DEFAULT_SAKAI_SITE_ID = "SakaiSiteID";
+	public static final String SMS_DEV_DEFAULT_SAKAI_SITE_ID = SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;
 
 	public String getSakaiMobileNumber(String userID) {
 		return "0123456789";

@@ -27,6 +27,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 public class SmsMessageLogicStub implements SmsMessageLogic {
 
@@ -55,14 +56,14 @@ public class SmsMessageLogicStub implements SmsMessageLogic {
 	public SmsMessage getNewTestSmsMessageInstance(String mobileNumber,
 			String messageBody) {
 		SmsTask smsTask = new SmsTask();
-		smsTask.setSakaiSiteId("sakaiSiteId");
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(1l);
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
-		smsTask.setSenderUserName("senderUserName");
+		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
+		smsTask.setSenderUserName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
 
 		SmsMessage smsMessage = new SmsMessage();
 		smsMessage.setSmsTask(smsTask);

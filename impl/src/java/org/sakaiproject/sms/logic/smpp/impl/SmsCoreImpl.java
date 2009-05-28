@@ -139,6 +139,7 @@ public class SmsCoreImpl implements SmsCore {
 		ProcessThread(SmsTask smsTask, ThreadGroup threadGroup) {
 			this.smsTask = smsTask;
 			Thread t = new Thread(threadGroup, this);
+			t.setDaemon(true);
 			t.start();
 
 		}
@@ -207,7 +208,8 @@ public class SmsCoreImpl implements SmsCore {
 	// ONLY FOR UNIT TESTS
 	public SmsTask getPreliminaryTestTask() {
 		return getPreliminaryTask(null, null, null, new Date(), "",
-				"SakaiSiteID", "", "SakaiUserID", null);
+				SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, "",
+				SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID, null);
 	}
 
 	private SmsTask getPreliminaryTask(String deliverGroupId,

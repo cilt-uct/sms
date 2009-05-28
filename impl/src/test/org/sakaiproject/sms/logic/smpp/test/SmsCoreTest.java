@@ -98,8 +98,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsCoreImpl.smsBilling
-				.convertAmountToCredits(100f));
+		smsAccount.setCredits(100l);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 
@@ -237,7 +236,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 			// we give the delivery reports time to get back.
 			try {
-				Thread.sleep(40000);
+				Thread.sleep(60000);
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -512,7 +511,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageBody");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
@@ -589,7 +589,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageBody");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask.setDelReportTimeoutDuration(60);
@@ -635,7 +636,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageBody");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
 		insertTask
@@ -677,7 +679,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageBody");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask
 				.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);

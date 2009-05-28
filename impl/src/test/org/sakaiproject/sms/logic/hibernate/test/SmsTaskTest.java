@@ -67,13 +67,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	private static SmsTask createTestTask() {
 
 		SmsTask testTask = new SmsTask();
-		testTask.setSakaiSiteId("sakaiSiteId");
+		testTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		testTask.setSmsAccountId(1l);
 		testTask.setDateCreated(new Date(System.currentTimeMillis()));
 		testTask.setDateToSend(new Date(System.currentTimeMillis()));
 		testTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		testTask.setAttemptCount(2);
-		testTask.setMessageBody("messageBody");
+		testTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		testTask.setSenderUserName("senderUserName");
 		testTask.setMaxTimeToLive(1);
 		testTask.setDelReportTimeoutDuration(1);
@@ -98,7 +98,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -106,12 +106,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 		StandaloneSmsDaoImpl.createSchema();
 
-
 	}
 
 	/**
 	 * Instantiates a new sms task test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -185,7 +184,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		 * messageLogic.getSmsMessagesWithStatus(null,
 		 * SmsConst_DeliveryStatus.STATUS_PENDING,
 		 * SmsConst_DeliveryStatus.STATUS_INCOMPLETE);
-		 *
+		 * 
 		 * Timestamp t = null; // Get the oldest date to send from the list; for
 		 * (SmsMessage message : messages) { if (t == null) { t =
 		 * message.getSmsTask().getDateToSend(); } if
@@ -227,7 +226,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 */
 	public void testGetTasksForCriteria() {
 		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId("sakaiSiteId");
+		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
 		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -280,7 +279,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 		for (int i = 0; i < recordsToInsert; i++) {
 			SmsTask insertTask = new SmsTask();
-			insertTask.setSakaiSiteId("sakaiSiteId");
+			insertTask
+					.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 			insertTask.setSmsAccountId(1l);
 			insertTask.setDateCreated(new Date(System.currentTimeMillis()));
 			insertTask.setDateToSend(new Date(System.currentTimeMillis()));
@@ -320,8 +320,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			// Test last page. We know there are 124 records to this should
 			// return a list of 4
 
-			int pages = recordsToInsert
-					/ SmsConstants.DEFAULT_PAGE_SIZE;
+			int pages = recordsToInsert / SmsConstants.DEFAULT_PAGE_SIZE;
 			// set to last page
 			if (recordsToInsert % SmsConstants.DEFAULT_PAGE_SIZE == 0) {
 				bean.setCurrentPage(pages);

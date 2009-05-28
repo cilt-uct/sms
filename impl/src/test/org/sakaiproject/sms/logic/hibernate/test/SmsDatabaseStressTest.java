@@ -8,6 +8,7 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -33,18 +34,18 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 
 	/**
 	 * we want to flush the hibernate cache
-	 *
+	 * 
 	 */
 	private static Session session;
 
-		/*
+	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	 	@Override
+	@Override
 	public void testOnetimeSetup() {
-			StandaloneSmsDaoImpl.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**
@@ -52,13 +53,13 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 */
 	public SmsDatabaseStressTest() {
 		smsTask = new SmsTask();
-		smsTask.setSakaiSiteId("sakaiSiteId");
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(1l);
 		smsTask.setDateCreated(new Date(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Date(System.currentTimeMillis()));
 		smsTask.setStatusCode("SC");
 		smsTask.setAttemptCount(2);
-		smsTask.setMessageBody("messageBody");
+		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
 		Calendar cal = Calendar.getInstance();
@@ -96,8 +97,8 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 * Test get task messages.
 	 */
 	public void testGetTaskMessages() {
-		SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				smsTaskID);
+		SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(smsTaskID);
 		firstMessageID = ((SmsMessage) theSmsTask.getSmsMessages().toArray()[0])
 				.getId();
 		assertNotNull(theSmsTask);
@@ -112,8 +113,8 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	public void testDeleteTasks() {
 
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
-		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				smsTaskID);
+		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(smsTaskID);
 		assertNull("Task not removed", getSmsTask);
 		SmsMessage theMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessage(firstMessageID);

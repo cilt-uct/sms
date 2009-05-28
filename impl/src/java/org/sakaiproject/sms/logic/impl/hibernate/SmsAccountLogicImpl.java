@@ -88,7 +88,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * 
 	 * @return List of SmsAccount objects
 	 */
-	public  List<SmsAccount> getAllSmsAccounts() {
+	public List<SmsAccount> getAllSmsAccounts() {
 		List<SmsAccount> accounts = smsDao.runQuery("from SmsAccount");
 		return accounts;
 	}
@@ -102,12 +102,12 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param sms
 	 *            account to be persisted
 	 */
-	public  void persistSmsAccount(SmsAccount smsAccount) {
+	public void persistSmsAccount(SmsAccount smsAccount) {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
-			throw new DuplicateUniqueFieldException("sakaiSiteId");
+			throw new DuplicateUniqueFieldException(smsAccount.getSakaiSiteId());
 		}
 		if (!hasUniqueSakaiUserId(smsAccount)) {
-			throw new DuplicateUniqueFieldException("sakaiUserId");
+			throw new DuplicateUniqueFieldException(smsAccount.getSakaiUserId());
 		}
 
 		persist(smsAccount);
@@ -119,7 +119,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param smsAccount
 	 * @return
 	 */
-	private  boolean hasUniqueSakaiSiteId(SmsAccount smsAccount) {
+	private boolean hasUniqueSakaiSiteId(SmsAccount smsAccount) {
 		SmsAccount accBySite = getAccountBySakaiSiteId(smsAccount
 				.getSakaiSiteId());
 
@@ -136,7 +136,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param smsAccount
 	 * @return
 	 */
-	private  boolean hasUniqueSakaiUserId(SmsAccount smsAccount) {
+	private boolean hasUniqueSakaiUserId(SmsAccount smsAccount) {
 		SmsAccount accByUser = getAccountBySakaiUserId(smsAccount
 				.getSakaiUserId());
 

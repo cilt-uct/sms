@@ -40,6 +40,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
  * The Class SmppSession. Used in the threading test.
@@ -64,7 +65,8 @@ public class SmppThread extends TestRunnable {
 
 	private static HibernateLogicLocator hibernateLogicLocator = null;
 	static {
-		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl(
+				"hibernate-test.properties");
 
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("Username" + Math.random());
@@ -79,7 +81,6 @@ public class SmppThread extends TestRunnable {
 		SmsConfigLogicImpl smsConfigLogicImpl = new SmsConfigLogicImpl();
 		smsConfigLogicImpl.setSmsDao(hibernateUtil);
 		hibernateLogicLocator.setSmsConfigLogic(smsConfigLogicImpl);
-
 
 		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
 
@@ -106,7 +107,7 @@ public class SmppThread extends TestRunnable {
 
 	/**
 	 * Instantiates a new smpp session.
-	 *
+	 * 
 	 * @param sessionName
 	 *            the session name
 	 * @param messageCount
@@ -144,7 +145,8 @@ public class SmppThread extends TestRunnable {
 		insertTask.setDateToSend(dateToSend);
 		insertTask.setStatusCode(status);
 		insertTask.setAttemptCount(0);
-		insertTask.setMessageBody("testing1234567");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("administrator");
 		insertTask.setMessageTypeId(0);
 		insertTask.setMaxTimeToLive(300);

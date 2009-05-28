@@ -29,6 +29,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -47,8 +48,6 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		smsSmppImpl.init();
 		smsSmppImpl.setLogLevel(Level.WARN);
 
-
-
 	}
 
 	public SmppAPITest() {
@@ -60,7 +59,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -71,7 +70,7 @@ public class SmppAPITest extends AbstractBaseTestCase {
 	/**
 	 * This is an helper method to insert a dummy smsTask into the Database. The
 	 * sakaiID is used to identify the temp task.
-	 *
+	 * 
 	 * @param sakaiID
 	 * @param status
 	 * @param dateToSend
@@ -87,7 +86,8 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(dateToSend);
 		insertTask.setStatusCode(status);
 		insertTask.setAttemptCount(0);
-		insertTask.setMessageBody("testing1234567");
+		insertTask
+				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("administrator");
 		insertTask.setMessageTypeId(0);
 		insertTask.setMaxTimeToLive(300);
@@ -218,11 +218,12 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		SmsTask insertTask1update =hibernateLogicLocator.getSmsTaskLogic()
+		SmsTask insertTask1update = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask1.getId());
 		assertEquals(true, insertTask1update.getMessagesWithSmscStatus(
 				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
-		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask1update);
+		hibernateLogicLocator.getSmsTaskLogic()
+				.deleteSmsTask(insertTask1update);
 
 	}
 }

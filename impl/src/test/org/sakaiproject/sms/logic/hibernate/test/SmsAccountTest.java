@@ -8,6 +8,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldExcept
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -26,24 +27,23 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 
-
 	static {
+		StandaloneSmsDaoImpl.createSchema();
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		insertSmsAccount = new SmsAccount();
-		insertSmsAccount.setSakaiUserId("1");
-		insertSmsAccount.setSakaiSiteId("1");
+		insertSmsAccount
+				.setSakaiUserId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+		insertSmsAccount
+				.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertSmsAccount.setMessageTypeCode("12345");
-		insertSmsAccount.setOverdraftLimit(smsBillingImpl
-				.convertAmountToCredits(10000.00f));
-		insertSmsAccount.setCredits(smsBillingImpl
-				.convertAmountToCredits(5000.00f));
+		insertSmsAccount.setOverdraftLimit(1000l);
+		insertSmsAccount.setCredits(5000l);
 		insertSmsAccount.setAccountName("accountName");
 		insertSmsAccount.setAccountEnabled(true);
 		insertSmsAccount.setMessageTypeCode("SO");
 
 		insertSmsTransaction1 = new SmsTransaction();
-		insertSmsTransaction1.setCreditBalance(smsBillingImpl
-				.convertAmountToCredits(100f));
+		insertSmsTransaction1.setCreditBalance(100l);
 		insertSmsTransaction1.setSakaiUserId("5");
 		insertSmsTransaction1.setTransactionCredits(100);
 		insertSmsTransaction1.setTransactionDate(new Date(System
@@ -52,8 +52,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsTransaction1.setSmsTaskId(1L);
 
 		insertSmsTransaction2 = new SmsTransaction();
-		insertSmsTransaction2.setCreditBalance(smsBillingImpl
-				.convertAmountToCredits(100f));
+		insertSmsTransaction2.setCreditBalance(100l);
 		insertSmsTransaction2.setSakaiUserId("SakaiUserId2");
 		insertSmsTransaction2.setTransactionCredits(100);
 		insertSmsTransaction2.setTransactionDate(new Date(System
@@ -70,7 +69,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms account test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -80,12 +79,12 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
-	 	@Override
+	@Override
 	public void testOnetimeSetup() {
-	StandaloneSmsDaoImpl.createSchema();
+		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**
@@ -121,7 +120,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 					newSmsAccount);
 			fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals("sakaiSiteId", due.getField());
+			assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, due
+					.getField());
 		}
 	}
 
@@ -141,13 +141,14 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		newSmsAccount.setCredits(insertSmsAccount.getCredits());
 		newSmsAccount.setStartdate(insertSmsAccount.getStartdate());
 		newSmsAccount.setAccountEnabled(true);
-		
+
 		try {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					newSmsAccount);
 			fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals("sakaiUserId", due.getField());
+			assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID, due
+					.getField());
 		}
 	}
 
@@ -168,12 +169,13 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	public void testUpdateSmsAccount() {
 		SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
-		smsAccount.setSakaiSiteId("newSakaiSiteId");
+		smsAccount.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+"new");
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				insertSmsAccount.getId());
-		assertEquals("newSakaiSiteId", smsAccount.getSakaiSiteId());
+		assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+"new", smsAccount
+				.getSakaiSiteId());
 	}
 
 	/**
@@ -205,11 +207,10 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 */
 	public void testGetSmsAccount_sakaiSiteId() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiSiteId("sakSitId");
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(smsBillingImpl
-				.convertAmountToCredits(10000.00f));
-		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
+		account.setOverdraftLimit(1000l);
+		account.setCredits(5000l);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -224,17 +225,16 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 */
 	public void testGetSmsAccount_sakaiUserId() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiUserId("testGetSmsAccount_sakaiUserId");
-		account.setSakaiSiteId("testGetSmsAccount_sakaiSiteId");
+		account.setSakaiUserId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 1);
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(smsBillingImpl
-				.convertAmountToCredits(10000.00f));
-		account.setCredits(smsBillingImpl.convertAmountToCredits(5000f));
-		account.setAccountName("accountName");
+		account.setOverdraftLimit(1000l);
+		account.setCredits(5000l);
+		account.setAccountName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME);
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
-				.getSmsAccount("testGetSmsAccount_sakaiSiteId",
+				.getSmsAccount(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 1,
 						account.getSakaiUserId());
 		assertNotNull(retAccount);
 		assertEquals(retAccount, account);

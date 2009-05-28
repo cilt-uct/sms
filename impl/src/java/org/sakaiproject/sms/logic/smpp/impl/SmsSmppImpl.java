@@ -92,9 +92,11 @@ public class SmsSmppImpl implements SmsSmpp {
 	ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
-	private BindThread bindTest;
+	private BindThread reBindTheard;
 
 	private boolean gatewayBound = false;
+
+	private boolean appserverShuttingDown = false;
 
 	MOmessageQueueThread mOmessageQueueThread = new MOmessageQueueThread();
 
@@ -133,14 +135,19 @@ public class SmsSmppImpl implements SmsSmpp {
 	private class BindThread implements Runnable {
 
 		boolean allDone = false;
+		Thread t = null;
 
 		BindThread() {
-			Thread t = new Thread(this);
+			t = new Thread(this);
 			t.start();
 		}
 
 		public void run() {
 			Work();
+		}
+
+		public void stop() {
+			t.interrupt();
 		}
 
 		public void Work() {
@@ -152,7 +159,6 @@ public class SmsSmppImpl implements SmsSmpp {
 					Thread.sleep(smsSmppProperties.getBindThreadTimer());
 				} catch (InterruptedException e) {
 
-					e.printStackTrace();
 				}
 				LOG.info("Trying to rebind");
 				connectToGateway();
@@ -442,9 +448,9 @@ public class SmsSmppImpl implements SmsSmpp {
 										.valueOf(smsSmppProperties
 												.getDestAddressNPI()),
 								smsSmppProperties.getAddressRange()));
-				if (bindTest != null) {
-					bindTest.allDone = true;
-					bindTest = null;
+				if (reBindTheard != null) {
+					reBindTheard.allDone = true;
+					reBindTheard = null;
 				}
 				gatewayBound = true;
 				LOG.info("EnquireLinkTimer is set to "
@@ -473,8 +479,10 @@ public class SmsSmppImpl implements SmsSmpp {
 							gatewayBound = false;
 							session.unbindAndClose();
 							if (arg0.equals(SessionState.CLOSED)) {
-								if (bindTest == null) {
-									bindTest = new BindThread();
+								if (!appserverShuttingDown
+										&& reBindTheard == null) {
+
+									reBindTheard = new BindThread();
 								}
 							}
 						}
@@ -485,9 +493,10 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error("Bind operation failed. " + e);
 				gatewayBound = false;
 				session.unbindAndClose();
-				if (bindTest == null) {
+				if (!appserverShuttingDown && reBindTheard == null) {
 					LOG.info("Starting Binding thread");
-					bindTest = new BindThread();
+
+					reBindTheard = new BindThread();
 				}
 
 			}
@@ -559,28 +568,31 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	public void destroy() {
 		LOG.info("destroy()");
-
-		if (bindTest != null) {
+		disconnectGateWay();
+		appserverShuttingDown = true;
+		if (reBindTheard != null) {
 			LOG.debug("Stopping Bind Thread....");
-			bindTest.allDone = true;
-			bindTest = null;
+			reBindTheard.allDone = true;
+			reBindTheard.stop();
+			reBindTheard = null;
 			LOG.debug("Stopped....");
+
 		}
 		if (mOmessageQueueThread != null) {
 			LOG.debug("Stopping MO MessageQueueThread....");
 			mOmessageQueueThread.allDone = true;
 			mOmessageQueueThread = null;
 			LOG.debug("Stopped....");
+
 		}
 		if (deliveryReportQueueThread != null) {
 			LOG.debug("Stopping DeliveryReportQueueThread....");
 			deliveryReportQueueThread.allDone = true;
 			deliveryReportQueueThread = null;
 			LOG.debug("Stopped....");
+
 		}
-		deliveryReportThreadGroup.destroy();
-		moReceivingThread.destroy();
-		disconnectGateWay();
+
 	}
 
 	/**
@@ -889,7 +901,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			return SmsConst_DeliveryStatus.STATUS_RETRY;
 
 		}
-			
+
 		for (SmsMessage message : messages) {
 			if (!gatewayBound) {
 				return (SmsConst_DeliveryStatus.STATUS_INCOMPLETE);

@@ -62,6 +62,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	}
 
 	public void destroy() {
+		smsSchedulerThread.stopScheduler = true;
 		smsSchedulerThread.stop();
 		smsSchedulerThread = null;
 
@@ -86,14 +87,14 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
 		public void stop() {
 			t.interrupt();
 		}
 
-		public void Work() {
+		public void work() {
 			try {
 				while (true) {
 					if (stopScheduler) {
@@ -107,6 +108,8 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 					Thread.sleep(smsConfig.getSchedulerInterval() * 1000);
 				}
+			} catch (InterruptedException e) {
+				// no need to log the error
 			} catch (Exception e) {
 				LOG.error("SoScheduler encountered an error : "
 						+ e.getMessage());
