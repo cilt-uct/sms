@@ -488,7 +488,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						}
 					}
 				});
-				LOG.info("Bind successfull");
+				LOG.info("Bind successful");
 			} catch (Exception e) {
 				LOG.error("Bind operation failed. " + e);
 				gatewayBound = false;
