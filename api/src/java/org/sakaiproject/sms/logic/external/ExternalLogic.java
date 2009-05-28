@@ -225,4 +225,11 @@ public interface ExternalLogic {
 	public String getEntityPrefix(String entity);
 
 	public String getSmsContactEmail();
+
+	/**
+	 * Sets up the proper session attributes for the benefit of the sms permissions producer
+	 * @param permissionPrefix this tools permission prefix with a dot eg. 'sms.' for the sms tool.
+	 */
+	public void setUpSessionPermissions(String permissionPrefix);
+
 }

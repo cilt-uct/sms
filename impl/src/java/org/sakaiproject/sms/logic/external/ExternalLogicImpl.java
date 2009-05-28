@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
+import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
@@ -57,6 +59,8 @@ import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
@@ -686,4 +690,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 		;
 		return email;
 	}
+	
+	public void setUpSessionPermissions(String permissionPrefix) {
+		try {
+			Site site = siteService.getSite(getCurrentLocationId());
+			ToolSession session = sessionManager.getCurrentToolSession();
+			session.setAttribute(PermissionsHelper.TARGET_REF, site.getReference());
+			session.setAttribute(PermissionsHelper.DESCRIPTION, "Set SMS permissions for " +  site.getTitle());
+			session.setAttribute(PermissionsHelper.PREFIX, permissionPrefix); //set some instruction text and the prefix of the permissions it should handle.
+		} catch (IdUnusedException e) {
+			log.warn("Site not found for id: "+ getCurrentLocationId());
+		}
+	}
+
 }
