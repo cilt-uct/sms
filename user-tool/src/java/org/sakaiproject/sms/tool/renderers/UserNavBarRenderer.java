@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.tool.renderers;
 
-import org.sakaiproject.sms.tool.producers.MainProducer;
 import org.sakaiproject.sms.tool.producers.SmsPermissions;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -29,10 +28,7 @@ public class UserNavBarRenderer {
 		// TODO: Take permissions into account
 		UIJointContainer joint = new UIJointContainer(tofill, divID,
 				"sms-navigation:");
-
-		renderBranch(joint, "1", currentViewID, MainProducer.VIEW_ID,
-				"sms.navbar.messages", true);
-		renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
+		renderBranch(joint, "1", currentViewID, SmsPermissions.VIEW_ID,
 				"sms.navbar.permissions", false);
 	}
 	
