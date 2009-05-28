@@ -265,4 +265,14 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public Map<String, String> getUsersWithMobileNumbersOnly() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setUpSessionPermissions(String permissionPrefix) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
