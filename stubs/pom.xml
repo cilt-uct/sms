@@ -19,7 +19,16 @@
         <version>0.8-SNAPSHOT</version><!--Sms.version-->
     </parent>
     
-    
+   <dependencyManagement>
+        <dependencies>
+            <dependency>
+               <groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-stubs</artifactId>
+				<version>0.8-SNAPSHOT</version>
+				<scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 	<dependencies>
 		<!-- email dependencies -->
 		<dependency>
