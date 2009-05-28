@@ -46,6 +46,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
 	public String getUserMobileNumber(String userid) {
+		LOG.debug("getMobileNumber(" + userid);
 		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid,
 				sakaiPersonManager.getUserMutableType());
 		if (sp != null) {
@@ -61,6 +62,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumbers(List)
 	 */
 	public Map<String, String> getUserMobileNumbers(List<String> userids) {
+		LOG.debug("getUserMobileNumbers()");
 		Map<String, String> userMobileMap = new HashMap<String, String>();
 		for (String userid : userids) {
 			userMobileMap.put(userid, getUserMobileNumber(userid));
@@ -73,6 +75,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
+		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber);
 		SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setMobile(mobileNumber);
 
