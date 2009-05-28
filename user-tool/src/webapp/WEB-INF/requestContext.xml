@@ -74,6 +74,11 @@
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 	<property name="smsMessageRenderer" ref="smsMessageRenderer" />
   </bean>
+  
+  <bean class="org.sakaiproject.sms.tool.producers.SmsPermissions">
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+	<property name="messageLocator" ref="messageLocator" />
+  </bean>
 
 <bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
 
