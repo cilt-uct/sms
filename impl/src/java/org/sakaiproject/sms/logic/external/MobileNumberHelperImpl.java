@@ -46,11 +46,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
 	public String getUserMobileNumber(String userid) {
-		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid, sakaiPersonManager.getUserMutableType());
+		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid,
+				sakaiPersonManager.getUserMutableType());
 		if (sp != null) {
 			return sp.getMobile();
 		} else {
-			//this is to be expected not all Sakai Users have profiles
+			// this is to be expected not all Sakai Users have profiles
 			LOG.info("Profile not found for userid: " + userid);
 			return null;
 		}
