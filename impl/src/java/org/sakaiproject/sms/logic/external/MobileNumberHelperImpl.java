@@ -22,7 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
 
@@ -33,8 +34,7 @@ import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
  */
 public class MobileNumberHelperImpl implements MobileNumberHelper {
 
-	private static final Logger LOG = Logger
-			.getLogger(MobileNumberHelperImpl.class);
+	private static Log LOG = LogFactory.getLog(MobileNumberHelperImpl.class);
 
 	private SakaiPersonManager sakaiPersonManager;
 
@@ -46,14 +46,14 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
 	public String getUserMobileNumber(String userid) {
-		LOG.debug("getMobileNumber(" + userid);
+		LOG.debug("getMobileNumber(" + userid + ")");
 		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid,
 				sakaiPersonManager.getUserMutableType());
 		if (sp != null) {
 			return sp.getMobile();
 		} else {
 			// this is to be expected not all Sakai Users have profiles
-			LOG.info("Profile not found for userid: " + userid);
+			LOG.debug("Profile not found for userid: " + userid);
 			return null;
 		}
 	}

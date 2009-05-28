@@ -17,7 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
-import java.lang.ref.Reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.EmailValidator;
-import org.hibernate.action.EntityAction;
 import org.sakaiproject.alias.api.Alias;
 import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -46,8 +44,6 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
-import org.sakaiproject.entity.api.EntityProducer;
-import org.sakaiproject.entity.api.serialize.EntityReader;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.entityprovider.extension.EntityData;
@@ -231,6 +227,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSakaiMobileNumber(String userId) {
+		log.debug("Getting mobile number for userid " + userId);
 		return mobileNumberHelper.getUserMobileNumber(userId);
 	}
 
@@ -329,8 +326,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
 			boolean getMobileNumbers) {
+		
+		log.debug("Getting recipient numbers for task " + smsTask.getId());
+		
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 		if (smsTask.getDeliveryEntityList() != null) {
+			log.debug("Adding numbers for entity reference list");
 			// list of references to groups, roles etc.
 			for (String reference : smsTask.getDeliveryEntityList()) {
 				messages.addAll(getSakaiEntityMembersAsMessages(smsTask,
@@ -338,12 +339,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 		if (smsTask.getDeliveryGroupId() != null) {
+			log.debug("Adding numbers for single group id");
 			// a single group reference
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryGroupId(), getMobileNumbers));
 
 		}
 		if (smsTask.getDeliveryMobileNumbersSet() != null) {
+			log.debug("Adding numbers from list of mobile numbers");
 			// a list of mobile numbers, not necessarily from sakai users
 			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
 				SmsMessage message = new SmsMessage();
@@ -358,6 +361,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					.getDeliveryUserId(), getMobileNumbers));
 		}
 		if (smsTask.getSakaiUserIds() != null) {
+			log.debug("Adding numbers from list of user ids");
 			for (String userId : smsTask.getSakaiUserIds()) {
 				String mobileNr = getSakaiMobileNumber(userId);
 				if (mobileNr != null) {
@@ -370,8 +374,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 
 		}
+		
+		if (log.isDebugEnabled()) {
+			if (messages.isEmpty())
+				log.debug("Message list for task " + smsTask.getId() + " is empty.");
+			else for (SmsMessage message : messages) 
+				log.debug("Returning message for task " + smsTask.getId() + " userid=" + message.getSakaiUserId() + " number=" + message.getMobileNumber());
+		}
 		return messages;
-
 	}
 
 	public String getSakaiUserDisplayName(String userId) {
@@ -593,7 +603,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public String[] getAllAliasesAsArray() {
 		List<Alias> aliases = aliasService.getAliases(1, aliasService
 				.countAliases());
@@ -626,8 +635,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiGroupsForSite(String siteId) {
-		// TODO Auto-generated method stub
 		Map<String, String> groups = new HashMap<String, String>();
 		try {
 			Collection<Group> groupsCollection = siteService.getSite(siteId)
@@ -642,8 +651,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return groups;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiRolesForSite(String siteId) {
-		// TODO Auto-generated method stub
 		Map<String, String> roles = new HashMap<String, String>();
 		try {
 			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
@@ -708,6 +717,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
 		Map<String, String> userDetails = new HashMap<String, String>();
 		try {
