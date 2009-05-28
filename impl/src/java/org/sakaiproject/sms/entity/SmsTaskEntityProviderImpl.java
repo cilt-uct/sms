@@ -36,9 +36,7 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
@@ -70,6 +68,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			DeveloperHelperService developerHelperService) {
 		this.developerHelperService = developerHelperService;
 	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 
 	/**
 	 * Implemented
@@ -239,7 +243,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 
 	//Custom action to handle /sms-task/calculate
-	@EntityCustomAction(action=CUSTOM_ACTION,viewKey=EntityView.VIEW_NEW)
+	@EntityCustomAction(action=CUSTOM_ACTION_CALCULATE,viewKey=EntityView.VIEW_NEW)
 	public String calculate(EntityReference ref, Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) getSampleEntity();
 		//Build smsTask object with received parameters
@@ -261,6 +265,22 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
          smsService.calculateEstimatedGroupSize(smsTask);
        
 		return JSONTranscoder.makeJSON(smsTask);
+	}
+	
+	//Custom action to handle /sms-task/users
+	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_SHOW)
+	public String users(EntityReference ref, Search search) {
+		String currentUser = developerHelperService.getCurrentUserReference();
+        if (currentUser == null) {
+            throw new SecurityException("Anonymous users cannot view users for site: " + ref);
+        }
+        String siteId = EntityReference.getIdFromRef(ref.toString());
+        String userReference = developerHelperService.getCurrentUserReference();
+		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteId);
+        if (!allowedSend) {
+            throw new SecurityException("User ("+userReference+") not allowed to send sms messages in site: " + ref);
+        }
+    	return JSONTranscoder.makeJSON(externalLogic.getUsersWithMobileNumbersOnly(ref.toString()));
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {

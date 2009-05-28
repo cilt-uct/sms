@@ -34,6 +34,7 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.EmailValidator;
+import org.hibernate.action.EntityAction;
 import org.sakaiproject.alias.api.Alias;
 import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -45,8 +46,12 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityProducer;
+import org.sakaiproject.entity.api.serialize.EntityReader;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.entityprovider.extension.EntityData;
+import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -703,4 +708,30 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 	}
 
+	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
+		Map<String, String> userDetails = new HashMap<String, String>();
+		try {
+			Search isActive = new Search("active", true);
+			List<EntityData> users1 = entityBroker.getEntities(ref, isActive, null);
+			log.info("Got users: "+ users1.size());
+			log.info("Got site: "+ ref);
+			Site site = siteService.getSite(EntityReference.getIdFromRef(ref));
+			Set<User> users = site.getUsers();
+			int count = 0;
+			for ( User user : users ){
+				boolean foundNumber = false;
+				foundNumber = mobileNumberHelper.getUserMobileNumber(user.getId()) != null;
+				if(! foundNumber ){
+					users.remove(count);
+				}else{
+					userDetails.put(user.getId(), user.getDisplayName());
+				}
+				count++;
+			}
+		} catch (IdUnusedException e) {
+			log.warn("Site not found for id: "+ getCurrentLocationId());
+		}
+		
+		return userDetails;
+	}
 }

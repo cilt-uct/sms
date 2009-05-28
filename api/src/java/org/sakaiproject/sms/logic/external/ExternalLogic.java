@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
@@ -231,5 +232,6 @@ public interface ExternalLogic {
 	 * @param permissionPrefix this tools permission prefix with a dot eg. 'sms.' for the sms tool.
 	 */
 	public void setUpSessionPermissions(String permissionPrefix);
-
+	
+	public Map<String, String> getUsersWithMobileNumbersOnly(String ref);
 }
