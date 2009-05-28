@@ -51,7 +51,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void testOnetimeSetup() {
-
+		StandaloneSmsDaoImpl.createSchema();
 		smsConfigLogic = new SmsConfigLogicImpl();
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
