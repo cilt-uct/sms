@@ -41,8 +41,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>		
 		</dependency>
   <dependency>
       <groupId>uk.org.ponder.sakairsf</groupId>
@@ -83,12 +83,7 @@
 					<contextPath>${project.build.finalName}</contextPath>
 					<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
 					
-					<systemProperties>
-          			  	<systemProperty>
-          			    	<name>log4j.configuration</name>
-           			    	<value>file:./target/${project.build.finalName}/WEB-INF/classes/log4j.properties</value>
-        			    </systemProperty>
-            		</systemProperties>
+					
 							
 					
 					<configuration>
@@ -108,19 +103,14 @@
 					<dependency>
 						<groupId>org.sakaiproject.sms</groupId>
 						<artifactId>sms-impl</artifactId>
-						<version>0.7-SNAPSHOT</version>
+						<version>0.8-SNAPSHOT</version>
 					</dependency>
 					<dependency>
 						<groupId>org.sakaiproject.sms</groupId>
 						<artifactId>sms-api</artifactId>
-						<version>0.7-SNAPSHOT</version>
+						<version>0.8-SNAPSHOT</version>
 					</dependency>
-					<dependency>
-						<groupId>log4j</groupId>
-						<artifactId>log4j</artifactId>
-						<version>1.2.14</version>
-						<type>jar</type>
-					</dependency>
+					
 					<dependency>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>

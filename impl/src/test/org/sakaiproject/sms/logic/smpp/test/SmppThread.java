@@ -24,7 +24,6 @@ import java.util.Set;
 
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.apache.log4j.Level;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
@@ -118,14 +117,10 @@ public class SmppThread extends TestRunnable {
 		smsCoreImpl = new SmsCoreImpl();
 		smsSmppImpl = new SmsSmppImpl();
 		smsCoreImpl.setSmsBilling(new SmsBillingImpl());
-
 		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
-		smsSmppImpl.setLogLevel(Level.INFO);
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
-		// smsCoreImpl.setLoggingLevel(Level.INFO);
-		LOG.setLevel(Level.INFO);
 		this.message_count = messageCount;
 		this.delay_between_messages = messageDelay;
 	}

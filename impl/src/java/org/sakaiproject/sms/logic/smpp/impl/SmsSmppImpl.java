@@ -33,7 +33,8 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Level;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jsmpp.InvalidResponseException;
 import org.jsmpp.PDUException;
 import org.jsmpp.bean.Address;
@@ -77,8 +78,7 @@ import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 public class SmsSmppImpl implements SmsSmpp {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmsSmppImpl.class);
+	private static Log LOG = LogFactory.getLog(SmsSmppImpl.class);
 	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
@@ -1039,11 +1039,6 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(message);
 		return message;
-	}
-
-	public void setLogLevel(Level level) {
-		LOG.setLevel(level);
-
 	}
 
 	/**

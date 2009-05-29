@@ -135,7 +135,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 								SmsConst_DeliveryStatus.STATUS_RETRY },
 						Hibernate.STRING));
 
-		log.debug("getNextSmsTask() HQL: " + hql);
+		LOG.debug("getNextSmsTask() HQL: " + hql);
 		if (tasks != null && tasks.size() > 0) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
 			return tasks.get(0);
@@ -238,7 +238,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 			throw new SmsSearchException(e);
 		}
 
-		log.debug(crit.toString());
+		LOG.debug(crit.toString());
 		tasks = crit.list();
 		return tasks;
 	}
@@ -325,7 +325,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING,
 						Hibernate.INTEGER));
 
-		log.debug("processMOTasks() HQL: " + hql);
+		LOG.debug("processMOTasks() HQL: " + hql);
 		if (tasks != null && tasks.size() > 0) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
 			return tasks;

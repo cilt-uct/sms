@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
@@ -62,7 +62,7 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsCoreImpl implements SmsCore {
 
-	private static final Logger LOG = Logger.getLogger(SmsCoreImpl.class);
+	private static Log LOG = LogFactory.getLog(SmsCoreImpl.class);
 
 	private static final int moOverdraftEmailInterval = 2;
 
@@ -928,15 +928,6 @@ public class SmsCoreImpl implements SmsCore {
 	private int getThreadCount(ThreadGroup threadgroup) {
 		return threadgroup.activeCount();
 
-	}
-
-	/*
-	 * Enables or disables the debug Information
-	 * 
-	 * @param debug
-	 */
-	public void setLoggingLevel(Level level) {
-		LOG.setLevel(level);
 	}
 
 	public void processMOTasks() {

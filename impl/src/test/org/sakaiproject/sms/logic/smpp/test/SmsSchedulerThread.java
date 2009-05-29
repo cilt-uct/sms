@@ -41,11 +41,11 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
- *
+ * 
  * The Class SmsSchedulerThread. Used in the scheduler threading test.
- *
+ * 
  * @author Etienne@psybergate.co.za
- *
+ * 
  */
 public class SmsSchedulerThread extends TestRunnable {
 
@@ -69,7 +69,7 @@ public class SmsSchedulerThread extends TestRunnable {
 
 	/**
 	 * Sets up the required api's
-	 *
+	 * 
 	 * @param sessionName
 	 */
 	public SmsSchedulerThread(String sessionName) {
@@ -125,11 +125,9 @@ public class SmsSchedulerThread extends TestRunnable {
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
-		smsCoreImpl.setLoggingLevel(Level.WARN);
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		LOG.setLevel(Level.ALL);
-		smsSmppImpl.setLogLevel(Level.WARN);
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSchedulerImpl.init();
 		smsAccount = new SmsAccount();
@@ -156,9 +154,7 @@ public class SmsSchedulerThread extends TestRunnable {
 	@Override
 	public void runTest() throws Throwable {
 		LOG.info(sessionName + ": Inserting tasks ");
-		smsSmppImpl.setLogLevel(Level.ALL);
 		Calendar now = Calendar.getInstance();
-
 		SmsTask smsTask3 = smsCoreImpl.getPreliminaryTask("SmsTask3"
 				+ sessionName, new Date(now.getTimeInMillis()),
 				"-ThreadingTest-SmsTask3MessageBody", smsAccount
@@ -166,11 +162,9 @@ public class SmsSchedulerThread extends TestRunnable {
 						.getCurrentUserId());
 
 		smsTask3.setSmsAccountId(smsAccount.getId());
-		// smsTask3.setSakaiSiteId(smsAccount.getSakaiSiteId());
 		smsTask3.setDeliveryUserId(smsAccount.getSakaiUserId());
 		smsCoreImpl.calculateEstimatedGroupSize(smsTask3);
 		smsCoreImpl.insertTask(smsTask3);
-
 		now.add(Calendar.MINUTE, -1);
 		SmsTask smsTask2 = smsCoreImpl.getPreliminaryTask("SmsTask2"
 				+ sessionName, new Date(now.getTimeInMillis()),

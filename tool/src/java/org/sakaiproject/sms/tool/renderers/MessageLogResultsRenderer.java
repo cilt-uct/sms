@@ -18,6 +18,8 @@
 
 package org.sakaiproject.sms.tool.renderers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
@@ -36,10 +38,10 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 public class MessageLogResultsRenderer implements SearchResultsRenderer {
 
-	private final static org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(MessageLogResultsRenderer.class);
+	private static Log LOG = LogFactory.getLog(MessageLogResultsRenderer.class);
 
-	private SearchResultContainer<SmsMessage> smsMessageList = new SearchResultContainer<SmsMessage>(SmsUiConstants.NO_RESULTS_PAGING_SIZE);
+	private SearchResultContainer<SmsMessage> smsMessageList = new SearchResultContainer<SmsMessage>(
+			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
 
 	private SearchFilterBean searchFilterBean;
 	private SortHeaderRenderer sortHeaderRenderer;
@@ -69,8 +71,9 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 
 		boolean fail = false;
 		try {
-				smsMessageList = smsMessageLogic.getPagedSmsMessagesForCriteria(searchFilterBean);
-				sortViewParams.current_count = smsMessageList.getNumberOfPages();
+			smsMessageList = smsMessageLogic
+					.getPagedSmsMessagesForCriteria(searchFilterBean);
+			sortViewParams.current_count = smsMessageList.getNumberOfPages();
 		} catch (SmsSearchException e) {
 			LOG.error(e);
 			fail = true;
@@ -82,12 +85,10 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 			UIMessage.make(searchResultsTable, "warning", "GeneralActionError");
 		else {
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-id:", sortViewParams,
-					"id",
+					"tableheader-id:", sortViewParams, "id",
 					"sms.message-log-search-results.account.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-task-id:", sortViewParams,
-					"smsTask.id",
+					"tableheader-task-id:", sortViewParams, "smsTask.id",
 					"sms.message-log-search-results.account.task.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-receiver:", sortViewParams,
@@ -133,14 +134,15 @@ public class MessageLogResultsRenderer implements SearchResultsRenderer {
 		}
 	}
 
-	private void setCurrentPage(SearchFilterBean searchBean, SortPagerViewParams sortViewParams) {
+	private void setCurrentPage(SearchFilterBean searchBean,
+			SortPagerViewParams sortViewParams) {
 
-		//new search
-		if(searchBean.isNewSearch()){
+		// new search
+		if (searchBean.isNewSearch()) {
 			sortViewParams.current_start = 1;
 			searchBean.setNewSearch(false);
-		}
-		else//paging
+		} else
+			// paging
 			searchBean.setCurrentPage(sortViewParams.current_start);
 	}
 

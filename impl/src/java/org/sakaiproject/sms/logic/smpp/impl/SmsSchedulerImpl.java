@@ -18,6 +18,8 @@
 
 package org.sakaiproject.sms.logic.smpp.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
@@ -30,8 +32,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	private boolean schedulerEnabled = true;// for unit testing only
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmsSchedulerImpl.class);
+	private static Log LOG = LogFactory.getLog(SmsSchedulerImpl.class);
 
 	public SmsCore smsCore = null;
 

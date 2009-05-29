@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Level;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -46,7 +45,6 @@ public class SmppAPITest extends AbstractBaseTestCase {
 		smsSmppImpl = new SmsSmppImpl();
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl.init();
-		smsSmppImpl.setLogLevel(Level.WARN);
 
 	}
 

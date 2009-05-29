@@ -27,7 +27,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -52,7 +53,7 @@ public class SmsBillingImpl implements SmsBilling {
 	// Transaction Type properties
 	private final Properties properties = new Properties();
 
-	private static Logger LOG = Logger.getLogger(SmsBillingImpl.class);
+	private static Log LOG = LogFactory.getLog(SmsBillingImpl.class);
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -220,7 +221,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the double
 	 */
-	public  Long convertAmountToCredits(Float amount) {
+	public Long convertAmountToCredits(Float amount) {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		Float result = (amount / config.getCreditCost());
@@ -236,7 +237,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the credit amount
 	 */
-	public  Float convertCreditsToAmount(long creditCount) {
+	public Float convertCreditsToAmount(long creditCount) {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		return config.getCreditCost() * creditCount;
@@ -263,7 +264,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the account credits
 	 */
-	public  int getAccountCredits(Long accountID) {
+	public int getAccountCredits(Long accountID) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -282,7 +283,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @throws SmsAccountNotFoundException
 	 *             the sms account not found exception
 	 */
-	public  Long getAccountID(String sakaiSiteID, String sakaiUserID)
+	public Long getAccountID(String sakaiSiteID, String sakaiUserID)
 			throws SmsAccountNotFoundException {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(sakaiSiteID, sakaiUserID);
@@ -308,8 +309,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the acc transactions
 	 */
-	public  Set getAccTransactions(Long accountID, Date startDate,
-			Date endDate) {
+	public Set getAccTransactions(Long accountID, Date startDate, Date endDate) {
 		// TODO Auto-generated method stub
 		return null;
 
@@ -323,7 +323,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the all site accounts
 	 */
-	public  Set getAllSiteAccounts(String sakaiSiteID) {
+	public Set getAllSiteAccounts(String sakaiSiteID) {
 		// TODO Auto-generated method stub
 		return null;
 
@@ -337,7 +337,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if insert account
 	 */
-	public  boolean insertAccount(String sakaiSiteID) {
+	public boolean insertAccount(String sakaiSiteID) {
 		return false;
 	}
 
@@ -352,8 +352,8 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @return true, if insert transaction the credit amount
 	 * 
 	 */
-	public  Boolean insertTransaction(Long accountID,
-			int transCodeID, int creditAmount) {
+	public Boolean insertTransaction(Long accountID, int transCodeID,
+			int creditAmount) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -563,32 +563,32 @@ public class SmsBillingImpl implements SmsBilling {
 		return true;
 	}
 
-	public  String getCancelCode() {
+	public String getCancelCode() {
 		return StringUtils.left(properties.getProperty("TRANS_CANCEL", "TCAN"),
 				5);
 	}
 
-	public  String getCancelReserveCode() {
+	public String getCancelReserveCode() {
 		return StringUtils.left(properties.getProperty("TRANS_CANCEL_RESERVE",
 				"RCAN"), 5);
 	}
 
-	public  String getCreditAccountCode() {
+	public String getCreditAccountCode() {
 		return StringUtils.left(properties.getProperty("TRANS_CREDIT_ACCOUNT",
 				"CRED"), 5);
 	}
 
-	public  String getDebitLateMessageCode() {
+	public String getDebitLateMessageCode() {
 		return StringUtils.left(properties.getProperty(
 				"TRANS_DEBIT_LATE_MESSAGE", "LATE"), 5);
 	}
 
-	public  String getReserveCreditsCode() {
+	public String getReserveCreditsCode() {
 		return StringUtils.left(properties.getProperty("TRANS_RESERVE_CREDITS",
 				"RES"), 5);
 	}
 
-	public  String getSettleDifferenceCode() {
+	public String getSettleDifferenceCode() {
 		return StringUtils.left(properties.getProperty(
 				"TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
 	}

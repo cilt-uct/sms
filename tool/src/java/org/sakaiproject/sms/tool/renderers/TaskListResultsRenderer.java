@@ -18,6 +18,8 @@
 
 package org.sakaiproject.sms.tool.renderers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
@@ -43,8 +45,7 @@ import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 
 public class TaskListResultsRenderer implements SearchResultsRenderer {
 
-	private final static org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(TaskListResultsRenderer.class);
+	private static Log LOG = LogFactory.getLog(TaskListResultsRenderer.class);
 
 	private SearchResultContainer<SmsTask> smsTaskList = new SearchResultContainer<SmsTask>(
 			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
@@ -112,7 +113,7 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-messages-delivered:", sortViewParams,
 					"messagesDelivered",
-					"sms.task-list-search-results.messages-delivered");			
+					"sms.task-list-search-results.messages-delivered");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-tool-name:", sortViewParams, "sakaiToolName",
 					"sms.task-list-search-results.tool.name");

@@ -18,7 +18,7 @@
         <artifactId>sms</artifactId>
         <version>0.8-SNAPSHOT</version><!--Sms.version-->
     </parent>
-    
+   <!--   --> 
    <dependencyManagement>
         <dependencies>
             <dependency>
@@ -29,7 +29,9 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+   
 	<dependencies>
+	
 		<!-- email dependencies -->
 		<dependency>
 			<groupId>javax.mail</groupId>

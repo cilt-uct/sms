@@ -18,6 +18,8 @@
 
 package org.sakaiproject.sms.tool.renderers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
@@ -36,8 +38,8 @@ import uk.org.ponder.rsf.components.UIOutput;
 
 public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 
-	private final static org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(TransactionLogResultsRenderer.class);
+	private static Log LOG = LogFactory
+			.getLog(TransactionLogResultsRenderer.class);
 
 	private SearchResultContainer<SmsTransaction> smsTransactions = new SearchResultContainer<SmsTransaction>(
 			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
@@ -97,8 +99,7 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 					"sms.transaction-log-search-results.account.no");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-transaction-task-id:", sortViewParams,
-					"smsTaskId",
-					"sms.transaction-log-search-results.task.id");
+					"smsTaskId", "sms.transaction-log-search-results.task.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-transaction-type", sortViewParams,
 					"transactionTypeCode",

@@ -89,9 +89,9 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
 		smsSmppImpl.init();
-		smsSmppImpl.setLogLevel(Level.WARN);
+
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
-		smsCoreImpl.setLoggingLevel(Level.WARN);
+
 		LOG.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
@@ -370,7 +370,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(0);
-		smsSmppImpl.setLogLevel(Level.OFF);
+
 		LOG.info("Disconnecting from server for fail test ");
 		smsSmppImpl.disconnectGateWay();
 		for (int i = 0; i < 5; i++) {

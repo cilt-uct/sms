@@ -67,12 +67,12 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsCoreImpl.setSmsTaskValidator(smsTaskValidatorImpl);
 		smsCoreImpl.setSmsBilling(smsBilling);
 		smsSmppImpl = new SmsSmppImpl();
-		smsSmppImpl.setLogLevel(Level.WARN);
+
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
-		smsCoreImpl.setLoggingLevel(Level.WARN);
+
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
 		smsSchedulerImpl.init();
 		LOG.setLevel(Level.WARN);

@@ -20,7 +20,8 @@ package org.sakaiproject.sms.tool.producers;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
@@ -41,9 +42,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	private SmsAccountLogic smsAccountLogic;
 	private NavBarRenderer navBarRenderer;
-	
-	private static Logger log = Logger.getLogger(BillingAdminProducer.class);
-	
+
+	private static Log LOG = LogFactory.getLog(BillingAdminProducer.class);
+
 	/**
 	 * @see uk.org.ponder.rsf.view.ComponentProducer#fillComponents(uk.org.ponder.rsf.components.UIContainer,
 	 *      uk.org.ponder.rsf.viewstate.ViewParameters,
@@ -92,7 +93,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 					account.getId().toString()));
 			UIOutput.make(entry, "account-no", account.getId().toString());
 			// TODO: Use Sakai services to get site and username
-			UIOutput.make(entry, "sakai-site", account.getSakaiSiteId() == null ? "" : account.getSakaiSiteId());
+			UIOutput.make(entry, "sakai-site",
+					account.getSakaiSiteId() == null ? "" : account
+							.getSakaiSiteId());
 			UIOutput.make(entry, "sakai-user",
 					account.getSakaiUserId() == null ? "" : account
 							.getSakaiUserId());

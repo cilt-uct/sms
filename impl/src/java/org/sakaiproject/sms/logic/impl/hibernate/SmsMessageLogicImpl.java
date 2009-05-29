@@ -174,7 +174,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 				getPageSize());
 		con.setTotalResultSetSize(new Long(messages.size()));
 		con.calculateAndSetPageResults(messages, searchBean.getCurrentPage());
-		log.debug(con.toString());
+		LOG.debug(con.toString());
 
 		return con;
 	}
@@ -225,7 +225,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		Criteria crit = smsDao.createCriteria(SmsMessage.class).createAlias(
 				"smsTask", "smsTask");
 
-		log.debug(searchBean.toString());
+		LOG.debug(searchBean.toString());
 		List<SmsMessage> messages = new ArrayList<SmsMessage>();
 		try {
 			// Message status
@@ -316,7 +316,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			}
 			hql.append(" and message.statusCode IN (:statusCodes) ");
 
-			log.debug("getSmsTasksFilteredByMessageStatus() HQL: "
+			LOG.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 					+ hql.toString());
 
 			QueryParameter[] queryParameters;
