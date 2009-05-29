@@ -35,6 +35,7 @@ import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -112,7 +113,27 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	                }
 	            }
 		 }
+		 task = anonymiseTask(task);
+		return task;
+	}
 
+	private SmsTask anonymiseTask(SmsTask task) {
+		Set<SmsMessage> messages = task.getSmsMessages();
+		if (messages == null)
+			return task;
+		
+		Set<SmsMessage> redacted = new HashSet<SmsMessage>();
+		Iterator<SmsMessage> iterator = messages.iterator();
+		while (iterator.hasNext()) {
+			SmsMessage message = iterator.next();
+			SmsMessage redMessage = new SmsMessage();
+			redMessage.setStatusCode(message.getStatusCode());
+			redMessage.setSakaiUserId(message.getSakaiUserId());
+			redMessage.setDateDelivered(message.getDateDelivered());
+			redMessage.setFailReason(message.getFailReason());
+			redacted.add(redMessage);
+		}
+		task.setSmsMessages(redacted);
 		return task;
 	}
 
