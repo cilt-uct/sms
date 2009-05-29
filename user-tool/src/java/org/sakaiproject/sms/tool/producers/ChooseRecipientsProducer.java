@@ -75,8 +75,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 		//view variables
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
-		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
-			
+		
+		if (! externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId )){
+			UIMessage.make(tofill, "error-account-disabled", "ui.error.not.allowed");
+		}else{
+			SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 			SmsParams smsParams = (SmsParams) viewparams;
 			SmsTask smsTask = new SmsTask();
 			if ( smsParams.id != null && ! "".equals(smsParams.id) ){
@@ -167,6 +170,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer, ViewPara
 			UICommand.make(tofill, "cancel", UIMessage.make("sms.general.cancel"));
 			UICommand.make(form, "continue", UIMessage.make("ui.recipients.choose.continue"), null)
 				.decorate(new UIIDStrategyDecorator("recipientsCmd"));
+		}
 		
 	}
 

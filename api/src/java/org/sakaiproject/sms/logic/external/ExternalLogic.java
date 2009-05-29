@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
@@ -38,6 +37,10 @@ public interface ExternalLogic {
 	// Allow sending of messages in site.
 	// Implies Create a new Sms task in current site
 	public final static String SMS_SEND = "sms.send";
+	/*
+	 * Retrieves the permission for site update TODO:Get this from sakai services
+	 */
+	public final static String SITE_UPDATE = "site.upd";
 
 	/**
 	 * Check if this user has super admin access

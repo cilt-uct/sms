@@ -7,7 +7,9 @@
   <!-- Binding  Beans -->
 
   <!--  Renderers -->
-  <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer" />
+  <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer">
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+  	</bean>
   <bean id="savedSelectionsRenderer" class="org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer" >
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
   </bean>

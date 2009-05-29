@@ -77,7 +77,7 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
 		
 				//Top links
-				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, null, null);
 				
 				//Show message
 				smsMessageRenderer.renderMessage(smsTask, tofill, "message:");

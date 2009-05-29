@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.renderers;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.tool.producers.SmsPermissions;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -12,24 +13,28 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class UserNavBarRenderer {
 	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+	
 	/**
-	 * Renders navigation bar
-	 * 
+	 * Renderer for the nav bar. If @param currentUserId AND @param currentSiteId are null or invalid, nav bar will not render the permissions link
 	 * @param tofill
-	 *            {@link UIContainer} to fill
 	 * @param divID
-	 *            ID of div
 	 * @param currentViewID
-	 *            View ID currently being viewed
-	 * @param b 
+	 * @param currentUserId Optional param, can be null
+	 * @param currentSiteId Optional param, can be null
 	 */
 	public void makeNavBar(UIContainer tofill, String divID,
-			String currentViewID) {
-		// TODO: Take permissions into account
+			String currentViewID, String currentUserId, String currentSiteId) {
+		if ( (currentSiteId != null && currentUserId !=null ) && externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SITE_UPDATE, currentSiteId )){
 		UIJointContainer joint = new UIJointContainer(tofill, divID,
 				"sms-navigation:");
+		
 		renderBranch(joint, "1", currentViewID, SmsPermissions.VIEW_ID,
 				"sms.navbar.permissions", false);
+		}
 	}
 	
 	private void renderBranch(UIJointContainer joint, String id,

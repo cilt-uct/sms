@@ -107,7 +107,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				String statusToShow = statusParams.status;
 		
 				//Top links
-				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
+				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, null, null);
 				
 				//Show message
 				smsMessageRenderer.renderMessage(smsTask, tofill, "message:");
