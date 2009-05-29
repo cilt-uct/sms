@@ -28,7 +28,7 @@ public class UserNavBarRenderer {
 	 */
 	public void makeNavBar(UIContainer tofill, String divID,
 			String currentViewID, String currentUserId, String currentSiteId) {
-		if ( (currentSiteId != null && currentUserId !=null ) && externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SITE_UPDATE, currentSiteId )){
+		if ( (currentSiteId != null && currentUserId !=null ) && externalLogic.isUserAllowedSiteUpdate(currentUserId, currentSiteId )){
 		UIJointContainer joint = new UIJointContainer(tofill, divID,
 				"sms-navigation:");
 		

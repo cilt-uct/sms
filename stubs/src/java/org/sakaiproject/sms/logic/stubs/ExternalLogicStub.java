@@ -280,4 +280,9 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

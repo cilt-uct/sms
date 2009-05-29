@@ -37,11 +37,7 @@ public interface ExternalLogic {
 	// Allow sending of messages in site.
 	// Implies Create a new Sms task in current site
 	public final static String SMS_SEND = "sms.send";
-	/*
-	 * Retrieves the permission for site update TODO:Get this from sakai services
-	 */
-	public final static String SITE_UPDATE = "site.upd";
-
+	
 	/**
 	 * Check if this user has super admin access
 	 * 
@@ -237,4 +233,15 @@ public interface ExternalLogic {
 	public void setUpSessionPermissions(String permissionPrefix);
 	
 	public Map<String, String> getUsersWithMobileNumbersOnly(String ref);
+	/**
+	 * Check if a user has permission to update a site
+	 * 
+	 * @param userId
+	 *            the internal user id (not username)
+	 * @param locationId
+	 *            a unique id which represents the current location of the user
+	 *            (entity reference)
+	 * @return true if allowed, false otherwise
+	 */
+	public boolean isUserAllowedSiteUpdate(String userId, String locationId);
 }

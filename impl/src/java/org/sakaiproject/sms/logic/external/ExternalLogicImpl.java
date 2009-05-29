@@ -75,7 +75,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	private static Log log = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
-
+	
 	private ServerConfigurationService serverConfigurationService = null;
 
 	public void setServerConfigurationService(
@@ -743,5 +743,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		
 		return userDetails;
+	}
+
+	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
+		return isUserAllowedInLocation(userId, SiteService.SECURE_UPDATE_SITE, locationId);
 	}
 }
