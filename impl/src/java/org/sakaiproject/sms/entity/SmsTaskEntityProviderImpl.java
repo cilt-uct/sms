@@ -38,6 +38,7 @@ import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
@@ -73,6 +74,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
+	}
+
+	private UserDirectoryService userDirectoryService;
+	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
+		this.userDirectoryService = userDirectoryService;
 	}
 
 
@@ -206,7 +212,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         developerHelperService.copyBean(task, current, 0, new String[] {"id", "creationDate"}, true);
         //TODO validate the task
         smsTaskLogic.persistSmsTask(task);
-
 	}
 
 	public void deleteEntity(EntityReference ref, Map<String, Object> params) {
@@ -270,14 +275,26 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		//Build smsTask object with received parameters
 		setPropertyFromParams(smsTask, params);
 		
-		if (smsTask.getSakaiSiteId() == null || smsTask.getSenderUserId() == null || smsTask.getSenderUserName() == null){
-			throw new IllegalArgumentException("ALL of these parameters need to be set: sakaiSiteId or senderUserId or senderUserName");
+		String userReference = developerHelperService.getCurrentUserReference();
+		String senderId = EntityReference.getIdFromRef(userReference);
+		
+		//Set sensitive sender info now
+		smsTask.setSenderUserId(senderId);
+		try {
+			smsTask.setSenderUserName(UserDirectoryService.getUser(senderId).getDisplayName());
+			log.info("User with id="+ senderId +" and name: "+UserDirectoryService.getUser(senderId).getDisplayName() + " attempting to save a new SMS.");
+		} catch (UserNotDefinedException e) {
+			//Don't exit just in case the sender id is valid but no name is set. Setting new task will fail at validation stage if this sender is not legit
+		}
+		
+		
+		if (smsTask.getSakaiSiteId() == null){
+			throw new IllegalArgumentException("sakaiSiteId cannot be null");
 		}
 		if (smsTask.getDeliveryEntityList() == null && smsTask.getSakaiUserIds() == null && smsTask.getDeliveryMobileNumbersSet() == null ){
 			throw new IllegalArgumentException("At least one of these parameters need to be set: deliveryMobileNumbersSet or sakaiUserIds or deliveryEntityList");
 		}
-		
-		String userReference = developerHelperService.getCurrentUserReference();
+
 		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(smsTask.getSakaiSiteId()));
          if (!allowedSend) {
              throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
