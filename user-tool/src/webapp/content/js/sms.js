@@ -752,7 +752,11 @@
 
     function smsParams(domElements) {
         var tempParams = [];
+        var includeSendDate = false;
         $.each(domElements, function(i, item) {
+            if( item === "dateToSend"){
+                includeSendDate = true;
+            }
             var val = $('[name=' + item + ']').val() ;
             if (val !== null && val !== '' && val !== undefined) {
                     tempParams.push({name:item, value:val});
@@ -778,8 +782,10 @@
         if ($("#statusType").val() === "EDIT") {
             tempParams.push({name:"id", value:$("#smsId").val()});
         }
-        //ALWAYS send through a schedule date.
-        tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
+        //send through a schedule date if dateToSend is included in @param domElements.
+        if( includeSendDate ){
+            tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
+        }
         if ($("#booleanExpiry:checked").length !== 0) {
             tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
         }
