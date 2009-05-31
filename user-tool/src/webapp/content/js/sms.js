@@ -555,7 +555,10 @@
 
         //Initialise the Individuals Tab
         if (var_getEveryoneInSite_participants.length > 16) {
-            $("#instructionsNames").show();       
+            $("#instructionsNames").show();
+            $(".autocompleteParent").click(function(){
+                $(".ac_input").focus();
+            });
         } else if (var_getEveryoneInSite_participants.length > 0) {
             $("#peopleListNamesSuggest")
                     .removeClass('first acfb-holder')
