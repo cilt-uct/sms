@@ -775,7 +775,6 @@
         if (copyMe !== null && copyMe) {
             tempParams.push({name:"copyMe", value:copyMe});
         }
-        tempParams.push({name:"messageBody", value:$("#messageBody").val()});
         if ($("#statusType").val() === "EDIT") {
             tempParams.push({name:"id", value:$("#smsId").val()});
         }

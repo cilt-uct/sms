@@ -131,9 +131,7 @@ public class SendSMSProducer implements ViewComponentProducer, ViewParamsReporte
 				UIForm form = UIForm.make(tofill, "form");
 				
 				//textarea
-				UIInput messageBody = UIInput.make(form, "form-box", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
-				messageBody.decorate(new UIIDStrategyDecorator("messageBody"));
-				messageBody.decorate(new UIFreeAttributeDecorator("name", "messageBody"));
+				UIInput.make(form, "messageBody", null, smsTask.getId() == null ? null : smsTask.getMessageBody());
 				
 				if (smsTask.getId() == null){
 					UIInternalLink smsAddRecipients = UIInternalLink.make(form, "form-add-recipients", UIMessage.make("ui.send.message.add"),

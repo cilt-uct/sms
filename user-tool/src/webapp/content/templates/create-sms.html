@@ -35,6 +35,7 @@
     </head>
     <body>
         <div class="portletBody">
+            <div rsf:id="navIntraTool:" class="navIntraTool"/>
             <h3 rsf:id="sms-header" class="insColor insBak insBorder">Create SMS</h3>
             <div rsf:id="message-for:*" class="alertMessage">
                 <ul style="margin:0px;">
@@ -54,7 +55,7 @@
                     Your message:
                 </h4>
                 <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <span style="font-weight:bold;" id="smsBoxCounter">0</span>/<span id="smsBoxCounterMax">160</span></div>
-        <textarea rsf:id="form-box" name="messageBody" cols="50" rows="7" class="" id="messageBody">
+        <textarea rsf:id="messageBody" name="" cols="50" rows="7" class="" id="">
                 </textarea>
                 <div>
                     <h3 class="addItem clear"><a rsf:id="form-add-recipients" href="choose-recipients.html" rel="" id="smsAddRecipients">Add recipients</a></h3>

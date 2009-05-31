@@ -33,7 +33,7 @@ $(document).ready(function() {
             deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
     });
     $("#calculateCmd").bind('click', function(){
-        var domElements = ["sakaiUserIds", "sakaiSiteId", "senderUserName", "senderUserId", "deliveryEntityList", "deliveryMobileNumbersSet"];
+        var domElements = ["sakaiUserIds", "sakaiSiteId","deliveryEntityList", "deliveryMobileNumbersSet"];
         $.fn.SMS.set.processCalculate(domElements, this);
     });
     $("[rel=closeFB]").click(function(){
