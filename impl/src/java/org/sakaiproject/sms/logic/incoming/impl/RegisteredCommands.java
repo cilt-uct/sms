@@ -29,7 +29,7 @@ public class RegisteredCommands {
 	}
 
 	public void addCommand(SmsCommand cmd) {
-		String commandKey = cmd.getCommandKey().toUpperCase();
+		final String commandKey = cmd.getCommandKey().toUpperCase();
 		commands.remove(commandKey);
 		commands.put(commandKey, cmd);
 		buildAliasMap(cmd);
@@ -49,7 +49,7 @@ public class RegisteredCommands {
 	}
 
 	private void buildAliasMap(SmsCommand cmd) {
-		String[] aliases = cmd.getAliases();
+		final String[] aliases = cmd.getAliases();
 		for (String alias : aliases) {
 			aliasMap.remove(alias); // remove any previous aliases
 			aliasMap.put(alias, cmd.getCommandKey());
@@ -57,11 +57,11 @@ public class RegisteredCommands {
 	}
 
 	private void removeAliasByCommandKey(String commandKey) {
-		Set<String> aliases = aliasMap.keySet();
-		List<String> toRemove = new ArrayList<String>();
+		final Set<String> aliases = aliasMap.keySet();
+		final List<String> toRemove = new ArrayList<String>();
 
 		for (String alias : aliases) {
-			String aliasCommand = aliasMap.get(alias);
+			final String aliasCommand = aliasMap.get(alias);
 			if (aliasCommand.equalsIgnoreCase(commandKey)) {
 				toRemove.add(alias);
 			}

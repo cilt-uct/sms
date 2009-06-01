@@ -46,7 +46,7 @@ import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
  */
 public class ExternalLogicStub implements ExternalLogic {
 
-	private static Log log = LogFactory.getLog(ExternalLogicStub.class);
+	private static final Log LOG = LogFactory.getLog(ExternalLogicStub.class);
 	/**
 	 * The default sakai_userId to be used in development mode.
 	 */
@@ -84,7 +84,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	public String[] sendEmailsToUsers(String from, String[] toUserIds,
 			String subject, String message) {
 
-		List<String> sent = new ArrayList<String>();
+		final List<String> sent = new ArrayList<String>();
 		for (String userId : toUserIds) {
 			sent.add(userId + "@example.com");
 		}
@@ -127,10 +127,10 @@ public class ExternalLogicStub implements ExternalLogic {
 	 * @return
 	 */
 	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
-		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+		final Set<SmsMessage> messages = new HashSet<SmsMessage>();
 
 		String[] users;
-		int numberOfMessages = (int) Math.round(Math.random() * 100);
+		final int numberOfMessages = (int) Math.round(Math.random() * 100);
 		users = new String[100];
 		String[] celnumbers = new String[100];
 		for (int i = 0; i < users.length; i++) {
@@ -139,7 +139,7 @@ public class ExternalLogicStub implements ExternalLogic {
 					+ (int) Math.round(Math.random() * 10000000);
 		}
 		for (int i = 0; i < numberOfMessages; i++) {
-			SmsMessage message = new SmsMessage();
+			final SmsMessage message = new SmsMessage();
 			message.setMobileNumber(celnumbers[(int) Math
 					.round(Math.random() * 99)]);
 			message.setSakaiUserId(users[(int) Math.round(Math.random() * 99)]);
@@ -158,10 +158,10 @@ public class ExternalLogicStub implements ExternalLogic {
 	// for testing purposes when running sms in jetty
 	private void sendEmailViaSmtpServer(String toAddress, String subject,
 			String body) {
-		String host = "127.0.0.1";
-		String from = "it3lmb@nwu.ac.za";
+		final String host = "127.0.0.1";
+		final String from = "it3lmb@nwu.ac.za";
 
-		log.debug("Sending email to:" + toAddress + " subject:" + subject
+		LOG.debug("Sending email to:" + toAddress + " subject:" + subject
 				+ " body:" + body);
 		// Get system properties
 		Properties properties = System.getProperties();
@@ -182,9 +182,9 @@ public class ExternalLogicStub implements ExternalLogic {
 			message.setText(body);
 			// Transport.send(message); disable email in jetty deployments
 		} catch (AddressException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 		// System.out.println("Message Send.....");
 
@@ -272,7 +272,7 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public void setUpSessionPermissions(String permissionPrefix) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {

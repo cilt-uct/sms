@@ -17,96 +17,104 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @SuppressWarnings("unchecked")
 public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
-	
-	private static Log LOG = LogFactory.getLog(SmsDaoImpl.class);
+
+	private final static Log LOG = LogFactory.getLog(SmsDaoImpl.class);
 
 	private PlatformTransactionManager transactionManager;
-	
-	private final DefaultTransactionDefinition defaultTransDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
-	
-	private final DefaultTransactionDefinition readOnlyDefaultTransDefinition = new DefaultTransactionDefinition(defaultTransDefinition);
-	
+
+	private final DefaultTransactionDefinition defaultTransDefinition = new DefaultTransactionDefinition(
+			TransactionDefinition.PROPAGATION_REQUIRED);
+
+	private final DefaultTransactionDefinition readOnlyDefaultTransDefinition = new DefaultTransactionDefinition(
+			defaultTransDefinition);
+
 	public SmsDaoImpl() {
 		readOnlyDefaultTransDefinition.setReadOnly(true);
 	}
-	
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+
+	public void setTransactionManager(
+			PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-	
+
 	@Override
-	public void save(Object obj) {
-		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
+	public void save(final Object obj) {
+		final TransactionStatus transaction = transactionManager
+				.getTransaction(defaultTransDefinition);
 		try {
 			super.save(obj);
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
-			LOG.error("HibernateException: " + ex);
+			LOG.error(ex.getMessage(), ex);
 			rollback(transaction);
 		} catch (Exception e) {
-			LOG.error("Exception: " + e);
+			LOG.error(e.getMessage(), e);
 			rollback(transaction);
 		}
 	}
 
 	@Override
-	public void delete(Object obj) {
-		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
+	public void delete(final Object obj) {
+		final TransactionStatus transaction = transactionManager
+				.getTransaction(defaultTransDefinition);
 		try {
 			super.delete(obj);
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
-			LOG.error("HibernateException: " + ex);
+			LOG.error(ex.getMessage(), ex);
 			rollback(transaction);
 		} catch (Exception e) {
-			LOG.error("Exception: " + e);
+			LOG.error(e.getMessage(), e);
 			rollback(transaction);
 		}
 	}
 
-	public List runQuery(String hql, QueryParameter... queryParameters) {
-		TransactionStatus transaction = transactionManager.getTransaction(readOnlyDefaultTransDefinition); 
-		
+	public List runQuery(final String hql, QueryParameter... queryParameters) {
+		final TransactionStatus transaction = transactionManager
+				.getTransaction(readOnlyDefaultTransDefinition);
+
 		Query query = buildQuery(hql, queryParameters);
-		List retrieved = query.list();
+		final List retrieved = query.list();
 		transactionManager.commit(transaction);
 		return retrieved;
 	}
-	
+
 	public int executeUpdate(String hql, QueryParameter... queryParameters) {
-		TransactionStatus transaction = transactionManager.getTransaction(defaultTransDefinition);
+		TransactionStatus transaction = transactionManager
+				.getTransaction(defaultTransDefinition);
 		int affected = 0;
 		try {
 			Query query = buildQuery(hql, queryParameters);
 			affected = query.executeUpdate();
 			transactionManager.commit(transaction);
 		} catch (HibernateException ex) {
-			LOG.error("HibernateException: " + ex);
+			LOG.error(ex.getMessage(), ex);
 			rollback(transaction);
 		} catch (Exception e) {
-			LOG.error("Exception: " + e);
+			LOG.error(e.getMessage(), e);
 			rollback(transaction);
 		}
-		
+
 		return affected;
 	}
-	
+
 	@Override
 	public Object findById(Class className, Serializable id) {
 		return super.findById(className, id);
 	}
-	
+
 	private Query buildQuery(String hql, QueryParameter... queryParameters) {
 		Query query = getSession().createQuery(hql);
-		
+
 		for (QueryParameter queryParameter : queryParameters) {
 			if (queryParameter.val instanceof Object[]) {
-				query.setParameterList(queryParameter.name, (Object[])queryParameter.val, queryParameter.type);
+				query.setParameterList(queryParameter.name,
+						(Object[]) queryParameter.val, queryParameter.type);
 			} else {
-				query.setParameter(queryParameter.name, queryParameter.val, queryParameter.type);	
+				query.setParameter(queryParameter.name, queryParameter.val,
+						queryParameter.type);
 			}
-			
-			
+
 		}
 		return query;
 	}
@@ -114,7 +122,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	public Criteria createCriteria(Class className) {
 		return getSession().createCriteria(className);
 	}
-	
+
 	private void rollback(TransactionStatus transaction) {
 		if (!transaction.isCompleted()) {
 			transactionManager.rollback(transaction);

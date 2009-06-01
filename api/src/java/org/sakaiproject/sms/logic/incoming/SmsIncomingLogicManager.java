@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
@@ -78,7 +78,7 @@ public interface SmsIncomingLogicManager {
 	 *            tool to generate message for
 	 * @return the assist message
 	 */
-	public String generateAssistMessage(ArrayList<String> matches);
+	public String generateAssistMessage(List<String> matches);
 
 	/**
 	 * Genereate help message for specific tool

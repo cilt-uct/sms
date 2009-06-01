@@ -6,14 +6,15 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class MultipleBodySmsCommand implements SmsCommand {
 
-	private static Log log = LogFactory.getLog(MultipleBodySmsCommand.class);
+	private static final Log LOG = LogFactory
+			.getLog(MultipleBodySmsCommand.class);
 
 	public String param1;
 	public String param2;
 
 	public String execute(String siteId, String userId, String mobileNr,
 			String... body) {
-		log.debug(getCommandKey() + " command called with parameters: ("
+		LOG.debug(getCommandKey() + " command called with parameters: ("
 				+ siteId + ", " + userId + ", " + body[0] + ", " + body[1]
 				+ ")");
 		param1 = body[0];
@@ -40,7 +41,7 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	public boolean isVisible() {
 		return true;
 	}

@@ -19,32 +19,25 @@ package org.sakaiproject.sms.logic.incoming;
 
 public class ParsedMessage {
 
-	private String command;
-	private String site;
-	private String body;
-	private String body_reply;
-	private String incomingUserId;
+	private String command = null;
+	private String site = null;
+	private String body = null;
+	private String bodyReply = null;
+	private String incomingUserId = null;
 
 	public ParsedMessage() {
-		this.site = null;
-		this.command = null;
-		this.body = null;
-		this.body_reply = null;
 
 	}
 
 	public ParsedMessage(String command) {
-		this.site = null;
+
 		this.command = command;
-		this.body = null;
-		this.body_reply = null;
+
 	}
 
 	public ParsedMessage(String command, String site) {
 		this.site = site;
 		this.command = command;
-		this.body = null;
-		this.body_reply = null;
 
 	}
 
@@ -52,7 +45,7 @@ public class ParsedMessage {
 		this.site = site;
 		this.command = command;
 		this.body = body;
-		this.body_reply = null;
+
 	}
 
 	public String getSite() {
@@ -75,12 +68,12 @@ public class ParsedMessage {
 		this.body = body;
 	}
 
-	public String getBody_reply() {
-		return body_reply;
+	public String getBodyReply() {
+		return bodyReply;
 	}
 
-	public void setBody_reply(String body_reply) {
-		this.body_reply = body_reply;
+	public void setBodyReply(String bodyReply) {
+		this.bodyReply = bodyReply;
 	}
 
 	public String getIncomingUserId() {

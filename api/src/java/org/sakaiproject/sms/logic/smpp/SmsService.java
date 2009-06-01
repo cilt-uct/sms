@@ -17,7 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -169,7 +168,7 @@ public interface SmsService {
 	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> validateTask(SmsTask smsTask);
+	public List<String> validateTask(SmsTask smsTask);
 
 	/**
 	 * Aborts the pending task.
@@ -218,25 +217,25 @@ public interface SmsService {
 	 *            message to send
 	 * @return an array of userIds SMS was sent to
 	 */
-	public String[] sendSmsToUserIds(String[] userIds, String fromId, String siteId,
-			String toolId, String message);
-	
+	public String[] sendSmsToUserIds(String[] userIds, String fromId,
+			String siteId, String toolId, String message);
+
 	/**
 	 * Send SMS to array of mobile numbers
 	 * 
 	 * @param mobileNrs
-	 * 				array of mobile numbers
+	 *            array of mobile numbers
 	 * @param fromId
-	 * 				user id to set as sender
+	 *            user id to set as sender
 	 * @param siteId
-	 * 				site id
+	 *            site id
 	 * @param toolId
-	 * 				tool id
+	 *            tool id
 	 * @param message
-	 * 				message to send
+	 *            message to send
 	 * @return an array of mobile numbers SMS was sent to
 	 */
-	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId, String siteId, String toolId, String message);
-	
-	
+	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId,
+			String siteId, String toolId, String message);
+
 }

@@ -29,12 +29,12 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  */
 public class SmsSchedulerTest extends AbstractBaseTestCase {
 
-	static SmsCoreImpl smsCoreImpl = null;
-	static SmsBillingImpl smsBilling = null;
-	static SmsSchedulerImpl smsSchedulerImpl = null;
-	static SmsSmppImpl smsSmppImpl = null;
-	static SmsConfigLogicImpl smsConfigLogic = null;
-	static StandaloneSmsDaoImpl hibernateUtil = null;
+	private static SmsCoreImpl smsCoreImpl = null;
+	private static SmsBillingImpl smsBilling = null;
+	private static SmsSchedulerImpl smsSchedulerImpl = null;
+	private static SmsSmppImpl smsSmppImpl = null;
+	private static SmsConfigLogicImpl smsConfigLogic = null;
+	private static StandaloneSmsDaoImpl hibernateUtil = null;
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger

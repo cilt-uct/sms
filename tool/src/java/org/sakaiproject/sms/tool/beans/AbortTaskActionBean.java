@@ -27,7 +27,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 
 public class AbortTaskActionBean {
 
-	private static Log LOG = LogFactory.getLog(AbortTaskActionBean.class);
+	private static final Log LOG = LogFactory.getLog(AbortTaskActionBean.class);
 
 	private String taskToAbort;
 	private SmsService smsService;

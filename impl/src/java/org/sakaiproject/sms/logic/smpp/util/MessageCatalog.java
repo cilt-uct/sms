@@ -21,6 +21,8 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
@@ -31,6 +33,8 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  * @created 15-Jan-2009
  */
 public abstract class MessageCatalog {
+
+	private final static Log LOG = LogFactory.getLog(MessageCatalog.class);
 
 	/**
 	 * Gets the message.
@@ -69,7 +73,7 @@ public abstract class MessageCatalog {
 	 * @return the string
 	 */
 	private static String get(String key, Object[] parameters) {
-		String message = get(key);
+		final String message = get(key);
 		if ((message == null) || (parameters == null)
 				|| (parameters.length == 0)) {
 			return message;
@@ -87,15 +91,15 @@ public abstract class MessageCatalog {
 	 * @return the string
 	 */
 	private static String get(String key) {
-		String bundleName = key.substring(0, key.indexOf('.'));
-		String messageKey = key.substring(key.indexOf('.') + 1);
+		final String bundleName = key.substring(0, key.indexOf('.'));
+		final String messageKey = key.substring(key.indexOf('.') + 1);
 		String message = null;
-		ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
+		final ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
 		if (bundle != null) {
 			try {
 				message = bundle.getString(messageKey);
 			} catch (MissingResourceException ex) {
-				ex.printStackTrace();
+				LOG.error(ex.getMessage(), ex);
 				message = SmsConstants.CATALOG_MESSAGE_NOT_FOUND;
 			}
 		}

@@ -51,9 +51,9 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 public class SmsBillingImpl implements SmsBilling {
 
 	// Transaction Type properties
-	private final Properties properties = new Properties();
+	private final static Properties PROPERTIES = new Properties();
 
-	private static Log LOG = LogFactory.getLog(SmsBillingImpl.class);
+	private final static Log LOG = LogFactory.getLog(SmsBillingImpl.class);
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -68,18 +68,19 @@ public class SmsBillingImpl implements SmsBilling {
 
 	public void init() {
 		try {
-			InputStream is = this.getClass().getResourceAsStream(
-					"/transaction_codes.properties");
-			if (is != null) {
-				properties.load(is);
+			final InputStream inputStream = this.getClass()
+					.getResourceAsStream("/transaction_codes.properties");
+			if (inputStream == null) {
+				PROPERTIES.load(new FileInputStream(
+						"transaction_codes.properties"));
+
 			} else {
-				properties.load((new FileInputStream(
-						"transaction_codes.properties")));
+				PROPERTIES.load(inputStream);
 			}
 		} catch (FileNotFoundException e) {
-			LOG.error(e);
+			LOG.error(e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.error(e);
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -89,20 +90,21 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param accountId
 	 * @param creditsToDebit
 	 */
-	public synchronized void creditAccount(Long accountId, long creditsToDebit) {
+	public synchronized void creditAccount(final Long accountId,
+			final long creditsToDebit) {
 
 		if (creditsToDebit < 0) {
 			throw new RuntimeException(
 					"The amount of credits supplied to debit an account must be positive");
 		}
 
-		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
+		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountId);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
 		smsTransaction.setTransactionCredits(Long.valueOf(creditsToDebit)
 				.intValue());
-		smsTransaction.setCreditBalance(((creditsToDebit)));
+		smsTransaction.setCreditBalance(creditsToDebit);
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(0L);
@@ -124,7 +126,6 @@ public class SmsBillingImpl implements SmsBilling {
 	 */
 	public synchronized void allocateCredits(Long accountID, int creditCount) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -185,7 +186,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 */
 	public synchronized boolean checkSufficientCredits(Long accountID,
 			Integer creditsRequired, boolean overDraftCheck) {
-		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
+		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountID);
 
 		// Account is null or disabled
@@ -222,9 +223,9 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @return the double
 	 */
 	public Long convertAmountToCredits(Float amount) {
-		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
+		final SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		Float result = (amount / config.getCreditCost());
+		final Float result = (amount / config.getCreditCost());
 		return result.longValue();
 	}
 
@@ -287,10 +288,11 @@ public class SmsBillingImpl implements SmsBilling {
 			throws SmsAccountNotFoundException {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(sakaiSiteID, sakaiUserID);
-		if (account != null) {
-			return account.getId();
-		} else {
+		if (account == null) {
 			throw new SmsAccountNotFoundException();
+
+		} else {
+			return account.getId();
 
 		}
 
@@ -352,10 +354,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @return true, if insert transaction the credit amount
 	 * 
 	 */
-	public Boolean insertTransaction(Long accountID, int transCodeID,
+	public boolean insertTransaction(Long accountID, int transCodeID,
 			int creditAmount) {
 		// TODO Auto-generated method stub
-		return null;
+		return true;
 	}
 
 	/**
@@ -394,7 +396,7 @@ public class SmsBillingImpl implements SmsBilling {
 		// Set transaction credit and Credits to negative number because we are
 		// reserving.
 		int credits = smsTask.getCreditEstimate() * -1;
-		smsTransaction.setCreditBalance(new Long(credits));
+		smsTransaction.setCreditBalance(Long.valueOf(credits));
 		smsTransaction.setTransactionCredits(credits);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(account);
@@ -512,7 +514,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int transactionCredits = origionalTransaction.getTransactionCredits()
 				* -1;// Reverse the sign cause we are deducting from the account
 		smsTransaction.setTransactionCredits(transactionCredits);
-		smsTransaction.setCreditBalance(new Long(transactionCredits));
+		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
 		smsTransaction.setSmsAccount(smsAccount);
@@ -534,7 +536,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if successful
 	 */
-	public synchronized boolean settleCreditDifference(SmsTask smsTask) {
+	public boolean settleCreditDifference(SmsTask smsTask) {
 		// we might want to use a separate account to pay when the overdraft is
 		// exceeded.
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
@@ -550,7 +552,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int creditEstimate = smsTask.getCreditEstimateInt();
 		int actualCreditsUsed = smsTask.getMessagesDelivered();
 		int transactionCredits = creditEstimate - actualCreditsUsed;
-		smsTransaction.setCreditBalance(new Long(transactionCredits));
+		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
 		smsTransaction.setTransactionCredits(transactionCredits);
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
@@ -564,32 +566,32 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	public String getCancelCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CANCEL", "TCAN"),
+		return StringUtils.left(PROPERTIES.getProperty("TRANS_CANCEL", "TCAN"),
 				5);
 	}
 
 	public String getCancelReserveCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CANCEL_RESERVE",
+		return StringUtils.left(PROPERTIES.getProperty("TRANS_CANCEL_RESERVE",
 				"RCAN"), 5);
 	}
 
 	public String getCreditAccountCode() {
-		return StringUtils.left(properties.getProperty("TRANS_CREDIT_ACCOUNT",
+		return StringUtils.left(PROPERTIES.getProperty("TRANS_CREDIT_ACCOUNT",
 				"CRED"), 5);
 	}
 
 	public String getDebitLateMessageCode() {
-		return StringUtils.left(properties.getProperty(
+		return StringUtils.left(PROPERTIES.getProperty(
 				"TRANS_DEBIT_LATE_MESSAGE", "LATE"), 5);
 	}
 
 	public String getReserveCreditsCode() {
-		return StringUtils.left(properties.getProperty("TRANS_RESERVE_CREDITS",
+		return StringUtils.left(PROPERTIES.getProperty("TRANS_RESERVE_CREDITS",
 				"RES"), 5);
 	}
 
 	public String getSettleDifferenceCode() {
-		return StringUtils.left(properties.getProperty(
+		return StringUtils.left(PROPERTIES.getProperty(
 				"TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
 	}
 

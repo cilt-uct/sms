@@ -28,8 +28,6 @@ import org.sakaiproject.api.common.type.Type;
 
 public class SakaiPersonManagerStub implements SakaiPersonManager {
 
-	private final String TEST_MOBILE_NUMBER = "0123456789";
-
 	public SakaiPerson create(String arg0, Type arg1) {
 		// TODO Auto-generated method stub
 		return null;
@@ -75,9 +73,7 @@ public class SakaiPersonManagerStub implements SakaiPersonManager {
 		if (arg0 == null) {
 			return null;
 		}
-		SakaiPersonStub sakaipersion = new SakaiPersonStub();
-
-		return sakaipersion;
+		return new SakaiPersonStub();
 	}
 
 	public Map<String, SakaiPerson> getSakaiPersons(Set<String> arg0, Type arg1) {

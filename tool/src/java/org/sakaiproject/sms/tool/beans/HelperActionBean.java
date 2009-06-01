@@ -40,7 +40,7 @@ public class HelperActionBean {
 
 	/**
 	 * Cancel Action
-	 *
+	 * 
 	 * @return {@link ActionResults}
 	 */
 	public String cancel() {
@@ -50,13 +50,13 @@ public class HelperActionBean {
 
 	/**
 	 * Calculates estimated group size and continues to next page
-	 *
+	 * 
 	 * @return {@link ActionResults}
 	 */
 	public String doContinue() {
 		if (smsTaskLocator.containsNew()) {
 
-			SmsTask smsTask = (SmsTask) smsTaskLocator
+			final SmsTask smsTask = (SmsTask) smsTaskLocator
 					.locateBean(SmsTaskLocator.NEW_1);
 			smsService.calculateEstimatedGroupSize(smsTask);
 
@@ -73,17 +73,18 @@ public class HelperActionBean {
 
 	/**
 	 * Checks sufficient credits and then inserts task
-	 *
+	 * 
 	 * @return {@link ActionResults}
 	 */
 	public String save() {
 		if (smsTaskLocator.containsNew()) {
-			SmsTask smsTask = (SmsTask) smsTaskLocator
+			final SmsTask smsTask = (SmsTask) smsTaskLocator
 					.locateBean(SmsTaskLocator.NEW_1);
 
 			// Check if credits available
-			boolean sufficientCredits = smsBilling.checkSufficientCredits(
-					smsTask.getSmsAccountId(), smsTask.getCreditEstimate(),false);
+			final boolean sufficientCredits = smsBilling
+					.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
+							.getCreditEstimate(), false);
 			if (sufficientCredits) {
 				// do sending
 				try {

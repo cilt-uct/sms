@@ -47,11 +47,11 @@ public class DownloadReportViewParams extends SimpleViewParameters {
 
 	public DownloadReportViewParams(String viewID, String sourceView,
 			String taskId, String dateFrom, String dateTo, String number,
-			String orderBy, String sender, String sortDirection,
-			String status,Integer messageTypeId, String toolName, String transactionType) {
+			String orderBy, String sender, String sortDirection, String status,
+			Integer messageTypeId, String toolName, String transactionType) {
 		super();
 		this.viewID = viewID;
-		this.messageTypeId=messageTypeId;
+		this.messageTypeId = messageTypeId;
 		this.sourceView = sourceView;
 		this.taskId = taskId;
 		this.dateFrom = dateFrom;
@@ -80,8 +80,9 @@ public class DownloadReportViewParams extends SimpleViewParameters {
 			throw new RuntimeException("Failed to parse date string");
 		}
 
-		return new SearchFilterBean(number,messageTypeId,status, taskId, dateFromDate,
-				dateToDate, toolName, sender, new Integer(1), orderBy, sortDirection);
+		return new SearchFilterBean(number, messageTypeId, status, taskId,
+				dateFromDate, dateToDate, toolName, sender, Integer.valueOf(1),
+				orderBy, sortDirection);
 	}
 
 }

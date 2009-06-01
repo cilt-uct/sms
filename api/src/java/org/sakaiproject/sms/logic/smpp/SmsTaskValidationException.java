@@ -18,7 +18,7 @@
 
 package org.sakaiproject.sms.logic.smpp;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Exception that will be thrown when there are validation exceptions for and
@@ -31,16 +31,16 @@ import java.util.ArrayList;
 public class SmsTaskValidationException extends Exception {
 
 	/** The error messages. */
-	private ArrayList<String> errorMessages;
+	private final List<String> errorMessages;
 
 	/** The Constant newLineChar. */
-	private final static String newLineChar = "\n";
+	private final static String NEWLINECHAR = "\n";
 
 	/** The Constant lineSpace. */
-	private final static String lineSpace = " ";
+	private final static String LINESPACE = " ";
 
 	/** The Constant format. */
-	private final static String format = newLineChar + lineSpace;
+	private final static String FORMAT = NEWLINECHAR + LINESPACE;
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -51,8 +51,7 @@ public class SmsTaskValidationException extends Exception {
 	 * @param errors
 	 *            the errors
 	 */
-	public SmsTaskValidationException(ArrayList<String> errorMessages,
-			String msg) {
+	public SmsTaskValidationException(List<String> errorMessages, String msg) {
 		super(msg);
 		this.errorMessages = errorMessages;
 	}
@@ -63,11 +62,11 @@ public class SmsTaskValidationException extends Exception {
 	 * @return the error messages as a block string.
 	 */
 	public String getErrorMessagesAsBlock() {
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder stringBuilder = new StringBuilder();
 		for (String error : errorMessages) {
-			sb.append(format).append(error);
+			stringBuilder.append(FORMAT).append(error);
 		}
-		return sb.toString();
+		return stringBuilder.toString();
 	}
 
 	/**
@@ -75,7 +74,7 @@ public class SmsTaskValidationException extends Exception {
 	 * 
 	 * @return the error messages
 	 */
-	public ArrayList<String> getErrorMessages() {
+	public List<String> getErrorMessages() {
 		return errorMessages;
 	}
 
@@ -85,7 +84,7 @@ public class SmsTaskValidationException extends Exception {
 	 * @return true, if successful
 	 */
 	public boolean hasErrorMessages() {
-		return (errorMessages == null || errorMessages.size() == 0);
+		return (errorMessages == null || errorMessages.isEmpty());
 	}
 
 }

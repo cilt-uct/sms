@@ -46,7 +46,6 @@ public class SmsSystemConfigLocator implements BeanLocator {
 		if (togo == null) {
 			if (name.startsWith(NEW_PREFIX)) {
 				togo = new SmsConfig();
-			} else {
 			}
 			togo = smsConfigLogic.getOrCreateSystemSmsConfig();
 			delivered.put(name, togo);

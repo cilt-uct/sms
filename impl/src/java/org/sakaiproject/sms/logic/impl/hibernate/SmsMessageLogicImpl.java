@@ -24,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.MatchMode;
@@ -55,6 +57,8 @@ import org.sakaiproject.sms.util.DateUtil;
 @SuppressWarnings("unchecked")
 public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
+	private static final Log LOG = LogFactory.getLog(SmsMessageLogicImpl.class);
+
 	private ExternalLogic externalLogic;
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
@@ -85,8 +89,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	 * @return List of SmsMessage objects
 	 */
 	public List<SmsMessage> getAllSmsMessages() {
-		List<SmsMessage> messages = smsDao.runQuery("from SmsMessage");
-		return messages;
+		return smsDao.runQuery("from SmsMessage");
 	}
 
 	/**
@@ -120,7 +123,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	 */
 	public SmsMessage getNewTestSmsMessageInstance(String mobileNumber,
 			String messageBody) {
-		SmsTask smsTask = new SmsTask();
+		final SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(1l);
 		smsTask.setDateCreated(new Date(System.currentTimeMillis()));
@@ -138,14 +141,14 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		smsTask.setDeliveryGroupId("SakaiGroupID");
 		smsTask.setDeliveryGroupName("SakaiGroupName");
 		smsTask.setCreditEstimate(1);
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		smsTask.setDateToExpire(cal.getTime());
 
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
-		SmsMessage smsMessage = new SmsMessage();
+		final SmsMessage smsMessage = new SmsMessage();
 		smsMessage.setSmsTask(smsTask);
 		smsMessage.setMobileNumber(mobileNumber);
 		smsMessage.setMessageBody(messageBody);
@@ -169,10 +172,10 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	public SearchResultContainer<SmsMessage> getPagedSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
 
-		List<SmsMessage> messages = getSmsMessagesForCriteria(searchBean);
+		final List<SmsMessage> messages = getSmsMessagesForCriteria(searchBean);
 		SearchResultContainer<SmsMessage> con = new SearchResultContainer<SmsMessage>(
 				getPageSize());
-		con.setTotalResultSetSize(new Long(messages.size()));
+		con.setTotalResultSetSize(Long.valueOf(messages.size()));
 		con.calculateAndSetPageResults(messages, searchBean.getCurrentPage());
 		LOG.debug(con.toString());
 
@@ -183,10 +186,11 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
-		if (smsConfig == null)
+		if (smsConfig == null) {
 			return SmsConstants.DEFAULT_PAGE_SIZE;
-		else
+		} else {
 			return smsConfig.getPagingSize();
+		}
 	}
 
 	/**
@@ -214,7 +218,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		List<SmsMessage> messages = smsDao.runQuery(hql, new QueryParameter(
 				"smscMessageId", smscMessageId, Hibernate.STRING),
 				new QueryParameter("smscID", smscID, Hibernate.STRING));
-		if (messages != null && messages.size() > 0) {
+		if (messages != null && !messages.isEmpty()) {
 			return messages.get(0);
 		}
 		return null;
@@ -238,8 +242,8 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			// Task Id
 			if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
-				crit.add(Restrictions.like("smsTask.id", new Long(searchBean
-						.getTaskId())));
+				crit.add(Restrictions.like("smsTask.id", Long
+						.valueOf(searchBean.getTaskId())));
 			}
 
 			// Date to send start
@@ -321,10 +325,10 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
 			QueryParameter[] queryParameters;
 
-			if (smsTaskId != null) {
-				queryParameters = new QueryParameter[2];
-			} else {
+			if (smsTaskId == null) {
 				queryParameters = new QueryParameter[1];
+			} else {
+				queryParameters = new QueryParameter[2];
 			}
 
 			queryParameters[0] = new QueryParameter("statusCodes", statusCodes,

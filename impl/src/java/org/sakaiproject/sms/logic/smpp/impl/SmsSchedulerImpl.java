@@ -28,19 +28,23 @@ import org.springframework.util.Assert;
 
 public class SmsSchedulerImpl implements SmsScheduler {
 
-	SmsConfig smsConfig = null;
+	private SmsConfig smsConfig = null;
+
+	public SmsConfig getSmsConfig() {
+		return smsConfig;
+	}
+
+	public void setSmsConfig(SmsConfig smsConfig) {
+		this.smsConfig = smsConfig;
+	}
 
 	private boolean schedulerEnabled = true;// for unit testing only
 
-	private static Log LOG = LogFactory.getLog(SmsSchedulerImpl.class);
+	private static final Log LOG = LogFactory.getLog(SmsSchedulerImpl.class);
 
 	public SmsCore smsCore = null;
 
 	public SmsSchedulerThread smsSchedulerThread = null;
-
-	public SmsSchedulerImpl() {
-
-	}
 
 	private HibernateLogicLocator hibernateLogicLocator = null;
 
@@ -55,10 +59,10 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	public void init() {
 		Assert.notNull(smsCore);
-		smsConfig = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSystemSmsConfig();
+		setSmsConfig(hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig());
 		smsSchedulerThread = new SmsSchedulerThread();
-		System.out.println("Init of SmsScheduler complete");
+		LOG.info("Init of SmsScheduler complete");
 
 	}
 
@@ -79,12 +83,21 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	private class SmsSchedulerThread implements Runnable {
 
-		boolean stopScheduler = false;
-		Thread t;
+		public boolean stopScheduler = false;
+
+		private Thread thread;
+
+		public Thread getThread() {
+			return thread;
+		}
+
+		public void setThread(Thread thread) {
+			this.thread = thread;
+		}
 
 		SmsSchedulerThread() {
-			t = new Thread(this);
-			t.start();
+			setThread(new Thread(this));
+			getThread().start();
 		}
 
 		public void run() {
@@ -92,7 +105,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		}
 
 		public void stop() {
-			t.interrupt();
+			getThread().interrupt();
 		}
 
 		public void work() {
@@ -107,7 +120,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					smsCore.checkAndSetTasksCompleted();
 					smsCore.processVeryLateDeliveryReports();
 
-					Thread.sleep(smsConfig.getSchedulerInterval() * 1000);
+					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000);
 				}
 			} catch (InterruptedException e) {
 				// no need to log the error
@@ -119,7 +132,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 	}
 
 	public void setInterval(int seconds) {
-		smsConfig.setSchedulerInterval(seconds);
+		getSmsConfig().setSchedulerInterval(seconds);
 	}
 
 	public void startSmsScheduler() {

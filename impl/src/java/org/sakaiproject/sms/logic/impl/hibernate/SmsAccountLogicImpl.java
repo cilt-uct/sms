@@ -18,13 +18,10 @@
 
 package org.sakaiproject.sms.logic.impl.hibernate;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Currency;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.hibernate.Hibernate;
 import org.sakaiproject.sms.logic.SmsLogic;
@@ -59,8 +56,9 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-	
+
 	private SmsBilling smsBilling;
+
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
 	}
@@ -89,8 +87,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @return List of SmsAccount objects
 	 */
 	public List<SmsAccount> getAllSmsAccounts() {
-		List<SmsAccount> accounts = smsDao.runQuery("from SmsAccount");
-		return accounts;
+		return smsDao.runQuery("from SmsAccount");
 	}
 
 	/**
@@ -120,7 +117,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @return
 	 */
 	private boolean hasUniqueSakaiSiteId(SmsAccount smsAccount) {
-		SmsAccount accBySite = getAccountBySakaiSiteId(smsAccount
+		final SmsAccount accBySite = getAccountBySakaiSiteId(smsAccount
 				.getSakaiSiteId());
 
 		if (accBySite != null && !accBySite.getId().equals(smsAccount.getId())) {
@@ -137,7 +134,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @return
 	 */
 	private boolean hasUniqueSakaiUserId(SmsAccount smsAccount) {
-		SmsAccount accByUser = getAccountBySakaiUserId(smsAccount
+		final SmsAccount accByUser = getAccountBySakaiUserId(smsAccount
 				.getSakaiUserId());
 
 		if (accByUser != null && !accByUser.getId().equals(smsAccount.getId())) {
@@ -158,7 +155,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	private SmsAccount insertTestSmsAccount(String sakaiSiteID,
 			String sakaiUserID) {
 
-		SmsAccount smsAccount = new SmsAccount();
+		final SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId(sakaiUserID);
 		smsAccount.setSakaiSiteId(sakaiSiteID);
 		smsAccount.setMessageTypeCode("3");
@@ -197,7 +194,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 */
 	public synchronized SmsAccount getSmsAccount(String sakaiSiteId,
 			String SakaiUserId) {
-		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
+		final SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
 		SmsAccount account = null;
@@ -258,7 +255,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 						sakaiSiteId, Hibernate.STRING), new QueryParameter(
 						"today", new Date(), Hibernate.DATE));
 
-		if (accounts != null && accounts.size() > 0) {
+		if (accounts != null && !accounts.isEmpty()) {
 			account = accounts.get(0);
 		}
 		return account;
@@ -286,7 +283,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 				.runQuery(hql.toString(), new QueryParameter("today",
 						new Date(), Hibernate.DATE), new QueryParameter(
 						"sakaiUserId", sakaiUserId, Hibernate.STRING));
-		if (accounts != null && accounts.size() > 0) {
+		if (accounts != null && !accounts.isEmpty()) {
 			account = accounts.get(0);
 		}
 		return account;
@@ -334,7 +331,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	public float getAccountBalance(Long credits) {
 		float balance = 0F;
-		if ( credits != null ){
+		if (credits != null) {
 			balance = smsBilling.convertCreditsToAmount(credits);
 		}
 		return balance;

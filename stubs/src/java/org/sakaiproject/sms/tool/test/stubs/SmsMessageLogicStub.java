@@ -55,7 +55,7 @@ public class SmsMessageLogicStub implements SmsMessageLogic {
 
 	public SmsMessage getNewTestSmsMessageInstance(String mobileNumber,
 			String messageBody) {
-		SmsTask smsTask = new SmsTask();
+		final SmsTask smsTask = new SmsTask();
 		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(1l);
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));

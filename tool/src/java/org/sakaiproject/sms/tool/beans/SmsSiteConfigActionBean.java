@@ -28,12 +28,13 @@ import org.springframework.util.Assert;
 
 public class SmsSiteConfigActionBean {
 
-	private static Log log = LogFactory.getLog(SmsSiteConfigActionBean.class);
+	private static final Log LOG = LogFactory
+			.getLog(SmsSiteConfigActionBean.class);
 
 	private SmsConfigLocator smsConfigLocator;
 	private SmsConfigLogic smsConfigLogic;
 	private ExternalLogic externalLogic;
-	
+
 	public void setSmsConfigLocator(SmsConfigLocator smsConfigLocator) {
 		this.smsConfigLocator = smsConfigLocator;
 	}
@@ -45,7 +46,7 @@ public class SmsSiteConfigActionBean {
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
+
 	public void init() {
 		Assert.notNull(smsConfigLocator);
 		Assert.notNull(smsConfigLogic);
@@ -54,15 +55,15 @@ public class SmsSiteConfigActionBean {
 
 	public String save() {
 
-		SmsConfig smsConfig = (SmsConfig) smsConfigLocator
+		final SmsConfig smsConfig = (SmsConfig) smsConfigLocator
 				.locateBean(externalLogic.getCurrentSiteId());
-		
+
 		// TODO: find out if this should be the case
 		// if(smsConfig.getSmsEnabled().equals(Boolean.FALSE))
 		// smsConfig.setNotificationEmail("");
 
-		if (log.isInfoEnabled()) {
-			log.info("Persisting smsConfig");
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Persisting smsConfig");
 		}
 
 		smsConfigLogic.persistSmsConfig(smsConfig);

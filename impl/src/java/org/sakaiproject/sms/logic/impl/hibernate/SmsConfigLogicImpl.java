@@ -62,8 +62,8 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 * @return List of SmsConfig objects
 	 */
 	public List<SmsConfig> getAllSmsConfig() {
-		List<SmsConfig> configs = smsDao.runQuery("from SmsConfig");
-		return configs;
+		return smsDao.runQuery("from SmsConfig");
+
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 * @return the sms config by sakai site id
 	 */
 	public SmsConfig getOrCreateSmsConfigBySakaiSiteId(String sakaiSiteId) {
-		List<SmsConfig> configs = smsDao.runQuery(
+		final List<SmsConfig> configs = smsDao.runQuery(
 				"from SmsConfig conf where conf.sakaiSiteId = :id",
 				new QueryParameter("id", sakaiSiteId, Hibernate.STRING));
 		SmsConfig config = null;
@@ -109,7 +109,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	}
 
 	public SmsConfig createDefaultSmsConfig(String sakaiSiteId) {
-		SmsConfig config = new SmsConfig();
+		final SmsConfig config = new SmsConfig();
 
 		// Settings for the Sakai instance
 		if (sakaiSiteId != null && sakaiSiteId.equals("")) {
@@ -129,10 +129,6 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 			// Setting for each site
 			// config.setSakaiToolId("DummyToolId");
 			config.setOverdraftLimit(SmsConstants.OVERDRAFT_LIMIT);
-			config.setNotificationEmail(SmsConstants.NOTIFICATION_EMAIL);
-			config
-					.setNotificationEmailBilling("notificationBilling@instution.com");
-			config.setNotificationEmailSent("notificationSent@instution.com");
 			config.setPagingSize(SmsConstants.DEFAULT_PAGE_SIZE);
 			config.setReceiveIncomingEnabled(true);
 			config.setSendSmsEnabled(true);
@@ -153,10 +149,10 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 * @return the sms config by sakai tool id
 	 */
 	public SmsConfig getSmsConfigBySakaiToolId(String id) {
-		String hql = "from SmsConfig conf where conf.sakaiToolId = :id";
+		final String hql = "from SmsConfig conf where conf.sakaiToolId = :id";
 
-		List<SmsConfig> configs = smsDao.runQuery(hql, new QueryParameter("id",
-				id, Hibernate.STRING));
+		final List<SmsConfig> configs = smsDao.runQuery(hql,
+				new QueryParameter("id", id, Hibernate.STRING));
 		SmsConfig config = null;
 
 		if (configs.size() == 1) {

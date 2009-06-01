@@ -126,7 +126,7 @@ public class NumberEditorTest extends TestCase {
 		assertNotNull(editor.getValue());
 		assertTrue(editor.getValue() instanceof Integer);
 		Integer value = (Integer) editor.getValue();
-		assertEquals(new Integer(200), value);
+		assertEquals(Integer.valueOf(200), value);
 	}
 
 	/**

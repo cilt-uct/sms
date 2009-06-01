@@ -105,7 +105,7 @@ public class IncomingLogicManagerTest extends TestCase {
 
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertEquals("CREATE", manager.process("create " + TEST_SITE + " body",
-				TEST_MOBILE).getBody_reply());
+				TEST_MOBILE).getBodyReply());
 	}
 
 	private String loadPropertiesFile(final String name) {
@@ -113,12 +113,13 @@ public class IncomingLogicManagerTest extends TestCase {
 		try {
 			InputStream is = this.getClass().getResourceAsStream("/" + name);
 			InputStreamReader input = new InputStreamReader(is);
-			BufferedReader jj = new BufferedReader(input);
+			BufferedReader bufferedReader = new BufferedReader(input);
 
-			while (jj.ready()) {
-				fileContents += jj.readLine();
+			while (bufferedReader.ready()) {
+				fileContents += bufferedReader.readLine();
 
 			}
+			bufferedReader.close();
 
 		} catch (Exception e) {
 
@@ -159,7 +160,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertTrue(manager.isValidCommand("help"));
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
 		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
-				.getBody_reply());
+				.getBodyReply());
 	}
 
 	public void testGenerateAssistMessage() {
@@ -185,16 +186,16 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	public void testHelpMessage() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
-		assertEquals(createCmd.getHelpMessage(), msg.getBody_reply());
+		assertEquals(createCmd.getHelpMessage(), msg.getBodyReply());
 
 		msg = manager.process("UPDATE", TEST_MOBILE);
-		assertEquals(updateCmd.getHelpMessage(), msg.getBody_reply());
+		assertEquals(updateCmd.getHelpMessage(), msg.getBodyReply());
 	}
 
 	public void testMultipleBody() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process("MULTIPLE " + TEST_SITE
 				+ " PARAM1 PARAM2", TEST_MOBILE);
-		assertEquals("MULTIPLE", msg.getBody_reply());
+		assertEquals("MULTIPLE", msg.getBodyReply());
 		assertEquals("PARAM1", multipleCmd.param1);
 		assertEquals("PARAM2", multipleCmd.param2);
 	}
@@ -202,7 +203,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	public void testMultipleBodyInvalid() throws MoDisabledForSiteException {
 		ParsedMessage msg = manager.process(
 				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
-		assertEquals("MULTIPLE HELP", msg.getBody_reply());
+		assertEquals("MULTIPLE HELP", msg.getBodyReply());
 	}
 
 	/**
@@ -212,7 +213,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
 		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
-				.getBody_reply());
+				.getBodyReply());
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class IncomingLogicManagerTest extends TestCase {
 			throws MoDisabledForSiteException {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE, TEST_MOBILE);
-		assertEquals(null, msg.getBody_reply());
+		assertEquals(null, msg.getBodyReply());
 	}
 
 	/**
@@ -233,7 +234,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE + " param1",
 				TEST_MOBILE);
-		assertEquals(null, msg.getBody_reply());
+		assertEquals(null, msg.getBodyReply());
 	}
 
 	/**

@@ -32,20 +32,19 @@ import org.sakaiproject.sms.model.hibernate.BaseModel;
  * @version 1.0
  * @created 08-Dec-2008
  */
-public class SearchResultContainer<T extends BaseModel> {	
-	
+public class SearchResultContainer<T extends BaseModel> {
+
 	/**
 	 * The page size set as an option in sms config
 	 */
 	private int pageSize = 10;
-	
+
 	/** The total result set size. */
 	private Long totalResultSetSize;
 
 	/** The page results. */
 	private List<T> pageResults;
 
-	
 	public SearchResultContainer(int pageSize) {
 		super();
 		this.pageSize = pageSize;
@@ -79,12 +78,12 @@ public class SearchResultContainer<T extends BaseModel> {
 		if ((totalResultSetSize.longValue() % pageSize) > 0) {
 			paratialPage = 1;
 		}
-		int pageNumber = (int) (totalResultSetSize.longValue() / pageSize)
+		final int pageNumber = (int) (totalResultSetSize.longValue() / pageSize)
 				+ paratialPage;
-		
-		if(pageNumber == 0)
+
+		if (pageNumber == 0)
 			return 1;
-		
+
 		return pageNumber;
 	}
 
@@ -109,14 +108,13 @@ public class SearchResultContainer<T extends BaseModel> {
 	public void calculateAndSetPageResults(List<T> fullResultSet,
 			Integer currentPage) {
 
-		if (fullResultSet == null || fullResultSet.size() == 0) {
+		if (fullResultSet == null || fullResultSet.isEmpty()) {
 			// Make it an empty list
 			pageResults = new ArrayList<T>();
 			return;
 		}
 
-		int indexStart = (currentPage * pageSize)
-				- pageSize;
+		final int indexStart = (currentPage * pageSize) - pageSize;
 		int indexEnd = indexStart + pageSize;
 
 		if (indexEnd > fullResultSet.size()) {
@@ -129,7 +127,7 @@ public class SearchResultContainer<T extends BaseModel> {
 
 	@Override
 	public String toString() {
-		StringBuffer retStr = new StringBuffer("");
+		final StringBuffer retStr = new StringBuffer("");
 
 		retStr.append("\n\n----------\n");
 		retStr.append("Results\n");

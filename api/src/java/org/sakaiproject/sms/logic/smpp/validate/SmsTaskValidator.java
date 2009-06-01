@@ -1,13 +1,14 @@
 package org.sakaiproject.sms.logic.smpp.validate;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public interface SmsTaskValidator {
 
-	public ArrayList<String> checkSufficientCredits(SmsTask smsTask,boolean overDraftCheck);
+	public List<String> checkSufficientCredits(SmsTask smsTask,
+			boolean overDraftCheck);
 
-	public ArrayList<String> validateInsertTask(SmsTask smsTask);
+	public List<String> validateInsertTask(SmsTask smsTask);
 
 }

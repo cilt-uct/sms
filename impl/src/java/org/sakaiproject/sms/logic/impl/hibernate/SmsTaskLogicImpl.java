@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.MatchMode;
@@ -52,6 +54,8 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 @SuppressWarnings("unchecked")
 public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
+
+	private static final Log LOG = LogFactory.getLog(SmsTaskLogicImpl.class);
 
 	private ExternalLogic externalLogic;
 
@@ -94,9 +98,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * @return List of SmsTask objects
 	 */
 	public List<SmsTask> getAllSmsTask() {
-		List<SmsTask> tasks = smsDao
-				.runQuery("from SmsTask ORDER BY DATE_TO_SEND DESC");
-		return tasks;
+		return smsDao.runQuery("from SmsTask ORDER BY DATE_TO_SEND DESC");
 	}
 
 	/**
@@ -119,12 +121,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public SmsTask getNextSmsTask() {
-		StringBuilder hql = new StringBuilder();
+		final StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.messageTypeId = (:messageTypeId) ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
 		hql.append(" order by task.messageTypeId ,task.dateToSend");
-		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
+		final List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 				new QueryParameter("today", getDelayedCurrentDate(10),
 						Hibernate.TIMESTAMP), new QueryParameter(
 						"messageTypeId",
@@ -136,7 +138,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						Hibernate.STRING));
 
 		LOG.debug("getNextSmsTask() HQL: " + hql);
-		if (tasks != null && tasks.size() > 0) {
+		if (tasks != null && !tasks.isEmpty()) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
 			return tasks.get(0);
 		}
@@ -166,11 +168,11 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	public SearchResultContainer<SmsTask> getPagedSmsTasksForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
 
-		List<SmsTask> tasks = getSmsTasksForCriteria(searchBean);
+		final List<SmsTask> tasks = getSmsTasksForCriteria(searchBean);
 
-		SearchResultContainer<SmsTask> container = new SearchResultContainer<SmsTask>(
+		final SearchResultContainer<SmsTask> container = new SearchResultContainer<SmsTask>(
 				getPageSize());
-		container.setTotalResultSetSize(new Long(tasks.size()));
+		container.setTotalResultSetSize(Long.valueOf(tasks.size()));
 		container
 				.calculateAndSetPageResults(tasks, searchBean.getCurrentPage());
 
@@ -247,10 +249,11 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		SmsConfig smsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(
 						externalLogic.getCurrentSiteId());
-		if (smsConfig == null)
+		if (smsConfig == null) {
 			return SmsConstants.DEFAULT_PAGE_SIZE;
-		else
+		} else {
 			return smsConfig.getPagingSize();
+		}
 	}
 
 	/**
@@ -326,7 +329,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						Hibernate.INTEGER));
 
 		LOG.debug("processMOTasks() HQL: " + hql);
-		if (tasks != null && tasks.size() > 0) {
+		if (tasks != null && !tasks.isEmpty()) {
 			// Gets the oldest dateToSend. I.e the first to be processed.
 			return tasks;
 		}

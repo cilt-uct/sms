@@ -17,7 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,7 +48,7 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 public class SmsServiceImpl implements SmsService {
 
-	private static Log log = LogFactory.getLog(SmsServiceImpl.class);
+	private final static Log log = LogFactory.getLog(SmsServiceImpl.class);
 
 	public SmsCore smsCore = null;
 
@@ -196,7 +195,7 @@ public class SmsServiceImpl implements SmsService {
 	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> validateTask(SmsTask smsTask) {
+	public List<String> validateTask(SmsTask smsTask) {
 		return smsTaskValidator.validateInsertTask(smsTask);
 	}
 
@@ -247,18 +246,21 @@ public class SmsServiceImpl implements SmsService {
 	}
 
 	/**
-	 * @see SmsService#sendSmsToUserIds(String[], String, String, String, String)
+	 * @see SmsService#sendSmsToUserIds(String[], String, String, String,
+	 *      String)
 	 */
-	public String[] sendSmsToUserIds(String[] userIds, String fromId, String siteId,
-			String toolId, String message) {
-		Set<String> ids = new HashSet<String>();
+	public String[] sendSmsToUserIds(String[] userIds, String fromId,
+			String siteId, String toolId, String message) {
+		final Set<String> ids = new HashSet<String>();
 		ids.addAll(Arrays.asList(userIds));
 
-		SmsTask task = getPreliminaryTask(ids, new Date(), message, siteId,
-				toolId, fromId);
+		final SmsTask task = getPreliminaryTask(ids, new Date(), message,
+				siteId, toolId, fromId);
 		doSend(task);
 
-		if (task.getSmsMessages() != null) {
+		if (task.getSmsMessages() == null) {
+			return new String[] {};
+		} else {
 			String[] sendIds = new String[task.getSmsMessages().size()];
 			int i = 0;
 			for (SmsMessage msg : task.getSmsMessages()) {
@@ -266,20 +268,23 @@ public class SmsServiceImpl implements SmsService {
 				i++;
 			}
 			return sendIds;
-		} else {
-			return new String[] {};
+
 		}
 	}
+
 	/**
-	 * @see SmsService#sendSmsToMobileNumbers(String[], String, String, String, String)
+	 * @see SmsService#sendSmsToMobileNumbers(String[], String, String, String,
+	 *      String)
 	 */
-	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId, String siteId, String toolId, String message) {
-		Set<String> numbers = new HashSet<String>();
+	public String[] sendSmsToMobileNumbers(String[] mobileNrs, String fromId,
+			String siteId, String toolId, String message) {
+		final Set<String> numbers = new HashSet<String>();
 		numbers.addAll(Arrays.asList(mobileNrs));
-		
-		SmsTask task = getPreliminaryTask(new Date(), message, siteId, toolId, fromId, numbers);
+
+		SmsTask task = getPreliminaryTask(new Date(), message, siteId, toolId,
+				fromId, numbers);
 		doSend(task);
-		
+
 		if (task.getSmsMessages() != null) {
 			String[] sendNrs = new String[task.getSmsMessages().size()];
 			int i = 0;
@@ -292,7 +297,7 @@ public class SmsServiceImpl implements SmsService {
 			return new String[] {};
 		}
 	}
-	
+
 	// calculate group size and send
 	private void doSend(SmsTask task) {
 		calculateEstimatedGroupSize(task);

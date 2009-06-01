@@ -18,6 +18,7 @@
 package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -40,8 +41,8 @@ public class MessageValidatorImpl implements MessageValidator {
 	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> validateMessage(SmsMessage smsMessage) {
-		ArrayList<String> errors = new ArrayList<String>();
+	public List<String> validateMessage(SmsMessage smsMessage) {
+		final List<String> errors = new ArrayList<String>();
 
 		if (smsMessage.getMobileNumber() == null
 				|| smsMessage.getMobileNumber().trim().equals("")) {
@@ -50,7 +51,7 @@ public class MessageValidatorImpl implements MessageValidator {
 
 		if (smsMessage.getMobileNumber() != null
 				&& !"".equals(smsMessage.getMobileNumber())) {
-			String trimmedNumber = smsMessage.getMobileNumber().trim()
+			final String trimmedNumber = smsMessage.getMobileNumber().trim()
 					.replaceAll(" ", "");
 			// Check length of mobile number
 			if (trimmedNumber.length() > SmsConstants.MAX_MOBILE_NR_LENGTH) {

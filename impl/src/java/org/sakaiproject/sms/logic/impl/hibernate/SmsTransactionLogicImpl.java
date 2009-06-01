@@ -45,7 +45,7 @@ import org.sakaiproject.sms.util.DateUtil;
 /**
  * The data service will handle all sms Transaction database transactions for
  * the sms tool in Sakai.
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 25-Nov-2008 08:12:41 AM
@@ -55,7 +55,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		SmsTransactionLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator;
-		
+
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
 	}
@@ -64,13 +64,13 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-	
+
 	private SmsBilling smsBilling;
-	
+
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
 	}
- 
+
 	/**
 	 * Deletes and the given entity from the DB
 	 */
@@ -80,7 +80,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	/**
 	 * Gets a SmsTransaction entity for the given id
-	 *
+	 * 
 	 * @param Long
 	 *            sms transaction id
 	 * @return sms congiguration
@@ -91,7 +91,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	/**
 	 * Gets all the sms transaction records
-	 *
+	 * 
 	 * @return List of SmsTransaction objects
 	 */
 	public List<SmsTransaction> getAllSmsTransactions() {
@@ -101,7 +101,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	/**
 	 * Gets a list of all SmsTransaction objects for the specified search
 	 * criteria
-	 *
+	 * 
 	 * @param search
 	 *            Bean containing the search criteria
 	 * @return List of SmsTransactions
@@ -116,7 +116,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page
-	 *
+	 * 
 	 * @param searchBean
 	 * @return Search result container
 	 * @throws SmsSearchException
@@ -124,11 +124,11 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	public SearchResultContainer<SmsTransaction> getPagedSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
 
-		List<SmsTransaction> transactions = getSmsTransactionsForCriteria(searchBean);
+		final List<SmsTransaction> transactions = getSmsTransactionsForCriteria(searchBean);
 
-		SearchResultContainer<SmsTransaction> con = new SearchResultContainer<SmsTransaction>(
+		final SearchResultContainer<SmsTransaction> con = new SearchResultContainer<SmsTransaction>(
 				getPageSize());
-		con.setTotalResultSetSize(new Long(transactions.size()));
+		con.setTotalResultSetSize(Long.valueOf(transactions.size()));
 		con.calculateAndSetPageResults(transactions, searchBean
 				.getCurrentPage());
 
@@ -137,8 +137,8 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	private List<SmsTransaction> getSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		Criteria crit = smsDao.createCriteria(
-				SmsTransaction.class).createAlias("smsAccount", "smsAccount");
+		final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
+				.createAlias("smsAccount", "smsAccount");
 
 		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
 
@@ -152,20 +152,20 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 			// Account number
 			if (searchBean.getNumber() != null) {
-				crit.add(Restrictions.like("smsAccount.id", new Long(searchBean
-						.getNumber())));
+				crit.add(Restrictions.like("smsAccount.id", Long
+						.valueOf(searchBean.getNumber())));
 			}
 
 			// Transaction date start
 			if (searchBean.getDateFrom() != null) {
-				Date date = DateUtil.getDateFromStartDateString(searchBean
-						.getDateFrom());
+				final Date date = DateUtil
+						.getDateFromStartDateString(searchBean.getDateFrom());
 				crit.add(Restrictions.ge("transactionDate", date));
 			}
 
 			// Transaction date end
 			if (searchBean.getDateTo() != null) {
-				Date date = DateUtil.getDateFromEndDateString(searchBean
+				final Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
 				crit.add(Restrictions.le("transactionDate", date));
 			}
@@ -185,7 +185,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			}
 			if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
-				crit.add(Restrictions.like("smsTaskId", new Long(searchBean
+				crit.add(Restrictions.like("smsTaskId", Long.valueOf(searchBean
 						.getTaskId())));
 			}
 			crit.setMaxResults(SmsConstants.READ_LIMIT);
@@ -204,47 +204,50 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 				.getOrCreateSmsConfigBySakaiSiteId(
 						hibernateLogicLocator.getExternalLogic()
 								.getCurrentSiteId());
-		if (smsConfig == null)
+		if (smsConfig == null) {
 			return SmsConstants.DEFAULT_PAGE_SIZE;
-		else
+		} else {
 			return smsConfig.getPagingSize();
+		}
 	}
 
 	/**
 	 * Gets all the related transaction for the specified account id.
-	 *
+	 * 
 	 * @param accountId
 	 *            the account id
-	 *
+	 * 
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForAccountId(Long accountId) {
 		String hql = "from SmsTransaction transaction where transaction.smsAccount.id = :accountId";
-		List<SmsTransaction> transactions = smsDao.runQuery(hql, new QueryParameter("accountId", accountId, Hibernate.LONG));
+		List<SmsTransaction> transactions = smsDao.runQuery(hql,
+				new QueryParameter("accountId", accountId, Hibernate.LONG));
 		return transactions;
 	}
 
 	/**
 	 * Gets all the related transaction for the specified task id.
-	 *
+	 * 
 	 * @param accountId
 	 *            the account id
-	 *
+	 * 
 	 * @return the sms transactions for account id
 	 */
 	public List<SmsTransaction> getSmsTransactionsForTaskId(Long taskId) {
 		String hql = "from SmsTransaction transaction where transaction.smsTaskId = :taskId";
-		List<SmsTransaction> transactions = smsDao.runQuery(hql, new QueryParameter("smsTaskId", taskId, Hibernate.LONG));
+		List<SmsTransaction> transactions = smsDao.runQuery(hql,
+				new QueryParameter("smsTaskId", taskId, Hibernate.LONG));
 		return transactions;
 	}
 
 	/**
 	 * Gets transaction that will be used to create to populate a new
 	 * transaction to cancel this one.
-	 *
+	 * 
 	 * @param taskId
 	 *            the task id
-	 *
+	 * 
 	 * @return the cancel sms transaction for task
 	 */
 	public SmsTransaction getCancelSmsTransactionForTask(Long taskId) {
@@ -255,12 +258,12 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 				.append(" and transaction.transactionTypeCode = :transactionTypeCode ");
 		hql.append(" order by transaction.transactionDate desc ");
 
-		List<SmsTransaction> transactions = 
-			smsDao.runQuery(hql.toString(), 
-									new QueryParameter("taskId", taskId, Hibernate.LONG),
-									new QueryParameter("transactionTypeCode", smsBilling.getReserveCreditsCode(),Hibernate.STRING));
+		List<SmsTransaction> transactions = smsDao.runQuery(hql.toString(),
+				new QueryParameter("taskId", taskId, Hibernate.LONG),
+				new QueryParameter("transactionTypeCode", smsBilling
+						.getReserveCreditsCode(), Hibernate.STRING));
 
-		if (transactions != null && transactions.size() > 0) {
+		if (transactions != null && !transactions.isEmpty()) {
 			return transactions.get(0);
 		}
 		return null;
@@ -270,33 +273,31 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 * Insert reserve transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
 	public void insertReserveTransaction(SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction,
-				smsBilling.getReserveCreditsCode());
+		insertTransaction(smsTransaction, smsBilling.getReserveCreditsCode());
 	}
 
 	/**
 	 * Insert settle transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
 	public void insertSettleTransaction(SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction,
-				smsBilling.getSettleDifferenceCode());
+		insertTransaction(smsTransaction, smsBilling.getSettleDifferenceCode());
 	}
 
 	/**
 	 * Insert cancel pending request transaction.
 	 * <p>
 	 * This will also update the related account balance.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -309,20 +310,19 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 * Insert transaction for a late message.
 	 * <p>
 	 * This will also update the related account balance.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
 	public void insertLateMessageTransaction(SmsTransaction smsTransaction) {
-		insertTransaction(smsTransaction,
-				smsBilling.getDebitLateMessageCode());
+		insertTransaction(smsTransaction, smsBilling.getDebitLateMessageCode());
 	}
 
 	/**
 	 * Insert transaction to credit an account
 	 * <p>
 	 * This will also update the related account balance.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 */
@@ -332,7 +332,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	/**
 	 * Insert transaction.
-	 *
+	 * 
 	 * @param smsTransaction
 	 *            the sms transaction
 	 * @param transactionType

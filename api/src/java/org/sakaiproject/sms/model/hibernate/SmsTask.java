@@ -225,7 +225,8 @@ public class SmsTask extends BaseModel {
 	 * Instantiates a new sms task.
 	 */
 	public SmsTask() {
-		setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		super();
+		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
 	}
 
 	/**
@@ -438,7 +439,7 @@ public class SmsTask extends BaseModel {
 	 * @return the messages with smsc status
 	 */
 	public Set<SmsMessage> getMessagesWithSmscStatus(int smscStatus) {
-		Set<SmsMessage> filtered = new HashSet<SmsMessage>();
+		final Set<SmsMessage> filtered = new HashSet<SmsMessage>();
 		if (smsMessages != null) {
 			for (SmsMessage message : smsMessages) {
 				if (message.getSmscDeliveryStatusCode() != null
@@ -461,7 +462,7 @@ public class SmsTask extends BaseModel {
 	 * @return the messages with status
 	 */
 	public Set<SmsMessage> getMessagesWithStatus(String status) {
-		Set<SmsMessage> filtered = new HashSet<SmsMessage>();
+		final Set<SmsMessage> filtered = new HashSet<SmsMessage>();
 		if (smsMessages != null) {
 			for (SmsMessage message : smsMessages) {
 				if (message.getStatusCode().equals(status)) {
@@ -864,8 +865,8 @@ public class SmsTask extends BaseModel {
 			return null;
 		}
 
-		Set<String> deliveryMobileNumbersSet = new HashSet<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(
+		final Set<String> deliveryMobileNumbersSet = new HashSet<String>();
+		final StringTokenizer stringTokenizer = new StringTokenizer(
 				deliveryMobileNumbers, ",");
 
 		while (stringTokenizer.hasMoreTokens()) {
@@ -880,14 +881,14 @@ public class SmsTask extends BaseModel {
 	 */
 	public void setDeliveryMobileNumbersSet(Set<String> mobileNumbers) {
 		if (mobileNumbers != null) {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			int number = 1;
 			for (String mobileNumber : mobileNumbers) {
 
 				buffer.append(mobileNumber);
-				if (number < mobileNumbers.size())
-					buffer.append(",");
-
+				if (number < mobileNumbers.size()) {
+					buffer.append(',');
+				}
 				number++;
 			}
 			deliveryMobileNumbers = buffer.toString();
@@ -913,14 +914,14 @@ public class SmsTask extends BaseModel {
 	 */
 	public void setDeliveryEntityList(List<String> deliveryEntityList) {
 		if (deliveryEntityList != null) {
-			StringBuffer buffer = new StringBuffer();
+			final StringBuffer buffer = new StringBuffer();
 			int number = 1;
 			for (String deliveryIds : deliveryEntityList) {
 
 				buffer.append(deliveryIds);
-				if (number < deliveryEntityList.size())
-					buffer.append(",");
-
+				if (number < deliveryEntityList.size()) {
+					buffer.append(',');
+				}
 				number++;
 			}
 			deliveryEntities = buffer.toString();
@@ -934,9 +935,9 @@ public class SmsTask extends BaseModel {
 		if (deliveryEntities == null) {
 			return null;
 		}
-		List<String> deliveryEntityList = new ArrayList<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(deliveryEntities,
-				",");
+		final List<String> deliveryEntityList = new ArrayList<String>();
+		final StringTokenizer stringTokenizer = new StringTokenizer(
+				deliveryEntities, ",");
 
 		while (stringTokenizer.hasMoreTokens()) {
 			deliveryEntityList.add(stringTokenizer.nextToken());

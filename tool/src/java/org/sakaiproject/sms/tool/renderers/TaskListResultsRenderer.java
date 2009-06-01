@@ -140,14 +140,12 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 				UIInternalLink link = UIInternalLink.make(row, "popup-link",
 						new IdParams(TaskListPopupProducer.VIEW_ID, smsTask
 								.getId().toString()));
-				link.decorate(new UIIDStrategyDecorator(new Integer(id)
-						.toString()
+				link.decorate(new UIIDStrategyDecorator(String.valueOf(id)
 						+ "link"));
 
 				UIOutput idRow = UIOutput.make(row, "row-data-id", NullHandling
 						.safeToString(smsTask.getId()));
-				idRow.decorate(new UIIDStrategyDecorator(new Integer(id)
-						.toString()));
+				idRow.decorate(new UIIDStrategyDecorator(String.valueOf(id)));
 				UIOutput.make(row, "row-data-group", NullHandling
 						.safeToString(smsTask.getDeliveryGroupName()));
 				UIOutput.make(row, "row-data-size-estimate", NullHandling

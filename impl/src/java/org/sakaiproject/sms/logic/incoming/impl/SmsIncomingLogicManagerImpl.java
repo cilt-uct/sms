@@ -46,7 +46,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	private final RegisteredCommands allCommands = new RegisteredCommands();
 
-	private static Log log = LogFactory
+	private static final Log log = LogFactory
 			.getLog(SmsIncomingLogicManagerImpl.class);
 
 	private HibernateLogicLocator hibernateLogicLocator;
@@ -82,7 +82,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		SmsPatternSearchResult validCommandMatch = null;
 		String sakaiSite = null;
 
-		String defaultBillingSite = SmsConstants.SAKAI_ADMIN_ACCOUNT;
+		final String defaultBillingSite = SmsConstants.SAKAI_ADMIN_ACCOUNT;
 
 		try {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
@@ -92,13 +92,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			parsedMessage.setSite(defaultBillingSite);
 		}
 
-		if (toolCmdsMap.size() != 0) { // No tools registered
+		if (!toolCmdsMap.isEmpty()) { // No tools registered
 			if (parsedMessage.getCommand() == null) {
 				// an empty sms was received
 				reply = generateHelpMessage();
 				parsedMessage.setBody("");
 			} else {
-				String suppliedCommand = parsedMessage.getCommand()
+				final String suppliedCommand = parsedMessage.getCommand()
 						.toUpperCase();
 				validCommandMatch = findValidCommand(suppliedCommand,
 						allCommands);
@@ -121,7 +121,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						sakaiSite = getValidSite(parsedMessage.getSite());
 						if (parsedMessage.getSite() == null
 								|| parsedMessage.getBody() == null) {
-							SmsCommand cmd = allCommands
+							final SmsCommand cmd = allCommands
 									.getCommand(validCommandMatch.getPattern());
 							if (cmd.isVisible()) {
 								reply = cmd.getHelpMessage();
@@ -142,13 +142,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 								// MoDisabledForSiteException(sakaiSite);
 								// }
 
-								List<String> userIds = externalLogic
+								final List<String> userIds = externalLogic
 										.getUserIdsFromMobileNumber(mobileNr);
-								if (userIds.size() != 0) {
+								if (!userIds.isEmpty()) {
 									incomingUserID = userIds.get(0);
 								}
 
-								SmsCommand command = allCommands
+								final SmsCommand command = allCommands
 										.getCommand(validCommandMatch
 												.getPattern());
 								try {
@@ -178,7 +178,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		parsedMessage.setSite(sakaiSite != null ? sakaiSite
 				: defaultBillingSite);
-		parsedMessage.setBody_reply(formatReply(reply));
+		parsedMessage.setBodyReply(formatReply(reply));
 		parsedMessage.setIncomingUserId(incomingUserID);
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());
@@ -202,9 +202,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			return suppliedSiteId;
 		} else {
 			String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
-			if (siteId != null) {
-				return siteId;
-			} else {
+			if (siteId == null) {
 				SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
 						externalLogic.getAllAliasesAsArray());
 				if (result.getMatchResult().equals(
@@ -213,6 +211,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				} else {
 					return null;
 				}
+			} else {
+				return siteId;
+
 			}
 		}
 
@@ -250,7 +251,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				matchedValues.add(str);
 			}
 		}
-		if (matchedValues.size() > 0) {
+		if (!matchedValues.isEmpty()) {
 			values = matchedValues.toArray(new String[matchedValues.size()]);
 		}
 		// We calculate the largest string's length to be used as weights.
@@ -372,14 +373,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					.toUpperCase());
 		} else {
 			// Toolkey not yet registered
-			if (!toolCmdsMap.containsKey(toolKey)) {
-				toolCmdsMap.put(toolKey, new RegisteredCommands(command));
-				log.debug("Registered tool: " + toolKey);
-			} else {
+			if (toolCmdsMap.containsKey(toolKey)) {
 				// If it tool exist
 				RegisteredCommands commands = toolCmdsMap.get(toolKey);
 				// Add to set of commands
 				commands.addCommand(command);
+			} else {
+				toolCmdsMap.put(toolKey, new RegisteredCommands(command));
+				log.debug("Registered tool: " + toolKey);
 			}
 			log.info("Registered command " + command.getCommandKey()
 					+ " for tool " + toolKey);
@@ -400,15 +401,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	public boolean isValidCommand(String command) {
 		command = command.toUpperCase();
-		if (allCommands.getCommandKeys().contains(command)
-				|| SmsConstants.HELP.equalsIgnoreCase(command)) { // HELP
-			// command
-			// is
-			// valid by default
-			return true;
-		} else {
-			return false;
-		}
+		return (allCommands.getCommandKeys().contains(command) || SmsConstants.HELP
+				.equalsIgnoreCase(command));
 
 	}
 
@@ -431,7 +425,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		StringBuilder body = new StringBuilder();
 		body.append("Valid commands: ");
 
-		Iterator<String> i = allCommands.getCommandKeys().iterator();
+		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
 			String command = i.next();
 			if (allCommands.getCommand(command).isVisible()) {
@@ -450,18 +444,18 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return body.toString();
 	}
 
-	public String generateAssistMessage(ArrayList<String> matches) {
+	public String generateAssistMessage(List<String> matches) {
 		Collection<String> commands = null;
 		StringBuilder body = new StringBuilder();
 
 		body.append("Possible matches: ");
-		if (matches == null || matches.size() == 0
+		if (matches == null || matches.isEmpty()
 				|| matches.contains(SmsConstants.HELP)) {
 			// TODO: not sure what to do here
 		} else {
 			commands = matches;
 		}
-		Iterator<String> i = commands.iterator();
+		final Iterator<String> i = commands.iterator();
 		while (i.hasNext()) {
 			String command = i.next();
 			body.append(command);
@@ -480,7 +474,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			StringBuilder body = new StringBuilder();
 			body.append("Possible matches: ");
 			RegisteredCommands commands = toolCmdsMap.get(tool.toUpperCase());
-			Iterator<String> i = commands.getCommandKeys().iterator();
+			final Iterator<String> i = commands.getCommandKeys().iterator();
 			while (i.hasNext()) {
 				String command = i.next();
 				body.append(command);

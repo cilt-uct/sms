@@ -33,7 +33,7 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 public class SmsTestActionBean {
 
 	/** The log. */
-	private static Log log = LogFactory.getLog(SmsTestActionBean.class);
+	private static final Log LOG = LogFactory.getLog(SmsTestActionBean.class);
 
 	/** The sms message locator. */
 	private SmsMessageLocator smsMessageLocator;
@@ -52,7 +52,7 @@ public class SmsTestActionBean {
 	 */
 	public String send() {
 		// Get the new bean created to send
-		SmsMessage msg = (SmsMessage) smsMessageLocator
+		final SmsMessage msg = (SmsMessage) smsMessageLocator
 				.locateBean(SmsMessageLocator.NEW_1);
 
 		try {
@@ -62,8 +62,8 @@ public class SmsTestActionBean {
 			// send error
 			messages.addMessage(new TargettedMessage("sms.errors.send-error",
 					null, TargettedMessage.SEVERITY_ERROR));
-			e.printStackTrace();
-			log.error(e);
+
+			LOG.error(e.getMessage(), e);
 		}
 
 		return ActionResults.SUCCESS;

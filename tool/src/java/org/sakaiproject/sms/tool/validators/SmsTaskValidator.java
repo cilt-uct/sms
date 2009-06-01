@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.validators;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.springframework.validation.Errors;
@@ -25,14 +25,14 @@ import org.springframework.validation.Validator;
 
 public class SmsTaskValidator implements Validator {
 
-	private org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator smsTaskValidator=null;
-
+	private org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator smsTaskValidator = null;
 
 	public org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator getSmsTaskValidator() {
 		return smsTaskValidator;
 	}
 
-	public void setSmsTaskValidator(org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator smsTaskValidator) {
+	public void setSmsTaskValidator(
+			org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator smsTaskValidator) {
 		this.smsTaskValidator = smsTaskValidator;
 	}
 
@@ -46,7 +46,7 @@ public class SmsTaskValidator implements Validator {
 
 	public void validate(Object obj, Errors err) {
 		// None of this seems to work at the moment so I am uncommeting for now
-		ArrayList<String> errors = smsTaskValidator
+		List<String> errors = smsTaskValidator
 				.validateInsertTask((SmsTask) obj);
 
 		for (String error : errors) {

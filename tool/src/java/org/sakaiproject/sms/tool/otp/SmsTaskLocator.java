@@ -78,12 +78,12 @@ public class SmsTaskLocator implements BeanLocator {
 		SmsTask togo = delivered.get(name);
 		if (togo == null) {
 			if (name.startsWith(NEW_PREFIX)) {
-				Calendar cal = Calendar.getInstance();
+				final Calendar cal = Calendar.getInstance();
 				cal.setTime(new Date());
 				cal.add(Calendar.SECOND, 30);
-				Date dateToProcess = cal.getTime();
-				togo = smsCore.getPreliminaryTask("/site/" + externalLogic
-						.getCurrentSiteId(), dateToProcess, "",
+				final Date dateToProcess = cal.getTime();
+				togo = smsCore.getPreliminaryTask("/site/"
+						+ externalLogic.getCurrentSiteId(), dateToProcess, "",
 						externalLogic.getCurrentSiteId(), "", externalLogic
 								.getCurrentUserId());
 			} else {

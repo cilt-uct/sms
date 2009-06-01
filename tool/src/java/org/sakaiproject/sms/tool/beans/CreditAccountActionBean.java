@@ -9,12 +9,12 @@ import uk.org.ponder.messageutil.TargettedMessageList;
 
 public class CreditAccountActionBean {
 
-	private static Log LOG = LogFactory.getLog(CreditAccountActionBean.class);
+	private static final Log LOG = LogFactory
+			.getLog(CreditAccountActionBean.class);
 
 	private CreditAccountBean creditAccountBean;
 	private SmsBilling smsBilling;
 	private TargettedMessageList messages;;
-
 
 	public void setMessages(TargettedMessageList messages) {
 		this.messages = messages;
@@ -28,21 +28,19 @@ public class CreditAccountActionBean {
 		this.smsBilling = smsBilling;
 	}
 
-	public void creditAccount(){
-		try{
-			smsBilling.creditAccount(creditAccountBean.getAccountId(), creditAccountBean.getCreditsToCredit());
+	public void creditAccount() {
+		try {
+			smsBilling.creditAccount(creditAccountBean.getAccountId(),
+					creditAccountBean.getCreditsToCredit());
+		} catch (Exception e) {
+
+			LOG.error(e.getMessage(), e);
+
+			messages.addMessage(new TargettedMessage("GeneralActionError",
+					null, TargettedMessage.SEVERITY_INFO));
+
 		}
-		catch (Exception e) {
-
-			LOG.error(e);
-
-			messages.addMessage(new TargettedMessage(
-					"GeneralActionError", null,
-					TargettedMessage.SEVERITY_INFO));
-
-		}
-		messages.addMessage(new TargettedMessage(
-				"sms.credit.account.success", null,
-				TargettedMessage.SEVERITY_INFO));
+		messages.addMessage(new TargettedMessage("sms.credit.account.success",
+				null, TargettedMessage.SEVERITY_INFO));
 	}
 }

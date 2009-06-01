@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 public class SmsLogic extends BaseLogic {
 
 	/** The log. */
-	public static Log LOG = LogFactory.getLog(SmsLogic.class);
+	private static final Log LOG = LogFactory.getLog(SmsLogic.class);
 
 	/**
 	 * Gets the current Date.
@@ -43,7 +43,7 @@ public class SmsLogic extends BaseLogic {
 	 * @return the current Date
 	 */
 	protected Date getDelayedCurrentDate(int secondsDelay) {
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 
 		cal.add(Calendar.SECOND, secondsDelay);
 

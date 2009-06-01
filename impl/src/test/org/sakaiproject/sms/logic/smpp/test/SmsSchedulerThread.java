@@ -65,7 +65,7 @@ public class SmsSchedulerThread extends TestRunnable {
 	/** The session name. */
 	private final String sessionName;
 
-	private static SmsAccount smsAccount = null;
+	private SmsAccount smsAccount = null;
 
 	/**
 	 * Sets up the required api's

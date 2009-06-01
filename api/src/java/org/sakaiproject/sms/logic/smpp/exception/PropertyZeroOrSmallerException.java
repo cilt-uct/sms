@@ -26,7 +26,7 @@ public class PropertyZeroOrSmallerException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public PropertyZeroOrSmallerException(String propertyName) {
+	public PropertyZeroOrSmallerException(final String propertyName) {
 		super(propertyName + " must be larger then 0");
 	}
 

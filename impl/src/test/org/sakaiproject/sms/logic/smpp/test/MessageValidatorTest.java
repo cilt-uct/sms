@@ -1,6 +1,7 @@
 package org.sakaiproject.sms.logic.smpp.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -23,12 +24,13 @@ public class MessageValidatorTest extends TestCase {
 	private SmsMessage msg;
 
 	/** The errors. */
-	ArrayList<String> errors = new ArrayList<String>();
-	
+	List<String> errors = new ArrayList<String>();
+
 	private final MessageValidator validator = new MessageValidatorImpl();
+
 	/**
 	 * setUp to run before every test. Create SmsMessage + validator + errors
-	 *
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override

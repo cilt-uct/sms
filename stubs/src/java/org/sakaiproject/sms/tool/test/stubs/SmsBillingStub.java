@@ -68,9 +68,9 @@ public class SmsBillingStub implements SmsBilling {
 		return false;
 	}
 
-	public Boolean insertTransaction(Long arg0, int arg1, int arg2) {
+	public boolean insertTransaction(Long arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 	public void recalculateAccountBalance(Long arg0) {
@@ -120,11 +120,11 @@ public class SmsBillingStub implements SmsBilling {
 	}
 
 	public String getCreditAccountCode() {
-		return  "CRED";
+		return "CRED";
 	}
 
 	public String getDebitLateMessageCode() {
-		return  "LATE";
+		return "LATE";
 	}
 
 	public String getReserveCreditsCode() {

@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.validators;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.validate.MessageValidator;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -28,9 +28,9 @@ import org.springframework.validation.Validator;
  * The Class SmsMessageValidator.
  */
 public class SmsMessageValidator implements Validator {
-	
+
 	private MessageValidator validator;
-	
+
 	public void setValidator(MessageValidator validator) {
 		this.validator = validator;
 	}
@@ -54,8 +54,7 @@ public class SmsMessageValidator implements Validator {
 	 */
 	public void validate(Object obj, Errors err) {
 
-		ArrayList<String> errors = validator
-				.validateMessage((SmsMessage) obj);
+		List<String> errors = validator.validateMessage((SmsMessage) obj);
 
 		for (String error : errors) {
 			err.reject(error, error);

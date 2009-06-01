@@ -78,7 +78,7 @@ import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 
 public class SmsSmppImpl implements SmsSmpp {
 
-	private static Log LOG = LogFactory.getLog(SmsSmppImpl.class);
+	private final static Log LOG = LogFactory.getLog(SmsSmppImpl.class);
 	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
@@ -88,8 +88,8 @@ public class SmsSmppImpl implements SmsSmpp {
 	private final ThreadGroup deliveryReportThreadGroup = new ThreadGroup(
 			SmsConstants.SMS_DELIVERY_REPORT_THREAD_GROUP);
 
-	ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
-	ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
+	private ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
+	private ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
 	private BindThread reBindTheard;
@@ -134,23 +134,31 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private class BindThread implements Runnable {
 
-		boolean allDone = false;
-		Thread t = null;
+		public boolean allDone = false;
+		private Thread thread = null;
+
+		public Thread getThread() {
+			return thread;
+		}
+
+		public void setThread(Thread thread) {
+			this.thread = thread;
+		}
 
 		BindThread() {
-			t = new Thread(this);
-			t.start();
+			setThread(new Thread(this));
+			getThread().start();
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
 		public void stop() {
-			t.interrupt();
+			getThread().interrupt();
 		}
 
-		public void Work() {
+		public void work() {
 			while (true) {
 				if (allDone) {
 					return;
@@ -173,23 +181,23 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		MOmessageQueueThread() {
 
-			Thread t = new Thread(this);
-			t.start();
+			final Thread thread = new Thread(this);
+			thread.start();
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
-		public void Work() {
+		public void work() {
 			while (!allDone) {
 				try {
 
-					ArrayList<SmsMOMessage> currentMOmessages = receivedMOmessages;
+					final ArrayList<SmsMOMessage> currentMOmessages = receivedMOmessages;
 					for (int i = 0; i < currentMOmessages.size(); i++) {
 
 						if (moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT) {
-							SmsMOMessage smsMOmessage = currentMOmessages
+							final SmsMOMessage smsMOmessage = currentMOmessages
 									.get(i);
 							receivedMOmessages.remove(smsMOmessage);
 
@@ -209,22 +217,21 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private class MOProcessThread implements Runnable {
 
-		boolean allDone = false;
 		SmsMOMessage smsMOmessage;
-		ThreadGroup threadGroup;
 
-		MOProcessThread(SmsMOMessage smsMOmessage, ThreadGroup threadGroup) {
+		MOProcessThread(final SmsMOMessage smsMOmessage,
+				final ThreadGroup threadGroup) {
 			this.smsMOmessage = smsMOmessage;
-			this.threadGroup = threadGroup;
-			Thread t = new Thread(threadGroup, this);
-			t.start();
+
+			Thread thread = new Thread(threadGroup, this);
+			thread.start();
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
-		public void Work() {
+		public void work() {
 
 			LOG.info("Processing MO-Message queue of "
 					+ receivedMOmessages.size() + " messages there is "
@@ -240,15 +247,15 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		DeliveryReportQueueThread() {
 
-			Thread t = new Thread(this);
-			t.start();
+			Thread thread = new Thread(this);
+			thread.start();
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
-		public void Work() {
+		public void work() {
 			while (!allDone) {
 				try {
 
@@ -274,22 +281,20 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private class DeliveryReportProcessThread implements Runnable {
 
-		boolean allDone = false;
 		DeliverSm deliverSm;
-		ThreadGroup threadGroup;
 
-		DeliveryReportProcessThread(DeliverSm deliverSm, ThreadGroup threadGroup) {
+		DeliveryReportProcessThread(final DeliverSm deliverSm,
+				final ThreadGroup threadGroup) {
 			this.deliverSm = deliverSm;
-			this.threadGroup = threadGroup;
-			Thread t = new Thread(threadGroup, this);
-			t.start();
+			Thread thread = new Thread(threadGroup, this);
+			thread.start();
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
-		public void Work() {
+		public void work() {
 
 			LOG.debug("Processing Delivery Report queue of "
 					+ receivedDeliveryReports.size() + " messages");
@@ -313,6 +318,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			MessageReceiverListener {
 		public void onAcceptAlertNotification(
 				AlertNotification alertNotification) {
+			// not implemented
 		}
 
 		public void onAcceptDeliverSm(DeliverSm deliverSm)
@@ -329,11 +335,12 @@ public class SmsSmppImpl implements SmsSmpp {
 				SmsMOMessage moMessage = new SmsMOMessage();
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				String messageBody = "";
-				if (deliverSm.getShortMessage() != null) {
-					messageBody = new String(deliverSm.getShortMessage());
-				} else {
+				if (deliverSm.getShortMessage() == null) {
 					// persone sended a blank sms
 					messageBody = SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
+
+				} else {
+					messageBody = new String(deliverSm.getShortMessage());
 				}
 				moMessage.setSmsMessagebody(messageBody);
 				receivedMOmessages.add(moMessage);
@@ -374,12 +381,18 @@ public class SmsSmppImpl implements SmsSmpp {
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						LOG.error(e.getMessage(), e);
 					}
 				}
 
 			}
-			if (smsMessage != null) {
+			if (smsMessage == null) {
+
+				LOG
+						.error("Delivery report received for message not in database. MessageSMSCID="
+								+ deliveryReceipt.getId());
+
+			} else {
 				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 						.get((deliveryReceipt.getFinalStatus())));
 
@@ -408,11 +421,6 @@ public class SmsSmppImpl implements SmsSmpp {
 						.incrementMessagesProcessed(smsMessage.getSmsTask());
 				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 						smsMessage);
-
-			} else {
-				LOG
-						.error("Delivery report received for message not in database. MessageSMSCID="
-								+ deliveryReceipt.getId());
 			}
 		} catch (InvalidDeliveryReceiptException e) {
 			LOG.error("Failed getting delivery receipt" + e);
@@ -478,12 +486,12 @@ public class SmsSmppImpl implements SmsSmpp {
 							LOG.warn("SMSC session lost Status-" + arg0);
 							gatewayBound = false;
 							session.unbindAndClose();
-							if (arg0.equals(SessionState.CLOSED)) {
-								if (!appserverShuttingDown
-										&& reBindTheard == null) {
+							if (arg0.equals(SessionState.CLOSED)
+									&& !appserverShuttingDown
+									&& reBindTheard == null) {
 
-									reBindTheard = new BindThread();
-								}
+								reBindTheard = new BindThread();
+
 							}
 						}
 					}
@@ -537,7 +545,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		if (gatewayBound) {
 			LOG.info("The server is currently binded to "
 					+ smsSmppProperties.getSMSCAddress() + "  "
-					+ String.valueOf(smsSmppProperties.getSMSCPort()));
+					+ smsSmppProperties.getSMSCPort());
 		} else {
 			LOG.info("The server is not currently binded");
 		}
@@ -646,7 +654,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					}
 
 				} catch (PropertyZeroOrSmallerException e) {
-					LOG.error(e);
+					LOG.error(e.getMessage(), e);
 					LOG.warn("SMSC Port defaulting to port "
 							+ SmsSmppProperties.DEFAULT_SMSC_PORT);
 
@@ -655,7 +663,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				} catch (NumberFormatException e) {
 
-					LOG.error(e);
+					LOG.error(e.getMessage(), e);
 					LOG.warn("SMSC Port defaulting to port "
 							+ SmsSmppProperties.DEFAULT_SMSC_PORT);
 
@@ -676,15 +684,15 @@ public class SmsSmppImpl implements SmsSmpp {
 					"serviceType").trim());
 			smsSmppProperties.setSourceAddress(properties.getProperty(
 					"sourceAddress").trim());
-			smsSmppProperties.setSourceAddressNPI((Byte.parseByte(properties
-					.getProperty("sourceAddressNPI").trim())));
-			smsSmppProperties.setSourceAddressTON((Byte.parseByte(properties
-					.getProperty("sourceAddressTON").trim())));
+			smsSmppProperties.setSourceAddressNPI(Byte.parseByte(properties
+					.getProperty("sourceAddressNPI").trim()));
+			smsSmppProperties.setSourceAddressTON(Byte.parseByte(properties
+					.getProperty("sourceAddressTON").trim()));
 
-			smsSmppProperties.setDestAddressNPI((Byte.parseByte(properties
-					.getProperty("destAddressNPI").trim())));
-			smsSmppProperties.setDestAddressTON((Byte.parseByte(properties
-					.getProperty("destAddressTON").trim())));
+			smsSmppProperties.setDestAddressNPI(Byte.parseByte(properties
+					.getProperty("destAddressNPI").trim()));
+			smsSmppProperties.setDestAddressTON(Byte.parseByte(properties
+					.getProperty("destAddressTON").trim()));
 
 			smsSmppProperties.setProtocolId(Byte.parseByte(properties
 					.getProperty("protocolId").trim()));
@@ -706,7 +714,7 @@ public class SmsSmppImpl implements SmsSmpp {
 							"EnquireLinkTimeOut");
 				}
 			} catch (PropertyZeroOrSmallerException e) {
-				LOG.error(e);
+				LOG.error(e.getMessage(), e);
 				LOG.warn("EnquireLinkTimeOut defaulting to  "
 						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
 						+ " seconds");
@@ -715,7 +723,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
 
 			} catch (NumberFormatException e) {
-				LOG.error(e);
+				LOG.error(e.getMessage(), e);
 				LOG.warn("EnquireLinkTimeOut defaulting to  "
 						+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
 						+ " seconds");
@@ -819,15 +827,15 @@ public class SmsSmppImpl implements SmsSmpp {
 		try {
 			InputStream is = this.getClass().getResourceAsStream(
 					"/smpp.properties");
-			if (is != null) {
-				properties.load(is);
-			} else {
+			if (is == null) {
 				properties.load((new FileInputStream("smpp.properties")));
+			} else {
+				properties.load(is);
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
@@ -881,9 +889,6 @@ public class SmsSmppImpl implements SmsSmpp {
 		} catch (IOException e) {
 			LOG.error(e);
 
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			LOG.error(e);
 		}
 		return messages;
 	}
@@ -967,7 +972,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		// Continue to send message to gateway.
 		try {
 			if (messageText == null) {
-				throw new NullPointerException(
+				throw new IllegalArgumentException(
 						"SMS Message body text may not be empty.");
 			}
 			String messageId = session.submitShortMessage(smsSmppProperties
@@ -1092,14 +1097,4 @@ public class SmsSmppImpl implements SmsSmpp {
 		return false;
 	}
 
-	/**
-	 * Counts all the acctive threads in a threadGroup
-	 * 
-	 * @param threadgroup
-	 * @return
-	 */
-	private int getThreadCount(ThreadGroup threadgroup) {
-		return threadgroup.activeCount();
-
-	}
 }

@@ -15,8 +15,8 @@ public class SmsTaskNotFoundException extends Exception {
 	}
 
 	/**
-	 * Instantiates a new sms  Task not found  exception.
-	 *
+	 * Instantiates a new sms Task not found exception.
+	 * 
 	 * @param msg
 	 *            the msg
 	 */
@@ -26,15 +26,12 @@ public class SmsTaskNotFoundException extends Exception {
 
 	/**
 	 * Instantiates a new sms Task not found exception.
-	 *
+	 * 
 	 * @param e
 	 *            the e
 	 */
 	public SmsTaskNotFoundException(Exception e) {
 		super(e);
 	}
-
-
-
 
 }

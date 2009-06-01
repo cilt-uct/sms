@@ -47,7 +47,7 @@ public class SmsConstants {
 	/**
 	 * Used to indicate if the system is running in development mode.
 	 */
-	public static boolean SMS_DEV_MODE = false;
+	public static final boolean SMS_DEV_MODE = false;
 
 	/**
 	 * The Sakai site id used to store global system settings
@@ -65,12 +65,6 @@ public class SmsConstants {
 
 	/** Enable or disable sms functionality for the site or tool. */
 	public static final boolean SMS_ENABLED_FOR_SITE = true;
-
-	/**
-	 * The email address that will receive the notification of errors or
-	 * insufficient credits.
-	 */
-	public static final String NOTIFICATION_EMAIL = "notification@instution.com";
 
 	/**
 	 * The maximum amount of time an smsTask can be retried.
@@ -205,6 +199,9 @@ public class SmsConstants {
 	 * The number of threads the delivery report Process can spawn.
 	 */
 	public static final String SMS_TASK_PROCESSING_THREAD_GROUP_NAME = "smsTaskProcessing";
+
+	public static final String CHECK_AND_SET_TASKS_COMPLETED_THREAD_GROUP_NAME = "checkAndSetTasksCompletedThreadGroup";
+
 	/**
 	 * The number of threads the delivery report Process can spawn.
 	 */

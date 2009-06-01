@@ -20,7 +20,7 @@ package org.sakaiproject.sms.model.hibernate.constants;
 // TODO: Auto-generated Javadoc
 /**
  * Constant class to hold key values for validation methods.
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 12-Jan-2009
@@ -28,66 +28,66 @@ package org.sakaiproject.sms.model.hibernate.constants;
 public class ValidationConstants {
 
 	/** Insuficient credit. */
-	public static String INSUFFICIENT_CREDIT = "sms.errors.task.credit.insufficient";
+	public final static String INSUFFICIENT_CREDIT = "sms.errors.task.credit.insufficient";
 
 	/** Message body too long. */
-	public static String MESSAGE_BODY_TOO_LONG = "sms.errors.task.messageBody.tooLong";
+	public final static String MESSAGE_BODY_TOO_LONG = "sms.errors.task.messageBody.tooLong";
 
 	/** Mobile number too long. */
-	public static String MOBILE_NUMBER_TOO_LONG = "sms.errors.message.mobileNumber.tooLong";
+	public final static String MOBILE_NUMBER_TOO_LONG = "sms.errors.message.mobileNumber.tooLong";
 
 	/** Mobile number invalid. */
-	public static String MOBILE_NUMBER_INVALID = "sms.errors.message.mobileNumber.invalid";
+	public final static String MOBILE_NUMBER_INVALID = "sms.errors.message.mobileNumber.invalid";
 
 	/** Mobile number empty. */
-	public static String MOBILE_NUMBER_EMPTY = "sms.errors.message.mobileNumber.empty";
+	public final static String MOBILE_NUMBER_EMPTY = "sms.errors.message.mobileNumber.empty";
 
 	/** Message body empty. */
-	public static String MESSAGE_BODY_EMPTY = "sms.errors.task.messageBody.empty";
+	public final static String MESSAGE_BODY_EMPTY = "sms.errors.task.messageBody.empty";
 
 	/** Sakai site id empty. */
-	public static String TASK_SAKAI_SITE_ID_EMPTY = "sms.errors.task.sakaiSiteId.empty";
+	public final static String TASK_SAKAI_SITE_ID_EMPTY = "sms.errors.task.sakaiSiteId.empty";
 
 	/** Date to send empty. */
-	public static String TASK_DATE_TO_EXPIRE_EMPTY = "sms.errors.task.expire.empty";
+	public final static String TASK_DATE_TO_EXPIRE_EMPTY = "sms.errors.task.expire.empty";
 
 	/** Invalid account id */
-	public static String TASK_ACCOUNT_INVALID = "sms.errors.task.account.invalid";
+	public final static String TASK_ACCOUNT_INVALID = "sms.errors.task.account.invalid";
 
 	/** The task account empty. */
-	public static String TASK_ACCOUNT_EMPTY = "sms.errors.task.account.empty";
+	public final static String TASK_ACCOUNT_EMPTY = "sms.errors.task.account.empty";
 
 	/** Date created empty */
-	public static String TASK_DATE_CREATED_EMPTY = "sms.errors.task.dateCreated.empty";
+	public final static String TASK_DATE_CREATED_EMPTY = "sms.errors.task.dateCreated.empty";
 
 	/** Date to send empty. */
-	public static String TASK_DATE_TO_SEND_EMPTY = "sms.errors.task.dateToSend.empty";
+	public final static String TASK_DATE_TO_SEND_EMPTY = "sms.errors.task.dateToSend.empty";
 
 	/** Status code empty. */
-	public static String TASK_STATUS_CODE_EMPTY = "sms.errors.task.statusCode.empty";
+	public final static String TASK_STATUS_CODE_EMPTY = "sms.errors.task.statusCode.empty";
 
 	/** Message type empty. */
-	public static String TASK_MESSAGE_TYPE_EMPTY = "sms.errors.task.messageType.empty";
+	public final static String TASK_MESSAGE_TYPE_EMPTY = "sms.errors.task.messageType.empty";
 
 	/** Sender user name empty. */
-	public static String TASK_SENDER_USER_NAME_EMPTY = "sms.errors.task.senderUserName.empty";
+	public final static String TASK_SENDER_USER_NAME_EMPTY = "sms.errors.task.senderUserName.empty";
 
 	/** Max time to live invalid. */
-	public static String TASK_MAX_TIME_TO_LIVE_INVALID = "sms.errors.task.maxTimeToLive.invalid";
+	public final static String TASK_MAX_TIME_TO_LIVE_INVALID = "sms.errors.task.maxTimeToLive.invalid";
 
 	/** Delivery report timeout invalid. */
-	public static String TASK_DELIVERY_REPORT_TIMEOUT_INVALID = "sms.errors.task.deliveryReportTimeout.invalid";
+	public final static String TASK_DELIVERY_REPORT_TIMEOUT_INVALID = "sms.errors.task.deliveryReportTimeout.invalid";
 
 	/** Delivery group id empty. */
-	public static String TASK_DELIVERY_GROUP_ID_EMPTY = "sms.errors.task.deliveryGroupId.empty";
+	public final static String TASK_DELIVERY_GROUP_ID_EMPTY = "sms.errors.task.deliveryGroupId.empty";
 
 	/** Message sakai user id empty */
-	public static String MESSAGE_SAKAI_USER_ID_EMPTY = "sms.errors.message.sakaiUserId.empty";
+	public final static String MESSAGE_SAKAI_USER_ID_EMPTY = "sms.errors.message.sakaiUserId.empty";
 
 	/** Message status empty. */
-	public static String MESSAGE_STATUS_CODE_EMPTY = "sms.errors.message.statusCode.empty";
+	public final static String MESSAGE_STATUS_CODE_EMPTY = "sms.errors.message.statusCode.empty";
 
 	/** Message task id empty. */
-	public static String MESSAGE_TASK_ID_EMPTY = "sms.errors.message.taskId.empty";
+	public final static String MESSAGE_TASK_ID_EMPTY = "sms.errors.message.taskId.empty";
 
 }

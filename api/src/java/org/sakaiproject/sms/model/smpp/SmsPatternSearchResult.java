@@ -20,18 +20,18 @@ public class SmsPatternSearchResult {
 		return matchResult;
 	}
 
-	public void setMatchResult(String matchResult) {
-		this.matchResult = matchResult;
-	}
-
 	public SmsPatternSearchResult() {
 
 	}
 
+	public void setMatchResult(String matchResult) {
+		this.matchResult = matchResult;
+	}
+
 	public SmsPatternSearchResult(String pattern) {
-		this.setPattern(pattern);
-		this.setMatchResult(SmsPatternSearchResult.ONE_MATCH);
-		this.getPossibleMatches().add(pattern);
+		this.pattern = pattern;
+		this.matchResult = SmsPatternSearchResult.ONE_MATCH;
+		this.possibleMatches.add(pattern);
 	}
 
 	public ArrayList<String> getPossibleMatches() {
@@ -40,8 +40,8 @@ public class SmsPatternSearchResult {
 
 	public void setPossibleMatches(ArrayList<String> possibleMatches) {
 		this.possibleMatches = possibleMatches;
-		if (possibleMatches.size() == 0) {
-							setMatchResult(SmsPatternSearchResult.NO_MATCHES);
+		if (possibleMatches.isEmpty()) {
+			setMatchResult(SmsPatternSearchResult.NO_MATCHES);
 		} else if (possibleMatches.size() == 1) {
 			setMatchResult(SmsPatternSearchResult.ONE_MATCH);
 			setPattern(possibleMatches.get(0));

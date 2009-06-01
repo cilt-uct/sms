@@ -19,31 +19,32 @@ package org.sakaiproject.sms.tool.constants;
 
 public enum SortDirection {
 
-	  ASC("asc"),
-	  DESC("desc");
-	  
-	  private String code;
+	ASC("asc"), DESC("desc");
 
-	  private SortDirection(String code) {
-	    this.code = code;
-	  }
+	private String code;
 
-	  public Integer getOrdinal() {
-	    return ordinal();
-	  }
+	private SortDirection(String code) {
+		this.code = code;
+	}
 
-	  public String getName() {
-	    return name();
-	  }
+	public Integer getOrdinal() {
+		return ordinal();
+	}
 
-	  public String getCode() {
-	    return code;
-	  }
+	public String getName() {
+		return name();
+	}
 
-	  public static SortDirection findByCode(String code) {
-	    for (SortDirection sortDirection : SortDirection.values()) {
-	      if (sortDirection.getCode().equalsIgnoreCase(code)) return sortDirection;
-	    }
-	    return null;
-	  }
+	public String getCode() {
+		return code;
+	}
+
+	public static SortDirection findByCode(String code) {
+		for (SortDirection sortDirection : SortDirection.values()) {
+			if (sortDirection.getCode().equalsIgnoreCase(code)) {
+				return sortDirection;
+			}
+		}
+		return null;
+	}
 }

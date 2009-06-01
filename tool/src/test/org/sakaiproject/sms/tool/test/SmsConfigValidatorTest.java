@@ -36,10 +36,10 @@ public class SmsConfigValidatorTest extends TestCase {
 		validator = new SmsConfigValidator();
 		smsConfig = new SmsConfig();
 		smsConfig.setDelReportTimeoutDuration(new Integer(1));
-		smsConfig.setPagingSize(new Integer(20));
-		smsConfig.setSmsRetryMaxCount(new Integer(3));
-		smsConfig.setSmsTaskMaxLifeTime(new Integer(3));
-		smsConfig.setSmsRetryScheduleInterval(new Integer(3));
+		smsConfig.setPagingSize(Integer.valueOf(20));
+		smsConfig.setSmsRetryMaxCount(Integer.valueOf(3));
+		smsConfig.setSmsTaskMaxLifeTime(Integer.valueOf(3));
+		smsConfig.setSmsRetryScheduleInterval(Integer.valueOf(3));
 		bindException = new BindException(smsConfig, "SmsConfig");
 
 		super.setUp();

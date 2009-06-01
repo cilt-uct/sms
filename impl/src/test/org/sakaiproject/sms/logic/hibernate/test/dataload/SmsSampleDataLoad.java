@@ -35,8 +35,8 @@ import org.sakaiproject.sms.model.hibernate.SmsTransaction;
  * Use the application to insert test data into the database. Increase the value
  * of NUMBER_OF_REPETITIONS if you want to test the performance of the UI,
  * especially paging in the grids.
- *
- *
+ * 
+ * 
  */
 public class SmsSampleDataLoad {
 
@@ -88,7 +88,7 @@ public class SmsSampleDataLoad {
 			for (SmsTransaction smsTransaction : smsTransactions) {
 
 				smsTransaction.setSmsAccount(persistedSmsAccounts.get(0));
-				smsTransaction.setSmsTaskId(new Long(index + 1));
+				smsTransaction.setSmsTaskId(Long.valueOf(index + 1));
 				hibernateLogicLocator.getSmsTransactionLogic()
 						.insertReserveTransaction(smsTransaction);
 				index++;

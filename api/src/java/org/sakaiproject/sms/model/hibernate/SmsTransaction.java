@@ -27,7 +27,7 @@ import org.sakaiproject.sms.util.DateUtil;
  * transaction will be inserted indicating that credits are reserved. When the
  * task is processed, the actual credits will be calculated and the difference
  * will be settled with another transaction.
- *
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -66,6 +66,7 @@ public class SmsTransaction extends BaseModel {
 	 * Instantiates a new sms transaction.
 	 */
 	public SmsTransaction() {
+		super();
 
 	}
 
@@ -87,7 +88,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the sakai user id.
-	 *
+	 * 
 	 * @return the sakai user id
 	 */
 	public String getSakaiUserId() {
@@ -96,7 +97,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction credits.
-	 *
+	 * 
 	 * @return the transaction credits
 	 */
 	public Integer getTransactionCredits() {
@@ -105,7 +106,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction date.
-	 *
+	 * 
 	 * @return the transaction date
 	 */
 	public Date getTransactionDate() {
@@ -114,7 +115,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the transaction type code.
-	 *
+	 * 
 	 * @return the transaction type code
 	 */
 	public String getTransactionTypeCode() {
@@ -123,7 +124,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the sakai user id.
-	 *
+	 * 
 	 * @param sakaiUserId
 	 *            the new sakai user id
 	 */
@@ -133,7 +134,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the transaction credits.
-	 *
+	 * 
 	 * @param transactionCredits
 	 *            the new transaction credits
 	 */
@@ -143,7 +144,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the transaction date.
-	 *
+	 * 
 	 * @param transactionDate
 	 *            the new transaction date
 	 */
@@ -153,7 +154,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the transaction type code.
-	 *
+	 * 
 	 * @param transactionTypeCode
 	 *            the new transaction type code
 	 */
@@ -163,7 +164,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the sms account.
-	 *
+	 * 
 	 * @return the sms account
 	 */
 	public SmsAccount getSmsAccount() {
@@ -172,7 +173,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the sms account.
-	 *
+	 * 
 	 * @param smsAccount
 	 *            the new sms account
 	 */
@@ -182,7 +183,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Gets the sms task id.
-	 *
+	 * 
 	 * @return the sms task
 	 */
 	public Long getSmsTaskId() {
@@ -191,7 +192,7 @@ public class SmsTransaction extends BaseModel {
 
 	/**
 	 * Sets the sms task id.
-	 *
+	 * 
 	 * @param smsTask
 	 *            the new sms task
 	 */

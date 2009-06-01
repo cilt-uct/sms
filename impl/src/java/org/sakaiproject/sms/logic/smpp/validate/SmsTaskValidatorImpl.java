@@ -18,6 +18,7 @@
 package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -52,14 +53,14 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 	 * 
 	 * @return the array list< string>
 	 */
-	public synchronized ArrayList<String> checkSufficientCredits(
-			SmsTask smsTask, boolean overDraftCheck) {
-		ArrayList<String> errors = new ArrayList<String>();
+	public synchronized List<String> checkSufficientCredits(SmsTask smsTask,
+			boolean overDraftCheck) {
+		List<String> errors = new ArrayList<String>();
 		// check for sufficient balance
-		;
-		boolean sufficientCredits = smsBilling
-				.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
-						.getCreditEstimate(), overDraftCheck);
+
+		final boolean sufficientCredits = smsBilling.checkSufficientCredits(
+				smsTask.getSmsAccountId(), smsTask.getCreditEstimate(),
+				overDraftCheck);
 		if (!sufficientCredits) {
 			errors.add(ValidationConstants.INSUFFICIENT_CREDIT
 					+ " in account id " + smsTask.getSmsAccountId());
@@ -75,9 +76,9 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 	 * 
 	 * @return the array list< string>
 	 */
-	public ArrayList<String> validateInsertTask(SmsTask smsTask) {
+	public List<String> validateInsertTask(SmsTask smsTask) {
 		// called by getPrelimTask()
-		ArrayList<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<String>();
 
 		// Check sakai site id
 		if (smsTask.getSakaiSiteId() == null
@@ -115,13 +116,14 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 		}
 
 		// Check message body
-		if (smsTask.getMessageBody() != null) {
+		if (smsTask.getMessageBody() == null) {
+			errors.add(ValidationConstants.MESSAGE_BODY_EMPTY);
+
+		} else {
 			// Check length of messageBody
 			if (smsTask.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH) {
 				errors.add(ValidationConstants.MESSAGE_BODY_TOO_LONG);
 			}
-		} else {
-			errors.add(ValidationConstants.MESSAGE_BODY_EMPTY);
 		}
 		// TODO also check character set on message body
 

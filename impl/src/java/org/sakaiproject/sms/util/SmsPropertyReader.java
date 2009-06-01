@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
@@ -33,6 +35,8 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  * @created 20-Jan-2009
  */
 public abstract class SmsPropertyReader {
+
+	private static final Log LOG = LogFactory.getLog(SmsPropertyReader.class);
 
 	/** The property file name. */
 	private static Properties properties = new Properties();
@@ -50,10 +54,10 @@ public abstract class SmsPropertyReader {
 		try {
 			loadProperties();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage(), e);
 			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		}
 
@@ -71,16 +75,16 @@ public abstract class SmsPropertyReader {
 	 */
 	private static void loadProperties() throws FileNotFoundException,
 			IOException {
-		InputStream is = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream("sms.properties");
+		final InputStream inputStream = Thread.currentThread()
+				.getContextClassLoader().getResourceAsStream("sms.properties");
 
 		// InputStream is = SmsPropertyReader.class.getClass()
 		// .getResourceAsStream("/sms.properties");
 
-		if (is != null) {
-			properties.load(is);
+		if (inputStream == null) {
+			properties.load(new FileInputStream("sms.properties"));
 		} else {
-			properties.load((new FileInputStream("sms.properties")));
+			properties.load(inputStream);
 		}
 
 	}

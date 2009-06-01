@@ -7,16 +7,14 @@ import org.sakaiproject.sms.tool.test.stubs.SmsAccountLogicStub;
 import org.sakaiproject.sms.tool.validators.CreditAccountValidator;
 import org.springframework.validation.BindException;
 
-public class CreditAccountValidatorTest extends TestCase{
+public class CreditAccountValidatorTest extends TestCase {
 
 	private CreditAccountValidator validator;
 	private BindException bindException;
 	private CreditAccountBean creditAccountBean;
 
-
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	protected void setUp() {
 		validator = new CreditAccountValidator();
 		creditAccountBean = new CreditAccountBean();
 		bindException = new BindException(creditAccountBean, "SmsConfig");
@@ -24,24 +22,26 @@ public class CreditAccountValidatorTest extends TestCase{
 		validator.setSmsAccountLogic(new SmsAccountLogicStub());
 	}
 
-	public void testAccountDoesNotExsist() throws Exception {
+	public void testAccountDoesNotExsist() {
 		creditAccountBean.setAccountId(-10L);
 		creditAccountBean.setCreditsToCredit(10L);
 		validator.validate(creditAccountBean, bindException);
 		assertTrue(bindException.hasErrors());
-		assertEquals("sms.credit.account.errors.no.account", bindException.getGlobalError().getCode());
+		assertEquals("sms.credit.account.errors.no.account", bindException
+				.getGlobalError().getCode());
 
 	}
 
-	public void testNegativeCreditAmount() throws Exception {
+	public void testNegativeCreditAmount() {
 		creditAccountBean.setAccountId(1L);
 		creditAccountBean.setCreditsToCredit(-10L);
 		validator.validate(creditAccountBean, bindException);
 		assertTrue(bindException.hasErrors());
-		assertEquals("sms.errors.creditsToCredit.empty", bindException.getFieldError().getCode());
+		assertEquals("sms.errors.creditsToCredit.empty", bindException
+				.getFieldError().getCode());
 	}
 
-	public void testValidationPasses() throws Exception {
+	public void testValidationPasses() {
 		creditAccountBean.setAccountId(1L);
 		creditAccountBean.setCreditsToCredit(20L);
 		validator.validate(creditAccountBean, bindException);

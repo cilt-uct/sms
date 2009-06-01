@@ -25,8 +25,7 @@ import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 public class PagerViewParams extends SimpleViewParameters {
 
 	public SmsConfigLogic smsConfigLogic;
-	
-	
+
 	public int current_start = 1;
 	public int current_count = 1;
 

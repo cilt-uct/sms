@@ -38,7 +38,7 @@ public class SmsMessage extends BaseModel {
 	private Date dateDelivered;
 
 	/** Info for debugging purposes. */
-	private String DebugInfo;
+	private String debugInfo;
 
 	/** The reason for a message failing */
 	private String failReason;
@@ -87,6 +87,7 @@ public class SmsMessage extends BaseModel {
 	 * Instantiates a new sms message.
 	 */
 	public SmsMessage() {
+		super();
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
 
 	}
@@ -100,7 +101,8 @@ public class SmsMessage extends BaseModel {
 	 *            the message body
 	 * @depricated Do not use
 	 */
-	public SmsMessage(String mobileNumber, String messageBody) {
+	public SmsMessage(String mobileNumber) {
+		super();
 		this.mobileNumber = mobileNumber;
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
 
@@ -121,7 +123,7 @@ public class SmsMessage extends BaseModel {
 	 * @return the debug info
 	 */
 	public String getDebugInfo() {
-		return DebugInfo;
+		return debugInfo;
 	}
 
 	/**
@@ -214,9 +216,9 @@ public class SmsMessage extends BaseModel {
 	 */
 	public void setDebugInfo(String debugInfo) {
 		if (debugInfo == null) {
-			DebugInfo = "";
+			this.debugInfo = "";
 		} else {
-			DebugInfo = DebugInfo + debugInfo + "\n";
+			this.debugInfo += debugInfo + "\n";
 		}
 	}
 
@@ -356,7 +358,7 @@ public class SmsMessage extends BaseModel {
 		// int result = super.hashCode();
 		int result = 43;
 		result = prime * result
-				+ ((DebugInfo == null) ? 0 : DebugInfo.hashCode());
+				+ ((debugInfo == null) ? 0 : debugInfo.hashCode());
 		result = prime * result
 				+ ((dateDelivered == null) ? 0 : dateDelivered.hashCode());
 		result = prime * result
@@ -383,10 +385,10 @@ public class SmsMessage extends BaseModel {
 		if (!(obj instanceof SmsMessage))
 			return false;
 		SmsMessage other = (SmsMessage) obj;
-		if (DebugInfo == null) {
-			if (other.DebugInfo != null)
+		if (debugInfo == null) {
+			if (other.debugInfo != null)
 				return false;
-		} else if (!DebugInfo.equals(other.DebugInfo))
+		} else if (!debugInfo.equals(other.debugInfo))
 			return false;
 		if (dateDelivered == null) {
 			if (other.dateDelivered != null)

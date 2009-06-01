@@ -62,11 +62,19 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsCoreImpl implements SmsCore {
 
-	private static Log LOG = LogFactory.getLog(SmsCoreImpl.class);
+	private static final Log LOG = LogFactory.getLog(SmsCoreImpl.class);
 
-	private static final int moOverdraftEmailInterval = 2;
+	private static final int MO_OVERDRAFT_EMAIL_INTERVAL = 2;
 
 	private Calendar lastSendMoOverdraftEmail = null;
+
+	public Calendar getLastSendMoOverdraftEmail() {
+		return lastSendMoOverdraftEmail;
+	}
+
+	public void setLastSendMoOverdraftEmail(Calendar lastSendMoOverdraftEmail) {
+		this.lastSendMoOverdraftEmail = lastSendMoOverdraftEmail;
+	}
 
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
 			SmsConstants.SMS_TASK_PROCESSING_THREAD_GROUP_NAME);
@@ -109,15 +117,18 @@ public class SmsCoreImpl implements SmsCore {
 		this.smsIncomingLogicManager = smsIncomingLogicManager;
 	}
 
+	public SmsIncomingLogicManager getSmsIncomingLogicManager() {
+		return smsIncomingLogicManager;
+	}
+
 	public SmsSmpp smsSmpp = null;
 
 	public SmsBilling smsBilling = null;
 
-	public SmsTask calculateEstimatedGroupSize(SmsTask smsTask) {
-		int groupSize = 0;
-		Set<SmsMessage> messages = hibernateLogicLocator.getExternalLogic()
-				.getSakaiGroupMembers(smsTask, false);
-		groupSize = messages.size();
+	public SmsTask calculateEstimatedGroupSize(final SmsTask smsTask) {
+		final Set<SmsMessage> messages = hibernateLogicLocator
+				.getExternalLogic().getSakaiGroupMembers(smsTask, false);
+		final int groupSize = messages.size();
 		smsTask.setGroupSizeEstimate(groupSize);
 		// one sms always costs one credit
 		smsTask.setCreditEstimate(groupSize);
@@ -134,22 +145,57 @@ public class SmsCoreImpl implements SmsCore {
 	 */
 	private class ProcessThread implements Runnable {
 
-		SmsTask smsTask;
+		private SmsTask smsTask;
+
+		public SmsTask getSmsTask() {
+			return smsTask;
+		}
+
+		public void setSmsTask(SmsTask smsTask) {
+			this.smsTask = smsTask;
+		}
 
 		ProcessThread(SmsTask smsTask, ThreadGroup threadGroup) {
-			this.smsTask = smsTask;
-			Thread t = new Thread(threadGroup, this);
-			t.setDaemon(true);
-			t.start();
+			setSmsTask(smsTask);
+			final Thread thread = new Thread(threadGroup, this);
+			thread.setDaemon(true);
+			thread.start();
 
 		}
 
 		public void run() {
-			Work();
+			work();
 		}
 
-		public void Work() {
+		public void work() {
 			processTask(smsTask);
+
+		}
+	}
+
+	/**
+	 * Thread to handle all processing of tasks.Not yet implemented
+	 * 
+	 * @author etienne@psybergate.co.za
+	 * 
+	 */
+	private class CheckAndSetTaskThread implements Runnable {
+
+		private SmsTask smsTask;
+
+		CheckAndSetTaskThread(SmsTask smsTask, ThreadGroup threadGroup) {
+			this.smsTask = smsTask;
+			final Thread thread = new Thread(threadGroup, this);
+			thread.setDaemon(true);
+			thread.start();
+
+		}
+
+		public void run() {
+			work();
+		}
+
+		public void work() {
 
 		}
 	}
@@ -162,8 +208,8 @@ public class SmsCoreImpl implements SmsCore {
 	 * @return
 	 */
 	private SmsTask calculateActualGroupSize(SmsTask smsTask) {
-		Set<SmsMessage> messages = hibernateLogicLocator.getExternalLogic()
-				.getSakaiGroupMembers(smsTask, true);
+		final Set<SmsMessage> messages = hibernateLogicLocator
+				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
 		smsTask.setSmsMessagesOnTask(messages);
 		smsTask.setGroupSizeActual(messages.size());
 		return smsTask;
@@ -217,19 +263,19 @@ public class SmsCoreImpl implements SmsCore {
 			Date dateToSend, String messageBody, String sakaiSiteID,
 			String sakaiToolId, String sakaiSenderID,
 			List<String> deliveryEntityList) {
-		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
+		final SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSystemSmsConfig();
+		final SmsConfig systemConfig = hibernateLogicLocator
+				.getSmsConfigLogic().getOrCreateSystemSmsConfig();
 
-		SmsTask smsTask = new SmsTask();
+		final SmsTask smsTask = new SmsTask();
 		try {
 			smsTask.setSmsAccountId(smsBilling.getAccountID(sakaiSiteID,
 					sakaiSenderID));
 		} catch (SmsAccountNotFoundException e) {
 			LOG.error("Sms account not found  for sakaiSiteID:=" + sakaiSiteID
 					+ " sakaiSenderID:= " + sakaiSenderID);
-			LOG.error(e);
+			LOG.error(e.getMessage(), e);
 			return null;
 		}
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
@@ -246,7 +292,7 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setAttemptCount(0);
 		smsTask.setMessageBody(messageBody);
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		// TODO, DateToExpire must be set from the UI as well
@@ -264,9 +310,9 @@ public class SmsCoreImpl implements SmsCore {
 	// to it. The task will then be handled like any other MO task.
 	private SmsTask getPreliminaryMOTask(String mobilenumber, Date dateToSend,
 			String sakaiSiteID, String sakaiToolId, String sakaiSenderID) {
-		Set<String> number = new HashSet<String>();
+		final Set<String> number = new HashSet<String>();
 		number.add(mobilenumber);
-		SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
+		final SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
 				sakaiToolId, sakaiSenderID, number);
 		if (smsTask != null) {
 			smsTask
@@ -278,8 +324,8 @@ public class SmsCoreImpl implements SmsCore {
 				smsTask.setSmsAccountId(smsBilling
 						.getAccountID(sakaiSiteID, ""));
 			} catch (SmsAccountNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error(e.getMessage(), e);
+
 			}
 		}
 		return smsTask;
@@ -294,7 +340,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void init() {
-
+		LOG.info("SmsCoreImpl online");
 	}
 
 	public SmsTask insertTask(SmsTask smsTask)
@@ -315,7 +361,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask
 					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
-		Set<SmsMessage> smsMessages = (Set<SmsMessage>) ((HashSet<SmsMessage>) smsTask
+		final Set<SmsMessage> smsMessages = (Set<SmsMessage>) ((HashSet<SmsMessage>) smsTask
 				.getSmsMessages()).clone();
 
 		smsTask.setSmsMessages(null);
@@ -354,12 +400,12 @@ public class SmsCoreImpl implements SmsCore {
 
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
-		if (errors.size() > 0) {
+		if (!errors.isEmpty()) {
 			// Do not persist, just throw exception
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
-					(MessageCatalog
-							.getMessage("messages.sms.errors.task.validationFailed")));
+					MessageCatalog
+							.getMessage("messages.sms.errors.task.validationFailed"));
 			LOG.error(MessageCatalog
 					.getMessage("messages.sms.errors.task.validationFailed")
 					+ ": " + validationException.getErrorMessagesAsBlock());
@@ -382,19 +428,19 @@ public class SmsCoreImpl implements SmsCore {
 				if (lastSendMoOverdraftEmail == null) {
 					sendEmailNotification(smsTask,
 							SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
-					lastSendMoOverdraftEmail = Calendar.getInstance();
+					setLastSendMoOverdraftEmail(Calendar.getInstance());
 				} else {
 					Calendar now = Calendar.getInstance();
 					Calendar previousSendmail = Calendar.getInstance();
-					previousSendmail
-							.setTime(lastSendMoOverdraftEmail.getTime());
+					previousSendmail.setTime(getLastSendMoOverdraftEmail()
+							.getTime());
 					previousSendmail.add(Calendar.HOUR,
-							moOverdraftEmailInterval);
+							MO_OVERDRAFT_EMAIL_INTERVAL);
 					if (previousSendmail.before(now)) {
 						sendEmailNotification(
 								smsTask,
 								SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO);
-						lastSendMoOverdraftEmail = Calendar.getInstance();
+						setLastSendMoOverdraftEmail(Calendar.getInstance());
 					}
 
 				}
@@ -403,7 +449,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		}
 
-		if (errors.size() > 0) {
+		if (!errors.isEmpty()) {
 			SmsTaskValidationException validationException = new SmsTaskValidationException(
 					errors,
 					MessageCatalog
@@ -435,24 +481,24 @@ public class SmsCoreImpl implements SmsCore {
 		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
 		try {
-			parsedMessage = smsIncomingLogicManager.process(smsMessagebody,
-					mobileNumber);
+			parsedMessage = getSmsIncomingLogicManager().process(
+					smsMessagebody, mobileNumber);
 		} catch (MoDisabledForSiteException exeption) {
 			LOG.error(exeption.getMessage());
 			return;
 
 		}
 		if (parsedMessage != null) {
-			if (parsedMessage.getBody_reply() != null
-					&& !parsedMessage.getBody_reply().equals(
+			if (parsedMessage.getBodyReply() != null
+					&& !parsedMessage.getBodyReply().equals(
 							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
-				smsMessageReplyBody = parsedMessage.getBody_reply();
+				smsMessageReplyBody = parsedMessage.getBodyReply();
 				LOG.debug((parsedMessage.getCommand() != null ? "Command "
 						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
 
-			} else if ((parsedMessage.getBody_reply() == null)
-					|| parsedMessage.getBody_reply().equals(
+			} else if ((parsedMessage.getBodyReply() == null)
+					|| parsedMessage.getBodyReply().equals(
 							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 				return;
 			} else {
@@ -460,8 +506,7 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 
-		SmsMessage smsMessage = new SmsMessage(mobileNumber,
-				smsMessageReplyBody);
+		SmsMessage smsMessage = new SmsMessage(mobileNumber);
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				new Date(), parsedMessage.getSite(), null,
@@ -484,35 +529,30 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (SmsTaskValidationException e) {
 
 		} catch (SmsSendDeniedException e) {
-			LOG.error(getExceptionStackTraceAsString(e));
-			e.printStackTrace();
+			LOG.error(getExceptionStackTraceAsString(e), e);
+
 		} catch (SmsSendDisabledException e) {
-			LOG.error(getExceptionStackTraceAsString(e));
-			e.printStackTrace();
+			LOG.error(getExceptionStackTraceAsString(e), e);
+
 		}
 
 	}
 
-	public synchronized void processNextTask() {
-		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getNextSmsTask();
+	public void processNextTask() {
+		synchronized (this) {
+			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
+					.getNextSmsTask();
 
-		if (smsTask != null) {
-			LOG.debug("Processing next task");
-			processTaskInThread(smsTask, smsThreadGroup);
+			if (smsTask != null) {
+				LOG.debug("Processing next task");
+				processTaskInThread(smsTask, smsThreadGroup);
+			}
 		}
 	}
 
 	public void processTask(SmsTask smsTask) {
 
-		smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				smsTask.getId());
-		if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_BUSY)) {
-			return;
-		}
-		if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_SENT)) {
-			return;
-		}
+		LOG.debug("Processing task:" + smsTask.getId());
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		try {
@@ -535,7 +575,7 @@ public class SmsCoreImpl implements SmsCore {
 				return;
 			}
 
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			// /hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 				if ((!smsTask.getMessageTypeId().equals(
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) && smsTask
@@ -574,14 +614,14 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_FAIL);
 				sendEmailNotification(smsTask,
 						SmsConstants.TASK_NOTIFICATION_FAILED);
-				smsTask.setFailReason((MessageCatalog.getMessage(
+				smsTask.setFailReason(MessageCatalog.getMessage(
 						"messages.taskRetryFailure", String
-								.valueOf(systemConfig.getSmsRetryMaxCount()))));
+								.valueOf(systemConfig.getSmsRetryMaxCount())));
 				smsBilling.cancelPendingRequest(smsTask.getId());
 			}
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		} catch (Exception e) {
-			LOG.error(getExceptionStackTraceAsString(e));
+			LOG.error(getExceptionStackTraceAsString(e), e);
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask);
@@ -595,9 +635,9 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	private String getExceptionStackTraceAsString(Exception exception) {
-		StringWriter sw = new StringWriter();
-		exception.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
+		StringWriter stringWriter = new StringWriter();
+		exception.printStackTrace(new PrintWriter(stringWriter));
+		return stringWriter.toString();
 	}
 
 	public void processTimedOutDeliveryReports() {
@@ -606,6 +646,7 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_SENT);
 
 		if (smsMessages != null) {
+			Calendar currentTime = Calendar.getInstance();
 			for (SmsMessage message : smsMessages) {
 				SmsTask task = message.getSmsTask();
 				if (task.getDateProcessed() != null) {
@@ -614,7 +655,7 @@ public class SmsCoreImpl implements SmsCore {
 					cal
 							.add(Calendar.SECOND, task
 									.getDelReportTimeoutDuration());
-					if (cal.getTime().before(new Date())) {
+					if (cal.getTime().before(currentTime.getTime())) {
 						message
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
 						hibernateLogicLocator.getSmsMessageLogic()
@@ -699,8 +740,11 @@ public class SmsCoreImpl implements SmsCore {
 			credits += account.getOverdraftLimit();
 		}
 
-		String creditsAvailable = credits + "";
-		String creditsRequired = smsTask.getCreditEstimate() + "";
+		String creditsAvailable = Long.toString(credits);
+		String creditsRequired = "";
+		if (smsTask.getCreditEstimate() != null) {
+			creditsRequired = Long.toString(smsTask.getCreditEstimate());
+		}
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
 		notiToAddress = configSite.getNotificationEmail();
@@ -813,7 +857,7 @@ public class SmsCoreImpl implements SmsCore {
 
 				return (systemNotification && ownerNotification);
 			} else {
-				return (systemNotification);
+				return systemNotification;
 			}
 		}
 
@@ -868,11 +912,12 @@ public class SmsCoreImpl implements SmsCore {
 	private void checkOverdraft(SmsTask smsTask) {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
-		if (account.getOverdraftLimit() != null) {
-			if ((account.getCredits()) < (-1 * account.getOverdraftLimit())) {
-				sendEmailNotification(smsTask,
-						SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
-			}
+		if (account.getOverdraftLimit() != null
+				&& (account.getCredits() < (-1 * account.getOverdraftLimit()))) {
+
+			sendEmailNotification(smsTask,
+					SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
+
 		}
 	}
 
@@ -882,15 +927,14 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_LATE);
 
 		for (SmsMessage smsMessage : messages) {
-
-			if ((smsMessage.getSmscDeliveryStatusCode()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
-				smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-			} else {
+			if (smsMessage.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
 				smsMessage
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 				hibernateLogicLocator.getSmsTaskLogic()
 						.incrementMessagesDelivered(smsMessage.getSmsTask());
 				smsBilling.debitLateMessage(smsMessage);
+			} else {
+				smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			}
 			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 					smsMessage);
@@ -919,25 +963,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	/**
-	 * Counts all the acctive threads in a threadGroup
-	 * 
-	 * @param threadgroup
-	 * @return
-	 */
-	private int getThreadCount(ThreadGroup threadgroup) {
-		return threadgroup.activeCount();
-
-	}
-
 	public void processMOTasks() {
 		List<SmsTask> moTasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getAllMOTasks();
 		if (moTasks != null) {
 			for (SmsTask smsTask : moTasks) {
-
 				processTaskInThread(smsTask, smsThreadGroup);
-
 			}
 		}
 	}
@@ -945,10 +976,10 @@ public class SmsCoreImpl implements SmsCore {
 	public void processTaskInThread(SmsTask smsTask, ThreadGroup threadGroup) {
 
 		LOG.debug("Number of active threads in processTaskInThread:"
-				+ getThreadCount(threadGroup));
+				+ threadGroup.activeCount());
 		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-		if (getThreadCount(threadGroup) < maxThreadCount) {
+		if (threadGroup.activeCount() < maxThreadCount) {
 			new ProcessThread(smsTask, threadGroup);
 		} else {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);

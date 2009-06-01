@@ -34,7 +34,8 @@ import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
  */
 public class MobileNumberHelperImpl implements MobileNumberHelper {
 
-	private static Log LOG = LogFactory.getLog(MobileNumberHelperImpl.class);
+	private static final Log LOG = LogFactory
+			.getLog(MobileNumberHelperImpl.class);
 
 	private SakaiPersonManager sakaiPersonManager;
 
@@ -47,14 +48,15 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	public String getUserMobileNumber(String userid) {
 		LOG.debug("getMobileNumber(" + userid + ")");
-		SakaiPerson sp = sakaiPersonManager.getSakaiPerson(userid,
-				sakaiPersonManager.getUserMutableType());
-		if (sp != null) {
-			return sp.getMobile();
-		} else {
+		final SakaiPerson sakaiPerson = sakaiPersonManager.getSakaiPerson(
+				userid, sakaiPersonManager.getUserMutableType());
+		if (sakaiPerson == null) {
 			// this is to be expected not all Sakai Users have profiles
 			LOG.debug("Profile not found for userid: " + userid);
 			return null;
+		} else {
+			return sakaiPerson.getMobile();
+
 		}
 	}
 
@@ -63,7 +65,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	public Map<String, String> getUserMobileNumbers(List<String> userids) {
 		LOG.debug("getUserMobileNumbers()");
-		Map<String, String> userMobileMap = new HashMap<String, String>();
+		final Map<String, String> userMobileMap = new HashMap<String, String>();
 		for (String userid : userids) {
 			userMobileMap.put(userid, getUserMobileNumber(userid));
 		}
@@ -76,11 +78,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	@SuppressWarnings("unchecked")
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
 		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber);
-		SakaiPerson example = sakaiPersonManager.getPrototype();
+		final SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setMobile(mobileNumber);
 
-		List<SakaiPerson> list = sakaiPersonManager.findSakaiPerson(example);
-		List<String> toReturn = new ArrayList<String>();
+		final List<SakaiPerson> list = sakaiPersonManager
+				.findSakaiPerson(example);
+		final List<String> toReturn = new ArrayList<String>();
 		for (SakaiPerson person : list) {
 			toReturn.add(person.getUid());
 		}

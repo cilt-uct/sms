@@ -26,7 +26,7 @@ public class MoDisabledForSiteException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public MoDisabledForSiteException(String siteID) {
+	public MoDisabledForSiteException(final String siteID) {
 		super("MO receiving is disabled for site :" + siteID);
 	}
 

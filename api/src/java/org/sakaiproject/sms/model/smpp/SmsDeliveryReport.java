@@ -33,7 +33,7 @@ public class SmsDeliveryReport {
 	// The unique ID of the message
 	private long kMessageID;
 
-	private String SmscID;
+	private String smscID;
 
 	public int getDeliveryStatus() {
 		return deliveryStatus;
@@ -44,7 +44,7 @@ public class SmsDeliveryReport {
 	}
 
 	public String getSmscID() {
-		return SmscID;
+		return smscID;
 	}
 
 	public void setDeliveryStatus(int deliveryStatus) {
@@ -56,7 +56,7 @@ public class SmsDeliveryReport {
 	}
 
 	public void setSmscID(String smscID) {
-		SmscID = smscID;
+		this.smscID = smscID;
 	}
 
 }

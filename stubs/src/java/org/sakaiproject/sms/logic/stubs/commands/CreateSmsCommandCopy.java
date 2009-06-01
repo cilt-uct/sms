@@ -6,11 +6,12 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class CreateSmsCommandCopy implements SmsCommand {
 
-	private static Log log = LogFactory.getLog(CreateSmsCommand.class);
+	private static final Log LOG = LogFactory
+			.getLog(CreateSmsCommandCopy.class);
 
 	public String execute(String siteId, String userId, String mobileNr,
 			String... body) {
-		log.debug(getCommandKey() + " command called with parameters: ("
+		LOG.debug(getCommandKey() + " command called with parameters: ("
 				+ siteId + ", " + userId + ", " + body[0] + ")");
 		return getCommandKey() + " COPY";
 	}
@@ -34,7 +35,7 @@ public class CreateSmsCommandCopy implements SmsCommand {
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	public boolean isVisible() {
 		return true;
 	}

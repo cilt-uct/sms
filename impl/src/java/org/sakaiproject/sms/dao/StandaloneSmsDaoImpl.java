@@ -45,26 +45,31 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
  * @created 24-Nov-2008
  */
 public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
-	
+
 	public StandaloneSmsDaoImpl(String propertiesFile) {
+		super();
 		setPropertiesFile(propertiesFile);
 		// Automatically build session factory
 		this.setSessionFactory(buildSessionFactory());
 		init();
 	}
-	
+
 	protected void init() {
-		List<String> persistentClasses = new ArrayList<String>();
-		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsAccount");
+		final List<String> persistentClasses = new ArrayList<String>();
+		persistentClasses
+				.add("org.sakaiproject.sms.model.hibernate.SmsAccount");
 		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsConfig");
-		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsMessage");
+		persistentClasses
+				.add("org.sakaiproject.sms.model.hibernate.SmsMessage");
 		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsTask");
-		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsTransaction");
-	
+		persistentClasses
+				.add("org.sakaiproject.sms.model.hibernate.SmsTransaction");
+
 		super.setPersistentClasses(persistentClasses);
-		setTransactionManager(new HibernateTransactionManager(getSessionFactory()));
+		setTransactionManager(new HibernateTransactionManager(
+				getSessionFactory()));
 	}
-	
+
 	/**
 	 * Properties filename
 	 */
@@ -78,9 +83,10 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 	/**
 	 * Location of hibernate.cfg.xml file.
 	 */
-	private static String CONFIG_FILE_LOCATION = "hibernate.cfg.xml";
+	private final static String CONFIG_FILE_LOCATION = "hibernate.cfg.xml";
 
-	private static Log LOG = LogFactory.getLog(StandaloneSmsDaoImpl.class);
+	private final static Log LOG = LogFactory
+			.getLog(StandaloneSmsDaoImpl.class);
 
 	/**
 	 * Loads the given properties file from the classpath.
@@ -97,7 +103,7 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 
 	private static Properties loadPropertiesFromClasspath(String file)
 			throws IOException {
-		Properties properties = new Properties();
+		final Properties properties = new Properties();
 		properties.load(StandaloneSmsDaoImpl.class.getResourceAsStream(file));
 
 		return properties;
@@ -113,7 +119,7 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 	 */
 	private static Configuration getConfiguration() throws IOException {
 
-		Configuration configuration = new Configuration();
+		final Configuration configuration = new Configuration();
 
 		// load bean mappings
 		configuration.configure(CONFIG_FILE_LOCATION);
@@ -155,10 +161,9 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 		try {
 			new SchemaExport(getConfiguration()).create(false, true);
 		} catch (IOException e) {
-			e.printStackTrace();
 			throw new HibernateException("Error reading hibernate properties: "
 					+ e.getMessage(), e);
 		}
 	}
-	
+
 }

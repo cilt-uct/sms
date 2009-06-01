@@ -89,15 +89,15 @@ public class BeanToCSVReflectorTest extends TestCase {
 
 	private List<ExtendedResultSet> createExtendedTestRow() {
 		ExtendedResultSet extendedResultSet = new ExtendedResultSet("Row 1",
-				new Long(2000), 255, "More info");
+				Long.valueOf(2000), 255, "More info");
 		List<ExtendedResultSet> list = new ArrayList<ExtendedResultSet>();
 		list.add(extendedResultSet);
 		return list;
 	}
 
 	private List<SimpleResultSet> createSimpleTestRow() {
-		SimpleResultSet simpleResultSet1 = new SimpleResultSet("Row 1",
-				new Long(2000), 255);
+		SimpleResultSet simpleResultSet1 = new SimpleResultSet("Row 1", Long
+				.valueOf(2000), 255);
 		List<SimpleResultSet> list = new ArrayList<SimpleResultSet>();
 		list.add(simpleResultSet1);
 		return list;

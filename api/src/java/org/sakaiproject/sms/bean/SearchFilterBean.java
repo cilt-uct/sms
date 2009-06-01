@@ -26,7 +26,7 @@ import org.sakaiproject.sms.util.DateUtil;
 /**
  * Generic search filter bean object. Will be used for the search screens as a
  * criteria object to house the search parameters
- *
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 19-Nov-2008
@@ -48,7 +48,7 @@ public class SearchFilterBean {
 	/** The Task ID (on Messages Log) */
 	private String taskId;
 
-	private Integer messageTypeId =SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING;
+	private Integer messageTypeId = SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING;
 
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
@@ -82,12 +82,12 @@ public class SearchFilterBean {
 		newSearch = false;
 		dateFrom = DateUtil.getDateFromNow(-5);
 		dateTo = new Date();
-		currentPage = new Integer(1);
+		currentPage = Integer.valueOf(1);
 	}
 
 	/**
 	 * Instantiates a new search filter bean.
-	 *
+	 * 
 	 * @param status
 	 *            the status
 	 * @param taskId
@@ -129,7 +129,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the number
-	 *
+	 * 
 	 * @return
 	 */
 	public String getNumber() {
@@ -138,7 +138,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the number
-	 *
+	 * 
 	 * @param number
 	 */
 	public void setNumber(String number) {
@@ -147,7 +147,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the status.
-	 *
+	 * 
 	 * @return the status
 	 */
 	public String getStatus() {
@@ -156,7 +156,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the status.
-	 *
+	 * 
 	 * @param status
 	 *            the new status
 	 */
@@ -166,7 +166,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the date from.
-	 *
+	 * 
 	 * @return the date from
 	 */
 	public Date getDateFrom() {
@@ -175,7 +175,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the date from.
-	 *
+	 * 
 	 * @param dateFrom
 	 *            the new date from
 	 */
@@ -185,7 +185,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the date to.
-	 *
+	 * 
 	 * @return the date to
 	 */
 	public Date getDateTo() {
@@ -194,7 +194,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the date to.
-	 *
+	 * 
 	 * @param dateTo
 	 *            the new date to
 	 */
@@ -204,7 +204,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the tool name.
-	 *
+	 * 
 	 * @return the tool name
 	 */
 	public String getToolName() {
@@ -213,7 +213,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the tool name.
-	 *
+	 * 
 	 * @param toolName
 	 *            the new tool name
 	 */
@@ -223,7 +223,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the sender.
-	 *
+	 * 
 	 * @return the sender
 	 */
 	public String getSender() {
@@ -232,7 +232,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the sender.
-	 *
+	 * 
 	 * @param sender
 	 *            the new sender
 	 */
@@ -242,7 +242,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the current page.
-	 *
+	 * 
 	 * @return the current page
 	 */
 	public Integer getCurrentPage() {
@@ -251,7 +251,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the current page.
-	 *
+	 * 
 	 * @param currentPage
 	 *            the new current page
 	 */
@@ -261,7 +261,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the order by.
-	 *
+	 * 
 	 * @return the order by
 	 */
 	public String getOrderBy() {
@@ -270,7 +270,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the order by.
-	 *
+	 * 
 	 * @param orderBy
 	 *            the new order by
 	 */
@@ -280,7 +280,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the transaction type.
-	 *
+	 * 
 	 * @return the transaction type
 	 */
 	public String getTransactionType() {
@@ -289,7 +289,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the transaction type.
-	 *
+	 * 
 	 * @param transactionType
 	 *            the new transaction type
 	 */
@@ -307,7 +307,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Gets the sort direction.
-	 *
+	 * 
 	 * @return the sort direction
 	 */
 	public String getSortDirection() {
@@ -316,7 +316,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sets the sort direction.
-	 *
+	 * 
 	 * @param sortDirection
 	 *            the new sort direction
 	 */
@@ -326,7 +326,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Fire action. Denotes a new search
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean fireAction() {
@@ -341,7 +341,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Sort asc.
-	 *
+	 * 
 	 * @return true, if successful
 	 */
 	public boolean sortAsc() {
@@ -354,7 +354,7 @@ public class SearchFilterBean {
 
 	/**
 	 * A boolean to differentiate between a new search or paging
-	 *
+	 * 
 	 * @return new search
 	 */
 	public boolean isNewSearch() {
@@ -363,7 +363,7 @@ public class SearchFilterBean {
 
 	/**
 	 * Set if the search is new
-	 *
+	 * 
 	 * @param newSearch
 	 */
 	public void setNewSearch(boolean newSearch) {
@@ -372,7 +372,7 @@ public class SearchFilterBean {
 
 	@Override
 	public String toString() {
-		StringBuffer retStr = new StringBuffer("");
+		final StringBuffer retStr = new StringBuffer("");
 
 		retStr.append("\n\n----------\n");
 		retStr.append("Search criteria\n");

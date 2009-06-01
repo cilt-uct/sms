@@ -3,6 +3,7 @@ package org.sakaiproject.sms.logic.smpp.test;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -37,7 +38,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/** The account. */
 	private static SmsAccount account;
 
-	ArrayList<String> errors = new ArrayList<String>();
+	List<String> errors = new ArrayList<String>();
 
 	/*
 	 * (non-Javadoc)

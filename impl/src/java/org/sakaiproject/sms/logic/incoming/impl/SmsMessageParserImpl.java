@@ -37,7 +37,7 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 			throw new ParseException("empty message supplied");
 		}
 
-		String[] params = StringUtils.split(msgText, DELIMITERS, 3);
+		final String[] params = StringUtils.split(msgText, DELIMITERS, 3);
 
 		if (params.length == 1) {
 			return new ParsedMessage(params[0]);
@@ -65,7 +65,7 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 			throw new ParseException("No parameters expected");
 		}
 
-		String[] bodyParams = StringUtils.split(text.trim(), DELIMITERS,
+		final String[] bodyParams = StringUtils.split(text.trim(), DELIMITERS,
 				nrOfParameters);
 		if (bodyParams.length < nrOfParameters) {
 			throw new ParseException(nrOfParameters
