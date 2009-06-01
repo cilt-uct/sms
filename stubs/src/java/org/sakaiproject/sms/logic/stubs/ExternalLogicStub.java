@@ -39,6 +39,7 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
+import org.sakaiproject.user.api.User;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
@@ -285,7 +286,7 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
-	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
+	public List<User> getUsersWithMobileNumbersOnly(String ref) {
 		// TODO Auto-generated method stub
 		return null;
 	}

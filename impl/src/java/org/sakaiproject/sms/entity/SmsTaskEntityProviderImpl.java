@@ -2,6 +2,7 @@ package org.sakaiproject.sms.entity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -307,9 +308,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	
 	//Custom action to handle /sms-task/users
 	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_SHOW)
-	public String users(EntityReference ref, Search search) {
-		String currentUser = developerHelperService.getCurrentUserReference();
-        if (currentUser == null) {
+	public List<User> users(EntityReference ref, Search search) {
+		/*String currentUser = developerHelperService.getCurrentUserReference();
+        if (currentUser == null) { 
             throw new SecurityException("Anonymous users cannot view users for site: " + ref);
         }
         String siteId = EntityReference.getIdFromRef(ref.toString());
@@ -317,8 +318,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteId);
         if (!allowedSend) {
             throw new SecurityException("User ("+userReference+") not allowed to send sms messages in site: " + ref);
-        }
-    	return JSONTranscoder.makeJSON(externalLogic.getUsersWithMobileNumbersOnly(ref.toString()));
+        }*/
+		List<User> usersCloned = new ArrayList<User>();
+		List<User> usersFull = externalLogic.getUsersWithMobileNumbersOnly(ref.getId());
+		for ( User user : usersFull ){
+			//trim down user object to only show essential non-sensitive properties
+			User clone = developerHelperService.cloneBean(user, 0, new String[] {"propertiesEdit", "modifiedTime", "createdTime"} );
+			usersCloned.add(clone);
+		}
+    	return usersCloned;
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {

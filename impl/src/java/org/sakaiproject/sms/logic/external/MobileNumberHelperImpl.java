@@ -19,8 +19,12 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,6 +74,24 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			userMobileMap.put(userid, getUserMobileNumber(userid));
 		}
 		return userMobileMap;
+	}
+
+	/**
+	 *@see MobileNumberHelper#getUserMobileNumbers(List)
+	 */
+	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
+		Map<String, SakaiPerson> userMobileMap = new HashMap<String, SakaiPerson>();
+		List<String> result = new ArrayList<String>();
+		userMobileMap = sakaiPersonManager.getSakaiPersons(userIds, sakaiPersonManager.getUserMutableType());
+		Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
+		while ( selector.hasNext() ) {
+        	Entry<String, SakaiPerson> pairs = selector.next();
+        	SakaiPerson sp = pairs.getValue();
+        	if (sp != null && sp.getMobile() != null ) {
+        		result.add( sp.getUid() );
+    		}
+		}
+		return result;
 	}
 
 	/**

@@ -19,6 +19,7 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface MobileNumberHelper {
 	
@@ -46,5 +47,12 @@ public interface MobileNumberHelper {
 	 * @return
 	 */
 	List<String> getUserIdsFromMobileNumber(String mobileNumber);
+	
+	/**
+	 * Retrieve userIds for users who have mobile numbers
+	 * @param userids
+	 * @return
+	 */
+	List<String> getUsersWithMobileNumbers(Set<String> userids);
 
 }

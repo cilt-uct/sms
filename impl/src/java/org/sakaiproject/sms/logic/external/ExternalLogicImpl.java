@@ -736,34 +736,31 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
-		Map<String, String> userDetails = new HashMap<String, String>();
-		try {
-			Search isActive = new Search("active", true);
-			List<EntityData> users1 = entityBroker.getEntities(ref, isActive,
-					null);
-			LOG.info("Got users: " + users1.size());
-			LOG.info("Got site: " + ref);
-			Site site = siteService.getSite(EntityReference.getIdFromRef(ref));
-			Set<User> users = site.getUsers();
-			int count = 0;
-			for (User user : users) {
-				boolean foundNumber = false;
-				foundNumber = mobileNumberHelper.getUserMobileNumber(user
-						.getId()) != null;
-				if (foundNumber) {
-					userDetails.put(user.getId(), user.getDisplayName());
+	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
+		List<String> userIds = new ArrayList<String>();
+		List<User> users = new ArrayList<User>();
+		/*// Fetch the site
+		LOG.debug( "Fetching members for site:" + siteRef );
+		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
+		Set<Member> allMembers = group.getMembers();
+		Set<String> activeUserIds = new HashSet<String>();
 
-				} else {
-					users.remove(count);
-				}
-				count++;
+		// Only record user id if member is flagged as active
+		for (Member member : allMembers) {
+			if ( member.isActive() ) {
+				activeUserIds.add(member.getUserId());
 			}
+		}*/
+		try {
+			Site site = siteService.getSite(siteId);
+			userIds = mobileNumberHelper.getUsersWithMobileNumbers( site.getUsers() );
+			Set<String> userSet = new HashSet<String>(userIds);
+			users = userDirectoryService.getUsers(userSet);
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: " + getCurrentLocationId());
+			LOG.warn("Site not found for id: "+ getCurrentLocationId());
 		}
-
-		return userDetails;
+		
+		return users;
 	}
 
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {

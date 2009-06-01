@@ -23,9 +23,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
+import org.sakaiproject.user.api.User;
 
 /**
  * Interface to logic which is external to SMS.
@@ -236,7 +238,8 @@ public interface ExternalLogic {
 	 */
 	public void setUpSessionPermissions(String permissionPrefix);
 
-	public Map<String, String> getUsersWithMobileNumbersOnly(String ref);
+	public List<User> getUsersWithMobileNumbersOnly(String siteRef);
+
 	/**
 	 * Check if a user has permission to update a site
 	 * 
