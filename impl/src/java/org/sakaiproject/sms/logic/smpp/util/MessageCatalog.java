@@ -99,7 +99,6 @@ public abstract class MessageCatalog {
 			try {
 				message = bundle.getString(messageKey);
 			} catch (MissingResourceException ex) {
-				LOG.error(ex.getMessage(), ex);
 				message = SmsConstants.CATALOG_MESSAGE_NOT_FOUND;
 			}
 		}
