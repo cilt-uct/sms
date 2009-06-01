@@ -15,7 +15,7 @@
  * limitations under the License.s
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.smpp.test;
+package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -29,14 +29,14 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  * This class will create 2 Sms schedulers.The will run together processing the
  * inserted tasks without interfering with each other .The test is successful if
  * after a minute there is no more tasks to process.
- *
+ * 
  * @author Etienne@psyberate.co.za
- *
+ * 
  */
 public class SmsSchedulerThreadingTest extends AbstractBaseTestCase {
 	/**
 	 * Standard main() and suite() methods.
-	 *
+	 * 
 	 * @param args
 	 *            the args
 	 */
@@ -47,7 +47,7 @@ public class SmsSchedulerThreadingTest extends AbstractBaseTestCase {
 
 	/**
 	 * Suite.
-	 *
+	 * 
 	 * @return the test
 	 */
 	public static Test suite() {
@@ -56,7 +56,7 @@ public class SmsSchedulerThreadingTest extends AbstractBaseTestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	@Override
@@ -67,10 +67,10 @@ public class SmsSchedulerThreadingTest extends AbstractBaseTestCase {
 	/**
 	 * You use the MultiThreadedTestRunner in your test cases. The MTTR takes an
 	 * array of TestRunnable objects as parameters in its constructor.
-	 *
+	 * 
 	 * After you have built the MTTR, you run it with a call to the
 	 * runTestRunnables() method.
-	 *
+	 * 
 	 * @throws Throwable
 	 *             the throwable
 	 */

@@ -15,7 +15,7 @@
  * limitations under the License.s
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.smpp.test;
+package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import java.sql.Timestamp;
 import java.util.Calendar;

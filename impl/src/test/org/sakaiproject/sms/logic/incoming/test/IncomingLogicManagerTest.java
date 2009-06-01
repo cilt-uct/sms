@@ -111,7 +111,8 @@ public class IncomingLogicManagerTest extends TestCase {
 	private String loadPropertiesFile(final String name) {
 		String fileContents = "";
 		try {
-			InputStream is = this.getClass().getResourceAsStream("/" + name);
+			InputStream is = IncomingLogicManagerTest.class.getClassLoader()
+					.getResourceAsStream(name);
 			InputStreamReader input = new InputStreamReader(is);
 			BufferedReader bufferedReader = new BufferedReader(input);
 

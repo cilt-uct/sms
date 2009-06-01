@@ -15,7 +15,7 @@
  * limitations under the License.s
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.smpp.test;
+package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -33,11 +33,11 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
  * sent to the gateway. The number of messages to be sent can be changed for
  * each thread. The delay between message transmissions can also be set. The
  * default is 100 ms.
- *
+ * 
  * Due to limitation in the simulator, do not set session1_message_count and
  * session1_message_count higher than 1000 each. Also give the simulator 30
  * seconds or so to process messages before re-running this unit test.
- *
+ * 
  * NB NOTE: The gateway will send delivery report to ALL listeners that uses the
  * same source mobile number. That means to all tomcat instances on all Sakai
  * servers will receive delivery reports when one of them send messages out.
@@ -46,7 +46,7 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 public class SmppThreadingTest extends TestCase {
 	/**
 	 * Standard main() and suite() methods.
-	 *
+	 * 
 	 * @param args
 	 *            the args
 	 */
@@ -57,7 +57,7 @@ public class SmppThreadingTest extends TestCase {
 
 	/**
 	 * Suite.
-	 *
+	 * 
 	 * @return the test
 	 */
 	public static Test suite() {
@@ -72,21 +72,22 @@ public class SmppThreadingTest extends TestCase {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
 	 */
 	public void testOnetimeSetup() {
-		 StandaloneSmsDaoImpl hibernateUtil =new StandaloneSmsDaoImpl("hibernate-test.properties");
-		 hibernateUtil.createSchema();
+		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl(
+				"hibernate-test.properties");
+		hibernateUtil.createSchema();
 	}
 
 	/**
 	 * You use the MultiThreadedTestRunner in your test cases. The MTTR takes an
 	 * array of TestRunnable objects as parameters in its constructor.
-	 *
+	 * 
 	 * After you have built the MTTR, you run it with a call to the
 	 * runTestRunnables() method.
-	 *
+	 * 
 	 * @throws Throwable
 	 *             the throwable
 	 */
@@ -101,7 +102,7 @@ public class SmppThreadingTest extends TestCase {
 				delay_between_messages);
 
 		// pass that instance to the MTTR
-		TestRunnable[] trs = { smsThread1,smsThread2 };
+		TestRunnable[] trs = { smsThread1, smsThread2 };
 		MultiThreadedTestRunner mttr = new MultiThreadedTestRunner(trs);
 
 		// kickstarts the MTTR & fires off threads

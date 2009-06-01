@@ -1,4 +1,4 @@
-package org.sakaiproject.sms.logic.smpp.test;
+package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import java.util.Calendar;
 import java.util.Date;
