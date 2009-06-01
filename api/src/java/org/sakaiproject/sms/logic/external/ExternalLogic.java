@@ -248,4 +248,6 @@ public interface ExternalLogic {
 	 * @return true if allowed, false otherwise
 	 */
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId);
+	
+	public Map<String, String> getSakaiUsernames(Set<String> userIds);
 }

@@ -769,4 +769,16 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
 		return isUserAllowedInLocation(userId, SiteService.SECURE_UPDATE_SITE, locationId);
 	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getSakaiUsernames(Set<String> userIds) {
+		Map<String, String> usernames = new HashMap<String, String>();
+		if( userIds != null && userIds.size() > 0){
+			List<User> users = userDirectoryService.getUsers(userIds);
+			for ( User user : users ){
+				usernames.put(user.getId(), user.getDisplayId());
+			}
+		}
+		return usernames;
+	}
 }

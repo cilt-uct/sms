@@ -275,14 +275,19 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	}
 
-	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
+	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Map<String, String> getSakaiUsernames(Set<String> userIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
+	public Map<String, String> getUsersWithMobileNumbersOnly(String ref) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 }

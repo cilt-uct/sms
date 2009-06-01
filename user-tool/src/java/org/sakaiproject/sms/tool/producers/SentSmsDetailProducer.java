@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -92,15 +93,22 @@ public class SentSmsDetailProducer implements ViewComponentProducer, ViewParamsR
 				UIMessage.make(tofill, "recipients", "ui.sent.sms.recipients", new Object[] { smsTask.getMessagesDelivered(), (smsTask.getGroupSizeActual() == null || smsTask.getGroupSizeActual() == 0) ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
 				
 				UIMessage.make(tofill, "recipient-header", "ui.sent.sms.header.recipients");
+				UIMessage.make(tofill, "username-header", "ui.sent.sms.header.username");
 				UIMessage.make(tofill, "status-header", "ui.sent.sms.header.status");
+				
+				Set<String> smsUserIds = smsTask.getSakaiUserIds();
+				Map<String, String> usernamesMap = externalLogic.getSakaiUsernames(smsUserIds);
 				
 				Set<SmsMessage> smses = smsTask.getSmsMessages();
 				for (SmsMessage sms : smses){
 					UIBranchContainer row = UIBranchContainer.make(tofill, "sms-row:");
-					if (sms.getSakaiUserId() == null || "".equals(sms.getSakaiUserId()) ){
+					String smsUserId = sms.getSakaiUserId();
+					if (smsUserId == null || "".equals(smsUserId) ){
 						UIOutput.make(row, "sms-recipient", sms.getMobileNumber());
+						UIOutput.make(row, "sms-recipient-username", "----");
 					}else{
-						UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(sms.getSakaiUserId()));	
+						UIOutput.make(row, "sms-recipient", externalLogic.getSakaiUserSortName(smsUserId));
+						UIOutput.make(row, "sms-recipient-username", usernamesMap.get(smsUserId));
 					}
 					String userStatusCode = sms.getStatusCode();
 					UILink.make(row, "sms-recipient-status", statusUtils.getStatusIcon(userStatusCode))
