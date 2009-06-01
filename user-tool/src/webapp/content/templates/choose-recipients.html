@@ -38,12 +38,14 @@ $(document).ready(function() {
     });
     $("[rel=closeFB]").click(function(){
         $(document).trigger("close.facebox");
-       $.fn.SMS.get.preserveDomSelections = false;
+        $.fn.SMS.get.preserveDomSelections = false;
         $.fn.SMS.get.preserveNewDomSelections = true;
+        $.fn.SMS.set.isRecipientsLinkClicked = false;
         return false;
     });
     $("#recipientsCmd").bind('click', function(){
         $("#facebox").hide('fast');
+        $.fn.SMS.set.isRecipientsLinkClicked = false;
         $.fn.SMS.get.preserveDomSelections = true;
         $.fn.SMS.set.setSubmitTaskButton(this);
         //Update billing report

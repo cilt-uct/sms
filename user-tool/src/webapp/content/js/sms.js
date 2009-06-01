@@ -314,7 +314,8 @@
         disableContinue: function(){
             //Disable the continue button and force user to calculate before saving any new changes
             $("#recipientsCmd").attr("disabled", "disabled");
-        }
+        },
+        isRecipientsLinkClicked: false
     };
 
     // SMS class defaults

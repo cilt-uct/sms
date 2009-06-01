@@ -44,16 +44,19 @@ $(document).ready(function() {
             .click();
 
     $("#smsAddRecipients").bind('click', function() {
-        if ($.fn.SMS.get.preserveDomSelections && $.fn.SMS.get.selectionsHaveChanged && $("#facebox").length !== 0) {
-            //Keep latest selections in case we want to restore them later on
-            $.fn.SMS.get.previousSelectionsRoles = $.fn.SMS.get.getSelectedRecipientsListIDs("roles");
-            $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
-            $.fn.SMS.get.previousSelectionsGroups = $.fn.SMS.get.getSelectedRecipientsListIDs("groups");
-            $.fn.SMS.get.previousSelectionsNames = $.fn.SMS.get.getSelectedRecipientsListIDs("names");
-            $("#recipientsCmd").attr("disabled", "disabled");
-            $("#facebox").fadeIn('fast');
-        } else {
-            $.facebox({ajax: this.href});
+        if(! $.fn.SMS.set.isRecipientsLinkClicked ){
+            if ($.fn.SMS.get.preserveDomSelections && $.fn.SMS.get.selectionsHaveChanged && $("#facebox").length !== 0) {
+                //Keep latest selections in case we want to restore them later on
+                $.fn.SMS.get.previousSelectionsRoles = $.fn.SMS.get.getSelectedRecipientsListIDs("roles");
+                $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
+                $.fn.SMS.get.previousSelectionsGroups = $.fn.SMS.get.getSelectedRecipientsListIDs("groups");
+                $.fn.SMS.get.previousSelectionsNames = $.fn.SMS.get.getSelectedRecipientsListIDs("names");
+                $("#recipientsCmd").attr("disabled", "disabled");
+                $("#facebox").fadeIn('fast');
+            } else {
+                $.facebox({ajax: this.href});
+            }
+            $.fn.SMS.set.isRecipientsLinkClicked = true;
         }
         return false;
     });
