@@ -410,11 +410,10 @@
                             cache: true,
                             success: function(data) {
                                 $.each(data.membership_collection, function(i, item) {
-                                    query.push([item.userDisplayName, item.userId]);
+                                    if( item.active ){     //Only add active site members
+                                        query.push([item.userDisplayName, item.userId, item.userDisplayId]);
+                                    }
                                 });
-                            },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                return false;
                             }
                         });
                     }
@@ -453,7 +452,7 @@
             if (n !== null && n.length !== 0) {
                 elem += '<div class="columnBoxes" rel="' + item + '"><input type="checkbox" id="peopleList-' + map[n][0] + '-' + map[n][1] + '" title="' + map[n][0] + '" value="' + map[n][1] + '" />' +
                         '<label for="peopleList-' + map[n][0] + '-' + map[n][1] + '" name="' + map[n][0] + '" ' + item + 'Name="' + map[n][0] + '" ' + item + 'Id="' + map[n][1] + '">' + map[n][0] + '' +
-                        '</label></input></div>';
+                        ' ('+ map[n][2] +')</label></input></div>';
             }
         }
         return elem;

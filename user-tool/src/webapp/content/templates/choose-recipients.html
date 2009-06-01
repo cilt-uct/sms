@@ -25,7 +25,7 @@ $(document).ready(function() {
                 selectFirst:    false,
                 width:  300,
                 formatItem: function(row) {
-                    return row[0];
+                    return row[0] + ' (' + row[2] + ')';
                 }
             },
             foundClass : ".acfb-data",
