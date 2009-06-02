@@ -41,6 +41,7 @@ import org.jsmpp.bean.Address;
 import org.jsmpp.bean.AlertNotification;
 import org.jsmpp.bean.Alphabet;
 import org.jsmpp.bean.BindType;
+import org.jsmpp.bean.DataSm;
 import org.jsmpp.bean.DeliverSm;
 import org.jsmpp.bean.DeliveryReceipt;
 import org.jsmpp.bean.ESMClass;
@@ -58,6 +59,7 @@ import org.jsmpp.extra.ProcessRequestException;
 import org.jsmpp.extra.ResponseTimeoutException;
 import org.jsmpp.extra.SessionState;
 import org.jsmpp.session.BindParameter;
+import org.jsmpp.session.DataSmResult;
 import org.jsmpp.session.MessageReceiverListener;
 import org.jsmpp.session.SMPPSession;
 import org.jsmpp.session.SessionStateListener;
@@ -345,6 +347,12 @@ public class SmsSmppImpl implements SmsSmpp {
 				moMessage.setSmsMessagebody(messageBody);
 				receivedMOmessages.add(moMessage);
 			}
+		}
+
+		public DataSmResult onAcceptDataSm(DataSm arg0)
+				throws ProcessRequestException {
+			// not implemented
+			return null;
 		}
 	}
 
@@ -869,9 +877,9 @@ public class SmsSmppImpl implements SmsSmpp {
 							.format(new Date()), null, new RegisteredDelivery(
 							SMSCDeliveryReceipt.SUCCESS_FAILURE),
 					new ReplaceIfPresentFlag(smsSmppProperties
-							.getReplaceIfPresentFlag()), new GeneralDataCoding(
-							false, true, MessageClass.CLASS1,
-							Alphabet.ALPHA_DEFAULT), smsSmppProperties
+							.getReplaceIfPresentFlag()),
+					new GeneralDataCoding(Alphabet.ALPHA_DEFAULT,
+							MessageClass.CLASS1, false), smsSmppProperties
 							.getSmDefaultMsgId(), messageBody.getBytes(), null);
 
 		} catch (PDUException e) {
@@ -988,8 +996,8 @@ public class SmsSmppImpl implements SmsSmpp {
 							.format(new Date()), null, new RegisteredDelivery(
 							SMSCDeliveryReceipt.SUCCESS_FAILURE),
 					smsSmppProperties.getReplaceIfPresentFlag(),
-					new GeneralDataCoding(false, true, MessageClass.CLASS1,
-							Alphabet.ALPHA_DEFAULT), smsSmppProperties
+					new GeneralDataCoding(Alphabet.ALPHA_DEFAULT,
+							MessageClass.CLASS1, false), smsSmppProperties
 							.getSmDefaultMsgId(), messageText.getBytes());
 			message.setSmscMessageId(messageId);
 
