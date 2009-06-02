@@ -326,9 +326,6 @@ public class SendSMSProducer implements ViewComponentProducer,
 					statusType
 							.decorate(new UIIDStrategyDecorator("statusType"));
 					UIInput.make(tofill, "sakaiSiteId", null, currentSiteId).fossilize = false;
-					UIInput.make(tofill, "senderUserName", null, externalLogic
-							.getSakaiUserDisplayName(currentUserId)).fossilize = false;
-					UIInput.make(tofill, "senderUserId", null, currentUserId).fossilize = false;
 					UICommand.make(form, "form-send",
 							getCommandText(smsParams.status), null).decorate(
 							new UIIDStrategyDecorator("smsSend"));
