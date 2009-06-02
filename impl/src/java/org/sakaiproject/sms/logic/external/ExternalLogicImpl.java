@@ -46,8 +46,6 @@ import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.extension.EntityData;
-import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -329,8 +327,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
 			boolean getMobileNumbers) {
 
-		LOG.debug("Getting recipient numbers for task " + smsTask.getId());
-
+		if (smsTask.getId() == null) {
+			LOG.debug("Getting recipient numbers for preliminary task ");
+		} else {
+			LOG.debug("Getting recipient numbers for task " + smsTask.getId());
+		}
 		Set<SmsMessage> messages = new HashSet<SmsMessage>();
 		if (smsTask.getDeliveryEntityList() != null) {
 			LOG.debug("Adding numbers for entity reference list");
@@ -383,9 +384,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 						+ " is empty.");
 			} else {
 				for (SmsMessage message : messages) {
-					LOG.debug("Returning message for task " + smsTask.getId()
-							+ " userid=" + message.getSakaiUserId()
-							+ " number=" + message.getMobileNumber());
+					if (smsTask.getId() == null) {
+						LOG.debug("Returning message for preliminary task "
+								+ " userid=" + message.getSakaiUserId()
+								+ " number=" + message.getMobileNumber());
+					} else {
+						LOG.debug("Returning message for  task: "
+								+ smsTask.getId() + " userid="
+								+ message.getSakaiUserId() + " number="
+								+ message.getMobileNumber());
+					}
+
 				}
 			}
 		}
@@ -739,27 +748,26 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
 		List<String> userIds = new ArrayList<String>();
 		List<User> users = new ArrayList<User>();
-		/*// Fetch the site
-		LOG.debug( "Fetching members for site:" + siteRef );
-		AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
-		Set<Member> allMembers = group.getMembers();
-		Set<String> activeUserIds = new HashSet<String>();
-
-		// Only record user id if member is flagged as active
-		for (Member member : allMembers) {
-			if ( member.isActive() ) {
-				activeUserIds.add(member.getUserId());
-			}
-		}*/
+		/*
+		 * // Fetch the site LOG.debug( "Fetching members for site:" + siteRef
+		 * ); AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
+		 * Set<Member> allMembers = group.getMembers(); Set<String>
+		 * activeUserIds = new HashSet<String>();
+		 * 
+		 * // Only record user id if member is flagged as active for (Member
+		 * member : allMembers) { if ( member.isActive() ) {
+		 * activeUserIds.add(member.getUserId()); } }
+		 */
 		try {
 			Site site = siteService.getSite(siteId);
-			userIds = mobileNumberHelper.getUsersWithMobileNumbers( site.getUsers() );
+			userIds = mobileNumberHelper.getUsersWithMobileNumbers(site
+					.getUsers());
 			Set<String> userSet = new HashSet<String>(userIds);
 			users = userDirectoryService.getUsers(userSet);
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: "+ getCurrentLocationId());
+			LOG.warn("Site not found for id: " + getCurrentLocationId());
 		}
-		
+
 		return users;
 	}
 
