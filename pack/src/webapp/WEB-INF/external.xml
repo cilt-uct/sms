@@ -23,6 +23,7 @@
 		<property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
 		<property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="mobileNumberHelper">
 			<bean class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
