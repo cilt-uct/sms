@@ -406,14 +406,12 @@
             if (filter === "Names") {
                     if ($('input[name=sakaiSiteId]').val() !== null) {
                         $.ajax({
-                            url: '/direct/membership/site/' + $('input[name=sakaiSiteId]').val() + '.json',
+                            url: '/direct/sms-task/' + $('input[name=sakaiSiteId]').val() + '/memberships.json',
                             dataType: "json",
                             cache: true,
                             success: function(data) {
-                                $.each(data.membership_collection, function(i, item) {
-                                    if( item.active ){     //Only add active site members
-                                        query.push([item.userDisplayName, item.userId, item.userDisplayId]);
-                                    }
+                                $.each(data["sms-task_collection"], function(i, item) {
+                                    query.push([item.sortName, item.id, item.eid]);
                                 });
                             }
                         });
@@ -597,6 +595,8 @@
         } else {
             $('#peopleListNamesSuggest').hide();
             $('#peopleListNamesSuggest p').hide();
+            $('#withNumbersOnlyNames').hide();
+            $('#errorNoNames').show();
             $.fn.SMS.set.disableTab('peopleTabsNames', 'errorEb');
         }
 

@@ -764,9 +764,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 					activeUserIds.add(member.getUserId());
 				}
 			}
-			userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
-			Set<String> userSet = new HashSet<String>(userIds);
-			users = userDirectoryService.getUsers(userSet);
+			if( activeUserIds.size() > 0 ){
+				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
+			}
+			if( userIds.size() > 0 ){
+				users = userDirectoryService.getUsers(userIds);
+			}
 		} catch (IdUnusedException e) {
 			LOG.warn("Site not found for id: "+ getCurrentLocationId());
 		}
