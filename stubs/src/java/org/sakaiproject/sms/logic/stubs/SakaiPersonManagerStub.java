@@ -18,9 +18,12 @@
 package org.sakaiproject.sms.logic.stubs;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
@@ -77,8 +80,14 @@ public class SakaiPersonManagerStub implements SakaiPersonManager {
 	}
 
 	public Map<String, SakaiPerson> getSakaiPersons(Set<String> arg0, Type arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		Iterator<String> it = arg0.iterator();
+        Map<String, SakaiPerson> ret = new HashMap<String, SakaiPerson>();
+		while (it.hasNext()) {
+			String val = it.next();
+			ret.put(val, getSakaiPerson(val, arg1));
+		}
+		
+		return ret;
 	}
 
 	public Type getSystemMutableType() {
