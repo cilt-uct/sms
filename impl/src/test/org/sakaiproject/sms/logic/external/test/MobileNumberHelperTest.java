@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.external.MobileNumberHelperImpl;
 import org.sakaiproject.sms.logic.stubs.SakaiPersonManagerStub;
+import org.sakaiproject.sms.logic.stubs.UserDirectoryServiceStub;
 
 public class MobileNumberHelperTest extends TestCase {
 
@@ -17,6 +18,7 @@ public class MobileNumberHelperTest extends TestCase {
 	public void setUp() {
 		mobileNumberHelper = new MobileNumberHelperImpl();
 		mobileNumberHelper.setSakaiPersonManager(new SakaiPersonManagerStub());
+		mobileNumberHelper.setUserDirectoryService(new UserDirectoryServiceStub());
 
 	}
 
@@ -50,7 +52,7 @@ public class MobileNumberHelperTest extends TestCase {
 		userids.add("test3");
 		Map<String, String> numbers = mobileNumberHelper
 				.getUserMobileNumbers(userids);
-		assertEquals(3, numbers.size());
+		assertEquals(2, numbers.size());
 		assertEquals("0123456789", numbers.get("test1"));
 		assertEquals(null, numbers.get("test2"));
 		assertEquals("0123456789", numbers.get("test3"));

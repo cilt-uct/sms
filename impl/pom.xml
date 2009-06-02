@@ -137,7 +137,6 @@
 			<artifactId>oro</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-
 		<!-- generic DAO -->
 		<dependency>
 			<groupId>org.sakaiproject</groupId>

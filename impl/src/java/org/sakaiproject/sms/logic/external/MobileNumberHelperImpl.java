@@ -30,6 +30,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
+import org.sakaiproject.entity.api.EntityPropertyTypeException;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
  * Default implementation of {@link MobileNumberHelper} Mobile numbers retrieved
@@ -38,13 +44,19 @@ import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
  */
 public class MobileNumberHelperImpl implements MobileNumberHelper {
 
+	private static final String PREF_SMS_NOTIFICATIONS = "smsnotifications";
+
 	private static final Log LOG = LogFactory
 			.getLog(MobileNumberHelperImpl.class);
 
 	private SakaiPersonManager sakaiPersonManager;
-
 	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
 		this.sakaiPersonManager = sakaiPersonManager;
+	}
+
+	private UserDirectoryService userDirectoryService;	
+	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
+		this.userDirectoryService = userDirectoryService;
 	}
 
 	/**
@@ -52,6 +64,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	public String getUserMobileNumber(String userid) {
 		LOG.debug("getMobileNumber(" + userid + ")");
+		
+		//first check that the user migh want SMS
+		if (!userWantsSms(userid))
+			return null;
+			
+		
 		final SakaiPerson sakaiPerson = sakaiPersonManager.getSakaiPerson(
 				userid, sakaiPersonManager.getUserMutableType());
 		if (sakaiPerson == null) {
@@ -70,9 +88,25 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	public Map<String, String> getUserMobileNumbers(List<String> userids) {
 		LOG.debug("getUserMobileNumbers()");
 		final Map<String, String> userMobileMap = new HashMap<String, String>();
-		for (String userid : userids) {
-			userMobileMap.put(userid, getUserMobileNumber(userid));
+		userids = filterUserListForPreference(userids);
+		Set<String> userSet = new HashSet<String>(userids);
+		Map<String, SakaiPerson> userMap = sakaiPersonManager.getSakaiPersons(userSet, sakaiPersonManager.getUserMutableType());
+		
+		//there'a possiblity we have an empty map
+		if(userMap== null || userMap.size() == 0)
+			return userMobileMap;
+		
+		Iterator<Entry<String, SakaiPerson>> selector = userMap.entrySet().iterator();
+		while ( selector.hasNext() ) {
+			Entry<String, SakaiPerson> pairs = selector.next();
+        	SakaiPerson sp = pairs.getValue();
+        	if (sp != null && sp.getMobile() != null) {
+        		userMobileMap.put(pairs.getKey(), sp.getMobile());
+    		}
 		}
+		/*for (String userid : userids) {
+			userMobileMap.put(userid, getUserMobileNumber(userid));
+		}*/
 		return userMobileMap;
 	}
 
@@ -82,17 +116,20 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
 		Map<String, SakaiPerson> userMobileMap = new HashMap<String, SakaiPerson>();
 		List<String> result = new ArrayList<String>();
+		//first strip the users who don't want sms
+		result = filterUserListForPreference(result);
 		userMobileMap = sakaiPersonManager.getSakaiPersons(userIds, sakaiPersonManager.getUserMutableType());
 		Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
 		while ( selector.hasNext() ) {
         	Entry<String, SakaiPerson> pairs = selector.next();
         	SakaiPerson sp = pairs.getValue();
-        	if (sp != null && sp.getMobile() != null ) {
+        	if (sp != null && sp.getMobile() != null) {
         		result.add( sp.getUid() );
     		}
 		}
 		return result;
 	}
+
 
 	/**
 	 * @see MobileNumberHelper#getUserIdsFromMobileNumber(String)
@@ -111,5 +148,56 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		}
 
 		return toReturn;
+	}
+	
+	
+	private boolean userWantsSms(String userId) {
+		LOG.debug("userWantsSms(" + userId);
+		if (userId == null)
+			return false;
+		
+		try {
+			User u = userDirectoryService.getUser(userId);
+			if (u == null)
+				return true;
+			ResourceProperties rp = u.getProperties();
+			boolean getSMS = rp.getBooleanProperty(PREF_SMS_NOTIFICATIONS);
+			return getSMS;
+		} catch (UserNotDefinedException e) {
+			LOG.info("user: " + userId + " does not exist");
+		} catch (EntityPropertyNotDefinedException e) {
+			LOG.info("user: " + userId + " has no defined sms preference");
+		} catch (EntityPropertyTypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+	
+
+	private List<String> filterUserListForPreference(List<String> userids) {
+		List<User> users = userDirectoryService.getUsers(userids);
+		List<String> ret = new ArrayList<String>();
+		if (users == null)
+			return ret;
+		
+		for (int i = 0; i < users.size(); i++) {
+			User u = users.get(i);
+			try {
+				boolean wantsSMS = u.getProperties().getBooleanProperty(PREF_SMS_NOTIFICATIONS);
+				if (wantsSMS) {
+					ret.add(u.getId());
+				}
+			} catch (EntityPropertyNotDefinedException e) {
+				ret.add(u.getId());
+			} catch (EntityPropertyTypeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return ret;
 	}
 }
