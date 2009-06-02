@@ -114,11 +114,11 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 *@see MobileNumberHelper#getUserMobileNumbers(List)
 	 */
 	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
-		Map<String, SakaiPerson> userMobileMap = new HashMap<String, SakaiPerson>();
+		
 		List<String> result = new ArrayList<String>();
 		//first strip the users who don't want sms
 		result = filterUserListForPreference(result);
-		userMobileMap = sakaiPersonManager.getSakaiPersons(userIds, sakaiPersonManager.getUserMutableType());
+		Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(userIds, sakaiPersonManager.getUserMutableType());
 		Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
 		while ( selector.hasNext() ) {
         	Entry<String, SakaiPerson> pairs = selector.next();
