@@ -238,7 +238,14 @@ public interface ExternalLogic {
 	 */
 	public void setUpSessionPermissions(String permissionPrefix);
 
-	public List<User> getUsersWithMobileNumbersOnly(String siteRef);
+	/**
+	 * Filter out site members who do not have mobile numbers in their profile and inactive users.
+	 * @param siteId
+	 * 			  the site id
+	 * @return
+	 * 			  A list of users 
+	 */
+	public List<User> getUsersWithMobileNumbersOnly(String siteId);
 
 	/**
 	 * Check if a user has permission to update a site
