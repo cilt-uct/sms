@@ -266,14 +266,39 @@
             //Re-select saved users selections ie: individuals
             if (userIds !== null && userIds.length !== 0) {
                 //Render saved entity selections
-                $.each(userIds, function(i, entityId) {
-                    if (entityId !== "" && entityId !== null) {
-                        $('input[type=checkbox][value=' + entityId + ']').each(function() {
-                            this.checked = true;
-                            checkNameboxAction(this);
-                        });
-                    }
-                });
+                if (var_getEveryoneInSite_participants.length > 16) {
+                   //Autocomplete is activated now populate saved names
+                    $.each(userIds, function(i, entityId) {
+                        if (entityId !== "" && entityId !== null) {
+                            $.each(var_getEveryoneInSite_participants, function(n, userArray) {
+                                if( userArray[1] === entityId ){
+                                    var v = '<li class="acfb-data" personName="' + userArray[0] + '" personId="' + userArray[1] + '"><span>' + userArray[0] + '</span> <img class="p" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
+
+                                    //bind delete image event
+                                    v.find('img.p').bind('click', function() {
+                                        $.fn.SMS.set.sliceSelectedRecipientsListName(userArray[0]);
+                                        $(this).parent().fadeOut(function() {
+                                            $(this).remove();
+                                        });
+                                        
+                                    });
+                                    $(".ac_input").insertBefore(v);
+                                    $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
+                                }
+                            });
+                        }
+                    });
+
+                }else if (var_getEveryoneInSite_participants.length > 0) {
+                    $.each(userIds, function(i, entityId) {
+                        if (entityId !== "" && entityId !== null) {
+                            $('input[type=checkbox][value=' + entityId + ']').each(function() {
+                                this.checked = true;
+                                checkNameboxAction(this);
+                            });
+                        }
+                    });
+                }
             }
 
             if (numbers !== null && numbers.length !== 0) {
@@ -695,6 +720,7 @@
             } else{
                 $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
                 $("#numbersValid").fadeOut();
+                $("#numbersInvalid .msg").fadeOut();
                 $("#peopleListNumbersLog").fadeOut();
             }
         }
