@@ -19,6 +19,7 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -748,24 +749,26 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
 		List<String> userIds = new ArrayList<String>();
 		List<User> users = new ArrayList<User>();
-		/*
-		 * // Fetch the site LOG.debug( "Fetching members for site:" + siteRef
-		 * ); AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
-		 * Set<Member> allMembers = group.getMembers(); Set<String>
-		 * activeUserIds = new HashSet<String>();
-		 * 
-		 * // Only record user id if member is flagged as active for (Member
-		 * member : allMembers) { if ( member.isActive() ) {
-		 * activeUserIds.add(member.getUserId()); } }
-		 */
+		
 		try {
 			Site site = siteService.getSite(siteId);
-			userIds = mobileNumberHelper.getUsersWithMobileNumbers(site
-					.getUsers());
+			
+			// Fetch the site
+			LOG.debug( "Fetching members for site:" + siteId );
+			Set<Member> allMembers = site.getMembers();
+			Set<String> activeUserIds = new HashSet<String>();
+	
+			// Only record user id if member is flagged as active
+			for (Member member : allMembers) {
+				if ( member.isActive() ) {
+					activeUserIds.add(member.getUserId());
+				}
+			}
+			userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
 			Set<String> userSet = new HashSet<String>(userIds);
 			users = userDirectoryService.getUsers(userSet);
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: " + getCurrentLocationId());
+			LOG.warn("Site not found for id: "+ getCurrentLocationId());
 		}
 
 		return users;
@@ -787,4 +790,5 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return usernames;
 	}
+
 }

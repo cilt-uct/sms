@@ -11,5 +11,5 @@ public interface SmsTaskEntityProvider extends EntityProvider {
 	/**
 	 * Custom action locator for method retrieving a list of site users only with mobile numbers
 	 */
-	public final static String CUSTOM_ACTION_USERS = "users-with-mobile-numbers";
+	public final static String CUSTOM_ACTION_USERS = "memberships";
 }
