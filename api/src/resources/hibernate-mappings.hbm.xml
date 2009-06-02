@@ -69,8 +69,11 @@
 			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="1024" />
 		<property name="deliveryEntities" type="string" column="DELIVERY_ENTITY_LIST"
 			not-null="false" length="1024" />
+		<property name="sakaiUserIds" type="string" column="SAKAI_USER_IDS"
+			not-null="false" length="1024" />
 		<property name="failReason" type="string" column="FAIL_REASON"
 			not-null="false" length="200" />
+		
 		<set name="smsMessages" lazy="false" inverse="true" cascade="all-delete-orphan">
 			<key column="TASK_ID" not-null="true" />
 			<one-to-many class="org.sakaiproject.sms.model.hibernate.SmsMessage"

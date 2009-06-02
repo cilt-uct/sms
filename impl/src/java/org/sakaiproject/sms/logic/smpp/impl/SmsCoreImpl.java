@@ -301,7 +301,7 @@ public class SmsCoreImpl implements SmsCore {
 				.getDelReportTimeoutDuration());
 		smsTask.setDeliveryMobileNumbersSet(mobileNumbers);
 		smsTask.setDeliveryEntityList(deliveryEntityList);
-		smsTask.setSakaiUserIds(sakaiUserIds);
+		smsTask.setSakaiUserIdsList(sakaiUserIds);
 		smsTask.setCreditCost(smsBilling.convertCreditsToAmount(1));
 		return smsTask;
 	}

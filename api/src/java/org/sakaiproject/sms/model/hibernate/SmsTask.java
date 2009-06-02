@@ -140,13 +140,47 @@ public class SmsTask extends BaseModel {
 
 	private double creditCost;
 
-	private Set<String> sakaiUserIds = new HashSet<String>();
+	private Set<String> sakaiUserIdsList = new HashSet<String>();
 
-	public Set<String> getSakaiUserIds() {
+	private String sakaiUserIds;
+
+	public Set<String> getSakaiUserIdsList() {
+
+		if (sakaiUserIds == null) {
+			sakaiUserIdsList.clear();
+			return sakaiUserIdsList;
+		}
+		final List<String> deliveryEntityList = new ArrayList<String>();
+		final StringTokenizer stringTokenizer = new StringTokenizer(
+				sakaiUserIds, ",");
+
+		while (stringTokenizer.hasMoreTokens()) {
+			sakaiUserIdsList.add(stringTokenizer.nextToken());
+		}
+		return sakaiUserIdsList;
+	}
+
+	public void setSakaiUserIdsList(Set<String> sakaiUserIdsList) {
+		if (sakaiUserIdsList != null) {
+			final StringBuffer buffer = new StringBuffer();
+			int number = 1;
+			for (String deliveryIds : sakaiUserIdsList) {
+
+				buffer.append(deliveryIds);
+				if (number < sakaiUserIdsList.size()) {
+					buffer.append(',');
+				}
+				number++;
+			}
+			sakaiUserIds = buffer.toString();
+		}
+	}
+
+	public String getSakaiUserIds() {
 		return sakaiUserIds;
 	}
 
-	public void setSakaiUserIds(Set<String> sakaiUserIds) {
+	public void setSakaiUserIds(String sakaiUserIds) {
 		this.sakaiUserIds = sakaiUserIds;
 	}
 

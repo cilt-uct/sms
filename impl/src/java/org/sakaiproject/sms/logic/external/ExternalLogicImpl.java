@@ -72,10 +72,10 @@ import org.sakaiproject.user.api.UserNotDefinedException;
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
-	private  static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
+	private static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
-	
+
 	private ServerConfigurationService serverConfigurationService = null;
 
 	public void setServerConfigurationService(
@@ -364,7 +364,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		if (smsTask.getSakaiUserIds() != null) {
 			LOG.debug("Adding numbers from list of user ids");
-			for (String userId : smsTask.getSakaiUserIds()) {
+			for (String userId : smsTask.getSakaiUserIdsList()) {
 				String mobileNr = getSakaiMobileNumber(userId);
 				if (mobileNr != null) {
 					SmsMessage message = new SmsMessage();
@@ -764,15 +764,16 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId) {
-		return isUserAllowedInLocation(userId, SiteService.SECURE_UPDATE_SITE, locationId);
+		return isUserAllowedInLocation(userId, SiteService.SECURE_UPDATE_SITE,
+				locationId);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiUsernames(Set<String> userIds) {
 		Map<String, String> usernames = new HashMap<String, String>();
-		if( userIds != null && userIds.size() > 0){
+		if (userIds != null && userIds.size() > 0) {
 			List<User> users = userDirectoryService.getUsers(userIds);
-			for ( User user : users ){
+			for (User user : users) {
 				usernames.put(user.getId(), user.getDisplayId());
 			}
 		}
