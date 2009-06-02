@@ -127,7 +127,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public SmsTask calculateEstimatedGroupSize(final SmsTask smsTask) {
 		final Set<SmsMessage> messages = hibernateLogicLocator
-				.getExternalLogic().getSakaiGroupMembers(smsTask, false);
+				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
 		final int groupSize = messages.size();
 		smsTask.setGroupSizeEstimate(groupSize);
 		// one sms always costs one credit
