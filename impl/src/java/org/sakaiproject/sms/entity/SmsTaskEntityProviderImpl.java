@@ -455,7 +455,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider,
 				task.setSakaiUserIdsList(newUserIds);
 			}
 		} else {
-			if (task.getSakaiUserIds().contains(task.getSenderUserId())) {
+			if (task.getSakaiUserIdsList().contains(task.getSenderUserId())) {
 				newUserIds = task.getSakaiUserIdsList();
 				newUserIds.remove(task.getSenderUserId());
 				task.setSakaiUserIdsList(newUserIds);
