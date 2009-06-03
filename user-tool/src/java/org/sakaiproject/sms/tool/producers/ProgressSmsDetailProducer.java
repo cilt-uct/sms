@@ -135,6 +135,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
 				UIInput.make(tofill, "smsId", null, smsTask.getId() + "")
 				.decorate(new UIIDStrategyDecorator("smsId"));
+				UIInput.make(tofill, "statusToShow", null, statusToShow)
+				.decorate(new UIIDStrategyDecorator("statusToShow"));
 				/**
 				 * The action buttons are handled by JS. RSF is only needed for i18N
 				 */
@@ -142,20 +144,12 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 					statusText.decorate(new UIStyleDecorator("smsGreenish"));
 					UIMessage.make(tofill, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UIMessage.make(tofill, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesDelivered(), (smsTask.getGroupSizeActual() == null || smsTask.getGroupSizeActual() == 0) ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
-					UICommand.make(form, "stop", UIMessage.make("sms.general.stop"))
-						.decorate(new UIIDStrategyDecorator("smsStop"));
-					UIMessage.make(tofill, "actionAbort", "ui.action.confirm.sms.abort", new String[] { smsTask.getMessageBody() });
-					UIInput.make(form, "abortCode", null, SmsConst_DeliveryStatus.STATUS_ABORT)
-						.decorate(new UIIDStrategyDecorator("abortCode"));
-					UIInput.make(form, "abortMessage", null, messageLocator.getMessage("ui.task.aborted", new Object[] { externalLogic.getSakaiUserDisplayName(externalLogic.getCurrentUserId()) }) )
-						.decorate(new UIIDStrategyDecorator("abortMessage"));
 				}else if( const_Scheduled.equals(statusToShow)){
 					statusText.decorate(new UIStyleDecorator("smsOrange"));
 					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
 						.decorate(new UIIDStrategyDecorator("smsEdit"));
-					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
-						.decorate(new UIIDStrategyDecorator("smsDelete"));
+					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"));
 					UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
 				}else{
 					throw new IllegalArgumentException("Cannot act on this status type: " + statusToShow);
