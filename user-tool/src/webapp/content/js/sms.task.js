@@ -40,7 +40,7 @@ $(document).ready(function() {
         if (smsConfirm()) {
             _that.disabled = true;
             $.ajax({
-                url: $.fn.task.defaults.EB_DELETE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()) + "?" + getTaskParams(),
+                url: $.fn.task.defaults.EB_DELETE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()) + getTaskParams(),
                 type: "DELETE",
                 error: function(xhr, ajaxOptions, thrownError) {
                     $.facebox("ERROR: " + xhr.statusCode + ": " + xhr.statusText);
@@ -59,7 +59,11 @@ $(document).ready(function() {
     }
 
     function getTaskParams(){
-        var params = [{name:"status", value:$("#statusToShow").val()}];
-        return $.param(params);
+        var status = $("#statusToShow").val();
+        if ( status !== undefined ){
+            var params = [{name:"status", value:$("#statusToShow").val()}];
+            return "?" + $.param(params);
+        }
+        return "";
     }
 })(jQuery);
