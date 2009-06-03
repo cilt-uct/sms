@@ -288,7 +288,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		if (smsTask.getSakaiSiteId() == null){
 			throw new IllegalArgumentException("sakaiSiteId cannot be null");
 		}
-		if (smsTask.getDeliveryEntityList() == null && smsTask.getSakaiUserIds() == null && smsTask.getDeliveryMobileNumbersSet() == null ){
+		if (smsTask.getDeliveryEntityList() == null && smsTask.getSakaiUserIdsList() == null && smsTask.getDeliveryMobileNumbersSet() == null ){
 			throw new IllegalArgumentException("At least one of these parameters need to be set: deliveryMobileNumbersSet or sakaiUserIds or deliveryEntityList");
 		}
 
@@ -392,14 +392,14 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		Set<String> newUserIds = new HashSet<String>();
 		if (copy) {
 			newUserIds.add(task.getSenderUserId());
-			if (task.getSakaiUserIds() != null) {
+			if (task.getSakaiUserIdsList() != null) {
 				newUserIds.addAll(task.getSakaiUserIdsList());
 				task.setSakaiUserIdsList(newUserIds);
 			} else {
 				task.setSakaiUserIdsList(newUserIds);
 			}
 		} else {
-			if (task.getSakaiUserIds().contains(task.getSenderUserId())) {
+			if (task.getSakaiUserIdsList().contains(task.getSenderUserId())) {
 				newUserIds = task.getSakaiUserIdsList();
 				newUserIds.remove(task.getSenderUserId());
 				task.setSakaiUserIdsList(newUserIds);
