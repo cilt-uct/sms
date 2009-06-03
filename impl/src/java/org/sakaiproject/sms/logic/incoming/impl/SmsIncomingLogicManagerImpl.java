@@ -415,8 +415,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	private String generateUnknownCommandMessage(ParsedMessage message) {
-		String cmd = ((message == null) && (message.getCommand() != null)) ? ""
-				: message.getCommand();
+		String cmd = "";
+		if (message != null && message.getCommand() != null) {
+			cmd = message.getCommand();
+		}
+
 		return "Unknown command " + cmd
 				+ ". Please sms help for valid commands.";
 	}
@@ -424,7 +427,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	private String generateHelpMessage() {
 		StringBuilder body = new StringBuilder();
 		body.append("Valid commands: ");
-
 		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
 			String command = i.next();
@@ -455,15 +457,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		} else {
 			commands = matches;
 		}
-		final Iterator<String> i = commands.iterator();
-		while (i.hasNext()) {
-			String command = i.next();
-			body.append(command);
-			if (i.hasNext()) {
-				body.append(", ");
+		if (commands != null) {
+			final Iterator<String> i = commands.iterator();
+			while (i.hasNext()) {
+				String command = i.next();
+				body.append(command);
+				if (i.hasNext()) {
+					body.append(", ");
+				}
 			}
 		}
-
 		return body.toString();
 	}
 
