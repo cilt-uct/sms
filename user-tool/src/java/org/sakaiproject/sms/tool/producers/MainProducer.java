@@ -102,6 +102,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 					UIOutput.make(tofill, "send");
 					UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 				}
+				UIOutput.make(tofill, "reportConsole");
 				UIOutput.make(tofill, "console-credits", credits.toString() );
 				UIOutput.make(tofill, "console-value", currencyUtil.toServerLocale(smsAccountLogic.getAccountBalance(credits)) );
 			}else{
