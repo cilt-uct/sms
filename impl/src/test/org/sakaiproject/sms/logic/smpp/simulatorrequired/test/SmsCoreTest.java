@@ -366,6 +366,13 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * failing.
 	 */
 	public void testProcessTaskFail() {
+		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
+				.getSmsTaskLogic().getAllSmsTask();
+
+		for (SmsTask smsTask : smsTasks) {
+			smsCoreImpl.getHibernateLogicLocator().getSmsTaskLogic()
+					.deleteSmsTask(smsTask);
+		}
 		smsSmppImpl.connectToGateway();
 		SmsTask smsTask = smsCoreImpl.getPreliminaryTask("testProcessTaskFail",
 				new Date(System.currentTimeMillis()),
