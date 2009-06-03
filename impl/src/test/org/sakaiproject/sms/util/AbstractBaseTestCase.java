@@ -37,7 +37,7 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
  * <p>
  * This class makes use of a static block for one time initialization of
  * Hibernate test configuration.
- *
+ * 
  * @author Julian Wyngaard
  * @version 1.0
  * @created 05-Dec-2008
@@ -73,7 +73,6 @@ public abstract class AbstractBaseTestCase extends TestCase {
 		smsConfigLogicImpl.setSmsDao(smsDao);
 		hibernateLogicLocator.setSmsConfigLogic((smsConfigLogicImpl));
 
-
 		SmsMessageLogicImpl smsMessageLogicImpl = new SmsMessageLogicImpl();
 		smsMessageLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsMessageLogicImpl.setSmsDao(smsDao);
@@ -99,7 +98,7 @@ public abstract class AbstractBaseTestCase extends TestCase {
 
 	/**
 	 * Instantiates a new abstract base test case.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -107,15 +106,4 @@ public abstract class AbstractBaseTestCase extends TestCase {
 		super(name);
 	}
 
-	/**
-	 * Abstract method will be implemented by all subclasses forcing this method
-	 * to be called. This will be used to call
-	 * <code> HibernateUtil.setTestConfiguration(true) and HibernateUtil.createSchema() </code>
-	 * and for any other one time setup.
-	 * <p>
-	 * We realise that there are correct ways to implement one time setup but
-	 * none of which allow one time setup for each test case when run from as
-	 * suite.
-	 */
-	public abstract void testOnetimeSetup();
 }

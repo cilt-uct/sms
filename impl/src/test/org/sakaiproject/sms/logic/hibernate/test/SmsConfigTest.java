@@ -2,10 +2,10 @@ package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.List;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -18,23 +18,16 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	private final ExternalLogic externalLogic = new ExternalLogicStub();
 
-
 	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 		insertSmsConfig = new SmsConfig();
 		insertSmsConfig.setSakaiSiteId("sakaiSiteId2");
 		insertSmsConfig.setSakaiToolId("sakaiToolId");
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**
@@ -45,7 +38,7 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms config test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
@@ -57,8 +50,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test insert sms config.
 	 */
 	public void testInsertSmsConfig() {
-		hibernateLogicLocator.getSmsConfigLogic()
-				.persistSmsConfig(insertSmsConfig);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(
+				insertSmsConfig);
 		// Check the record was created on the DB... an id will be assigned.
 		assertTrue("Object not persisted", insertSmsConfig.exists());
 	}
@@ -110,8 +103,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 		insertSmsConfig.setSakaiToolId("testGetSmsConfigBySakiaSiteId");
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
-		hibernateLogicLocator.getSmsConfigLogic()
-				.persistSmsConfig(insertSmsConfig);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(
+				insertSmsConfig);
 		assertTrue("Object not created correctly", insertSmsConfig.exists());
 
 		try {
@@ -136,8 +129,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 		insertSmsConfig.setSakaiToolId(testId);
 		insertSmsConfig.setNotificationEmail("notification@Email.Address");
 		insertSmsConfig.setSendSmsEnabled(false);
-		hibernateLogicLocator.getSmsConfigLogic()
-				.persistSmsConfig(insertSmsConfig);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(
+				insertSmsConfig);
 		assertTrue("Object not created correctly", insertSmsConfig.exists());
 
 		try {
@@ -171,7 +164,8 @@ public class SmsConfigTest extends AbstractBaseTestCase {
 	 * Test delete sms config.
 	 */
 	public void testDeleteSmsConfig() {
-		hibernateLogicLocator.getSmsConfigLogic().deleteSmsConfig(insertSmsConfig);
+		hibernateLogicLocator.getSmsConfigLogic().deleteSmsConfig(
+				insertSmsConfig);
 		SmsConfig getSmsConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getSmsConfig(insertSmsConfig.getId());
 		assertNull(getSmsConfig);

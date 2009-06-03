@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.hibernate.Session;
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -38,14 +37,11 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 */
 	private static Session session;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
+	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 	}
 
 	/**

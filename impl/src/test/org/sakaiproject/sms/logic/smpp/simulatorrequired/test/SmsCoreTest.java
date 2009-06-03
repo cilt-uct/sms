@@ -19,9 +19,9 @@ package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
@@ -66,6 +66,11 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			.getLogger(SmsCoreTest.class);
 
 	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
+
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 
 		externalLogic = hibernateLogicLocator.getExternalLogic();
@@ -94,13 +99,22 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		LOG.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
-		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId());
-		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId());
+		smsAccount.setSakaiUserId("SMSCoreTest"
+				+ externalLogic.getCurrentUserId());
+		smsAccount.setSakaiSiteId("SMSCoreTest"
+				+ externalLogic.getCurrentSiteId());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
 		smsAccount.setCredits(100l);
-		smsAccount.setAccountName("accountname");
+		smsAccount.setAccountName("SMSCoreTest-accountname");
 		smsAccount.setAccountEnabled(true);
+		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(
+						externalLogic.getCurrentSiteId());
+		config.setSendSmsEnabled(true);
+		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
+		hibernateLogicLocator.getSmsAccountLogic()
+				.persistSmsAccount(smsAccount);
 
 	}
 
@@ -120,23 +134,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsSmppImpl.disconnectGateWay();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
-		hibernateLogicLocator.getSmsAccountLogic()
-				.persistSmsAccount(smsAccount);
-		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSmsConfigBySakaiSiteId(
-						externalLogic.getCurrentSiteId());
-		config.setSendSmsEnabled(true);
-		hibernateLogicLocator.getSmsConfigLogic().persistSmsConfig(config);
-	}
-
 	/**
 	 * In this test the ProcessNextTask method is tested. 4 smsTasks are created
 	 * with different sending times and statuses. The ProcessNextTask method
@@ -149,7 +146,13 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 */
 	public void testProcessNextTask() {
 		smsSmppImpl.connectToGateway();
+		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
+				.getSmsTaskLogic().getAllSmsTask();
 
+		for (SmsTask smsTask : smsTasks) {
+			smsCoreImpl.getHibernateLogicLocator().getSmsTaskLogic()
+					.deleteSmsTask(smsTask);
+		}
 		if (smsCoreImpl.getSmsSmpp().getConnectionStatus()) {
 
 			Calendar now = Calendar.getInstance();
@@ -272,6 +275,13 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * In this test the updating of the tasks statuses are tested.
 	 */
 	public void testTaskStatuses() {
+		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
+				.getSmsTaskLogic().getAllSmsTask();
+
+		for (SmsTask smsTask : smsTasks) {
+			smsCoreImpl.getHibernateLogicLocator().getSmsTaskLogic()
+					.deleteSmsTask(smsTask);
+		}
 		smsSmppImpl.connectToGateway();
 
 		if (smsCoreImpl.getSmsSmpp().getConnectionStatus()) {

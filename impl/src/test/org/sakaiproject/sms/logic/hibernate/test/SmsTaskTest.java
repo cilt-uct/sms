@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -41,6 +40,10 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	private static SmsMessage insertMessage2;
 
 	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 		insertTask = createTestTask();
 		insertMessage1 = createTestMessage1();
 		insertMessage2 = createTestMessage2();
@@ -93,18 +96,6 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * Instantiates a new sms task test.
 	 */
 	public SmsTaskTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-
-		StandaloneSmsDaoImpl.createSchema();
 
 	}
 

@@ -252,10 +252,9 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	// ONLY FOR UNIT TESTS
-	public SmsTask getPreliminaryTestTask() {
+	public SmsTask getPreliminaryTestTask(String sakaiSiteID, String sakaiToolId) {
 		return getPreliminaryTask(null, null, null, new Date(), "",
-				SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, "",
-				SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID, null);
+				sakaiSiteID, sakaiToolId, "", null);
 	}
 
 	private SmsTask getPreliminaryTask(String deliverGroupId,

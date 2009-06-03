@@ -3,7 +3,6 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -28,7 +27,10 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 
 	static {
-		StandaloneSmsDaoImpl.createSchema();
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		insertSmsAccount = new SmsAccount();
 		insertSmsAccount
@@ -75,16 +77,6 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	 */
 	public SmsAccountTest(String name) {
 		super(name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**
@@ -169,13 +161,14 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	public void testUpdateSmsAccount() {
 		SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
-		smsAccount.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+"new");
+		smsAccount.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID
+				+ "new");
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				insertSmsAccount.getId());
-		assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+"new", smsAccount
-				.getSakaiSiteId());
+		assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + "new",
+				smsAccount.getSakaiSiteId());
 	}
 
 	/**

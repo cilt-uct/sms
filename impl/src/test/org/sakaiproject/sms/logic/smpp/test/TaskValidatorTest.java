@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
@@ -39,20 +38,18 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	private static SmsAccount account;
 
 	List<String> errors = new ArrayList<String>();
+	static {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 		account = new SmsAccount();
-		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		account.setSakaiSiteId("TaskValidatorTest"
+				+ SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
-		account.setAccountName("account name");
+		account.setAccountName("TaskValidatorTest account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -66,9 +63,10 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 		msg = new SmsMessage();
 		// smsTask = new SmsTask();
-		smsTask = smsCoreImpl.getPreliminaryTestTask();
+		smsTask = smsCoreImpl.getPreliminaryTestTask(account.getSakaiSiteId(),
+				SmsConstants.SMS_DEV_DEFAULT_SAKAI_TOOL_ID);
 		smsTask.setSmsAccountId(account.getId());
-		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		smsTask.setSakaiSiteId(account.getSakaiSiteId());
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);

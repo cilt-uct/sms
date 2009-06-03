@@ -74,7 +74,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public int getGroupMemberCount(String reference) {
-		return 20;
+		return 10;
 	}
 
 	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
@@ -131,9 +131,9 @@ public class ExternalLogicStub implements ExternalLogic {
 		final Set<SmsMessage> messages = new HashSet<SmsMessage>();
 
 		String[] users;
-		final int numberOfMessages = (int) Math.round(Math.random() * 100);
-		users = new String[100];
-		String[] celnumbers = new String[100];
+		final int numberOfMessages = (int) Math.round(Math.random() * 10);
+		users = new String[10];
+		String[] celnumbers = new String[10];
 		for (int i = 0; i < users.length; i++) {
 			users[i] = "SakaiUser" + i;
 			celnumbers[i] = "+2773"
@@ -142,8 +142,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		for (int i = 0; i < numberOfMessages; i++) {
 			final SmsMessage message = new SmsMessage();
 			message.setMobileNumber(celnumbers[(int) Math
-					.round(Math.random() * 99)]);
-			message.setSakaiUserId(users[(int) Math.round(Math.random() * 99)]);
+					.round(Math.random() * 9)]);
+			message.setSakaiUserId(users[(int) Math.round(Math.random() * 9)]);
 			message.setSmsTask(smsTask);
 			messages.add(message);
 		}

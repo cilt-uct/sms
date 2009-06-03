@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -31,6 +30,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	private static SmsMessage insertMessage2;
 
 	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 		insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertTask.setSmsAccountId(1l);
@@ -51,27 +54,17 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 		insertMessage1 = new SmsMessage();
 		insertMessage1.setMobileNumber("0721998919");
-		insertMessage1.setSmscMessageId("smscMessageId1");
+		insertMessage1.setSmscMessageId("SmsMessageTest-smscMessageId1");
 		insertMessage1.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage1.setSakaiUserId("sakaiUserId");
 		insertMessage1.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 
 		insertMessage2 = new SmsMessage();
 		insertMessage2.setMobileNumber("0823450983");
-		insertMessage2.setSmscMessageId("smscMessageId2");
+		insertMessage2.setSmscMessageId("SmsMessageTest-smscMessageId2");
 		insertMessage2.setSmscId(SmsConstants.SMSC_ID);
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

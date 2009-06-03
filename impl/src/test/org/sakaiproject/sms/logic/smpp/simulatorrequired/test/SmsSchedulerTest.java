@@ -2,9 +2,9 @@ package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Level;
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
@@ -19,6 +19,7 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -34,29 +35,25 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	private static SmsSchedulerImpl smsSchedulerImpl = null;
 	private static SmsSmppImpl smsSmppImpl = null;
 	private static SmsConfigLogicImpl smsConfigLogic = null;
-	private static StandaloneSmsDaoImpl hibernateUtil = null;
-	private final ExternalLogic externalLogic = new ExternalLogicStub();
+	private final static ExternalLogic EXTERNAL_LOGIC = new ExternalLogicStub();
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
 
-	static {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
+	/**
+	 * This tests will insert 3 tasks to to processed.The test succeeds if no
+	 * tasks remain after 1 min.
 	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
+	public void testTaskProcessing() {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+		}
+
 		smsConfigLogic = new SmsConfigLogicImpl();
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
-		hibernateUtil = new StandaloneSmsDaoImpl("hibernate-test.properties");
-		smsConfigLogic.setSmsDao(hibernateUtil);
+
+		smsConfigLogic.setSmsDao(smsDao);
 		smsSchedulerImpl = new SmsSchedulerImpl();
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsCoreImpl = new SmsCoreImpl();
@@ -74,25 +71,25 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 
 		smsSchedulerImpl.setSmsCore(smsCoreImpl);
-		smsSchedulerImpl.init();
+
 		LOG.setLevel(Level.WARN);
 		SmsConfig config = smsConfigLogic
-				.getOrCreateSmsConfigBySakaiSiteId(externalLogic
+				.getOrCreateSmsConfigBySakaiSiteId(EXTERNAL_LOGIC
 						.getCurrentSiteId());
 		config.setSendSmsEnabled(true);
 		smsConfigLogic.persistSmsConfig(config);
-	}
+		smsSchedulerImpl.init();
+		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
+				.getSmsTaskLogic().getAllSmsTask();
 
-	/**
-	 * This tests will insert 3 tasks to to processed.The test succeeds if no
-	 * tasks remain after 1 min.
-	 */
-	public void testTaskProcessing() {
-
+		for (SmsTask smsTask : smsTasks) {
+			smsCoreImpl.getHibernateLogicLocator().getSmsTaskLogic()
+					.deleteSmsTask(smsTask);
+		}
 		SmsAccount smsAccount = new SmsAccount();
-		smsAccount.setSakaiUserId(externalLogic.getCurrentUserId()
+		smsAccount.setSakaiUserId(EXTERNAL_LOGIC.getCurrentUserId()
 				+ Math.random());
-		smsAccount.setSakaiSiteId(externalLogic.getCurrentSiteId()
+		smsAccount.setSakaiSiteId(EXTERNAL_LOGIC.getCurrentSiteId()
 				+ Math.random());
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
@@ -163,5 +160,6 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		smsSchedulerImpl.stopSmsScheduler();
+		smsCoreImpl.smsSmpp.disconnectGateWay();
 	}
 }

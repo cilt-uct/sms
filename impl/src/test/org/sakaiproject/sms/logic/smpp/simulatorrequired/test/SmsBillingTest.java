@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -48,7 +47,19 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/** The account. */
 	public static SmsAccount account;
 
+	/** The test amount. */
+	public final Float testAmount = 100F;
+
+	/** The test credits. */
+	public final int testCredits = 100;
+
 	static {
+
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
+
 		smsBillingImpl = new SmsBillingImpl();
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsSmppImpl = new SmsSmppImpl();
@@ -59,22 +70,17 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("121112322");
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
-		account.setAccountName("account name");
+		account.setAccountName("SmsBillingTest account name2");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
-
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 	}
-
-	/** The test amount. */
-	public final Float testAmount = 100F;
-
-	/** The test credits. */
-	public final int testCredits = 100;
 
 	/**
 	 * Instantiates a new sms billing test.
 	 */
 	public SmsBillingTest() {
+
 	}
 
 	/**
@@ -94,18 +100,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	protected void tearDown() throws Exception {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
-
 	}
 
 	/**
@@ -158,7 +152,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	public void testCheckSufficientCredits_True() {
 
 		int creditsRequired = 1;
-		account.setCredits(smsBillingImpl.convertAmountToCredits((10f)));
+		account.setCredits(10l);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		SmsMessage msg = new SmsMessage();
 		SmsTask smsTask = new SmsTask();
@@ -175,12 +169,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.getSmsMessages().add(msg);
 		smsTask.setCreditEstimate(creditsRequired);
 		msg.setSmsTask(smsTask);
-
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
 		assertTrue("Expected sufficient credit", sufficientCredits);
 
-		account.setCredits((smsBillingImpl.convertAmountToCredits(-10f)));
+		account.setCredits(0l);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		boolean insufficientCredits = !smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);

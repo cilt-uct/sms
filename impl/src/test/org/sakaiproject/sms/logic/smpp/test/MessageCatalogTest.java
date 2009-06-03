@@ -23,16 +23,12 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
  * Test case to test the MessageCatelog class functionality
- *
+ * 
  * @author julian@psybergate.com
  * @version 1.0
  * @created 15-Jan-2009
  */
 public class MessageCatalogTest extends AbstractBaseTestCase {
-
-	@Override
-	public void testOnetimeSetup() {
-	}
 
 	/**
 	 * Test message catelog.
@@ -56,8 +52,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 		String message = null;
 		try {
 			message = MessageCatalog.getMessage("messages.nonexistent");
-			assertTrue(message
-					.equals(SmsConstants.CATALOG_MESSAGE_NOT_FOUND));
+			assertTrue(message.equals(SmsConstants.CATALOG_MESSAGE_NOT_FOUND));
 		} catch (Exception e) {
 			// fail(e.getMessage());
 		}

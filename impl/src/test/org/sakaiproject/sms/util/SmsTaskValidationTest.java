@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
@@ -52,11 +51,20 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/** The msg. */
 	private SmsMessage msg;
 
+	private int uniquenesIDNumber = 0;
+
 	/** The VALI d_ ms g_ body. */
 	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 	/** The account. */
 	private SmsAccount account;
+
+	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
+	}
 
 	/**
 	 * setUp to run before every test. Create SmsMessage + validator + errors
@@ -65,7 +73,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	 */
 	@Override
 	public void setUp() {
-		StandaloneSmsDaoImpl.createSchema();
+		uniquenesIDNumber++;
 		// Inject the required impl's into core impl for testing
 		SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
 		SmsBillingImpl smsBilling = new SmsBillingImpl();
@@ -75,10 +83,14 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 
 		account = new SmsAccount();
-		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		account.setSakaiSiteId("SmsTaskValidationTest"
+				+ SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID
+				+ uniquenesIDNumber);
 		account.setMessageTypeCode("");
 		account.setCredits(10L);
-		account.setAccountName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME);
+		account.setAccountName("SmsTaskValidationTest"
+				+ SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME
+				+ uniquenesIDNumber);
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -87,9 +99,10 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		validator.setSmsBilling(smsBilling);
 
 		msg = new SmsMessage();
-		smsTask = smsCoreImpl.getPreliminaryTestTask();
+		smsTask = smsCoreImpl.getPreliminaryTestTask(account.getSakaiSiteId(),
+				SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
 
-		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		smsTask.setSakaiSiteId(account.getSakaiSiteId());
 		smsTask.setSmsAccountId(account.getId());
 		smsTask.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		smsTask.setDateToSend(new Timestamp(System.currentTimeMillis()));
@@ -322,12 +335,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	public void testValidMessage() {
 		errors = validator.validateInsertTask(smsTask);
 		assertFalse(errors.size() > 0);
-	}
-
-	@Override
-	public void testOnetimeSetup() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -18,12 +18,12 @@
 package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
  * This unit test will create 2 separate but concurrent connections (sessions)
@@ -43,7 +43,7 @@ import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
  * servers will receive delivery reports when one of them send messages out.
  * thread. The gateway simply sends the reports to the ip address.
  */
-public class SmppThreadingTest extends TestCase {
+public class SmppThreadingTest extends AbstractBaseTestCase {
 	/**
 	 * Standard main() and suite() methods.
 	 * 
@@ -70,15 +70,11 @@ public class SmppThreadingTest extends TestCase {
 
 	private final int session2_message_count = 200;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl hibernateUtil = new StandaloneSmsDaoImpl(
-				"hibernate-test.properties");
-		hibernateUtil.createSchema();
+	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
 	}
 
 	/**

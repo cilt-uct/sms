@@ -99,7 +99,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * @param sms
 	 *            account to be persisted
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount) {
+	public synchronized void persistSmsAccount(SmsAccount smsAccount) {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
 			throw new DuplicateUniqueFieldException(smsAccount.getSakaiSiteId());
 		}

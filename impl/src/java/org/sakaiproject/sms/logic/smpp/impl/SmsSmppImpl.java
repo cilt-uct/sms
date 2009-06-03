@@ -511,7 +511,6 @@ public class SmsSmppImpl implements SmsSmpp {
 				session.unbindAndClose();
 				if (!appserverShuttingDown && reBindTheard == null) {
 					LOG.info("Starting Binding thread");
-
 					reBindTheard = new BindThread();
 				}
 

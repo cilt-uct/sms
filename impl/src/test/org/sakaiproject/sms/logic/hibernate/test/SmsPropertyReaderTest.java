@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
-import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.SmsPropertyReader;
@@ -10,6 +9,12 @@ import org.sakaiproject.sms.util.SmsPropertyReader;
  */
 public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 
+	static {
+		if (!SmsConstants.isDbSchemaCreated) {
+			smsDao.createSchema();
+			SmsConstants.isDbSchemaCreated = true;
+		}
+	}
 	/** The TES t_ propert y_ name. */
 	private final String TEST_PROPERTY_NAME = "unitTestProperty";
 
@@ -24,22 +29,12 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 
 	/**
 	 * Instantiates a new sms account test.
-	 *
+	 * 
 	 * @param name
 	 *            the name
 	 */
 	public SmsPropertyReaderTest(String name) {
 		super(name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.sakaiproject.sms.util.AbstractBaseTestCase#testOnetimeSetup()
-	 */
-	@Override
-	public void testOnetimeSetup() {
-		StandaloneSmsDaoImpl.createSchema();
 	}
 
 	/**

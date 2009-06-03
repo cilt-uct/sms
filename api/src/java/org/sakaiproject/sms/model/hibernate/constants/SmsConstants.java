@@ -233,4 +233,6 @@ public class SmsConstants {
 	 */
 	public static final String SMS_DEV_DEFAULT_SMS_MESSAGE_BODY = "messageBody";
 
+	public static boolean isDbSchemaCreated = false;
+
 }

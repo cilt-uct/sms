@@ -28,6 +28,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.hbm2ddl.SchemaValidator;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 
 /**
@@ -154,12 +155,25 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 		return sessionFactory;
 	}
 
+	public static void sdfsdf() {
+		try {
+			new SchemaValidator(getConfiguration()).validate();
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Creates a database schema
 	 */
-	public static void createSchema() {
+	public void createSchema() {
 		try {
 			new SchemaExport(getConfiguration()).create(false, true);
+
 		} catch (IOException e) {
 			throw new HibernateException("Error reading hibernate properties: "
 					+ e.getMessage(), e);
