@@ -50,6 +50,7 @@ public class SmsPermissions implements ViewComponentProducer,ViewParamsReporter,
 	  return new HelperViewParameters();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List reportNavigationCases() {
 	  List l = new ArrayList();
 	  l.add(new NavigationCase(null, new SimpleViewParameters(MainProducer.VIEW_ID)));

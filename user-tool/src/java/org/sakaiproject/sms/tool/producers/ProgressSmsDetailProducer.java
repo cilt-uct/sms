@@ -1,11 +1,9 @@
 package org.sakaiproject.sms.tool.producers;
 
-import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
 import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
@@ -14,7 +12,6 @@ import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
-import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -63,22 +60,12 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 		this.statusUtils = statusUtils;
 	}
 	
-	private ExternalLogic externalLogic;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-	
 	private HibernateLogicLocator hibernateLogicLocator;
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
-	
-	private MessageLocator messageLocator;
-	public void setMessageLocator(MessageLocator messageLocator) {
-		this.messageLocator = messageLocator;
-	}
-	
+
 	private SavedSelectionsRenderer savedSelectionsRenderer;
 	public void setSavedSelectionsRenderer(
 			SavedSelectionsRenderer savedSelectionsRenderer) {

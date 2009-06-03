@@ -103,16 +103,14 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 			form.targetURL = "/direct/sms-task/new";
 			form.decorate(new UIIDStrategyDecorator("chooseForm"));
 			// Checkboxes for Groups and Roles
-			Map<String, String> roles = new HashMap<String, String>();
-			roles = externalLogic.getSakaiRolesForSite(currentSiteId);
+			Map<String, String> roles = externalLogic.getSakaiRolesForSite(currentSiteId);
 			if (roles.size() > 0) {
 				renderCheckBoxes("role", roles, form, smsTask);
 			} else {
 				UIMessage.make(form, "error-no-roles", "ui.error.no.roles")
 						.decorate(new UIIDStrategyDecorator("error-no-roles"));
 			}
-			Map<String, String> groups = new HashMap<String, String>();
-			groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
+			Map<String, String> groups = externalLogic.getSakaiGroupsForSite(currentSiteId);
 			if (groups.size() > 0) {
 				renderCheckBoxes("group", groups, form, smsTask);
 			} else {

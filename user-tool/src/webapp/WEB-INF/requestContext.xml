@@ -66,9 +66,7 @@
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
-	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="dateUtil" ref="dateUtil" />
-	<property name="messageLocator" ref="messageLocator" />
 	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="currencyUtil" ref="currencyUtil" />
