@@ -33,6 +33,7 @@ import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
@@ -218,7 +219,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
 		if (task == null) {
-            throw new IllegalArgumentException("No poll found for the given reference: " + ref);
+            throw new IllegalArgumentException("No task found for the given reference: " + ref);
         }
 
 		String userReference = developerHelperService.getCurrentUserReference();
@@ -263,6 +264,34 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 
 		return null;
+	}
+	
+	//Custom action to handle /sms-task/abort-task
+	@EntityCustomAction(action=CUSTOM_ACTION_ABORT,viewKey=EntityView.VIEW_EDIT)
+	public void abort(EntityReference ref, Map<String, Object> params){
+		String id = ref.getId();
+		if (id == null){
+			throw new EntityException("The reference must include an id for task aborts (id is currently null)", ref.getReference(), 406); //406 - NOT ACCEPTABLE
+		}
+		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
+		if (task == null) {
+			//404 - NOT FOUND (resource not found, URL is invalid in some way, id or action are invalid) 
+            throw new EntityException("No task found for the given reference: " + ref, ref.getReference(), 404); 
+        }
+
+		String userReference = developerHelperService.getCurrentUserReference();
+		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+        if (!allowedSend) {
+            throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
+        }
+
+		try {
+			log.info("Starting abort process for task:" + task.getId());
+			smsService.abortPendingTask(task.getId());
+		} catch (SmsTaskNotFoundException e) {
+			//405 - METHOD NOT ALLOWED (the method is not supported for this entity type) 
+			throw new EntityException("No task found for id: " + ref + " in the pending/processing queue. May indicate that it's already been processed.", ref.getReference(), 405); 
+		}
 	}
 
 	//Custom action to handle /sms-task/calculate

@@ -24,7 +24,7 @@ $(document).ready(function() {
 
     $.fn.task.defaults = {
         EB_DELETE_PATH: "/direct/sms-task/:ID:/delete",
-        EB_UPDATE_PATH: "/direct/sms-task/:ID:/edit",
+        EB_UPDATE_PATH: "/direct/sms-task/:ID:/task-abort",
         SUCCESS_PATH: function() {
             return "index?status=" + Number(new Date());
         },
