@@ -240,7 +240,8 @@ public interface SmsCore {
 	public void checkAndSetTasksCompleted();
 
 	/**
-	 * Aborts the pending task.
+	 * Aborts the pending task.The task will only be aborted if its status is
+	 * pending.
 	 * 
 	 * @param smsTaskID
 	 * @throws SmsTaskNotFoundException

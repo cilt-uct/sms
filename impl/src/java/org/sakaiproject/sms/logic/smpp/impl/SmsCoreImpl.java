@@ -923,16 +923,19 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			throw new SmsTaskNotFoundException();
 		} else {
-			smsBilling.cancelPendingRequest(smsTaskID);
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
-			smsTask.setStatusForMessages(
-					SmsConst_DeliveryStatus.STATUS_PENDING,
-					SmsConst_DeliveryStatus.STATUS_ABORT);
-			smsTask.setFailReason(MessageCatalog
-					.getMessage("messages.taskAborted"));
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			sendEmailNotification(smsTask,
-					SmsConstants.TASK_NOTIFICATION_ABORTED);
+			if (smsTask.getStatusCode().equals(
+					SmsConst_DeliveryStatus.STATUS_PENDING)) {
+				smsBilling.cancelPendingRequest(smsTaskID);
+				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
+				smsTask.setStatusForMessages(
+						SmsConst_DeliveryStatus.STATUS_PENDING,
+						SmsConst_DeliveryStatus.STATUS_ABORT);
+				smsTask.setFailReason(MessageCatalog
+						.getMessage("messages.taskAborted"));
+				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+				sendEmailNotification(smsTask,
+						SmsConstants.TASK_NOTIFICATION_ABORTED);
+			}
 		}
 
 	}
