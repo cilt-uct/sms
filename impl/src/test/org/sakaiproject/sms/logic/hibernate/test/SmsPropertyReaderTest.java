@@ -16,10 +16,10 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 		}
 	}
 	/** The TES t_ propert y_ name. */
-	private final String TEST_PROPERTY_NAME = "unitTestProperty";
+	private final static String TEST_PROPERTY_NAME = "unitTestProperty";
 
 	/** The TES t_ propert y_ value. */
-	private final String TEST_PROPERTY_VALUE = "value";
+	private final static String TEST_PROPERTY_VALUE = "value";
 
 	/**
 	 * Instantiates a new sms account test.

@@ -230,7 +230,6 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 				"smsTask", "smsTask");
 
 		LOG.debug(searchBean.toString());
-		List<SmsMessage> messages = new ArrayList<SmsMessage>();
 		try {
 			// Message status
 			if (searchBean.getStatus() != null
@@ -288,9 +287,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		} catch (Exception e) {
 			throw new SmsSearchException(e);
 		}
-
-		messages = crit.list();
-		return messages;
+		return crit.list();
 	}
 
 	/**

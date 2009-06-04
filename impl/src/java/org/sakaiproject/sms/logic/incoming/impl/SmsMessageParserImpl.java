@@ -60,12 +60,14 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		if (text == null && nrOfParameters == 0) {
 			return new String[0];
 		}
-
+		if (text != null) {
+			text = text.trim();
+		}
 		if (nrOfParameters == 0 && !"".equals(text.trim())) {
 			throw new ParseException("No parameters expected");
 		}
 
-		final String[] bodyParams = StringUtils.split(text.trim(), DELIMITERS,
+		final String[] bodyParams = StringUtils.split(text, DELIMITERS,
 				nrOfParameters);
 		if (bodyParams.length < nrOfParameters) {
 			throw new ParseException(nrOfParameters

@@ -35,7 +35,7 @@ public class SmsConfigValidatorTest extends TestCase {
 	protected void setUp() throws Exception {
 		validator = new SmsConfigValidator();
 		smsConfig = new SmsConfig();
-		smsConfig.setDelReportTimeoutDuration(new Integer(1));
+		smsConfig.setDelReportTimeoutDuration(Integer.valueOf(1));
 		smsConfig.setPagingSize(Integer.valueOf(20));
 		smsConfig.setSmsRetryMaxCount(Integer.valueOf(3));
 		smsConfig.setSmsTaskMaxLifeTime(Integer.valueOf(3));

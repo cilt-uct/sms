@@ -97,15 +97,15 @@ public class SmsConfig extends BaseModel {
 		return useSiteAccount;
 	}
 
-	public void setUseSiteAcc(Boolean useSite) {
+	public void setUseSiteAcc(boolean useSite) {
 		this.useSiteAccount = useSite ? "1" : "0";
 	}
 
-	public Boolean getUseSiteAcc() {
+	public boolean getUseSiteAcc() {
 		if (this.useSiteAccount != null) {
 			return this.useSiteAccount.equals("1") ? true : false;
 		}
-		return null;
+		return false;
 	}
 
 	public void setUseSiteAccount(String useSiteAccount) {
@@ -205,7 +205,7 @@ public class SmsConfig extends BaseModel {
 	 * @param smsEnabled
 	 *            the new sms enabled
 	 */
-	public void setSendSmsEnabled(Boolean smsEnabled) {
+	public void setSendSmsEnabled(boolean smsEnabled) {
 		this.smsEnabled = smsEnabled ? "1" : "0";
 	}
 
@@ -214,11 +214,11 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @return the sms enabled
 	 */
-	public Boolean isSendSmsEnabled() {
+	public boolean isSendSmsEnabled() {
 		if (this.smsEnabled != null) {
 			return this.smsEnabled.equals("1") ? true : false;
 		}
-		return null;
+		return false;
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class SmsConfig extends BaseModel {
 	 * @param smsEnabled
 	 *            the new sms enabled
 	 */
-	public void setReceiveIncomingEnabled(Boolean receiveIncomingEnabled) {
+	public void setReceiveIncomingEnabled(boolean receiveIncomingEnabled) {
 		this.incomingEnabled = receiveIncomingEnabled ? "1" : "0";
 	}
 
@@ -570,11 +570,11 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @return the sms enabled
 	 */
-	public Boolean isReceiveIncomingEnabled() {
+	public boolean isReceiveIncomingEnabled() {
 		if (this.incomingEnabled != null) {
 			return this.incomingEnabled.equals("1") ? true : false;
 		}
-		return null;
+		return false;
 	}
 
 	/**

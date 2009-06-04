@@ -251,7 +251,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 					.getSmsTask(smsTask2.getId());
 			SmsTask smsTask3Update = hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask3.getId());
-			SmsTask smsTask4Update = hibernateLogicLocator.getSmsTaskLogic()
+			hibernateLogicLocator.getSmsTaskLogic()
 					.getSmsTask(smsTask4.getId());
 
 			assertEquals(true, smsTask1Update.getMessagesWithSmscStatus(

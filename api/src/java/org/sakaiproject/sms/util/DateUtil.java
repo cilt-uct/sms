@@ -29,16 +29,18 @@ import java.util.Date;
  * @version 1.0
  * @created 01-Dec-2008
  */
-public class DateUtil {
+public final class DateUtil {
 
 	private static final String DATE_TIME_FORMAT_STRING = "MM/dd/yyyy HH:mm:ss";
 
 	private static final String DATE_FORMAT_STRING = "MM/dd/yyyy";
 
-	private static final long MILLS_PER_WEEK = 10080000;
-
-	private static SimpleDateFormat sdf = new SimpleDateFormat(
+	private static final SimpleDateFormat SDF = new SimpleDateFormat(
 			DATE_TIME_FORMAT_STRING);
+
+	private DateUtil() {
+
+	}
 
 	/**
 	 * Calculate the date one week before the current date
@@ -51,19 +53,16 @@ public class DateUtil {
 		return getDateFromNow(-7);
 	}
 
-	
-	
 	/**
 	 * Get the date at the specified number of days from now
 	 * 
 	 * @param daysFromNow
 	 * @return
 	 */
-	public static Date getDateFromNow(int daysFromNow) {
-		Calendar date1 = Calendar.getInstance();
+	public static Date getDateFromNow(final int daysFromNow) {
+		final Calendar date1 = Calendar.getInstance();
 		date1.add(Calendar.DAY_OF_YEAR, daysFromNow);
-		Date weekBefore = date1.getTime();
-		return weekBefore;
+		return date1.getTime();
 	}
 
 	/**
@@ -75,10 +74,10 @@ public class DateUtil {
 	 * @return the date for start date
 	 * @throws ParseException
 	 */
-	public static Date getDateFromStartDateString(String startDate)
+	public synchronized static Date getDateFromStartDateString(String startDate)
 			throws ParseException {
 		startDate = startDate.concat(" 00:00:00");
-		return getUsableDate(new Date(sdf.parse(startDate).getTime()));
+		return getUsableDate(new Date(SDF.parse(startDate).getTime()));
 	}
 
 	/**
@@ -90,10 +89,10 @@ public class DateUtil {
 	 * @return Date for start date
 	 * @throws ParseException
 	 */
-	public static Date getDateFromStartDateString(Date startDate)
-			throws ParseException {
-		String sStartDate = getDateString(startDate) + (" 00:00:00");
-		return getUsableDate(new Date(sdf.parse(sStartDate).getTime()));
+	public synchronized static Date getDateFromStartDateString(
+			final Date startDate) throws ParseException {
+		final String sStartDate = getDateString(startDate) + (" 00:00:00");
+		return getUsableDate(new Date(SDF.parse(sStartDate).getTime()));
 	}
 
 	/**
@@ -105,10 +104,10 @@ public class DateUtil {
 	 * @return Date for end date
 	 * @throws ParseException
 	 */
-	public static Date getDateFromEndDateString(String endDate)
+	public synchronized static Date getDateFromEndDateString(String endDate)
 			throws ParseException {
 		endDate = endDate.concat(" 23:59:59");
-		return getUsableDate(new Date(sdf.parse(endDate).getTime()));
+		return getUsableDate(new Date(SDF.parse(endDate).getTime()));
 	}
 
 	/**
@@ -120,10 +119,11 @@ public class DateUtil {
 	 * @return Date for end date
 	 * @throws ParseException
 	 */
-	public static Date getDateFromEndDateString(Date endDate)
+	public synchronized static Date getDateFromEndDateString(final Date endDate)
 			throws ParseException {
-		String sEndDate = getDateString(endDate) + (" 23:59:59");
-		return getUsableDate(new Date(sdf.parse(sEndDate).getTime()));
+		final String sEndDate = getDateString(endDate) + (" 23:59:59");
+		final Date date = new Date(SDF.parse(sEndDate).getTime());
+		return DateUtil.getUsableDate(date);
 	}
 
 	/**
@@ -133,8 +133,9 @@ public class DateUtil {
 	 *            {@link Date}
 	 * @return date as MM/dd/yyyy
 	 */
-	public static String getDateString(Date date) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING);
+	public synchronized static String getDateString(final Date date) {
+		final SimpleDateFormat dateFormat = new SimpleDateFormat(
+				DATE_FORMAT_STRING);
 		return dateFormat.format(date);
 	}
 
@@ -151,9 +152,9 @@ public class DateUtil {
 	 * 
 	 * @return the usable Date
 	 */
-	public static Date getUsableDate(Date date) {
+	public static Date getUsableDate(final Date date) {
 		if (date != null) {
-			Calendar cal = Calendar.getInstance();
+			final Calendar cal = Calendar.getInstance();
 			cal.setTimeInMillis(date.getTime());
 			cal.set(Calendar.MILLISECOND, 0);
 			return new Date(cal.getTimeInMillis());

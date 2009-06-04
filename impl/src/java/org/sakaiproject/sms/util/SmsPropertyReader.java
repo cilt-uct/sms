@@ -82,9 +82,16 @@ public abstract class SmsPropertyReader {
 		// .getResourceAsStream("/sms.properties");
 
 		if (inputStream == null) {
-			properties.load(new FileInputStream("sms.properties"));
+			final FileInputStream fileInputStream = new FileInputStream(
+					"smpp.properties");
+			properties.load(fileInputStream);
+
+			if (fileInputStream != null) {
+				fileInputStream.close();
+			}
 		} else {
 			properties.load(inputStream);
+			inputStream.close();
 		}
 
 	}

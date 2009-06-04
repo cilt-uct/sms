@@ -56,7 +56,7 @@ public class ParserTest extends TestCase {
 
 	public void testInvalidNull() {
 		try {
-			ParsedMessage parsed = parser.parseMessage(null);
+			parser.parseMessage(null);
 		} catch (ParseException e) {
 			assertNotNull(e);
 		}
@@ -64,7 +64,7 @@ public class ParserTest extends TestCase {
 
 	public void testInvalidEmpty() {
 		try {
-			ParsedMessage parsed = parser.parseMessage("");
+			parser.parseMessage("");
 			fail("should throw exception");
 		} catch (ParseException e) {
 			assertNotNull(e);

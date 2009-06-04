@@ -3,7 +3,6 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.hibernate.Session;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -20,34 +19,16 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
 public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 
 	/** The number of messages to insert, change as required. */
-	private static int messageCount = 5000;
-
-	/** The first message id. */
-	private static long firstMessageID;
-
-	/** The is of the new task. */
-	private static long smsTaskID;
+	private static final int MESSAGECOUNT = 5000;
 
 	/** The sms task. */
 	private static SmsTask smsTask;
-
-	/**
-	 * we want to flush the hibernate cache
-	 * 
-	 */
-	private static Session session;
 
 	static {
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
 		}
-	}
-
-	/**
-	 * Instantiates a new sms hibernate stress test.
-	 */
-	public SmsDatabaseStressTest() {
 		smsTask = new SmsTask();
 		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		smsTask.setSmsAccountId(1l);
@@ -58,11 +39,17 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		smsTask.setDateToExpire(cal.getTime());
 		smsTask.setDelReportTimeoutDuration(1);
+	}
+
+	/**
+	 * Instantiates a new sms hibernate stress test.
+	 */
+	public SmsDatabaseStressTest() {
 
 	}
 
@@ -71,8 +58,8 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 */
 	public void testInsertManyMessages() {
 
-		for (int i = 0; i < messageCount; i++) {
-			SmsMessage smsMessage = new SmsMessage();
+		for (int i = 0; i < MESSAGECOUNT; i++) {
+			final SmsMessage smsMessage = new SmsMessage();
 			smsMessage.setMobileNumber("0823450983");
 			smsMessage.setSmscMessageId("smscMessage_" + i);
 			smsMessage.setSakaiUserId("sakaiUserId");
@@ -81,9 +68,8 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 			smsTask.getSmsMessages().add(smsMessage);
 		}
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-		smsTaskID = smsTask.getId();
 		assertTrue("Not all messages returned",
-				smsTask.getSmsMessages().size() == messageCount);
+				smsTask.getSmsMessages().size() == MESSAGECOUNT);
 	}
 
 	// TODO: Careful, the attached task read all the messages attached to it, we
@@ -93,13 +79,12 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 * Test get task messages.
 	 */
 	public void testGetTaskMessages() {
-		SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(smsTaskID);
-		firstMessageID = ((SmsMessage) theSmsTask.getSmsMessages().toArray()[0])
-				.getId();
-		assertNotNull(theSmsTask);
+		final SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(smsTask.getId());
+
+		assertNotNull("theSmsTask may not be null", theSmsTask);
 		assertTrue("Message size not correct", theSmsTask.getSmsMessages()
-				.size() == messageCount);
+				.size() == MESSAGECOUNT);
 
 	}
 
@@ -107,13 +92,16 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 * Test delete tasks.
 	 */
 	public void testDeleteTasks() {
-
+		final SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(smsTask.getId());
+		Long firstMessageID = ((SmsMessage) theSmsTask.getSmsMessages()
+				.toArray()[0]).getId();
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
-		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(smsTaskID);
+		final SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getSmsTask(theSmsTask.getId());
 		assertNull("Task not removed", getSmsTask);
-		SmsMessage theMessage = hibernateLogicLocator.getSmsMessageLogic()
-				.getSmsMessage(firstMessageID);
+		final SmsMessage theMessage = hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessage(firstMessageID);
 		assertNull("Messages not removed", theMessage);
 	}
 }

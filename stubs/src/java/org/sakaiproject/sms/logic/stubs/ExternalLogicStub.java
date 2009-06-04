@@ -85,11 +85,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	public String[] sendEmailsToUsers(String from, String[] toUserIds,
 			String subject, String message) {
 
-		final List<String> sent = new ArrayList<String>();
-		for (String userId : toUserIds) {
-			sent.add(userId + "@example.com");
-		}
-		return ((String[]) sent.toArray());
+		return toUserIds;
 	}
 
 	public String getCurrentSiteId() {

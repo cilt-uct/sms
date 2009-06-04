@@ -19,7 +19,6 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -140,8 +139,6 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
 				.createAlias("smsAccount", "smsAccount");
 
-		List<SmsTransaction> transactions = new ArrayList<SmsTransaction>();
-
 		try {
 			// Transaction type
 			if (searchBean.getTransactionType() != null
@@ -195,8 +192,8 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		} catch (Exception e) {
 			throw new SmsSearchException(e);
 		}
-		transactions = crit.list();
-		return transactions;
+
+		return crit.list();
 	}
 
 	private int getPageSize() {

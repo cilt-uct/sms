@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 public class UserStubb implements UserEdit {
 
 	private String id;
-	
+
 	public void restrictEditEmail() {
 		// TODO Auto-generated method stub
 
@@ -180,7 +180,6 @@ public class UserStubb implements UserEdit {
 	}
 
 	public ResourcePropertiesEdit getPropertiesEdit() {
-		ResourceProperties rp = new ResourcePropertiesStub();
 		return null;
 	}
 

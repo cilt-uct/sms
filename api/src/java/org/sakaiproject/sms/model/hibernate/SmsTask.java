@@ -150,7 +150,6 @@ public class SmsTask extends BaseModel {
 			sakaiUserIdsList.clear();
 			return sakaiUserIdsList;
 		}
-		final List<String> deliveryEntityList = new ArrayList<String>();
 		final StringTokenizer stringTokenizer = new StringTokenizer(
 				sakaiUserIds, ",");
 

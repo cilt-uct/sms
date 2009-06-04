@@ -70,7 +70,6 @@ public class SmsCustomNumberEditor extends CustomNumberEditor {
 					// Default to Float
 					value = Float.valueOf(text);
 				}
-
 				super.setValue(value);
 			} catch (NumberFormatException e) {
 				// Throw specific message

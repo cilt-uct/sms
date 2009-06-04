@@ -10,8 +10,16 @@ public class DeleteSmsCommand implements SmsCommand {
 
 	public String execute(String siteId, String userId, String mobileNr,
 			String... body) {
+		String concatBody = "";
+		for (String arg : body) {
+			if (concatBody.equals("")) {
+				concatBody += arg;
+			} else {
+				concatBody += "," + arg;
+			}
+		}
 		LOG.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + body + ")");
+				+ siteId + ", " + userId + ", " + concatBody + ")");
 		return getCommandKey();
 	}
 

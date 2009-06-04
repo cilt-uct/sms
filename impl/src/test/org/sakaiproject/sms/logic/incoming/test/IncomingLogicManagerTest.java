@@ -249,4 +249,29 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals("HIDDEN", msg.getCommand());
 	}
 
+	/**
+	 * Tests "" incomming commmands
+	 */
+	public void testBlankMessage() throws MoDisabledForSiteException {
+		ParsedMessage msg = manager.process("", TEST_MOBILE);
+		assertEquals(null, msg.getCommand());
+	}
+
+	/**
+	 * Tests null incomming commmands
+	 */
+	public void testNullMessage() throws MoDisabledForSiteException {
+		ParsedMessage msg = manager.process(null, TEST_MOBILE);
+		assertEquals(null, msg.getCommand());
+	}
+
+	/**
+	 * Tests null incomming commmands
+	 */
+	public void testInvalidMessage() throws MoDisabledForSiteException {
+		ParsedMessage msg = manager.process("ssdfsdfsdfsdfsdfsdfsdfSDF",
+				TEST_MOBILE);
+		assertEquals(null, msg.getCommand());
+	}
+
 }

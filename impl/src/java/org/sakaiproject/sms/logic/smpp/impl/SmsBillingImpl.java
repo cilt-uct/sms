@@ -71,11 +71,19 @@ public class SmsBillingImpl implements SmsBilling {
 			final InputStream inputStream = this.getClass()
 					.getResourceAsStream("/transaction_codes.properties");
 			if (inputStream == null) {
-				PROPERTIES.load(new FileInputStream(
-						"transaction_codes.properties"));
+				final FileInputStream fileInputStream = new FileInputStream(
+						"transaction_codes.properties");
+
+				PROPERTIES.load(fileInputStream);
+				if (fileInputStream != null) {
+					fileInputStream.close();
+				}
 
 			} else {
 				PROPERTIES.load(inputStream);
+			}
+			if (inputStream != null) {
+				inputStream.close();
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error(e.getMessage(), e);

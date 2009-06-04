@@ -75,7 +75,7 @@ public class AbortTaskProducer implements ViewComponentProducer,
 					new Object[] { task.getId(), task.getDeliveryGroupName(),
 							task.getMessageBody() });
 
-			UICommand command = UICommand.make(form, "abort-button", UIMessage
+			UICommand.make(form, "abort-button", UIMessage
 					.make("sms.abort-task.abort"),
 					"AbortTaskActionBean.abortTask");
 

@@ -19,7 +19,6 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -182,9 +181,6 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	private List<SmsTask> getSmsTasksForCriteria(SearchFilterBean searchBean)
 			throws SmsSearchException {
 		Criteria crit = smsDao.createCriteria(SmsTask.class);
-
-		List<SmsTask> tasks = new ArrayList<SmsTask>();
-
 		try {
 			// Message status
 			if (searchBean.getStatus() != null
@@ -241,8 +237,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		}
 
 		LOG.debug(crit.toString());
-		tasks = crit.list();
-		return tasks;
+
+		return crit.list();
 	}
 
 	private int getPageSize() {

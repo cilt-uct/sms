@@ -51,8 +51,7 @@ public class SmsTaskLocatorTest extends TestCase {
 	 * Test clearing of beans
 	 */
 	public void testClearBeans() {
-		SmsTask smsTask = (SmsTask) smsTaskLocator
-				.locateBean(SmsTaskLocator.NEW_1);
+		smsTaskLocator.locateBean(SmsTaskLocator.NEW_1);
 		assertTrue(smsTaskLocator.containsNew());
 		smsTaskLocator.clearBeans();
 		assertFalse(smsTaskLocator.containsNew());
@@ -63,8 +62,7 @@ public class SmsTaskLocatorTest extends TestCase {
 	 */
 	public void testContainsNew() {
 		assertFalse(smsTaskLocator.containsNew());
-		SmsTask smsTask = (SmsTask) smsTaskLocator
-				.locateBean(SmsTaskLocator.NEW_1);
+		smsTaskLocator.locateBean(SmsTaskLocator.NEW_1);
 		assertTrue(smsTaskLocator.containsNew());
 	}
 

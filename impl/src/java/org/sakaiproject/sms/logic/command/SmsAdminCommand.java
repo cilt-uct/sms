@@ -36,7 +36,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  */
 public class SmsAdminCommand implements SmsCommand {
 
-	private static Log log = LogFactory.getLog(SmsAdminCommand.class);
+	private static final Log LOG = LogFactory.getLog(SmsAdminCommand.class);
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
@@ -51,8 +51,16 @@ public class SmsAdminCommand implements SmsCommand {
 
 	public String execute(String siteId, String userId, String mobileNr,
 			String... body) {
-		log.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + body + ")");
+		String concatBody = "";
+		for (String arg : body) {
+			if (concatBody.equals("")) {
+				concatBody += arg;
+			} else {
+				concatBody += "," + arg;
+			}
+		}
+		LOG.debug(getCommandKey() + " command called with parameters: ("
+				+ siteId + ", " + userId + ", " + concatBody + ")");
 		if (body[0] == null || "".equals(body[0].trim())) {
 			return SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
 		}

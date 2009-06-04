@@ -30,15 +30,11 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  */
 public class SmsSchedulerTest extends AbstractBaseTestCase {
 
-	private static SmsCoreImpl smsCoreImpl = null;
-	private static SmsBillingImpl smsBilling = null;
-	private static SmsSchedulerImpl smsSchedulerImpl = null;
-	private static SmsSmppImpl smsSmppImpl = null;
-	private static SmsConfigLogicImpl smsConfigLogic = null;
-	private final static ExternalLogic EXTERNAL_LOGIC = new ExternalLogicStub();
-
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
+
+	private SmsSchedulerImpl smsSchedulerImpl = new SmsSchedulerImpl();
+	private SmsCoreImpl smsCoreImpl = new SmsCoreImpl();
 
 	/**
 	 * This tests will insert 3 tasks to to processed.The test succeeds if no
@@ -48,22 +44,22 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 		}
-
-		smsConfigLogic = new SmsConfigLogicImpl();
-		smsBilling = new SmsBillingImpl();
+		ExternalLogic EXTERNAL_LOGIC = new ExternalLogicStub();
+		SmsConfigLogicImpl smsConfigLogic = new SmsConfigLogicImpl();
+		SmsBillingImpl smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);
 
 		smsConfigLogic.setSmsDao(smsDao);
-		smsSchedulerImpl = new SmsSchedulerImpl();
+
 		smsSchedulerImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsCoreImpl = new SmsCoreImpl();
+
 		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		SmsTaskValidatorImpl smsTaskValidatorImpl = new SmsTaskValidatorImpl();
 		smsTaskValidatorImpl.setSmsBilling(smsBilling);
 
 		smsCoreImpl.setSmsTaskValidator(smsTaskValidatorImpl);
 		smsCoreImpl.setSmsBilling(smsBilling);
-		smsSmppImpl = new SmsSmppImpl();
+		SmsSmppImpl smsSmppImpl = new SmsSmppImpl();
 
 		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
 

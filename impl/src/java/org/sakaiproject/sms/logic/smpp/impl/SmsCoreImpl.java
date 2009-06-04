@@ -174,33 +174,6 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	/**
-	 * Thread to handle all processing of tasks.Not yet implemented
-	 * 
-	 * @author etienne@psybergate.co.za
-	 * 
-	 */
-	private class CheckAndSetTaskThread implements Runnable {
-
-		private SmsTask smsTask;
-
-		CheckAndSetTaskThread(SmsTask smsTask, ThreadGroup threadGroup) {
-			this.smsTask = smsTask;
-			final Thread thread = new Thread(threadGroup, this);
-			thread.setDaemon(true);
-			thread.start();
-
-		}
-
-		public void run() {
-			work();
-		}
-
-		public void work() {
-
-		}
-	}
-
-	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
 	 * 
@@ -503,6 +476,8 @@ public class SmsCoreImpl implements SmsCore {
 			} else {
 				smsMessageReplyBody = "No tool found.";
 			}
+		} else {
+			return;
 		}
 
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);

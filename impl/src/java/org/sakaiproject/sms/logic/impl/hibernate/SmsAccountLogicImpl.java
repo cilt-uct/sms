@@ -196,7 +196,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			String SakaiUserId) {
 		final SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		boolean useSiteAccount = config.getUseSiteAcc().booleanValue();
+		boolean useSiteAccount = config.getUseSiteAcc();
 		SmsAccount account = null;
 		if (SmsConstants.SMS_DEV_MODE) {
 			if (useSiteAccount) {

@@ -194,7 +194,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 * Test convert credits to amount.
 	 */
 	public void testConvertCreditsToAmount() {
-		Long credits = smsBillingImpl.convertAmountToCredits(testAmount);
+		smsBillingImpl.convertAmountToCredits(testAmount);
+
 		// Not sure how to test this properly.
 	}
 
@@ -237,15 +238,14 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	public void testReserveCredits() {
 
 		int creditEstimate = 50;
-		float origionalAccBalance = 100;
+		long origionalAccBalance = 100;
 
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("2");
 		smsAccount.setSakaiSiteId("2");
 		smsAccount.setMessageTypeCode("2");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl
-				.convertAmountToCredits(origionalAccBalance));
+		smsAccount.setCredits(origionalAccBalance);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()
@@ -286,15 +286,14 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	public void testSettleCreditDifference() {
 		int creditEstimate = 50;
-		float origionalAccBalance = 150;
+		Long origionalAccBalance = 150l;
 
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("3");
 		smsAccount.setSakaiSiteId("3");
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(smsBillingImpl
-				.convertAmountToCredits(origionalAccBalance));
+		smsAccount.setCredits(origionalAccBalance);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()
@@ -328,8 +327,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		assertNotNull(smsAccount);
 
 		// Account was credited
-		assertTrue(smsBillingImpl.convertCreditsToAmount(smsAccount
-				.getCredits()) < origionalAccBalance);
+		assertTrue(smsAccount.getCredits() < origionalAccBalance);
 
 		smsBillingImpl.settleCreditDifference(smsTask);
 
@@ -338,8 +336,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		// Account balance was returnd to origional state since the actual
 		// groups size on the task was zero
-		assertTrue(smsBillingImpl.convertCreditsToAmount(
-				smsAccount.getCredits()).equals(origionalAccBalance));
+		assertTrue(smsAccount.getCredits().equals(origionalAccBalance));
 
 	}
 
