@@ -479,7 +479,14 @@ public class SmsCoreImpl implements SmsCore {
 		} else {
 			return;
 		}
-
+		final SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSmsConfigBySakaiSiteId(parsedMessage.getSite());
+		if (!configSite.isReceiveIncomingEnabled()) {
+			LOG
+					.info("Receiving of Mobile Originating messages is disabled for site:"
+							+ configSite.getSakaiSiteId());
+			return;
+		}
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
