@@ -628,8 +628,11 @@
         //Events for the Numbers textarea
 
         $('#checkNumbers').bind('click', function() {
-            var that = $('#peopleListNumbersBox');
-            var that2 = $('#peopleListNumbersBox2');
+            var that = $('#peopleListNumbersBox'),
+            that2 = $('#peopleListNumbersBox2'),
+            strippedNumbers = [];
+            //hide duplicate notice
+            $("#peopleListNumbersDuplicates").fadeOut("fast");
             $.fn.SMS.get.selectionsHaveChanged = true;
             if (that.val()) {
                 var numbers = that.val().split("\n");
@@ -638,7 +641,22 @@
                 $.each(numbers, function(i, item) {
                     var num = item.split(' ').join('');
                     if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
-                        selectedRecipientsList.numbers.push(item);
+                        //verify the unformattd version of the number is not a duplicate
+                        var found = false,
+                        strippedItem = item.replace(/[+]/g, "").replace(/[-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
+                        for (var x = 0; x < strippedNumbers.length; x++){
+                           if ( strippedItem === strippedNumbers[x] ){
+                               found = true;
+                           }
+                        }
+                        if (! found){
+                            strippedNumbers.push(strippedItem); // add to simple format numbers list
+                            selectedRecipientsList.numbers.push(item); //add to real numbers list
+                        }else{
+                            //number is a duplicate  - tell the user
+                            $("#peopleListNumbersDuplicates").fadeIn("fast");
+                            //log("User entered this duplicate number: " + item);
+                        }
                     } else {
                         nums_invalid.push(item);
                     }
@@ -698,10 +716,14 @@
                     });
                 } else {
                     $("#numbersInvalid .msg").fadeIn('fast');
+                    //hide duplicate notice
+                    $("#peopleListNumbersDuplicates").fadeOut("fast");
                     that.focus();
                 }
             } else {
                 $("#numbersInvalid .msg").fadeOut('fast');
+                //hide duplicate notice
+                $("#peopleListNumbersDuplicates").fadeOut("fast");
                 that.focus();
             }
             //log(selectedRecipientsList.numbers.toString());
@@ -722,6 +744,8 @@
                 $("#numbersValid").fadeOut();
                 $("#numbersInvalid .msg").fadeOut();
                 $("#peopleListNumbersLog").fadeOut();
+                //hide duplicate notice
+                $("#peopleListNumbersDuplicates").fadeOut("fast");
             }
         }
     }
@@ -860,7 +884,11 @@
             o:for(var i = 0, n = a.length; i < n; i++) {
                 for(var x = i + 1 ; x < n; x++)
                 {
-                    if(a[x]==a[i]) continue o;
+                    if(a[x]===a[i]){
+                        //Duplicate found
+                        $("#peopleListNumbersDuplicates").fadeIn("fast");
+                        continue o;
+                    }
                 }
                 r[r.length] = a[i];
             }
