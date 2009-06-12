@@ -145,6 +145,11 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 			errors
 					.add(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID);
 		}
+		
+		// Check that date to send comes after expiry date
+		if ( smsTask.getDateToSend().before(smsTask.getDateToExpire()) ){
+			errors.add(ValidationConstants.TASK_DATE_TO_SEND_AFTER_THAN_EXPIRY);
+		}
 
 		return errors;
 	}
