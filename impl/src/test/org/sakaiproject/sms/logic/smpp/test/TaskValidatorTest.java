@@ -24,26 +24,31 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
 public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	/** The sms task. */
-	private static SmsTask smsTask;
+	private SmsTask smsTask;
 
-	private static SmsTaskValidatorImpl smsTaskValidator = null;
+	private SmsTaskValidatorImpl smsTaskValidator = null;
 
 	/** The msg. */
-	private static SmsMessage msg;
+	private SmsMessage msg;
 
 	/** The VALI d_ ms g_ body. */
-	private static String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+	private String VALID_MSG_BODY = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 	/** The account. */
-	private static SmsAccount account;
+	private SmsAccount account;
 
-	List<String> errors = new ArrayList<String>();
+	List<String> errors = null;
+
 	static {
-
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
 		}
+	}
+
+	@Override
+	protected void setUp() throws Exception {
+		errors = new ArrayList<String>();
 		account = new SmsAccount();
 		account.setSakaiSiteId("TaskValidatorTest"
 				+ SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
@@ -60,7 +65,6 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		smsBillingImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsCoreImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsCoreImpl.setSmsBilling(smsBillingImpl);
-
 		msg = new SmsMessage();
 		// smsTask = new SmsTask();
 		smsTask = smsCoreImpl.getPreliminaryTestTask(account.getSakaiSiteId(),
@@ -79,6 +83,12 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		smsTask.setCreditEstimate(5);
 		smsTask.setDeliveryGroupId("delGrpId");
 		msg.setSmsTask(smsTask);
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(account);
+
 	}
 
 	/**
