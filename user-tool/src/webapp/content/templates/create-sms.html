@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
         <link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
         <script type="text/javascript" src="../js/jquery-1.2.6.min.js">
+            
         </script>
         <script type="text/javascript" src="../js/jquery-ui-1.6.custom.min.js">
         </script>
@@ -26,12 +27,14 @@
         </script>
         <script type='text/javascript' src='../js/jquery.form.js'>
         </script>
+            <script type='text/javascript' src='../js/jquery.livequery.js'>
+        </script>
         <link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
         <script type="text/javascript" language="JavaScript"
                 src="../js/sms.task.js"></script>
         <script type="text/javascript" language="JavaScript"
-                src="../js/sms.send.js"></script>
-        <title rsf:id="page-title">Sms Items</title>
+                        src="../js/sms.send.js"></script>
+                <title rsf:id="page-title">Sms Items</title>
     </head>
     <body>
         <div class="portletBody">
@@ -158,6 +161,14 @@
                         Alert:
                     </div>
                     <span rsf:id="msg=ui.console.alert.general">
+                        100
+                    </span>
+          </div>
+                <div id="errorDateValidation" style="display:none;" class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.error.date.invalid">
                         100
                     </span>
           </div>

@@ -145,6 +145,9 @@
 
         },
         processSubmitTask: function(domElements, _this) {
+            if ( validateDates() ){
+            $("#errorDateValidation").fadeOut("fast");
+            $("h4.expiry").removeClass("smsAlert");
             _this.disabled = true;
             var _url = "";
             if ($("#statusType").val() !== null && $("#statusType").val() === "EDIT") {
@@ -204,6 +207,14 @@
                     return true;
                 }
             });
+            }else{
+                //warn the user and reset the expiry date
+                $("#errorDateValidation").fadeIn("fast");
+                $("h4.exipry").addClass("smsAlert");
+                $("[id=smsDatesExpiryDate:1:date-field]").focus();
+                $(".loadingImage").hide();
+                return false;
+            }
         }   ,
         setSubmitTaskButton: function() {
             //log($("#messageBody").val().length);
@@ -846,11 +857,11 @@
     }
 
     /**
-     * To parse date object into a timestamp. NB:This is not yet being used due to tests on the EP SimpleDateFormat converter code.
+     * To parse date object into a timestamp.
      * @param _date  ISO8601 format date
      */
     function parseIsoToTimestamp(_date) {
-        if (isNaN(_date)) {
+        if ( _date !== null ) {
             var s = $.trim(_date);
             s = s.replace(/-/, "/").replace(/-/, "/");
             s = s.replace(/-/, "/").replace(/-/, "/");
@@ -894,5 +905,9 @@
             }
            return r;
         }
+
+    function validateDates(){
+        return parseIsoToTimestamp($("[id=smsDatesScheduleDate:1:true-date]").val()) <= parseIsoToTimestamp($("[id=smsDatesExpiryDate:1:true-date]").val());
+    }
 
 })(jQuery);
