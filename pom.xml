@@ -154,5 +154,21 @@
     <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</developerConnection>
     <url>https://source.sakaiproject.org/contrib/sms/trunk/sms</url>
   </scm>	
-	
+
+    <ciManagement>
+        <system>Continuum</system>
+        <url>http://arabica.cet.uct.ac.za:8080/continuum</url>
+        <notifiers>
+            <notifier>
+                <type>mail</type>
+                <sendOnError>true</sendOnError>
+                <sendOnFailure>true</sendOnFailure>
+                <sendOnSuccess>false</sendOnSuccess>
+                <sendOnWarning>false</sendOnWarning>
+                <configuration>
+                    <address>david.horwitz@uct.ac.za</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>	
 </project>
