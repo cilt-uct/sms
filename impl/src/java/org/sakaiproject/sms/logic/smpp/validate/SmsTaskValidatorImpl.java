@@ -147,7 +147,7 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 		}
 		
 		// Check that date to send comes after expiry date
-		if ( smsTask.getDateToSend().before(smsTask.getDateToExpire()) ){
+		if ( smsTask.getDateToSend() != null && smsTask.getDateToExpire() != null && smsTask.getDateToExpire().before(smsTask.getDateToSend()) ){
 			errors.add(ValidationConstants.TASK_DATE_TO_SEND_AFTER_THAN_EXPIRY);
 		}
 
