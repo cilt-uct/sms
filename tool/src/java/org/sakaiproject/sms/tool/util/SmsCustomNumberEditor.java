@@ -54,7 +54,7 @@ public class SmsCustomNumberEditor extends CustomNumberEditor {
 	@Override
 	public void setAsText(String text) {
 		if (text == null) {
-			super.setAsText(text);
+			super.setAsText(null);
 		} else if ("".equals(text.trim())) {
 			super.setAsText(null);
 		} else {
