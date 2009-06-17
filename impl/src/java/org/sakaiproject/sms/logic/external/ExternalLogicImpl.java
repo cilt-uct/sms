@@ -19,7 +19,6 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -296,7 +295,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		setupSession(smsTask.getSenderUserId());
 		Set members = getMembersForEntityRef(entityReference);
 
-		LOG.info("Getting group members for : " + entityReference + " (size = "
+		LOG.debug("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
 			addMemberToDelList = true;
@@ -620,6 +619,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public String[] getAllAliasesAsArray() {
 		List<Alias> aliases = aliasService.getAliases(1, aliasService
 				.countAliases());

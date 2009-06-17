@@ -166,7 +166,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		} catch (UserNotDefinedException e) {
 			LOG.info("user: " + userId + " does not exist");
 		} catch (EntityPropertyNotDefinedException e) {
-			LOG.info("user: " + userId + " has no defined sms preference");
+			LOG.debug("user: " + userId + " has no defined sms preference");
 		} catch (EntityPropertyTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -175,7 +175,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		return true;
 	}
 	
-
+	@SuppressWarnings("unchecked")
 	private List<String> filterUserListForPreference(List<String> userids) {
 		List<User> users = userDirectoryService.getUsers(userids);
 		List<String> ret = new ArrayList<String>();
