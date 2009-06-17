@@ -66,11 +66,11 @@
 		<property name="delReportTimeoutDuration" type="integer"
 			column="DEL_REPORT_TIMEOUT_DURATION" not-null="true" />
 		<property name="deliveryMobileNumbers" type="string"
-			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="1024" />
+			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="10000" />
 		<property name="deliveryEntities" type="string" column="DELIVERY_ENTITY_LIST"
-			not-null="false" length="1024" />
+			not-null="false" length="10000" />
 		<property name="sakaiUserIds" type="string" column="SAKAI_USER_IDS"
-			not-null="false" length="1024" />
+			not-null="false" length="10000" />
 		<property name="failReason" type="string" column="FAIL_REASON"
 			not-null="false" length="200" />
 		
