@@ -1,62 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <name>Sakai Sms</name>
-    <groupId>org.sakaiproject.sms</groupId>
-    <artifactId>sms</artifactId>
-    <organization>
-        <name>Sakai Project</name>
-        <url>http://sakaiproject.org/</url>
-    </organization>
-    <inceptionYear>2008</inceptionYear>
-    <packaging>pom</packaging>
-    <version>0.8-SNAPSHOT</version><!--Sms.version-->
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>Sakai Sms</name>
+	<groupId>org.sakaiproject.sms</groupId>
+	<artifactId>sms</artifactId>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2008</inceptionYear>
+	<packaging>pom</packaging>
+	<version>0.8-SNAPSHOT</version><!--Sms.version-->
+	<description>The SMS service provides SMS (short message service or
+		texting) capablities to Sakai.The module consists of 1) A SMPP service
+		to forward messages to an SMPP complient gateway. 2) An admin tool to
+		administer accounts 3) A user tool to send messages to users</description>
 
 
 
     <!-- Sakai master pom is the parent -->
-    <parent>
-        <artifactId>master</artifactId>
-        <groupId>org.sakaiproject</groupId>
+	<parent>
+		<artifactId>master</artifactId>
+		<groupId>org.sakaiproject</groupId>
 	<!--<version>2.7.0-SNAPSHOT</version>-->
-         <version>2.6.0RC1-SNAPSHOT</version>
-        <relativePath>../master/pom.xml</relativePath>
-    </parent>
-    <profiles>
-        <profile>
-            <id>full</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>api</module>
-                <module>stubs</module>
-                <module>impl</module>
-                <module>pack</module>
-                <module>tool</module>
+		<version>2.6.0RC1-SNAPSHOT</version>
+		<relativePath>../master/pom.xml</relativePath>
+	</parent>
+	<profiles>
+		<profile>
+			<id>full</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>api</module>
+				<module>stubs</module>
+				<module>impl</module>
+				<module>pack</module>
+				<module>tool</module>
 				<module>user-tool</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>tool</id>
-            <modules>
-                <module>tool</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>user-tool</id>
-            <modules>
-                <module>user-tool</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>api</id>
-            <modules>
-                <module>api</module>
-            </modules>
-        </profile>
-    </profiles>
+			</modules>
+		</profile>
+		<profile>
+			<id>tool</id>
+			<modules>
+				<module>tool</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>user-tool</id>
+			<modules>
+				<module>user-tool</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>api</id>
+			<modules>
+				<module>api</module>
+			</modules>
+		</profile>
+	</profiles>
 
     <!-- handles the management of all related dependencies -->
 	<dependencyManagement>
@@ -79,7 +83,7 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>net.sourceforge.groboutils
+				<groupId>net.sourceforge.groboutils 
 				</groupId>
 				<artifactId>groboutils-core</artifactId>
 				<version>5</version>
@@ -95,31 +99,29 @@
 				<version>0.9.11</version>
 			</dependency>
 			<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.4.3</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.4.3</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
-
 		<repository>
 			<id>Sakai</id>
 			<name>Sakai Maven Repo</name>
 			<url>http://source.sakaiproject.org/maven2</url>
 		</repository>
-
 		<repository>
 			<id>opensymphony</id>
 			<url>http://maven2.opensymphony.com</url>
@@ -136,39 +138,85 @@
 			<url>http://my.honestyworks.jp/maven2/</url>
 		</repository>
 	</repositories>
-	
 	<issueManagement>
-        <system>JIRA</system>
-        <url>http://jira.sakaiproject.org/jira/browse/SMS</url>
-    </issueManagement>
+		<system>JIRA</system>
+		<url>http://jira.sakaiproject.org/jira/browse/SMS</url>
+	</issueManagement>
 	<!-- define the license -->
-    <licenses>
-        <license>
-            <name>Educational Community License, Version 2.0</name>
-            <url>http://www.osedu.org/licenses/ECL-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-  <scm>
-    <connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</connection>
-    <developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</developerConnection>
-    <url>https://source.sakaiproject.org/contrib/sms/trunk/sms</url>
-  </scm>	
-
-    <ciManagement>
-        <system>Continuum</system>
-        <url>http://arabica.cet.uct.ac.za:8080/continuum</url>
-        <notifiers>
-            <notifier>
-                <type>mail</type>
-                <sendOnError>true</sendOnError>
-                <sendOnFailure>true</sendOnFailure>
-                <sendOnSuccess>false</sendOnSuccess>
-                <sendOnWarning>false</sendOnWarning>
-                <configuration>
-                    <address>david.horwitz@uct.ac.za</address>
-                </configuration>
-            </notifier>
-        </notifiers>
-    </ciManagement>	
+	<licenses>
+		<license>
+			<name>Educational Community License, Version 2.0</name>
+			<url>http://www.osedu.org/licenses/ECL-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</connection>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</developerConnection>
+		<url>https://source.sakaiproject.org/contrib/sms/trunk/sms</url>
+	</scm>
+	<ciManagement>
+		<system>Continuum</system>
+		<url>http://arabica.cet.uct.ac.za:8080/continuum</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>david.horwitz@uct.ac.za</address>
+				</configuration>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+	<developers>
+		<developer>
+			<id>etienne</id>
+			<name>Ettiene Swanepoel</name>
+			<email>Etienne@psybergate.co.za</email>
+			<organization>Psybergate</organization>
+			<organizationUrl>http://www.psybergate.co.za</organizationUrl>
+			<timezone>+2</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>lbotha</id>
+			<name>Louis Botha</name>
+			<email>louis@psybergate.co.za></email>
+			<organization>Psybergate</organization>
+			<organizationUrl>http://www.psybergate.co.za</organizationUrl>
+			<timezone>+2</timezone>
+			<roles>
+				<role>lead developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>dhorwitz</id>
+			<name>David Horwitz</name>
+			<email>david.horwitz@uct.ac.za</email>
+			<organization>Centre for Educational Technology, University of
+				Cape Town</organization>
+			<organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
+			<timezone>+2</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>lnalube</id>
+			<name>Lovemore Nalube</name>
+			<email>lovermore.nalube@uct.ac.za</email>
+			<organization>Centre for Educational Technology, University of
+				Cape Town</organization>
+			<organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
+			<timezone>+2</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
 </project>
