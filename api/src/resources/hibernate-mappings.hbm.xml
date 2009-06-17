@@ -94,7 +94,7 @@
 		<property name="mobileNumber" type="string" column="MOBILE_NUMBER"
 			not-null="true" length="50" />
 		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"
-			not-null="true" length="99" />
+			not-null="false" length="99" />
 		<property name="statusCode" type="string" column="STATUS_CODE"
 			not-null="true" length="2" />
 		<property name="smscDeliveryStatusCode" type="integer"
