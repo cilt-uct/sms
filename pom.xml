@@ -135,6 +135,27 @@
 			<url>http://my.honestyworks.jp/maven2/</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+	  <pluginRepository>
+	    <id>codehaus snapshot repository</id>
+	    <url>http://snapshots.repository.codehaus.org/</url>
+	    <releases>
+	      <enabled>true</enabled>
+	      </releases>
+	    </pluginRepository>
+	  <pluginRepository>
+	    <id>Sakai Plugin Repo</id>
+	    <url>http://source.sakaiproject.org/maven2</url>
+	    <releases>
+	      <enabled>true</enabled>
+	      </releases>
+	    </pluginRepository>
+	  <pluginRepository>
+	    <id>xebia-maven2</id>
+	    <name>Xebia Maven2 Repository</name>
+	    <url>http://mojo.os.xebia.com/repository</url>
+	    </pluginRepository>
+	  </pluginRepositories>
 	<issueManagement>
 		<system>JIRA</system>
 		<url>http://jira.sakaiproject.org/jira/browse/SMS</url>
@@ -143,7 +164,7 @@
 	<licenses>
 		<license>
 			<name>Educational Community License, Version 2.0</name>
-			<url>http://www.osedu.org/licenses/ECL-2.0</url>
+			<url>http://www.osedu.org/licenses/ECL-2.0/ecl2.txt</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -152,6 +173,13 @@
 		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk/sms</developerConnection>
 		<url>https://source.sakaiproject.org/contrib/sms/trunk/sms</url>
 	</scm>
+        <distributionManagement> 
+	  <site>
+	    <id>cet-site</id>
+	    <name>Sakai release Site</name>
+	    <url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/project/sms/${project.version}</url>
+	    </site>
+	</distributionManagement> 
 	<ciManagement>
 		<system>Continuum</system>
 		<url>http://arabica.cet.uct.ac.za:8080/continuum</url>
@@ -349,4 +377,15 @@
 		</plugin>		
 		</plugins>
 	</reporting>
+<build>
+<pluginManagement>
+<plugins>
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-site-plugin</artifactId>
+    <version>2.0</version>
+    </plugin>
+</plugins>
+</pluginManagement>
+</build>
 </project>
