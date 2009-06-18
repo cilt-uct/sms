@@ -16,10 +16,7 @@
 		texting) capablities to Sakai.The module consists of 1) A SMPP service
 		to forward messages to an SMPP complient gateway. 2) An admin tool to
 		administer accounts 3) A user tool to send messages to users</description>
-
-
-
-    <!-- Sakai master pom is the parent -->
+   <!-- Sakai master pom is the parent -->
 	<parent>
 		<artifactId>master</artifactId>
 		<groupId>org.sakaiproject</groupId>
@@ -173,7 +170,7 @@
 	</ciManagement>
 	<developers>
 		<developer>
-			<id>etienne</id>
+			<id>etienne@psybergate.co.za</id>
 			<name>Ettiene Swanepoel</name>
 			<email>Etienne@psybergate.co.za</email>
 			<organization>Psybergate</organization>
@@ -184,7 +181,7 @@
 			</roles>
 		</developer>
 		<developer>
-			<id>lbotha</id>
+			<id>louis@psybergate.co.za</id>
 			<name>Louis Botha</name>
 			<email>louis@psybergate.co.za</email>
 			<organization>Psybergate</organization>
@@ -195,7 +192,7 @@
 			</roles>
 		</developer>
 		<developer>
-			<id>dhorwitz</id>
+			<id>david.horwitz@uct.ac.za</id>
 			<name>David Horwitz</name>
 			<email>david.horwitz@uct.ac.za</email>
 			<organization>Centre for Educational Technology, University of
@@ -207,7 +204,7 @@
 			</roles>
 		</developer>
 		<developer>
-			<id>lnalube</id>
+			<id>lovemore.nalube@uct.ac.za</id>
 			<name>Lovemore Nalube</name>
 			<email>lovermore.nalube@uct.ac.za</email>
 			<organization>Centre for Educational Technology, University of
