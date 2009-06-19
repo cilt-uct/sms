@@ -444,7 +444,7 @@
                         $.ajax({
                             url: '/direct/sms-task/' + $('input[name=sakaiSiteId]').val() + '/memberships.json',
                             dataType: "json",
-                            cache: true,
+                            cache: false,
                             success: function(data) {
                                 $.each(data["sms-task_collection"], function(i, item) {
                                     query.push([item.sortName, item.id, item.eid]);
