@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
 import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -151,7 +152,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		User user = UserDirectoryService.getCurrentUser();
 		
 		// Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
-		setPropertyFromParams(task, params);
+		setPropertyFromParams(task, params, ref);
 		
          if (!SecurityService.unlock(PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()))) {
         	 throw new SecurityException("User " + user.getEid() + " not allowed to create SMS task in site " + task.getSakaiSiteId());
@@ -200,7 +201,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
         SmsTask task = (SmsTask) entity;
         //Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
-        setPropertyFromParams(task, params);
+        setPropertyFromParams(task, params, ref);
         
         boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
         if (!allowedSend) {
@@ -299,7 +300,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public String calculate(EntityReference ref, Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) getSampleEntity();
 		//Build smsTask object with received parameters
-		setPropertyFromParams(smsTask, params);
+		setPropertyFromParams(smsTask, params, ref);
 		
 		String userReference = developerHelperService.getCurrentUserReference();
 		String senderId = EntityReference.getIdFromRef(userReference);
@@ -362,7 +363,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
     	return usersCloned;
 	}
 	
-	private void setPropertyFromParams(SmsTask task, Map<String, Object> params) {
+	private void setPropertyFromParams(SmsTask task, Map<String, Object> params, EntityReference ref) {
 
 		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
 		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
@@ -395,15 +396,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	    	if( "dateToSend".equals(paramsKey) ){
     			try {
 					task.setDateToSend( formatter.parse(paramsValue) );
+					//Make sure schedule date is not in the past
+					if ( task.getDateCreated().after( task.getDateToSend() )){
+						throw new EntityException("Schedule date cannot be in the past", ref.getReference(), 501); //501 - NOT IMPLEMENTED
+					}
 				} catch (ParseException e) {
-					e.printStackTrace();
+					throw new EntityException("Schedule date validation failed", ref.getReference(), 400); //400 - ERROR
 				}
 	    	}else
 	    	if( "dateToExpire".equals(paramsKey) ){
 				try {
 					task.setDateToExpire( formatter.parse(paramsValue) );
 				} catch (ParseException e) {
-					e.printStackTrace();
+					throw new EntityException("Expiry date validation failed", ref.getReference(), 400); //400 - ERROR
 				}
 	    	}else
 			if( "copyMe".equals(paramsKey) ){
