@@ -63,8 +63,8 @@ public class ValidationConstants {
 	/** Date to send empty. */
 	public final static String TASK_DATE_TO_SEND_EMPTY = "sms.errors.task.dateToSend.empty";
 
-	/** Date to send empty. */
-	public final static String TASK_DATE_TO_SEND_AFTER_THAN_EXPIRY = "sms.errors.task.dateToSend.afterExpiry";
+	/** Date to send after expiry. */
+	public final static String TASK_DATE_TO_SEND_AFTER_EXPIRY = "sms.errors.task.dateToSend.afterExpiry";
 
 	/** Status code empty. */
 	public final static String TASK_STATUS_CODE_EMPTY = "sms.errors.task.statusCode.empty";
@@ -92,5 +92,38 @@ public class ValidationConstants {
 
 	/** Message task id empty. */
 	public final static String MESSAGE_TASK_ID_EMPTY = "sms.errors.message.taskId.empty";
+	
+	/** Date is an incorrect format. */
+	public final static String DATE_FORMAT_INCORRECT = "sms.errors.date.format.incorrect";
+	
+	/** Send date is in the past. */
+	public final static String DATE_SEND_IN_PAST = "sms.errors.date.send.inpast";
+	
+	/** Anonymous user must not view memberships. */
+	public final static String USER_ANONYMOUS_CANNOT_VIEW_MEMBERS = "sms.permission-denied.site.anonymous";
+	
+	/** This user must not view memberships due to permission issues. */
+	public final static String USER_CANNOT_VIEW_MEMBERS = "sms.permission-denied.site";
+	
+	/** This user is not allowed to send an SMS. */
+	public final static String USER_NOTALLOWED_SEND_SMS = "sms.errors.task.permission-denied";
+	
+	/** This user is not allowed to view an SMS. */
+	public final static String USER_NOTALLOWED_ACCESS_SMS = "sms.errors.user.read.denied";
+	
+	/** No recipient is selected. */
+	public final static String TASK_RECIPIENTS_EMPTY = "sms.errors.task.recipients.empty";
+	
+	/** Invalid task specified. */
+	public final static String TASK_INVALID = "sms.abort-task.invalid-task";
+	
+	/** SMS doesn't exist. */
+	public final static String TASK_NOEXIST = "sms.errors.task.noexist";
+	
+	/** SMS sending is disabled for site. */
+	public final static String TASK_SEND_DISABLED = "sms.errors.task.sms-send-disabled";
+	
+	/** SMS receiving is disabled for site. */
+	public final static String TASK_INCOMING_DISABLED = "sms.errors.task.sms-incoming-disabled";
 
 }

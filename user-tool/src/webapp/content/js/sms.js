@@ -101,7 +101,7 @@
 
                         if (cTotal < cCredits) {
                             _this.disabled = false;
-                            $("#errorStatus406").slideDown('fast', function() {
+                            $("#errorFacebox").slideDown('fast', function() {
                                 $(this).effect('highlight', 'slow');
                             });
                             $("#recipientsCmd").attr("disabled", "disabled");
@@ -117,36 +117,20 @@
                         $(".loadingImage").hide();
                         return false;
                     },
-                    error: function(xhr) {
-                        if (xhr.status === 403) {
-                            //status is 403 - FORBIDDEN
-                            _this.disabled = false;
-                            $("#errorStatus403").slideDown('fast', function() {
-                                $(this).effect('highlight', 'slow');
-                            });
-                            $("#recipientsCmd").attr("disabled", "disabled");
-                        } else {
-                            $("#errorStatusOther").slideDown('fast', function() {
-                                $(this).effect('highlight', 'slow');
-                            });
-                            $("#recipientsCmd").attr("disabled", "disabled");
-                            $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
-                            _this.disabled = false;
-                        }
-                        $(".loadingImage").hide();
-                        return false;
+                    error: function(xhr, status) {
+                        smsUtils.error.server(xhr, status, $("#recipientsCmd"), "errorFacebox");
                     }
                 });
             } else {
                 alert($("#errorNoSelections").text());
-                $("div[id^=errorStatus]").slideUp('fast');
+                $("div[id^=error]").slideUp('fast');
                 $("#cReportConsole").slideUp('fast');
             }
 
         },
         processSubmitTask: function(domElements, _this) {
+            $("div[id^=error]").fadeOut("fast");
             if ( validateDates() ){
-            $("#errorDateValidation").fadeOut("fast");
             $("h4.expiry").removeClass("smsAlert");
             _this.disabled = true;
             var _url = "";
@@ -162,52 +146,18 @@
                 beforeSend: function() {
                     $(".loadingImage").show();
                 },
-                error: function(xhr) {
-                    if (xhr.status === 400) {
-                        //status is 400 - ERROR
-                        _this.disabled = false;
-                        $("#errorSend400").slideDown('fast', function() {
-                            $(this).effect('highlight', 'slow');
-                        });
-                        $.fn.SMS.set.frameGrow(50, 'grow');
-                    }else if (xhr.status === 401) {
-                        //status is 401 - UNAUTHORIZED
-                        _this.disabled = false;
-                        $("#errorSend401").slideDown('fast', function() {
-                            $(this).effect('highlight', 'slow');
-                        });
-                        $.fn.SMS.set.frameGrow(50, 'grow');
-                    }else if (xhr.status === 405) {
-                        //status is 405 - METHOD NOT ALLOWED
-                        _this.disabled = false;
-                        $("#errorSend405").slideDown('fast', function() {
-                            $(this).effect('highlight', 'slow');
-                        });
-                        $.fn.SMS.set.frameGrow(50, 'grow');
-                    }else if (xhr.status === 406) {
-                        //status is 406 - NOT ACCEPTABLE
-                        _this.disabled = false;
-                        $("#errorSend406").slideDown('fast', function() {
-                            $(this).effect('highlight', 'slow');
-                        });
-                        $.fn.SMS.set.frameGrow(50, 'grow');
-                    } else {
-                        $("#errorSendOther").slideDown('fast', function() {
-                            $(this).effect('highlight', 'slow');
-                        });
-                        $.fn.SMS.set.frameGrow(50, 'grow');
-                    }
-                    $(".loadingImage").hide();
-                    return false;
+                error: function(xhr, status) {
+                    smsUtils.error.server(xhr, status, $(_this), "error");
                 },
                 success: function(_id) {
-                    $("div[id^=errorStatus]").slideUp('fast');
+                    $("div[id^=error]").slideUp('fast');
                     window.location.href = $("#goto-home").attr('href') + "?id=" + _id + "&status=" + Number(new Date());
                     $(".loadingImage").hide();
                     return true;
                 }
             });
             }else{
+                _this.disabled = false;
                 //warn the user and reset the expiry date
                 $("#errorDateValidation").fadeIn("fast");
                 $("h4.exipry").addClass("smsAlert");

@@ -31,8 +31,10 @@
         </script>
         <link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
         <script type="text/javascript" language="JavaScript"
-                src="../js/sms.task.js"></script>
+                        src="../js/sms.task.js"></script>
         <script type="text/javascript" language="JavaScript"
+                        src="../js/sms.utils.js"></script>
+         <script type="text/javascript" language="JavaScript"
                         src="../js/sms.send.js"></script>
                 <title rsf:id="page-title">Sms Items</title>
     </head>
@@ -124,7 +126,20 @@
                         </div>
                     </div>
                 </div>
-                <div id="errorSend400" style="display:none;" class="smsAlert">
+
+
+                <div id="error" style="display:none;" class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.invalidparams">
+                        100
+                    </span>
+          </div>
+
+
+
+                 <div id="errorSend400" style="display:none;" class="smsAlert">
                     <div rsf:id="msg=ui.console.alert">
                         Alert:
                     </div>
