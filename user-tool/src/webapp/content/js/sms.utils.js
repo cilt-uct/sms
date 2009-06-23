@@ -6,18 +6,20 @@
 var smsUtils = (function($) {
 
     //Deal with an ajax error
-    var ajaxError = function(XMLHttpRequest, status, _this, element) {
+    var error = function(errorMessage, _this, element) {
         var errorElement = $("#" + element),
-                errorMessage = $(XMLHttpRequest.responseText).find("u").eq(0).text(),
                 marker;
-        //Remove any Server exception messages not meant for the user
-        marker = errorMessage.indexOf(":");
-        errorMessage = errorMessage.slice(marker + 2, errorMessage.length);
-        marker = errorMessage.indexOf(":");
-        errorMessage = errorMessage.slice(marker + 2, errorMessage.length);
-
-        $(_this).removeAttr("disabled");
-        errorElement.find("div").text(status.toUpperCase());
+        //if we are dealing witha server-side request
+        if(_this !== null){
+            //Remove any Server exception messages not meant for the user
+            marker = errorMessage.indexOf(":");
+            errorMessage = errorMessage.slice(marker + 2, errorMessage.length);
+            marker = errorMessage.indexOf(":");
+            errorMessage = errorMessage.slice(marker + 2, errorMessage.length);
+            //remove the (rethrown) string if it exists
+            errorMessage = errorMessage.replace(/\(rethrown\)/g, '');
+            $(_this).removeAttr("disabled");
+        }
         errorElement.find("span").text(errorMessage);
         errorElement.slideDown('fast', function() {
             $(this).effect('highlight', 'slow');
@@ -31,10 +33,11 @@ var smsUtils = (function($) {
     //public methods
     return {
         error: {
-            server: function(XMLHttpRequest, status, _this, element) {
-                ajaxError(XMLHttpRequest, status, _this, element);
+            server: function(XMLHttpRequest, _this, element) {
+                error($(XMLHttpRequest.responseText).find("u").eq(0).text(), _this, element);
             },
-            dom: function() {
+            dom: function(errorText) {
+                 error(errorText, null, "errorFacebox");
             }
         }
     };

@@ -82,32 +82,16 @@
                     dataType: "json",
                     data: smsParams(domElements),
                     beforeSend: function() {
-                        $("div[id^=errorStatus]").slideUp('fast');
+                        $("div[id^=errorFacebox]").slideUp('fast');
                         $("#cReportConsole").slideUp('fast');
                     },
                     success: function(json) {
                         _this.disabled = false;
+                        $("#recipientsCmd").removeAttr("disabled");
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
                             $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
                         });
-                        var cSelected = json.groupSizeEstimate;
-                        var cCredits = json.creditEstimate;
-                        var cCost = roundOffNumber(json.costEstimate, 2);
-                        var cTotal = $("#cReportConsole .console-total").text();
-                        $("#cReportConsole .console-selected").text(cSelected);
-                        $("#cReportConsole .console-credits").text(cCredits);
-                        $("#cReportConsole .console-cost").text($("#currency").val() + cCost);
-
-                        if (cTotal < cCredits) {
-                            _this.disabled = false;
-                            $("#errorFacebox").slideDown('fast', function() {
-                                $(this).effect('highlight', 'slow');
-                            });
-                            $("#recipientsCmd").attr("disabled", "disabled");
-                        } else {
-                            $("#recipientsCmd").removeAttr("disabled");
-                        }
                         if( entityList.length > 0 ){
                             //Show the may change alert message since we have selected at least one group/role
                             $("#cReportConsole .mayChange").show();
@@ -117,21 +101,21 @@
                         $(".loadingImage").hide();
                         return false;
                     },
-                    error: function(xhr, status) {
-                        smsUtils.error.server(xhr, status, $("#recipientsCmd"), "errorFacebox");
+                    error: function(xhr) {
+                        smsUtils.error.server(xhr, $(_this), "errorFacebox");
+                        $("#recipientsCmd").attr("disabled", "disabled");
                     }
                 });
             } else {
-                alert($("#errorNoSelections").text());
-                $("div[id^=error]").slideUp('fast');
+                smsUtils.error.dom($("#errorNoSelections").text());
                 $("#cReportConsole").slideUp('fast');
             }
 
         },
         processSubmitTask: function(domElements, _this) {
             $("div[id^=error]").fadeOut("fast");
-            if ( validateDates() ){
             $("h4.expiry").removeClass("smsAlert");
+            if ( validateDates() ){
             _this.disabled = true;
             var _url = "";
             if ($("#statusType").val() !== null && $("#statusType").val() === "EDIT") {
@@ -146,8 +130,8 @@
                 beforeSend: function() {
                     $(".loadingImage").show();
                 },
-                error: function(xhr, status) {
-                    smsUtils.error.server(xhr, status, $(_this), "error");
+                error: function(xhr) {
+                    smsUtils.error.server(xhr, $(_this), "error");
                 },
                 success: function(_id) {
                     $("div[id^=error]").slideUp('fast');
@@ -823,22 +807,6 @@
         return null;
     }
 
-    /**
-     * Rounding off to any number of decimal places. 
-     * http://www.xfriday.com/support/index.php?_m=knowledgebase&_a=viewarticle&kbarticleid=3
-     * @param myNum    Actual number to be rounded off
-     * @param numOfDec   Number of decimal places
-     */
-    function roundOffNumber(myNum, numOfDec)
-    {
-        var decimal = 1;
-        for (i = 1; i <= numOfDec; i++){
-            decimal = decimal * 10
-        }
-        var myFormattedNum = (Math.round(myNum * decimal) / decimal).toFixed(numOfDec)
-        return(myFormattedNum)
-    }
-
         function unique(a)
         {
             var r = [];
@@ -857,7 +825,10 @@
         }
 
     function validateDates(){
-        return parseIsoToTimestamp($("[id=smsDatesScheduleDate:1:true-date]").val()) <= parseIsoToTimestamp($("[id=smsDatesExpiryDate:1:true-date]").val());
+        if ($("#booleanSchedule:checked").length !== 0 && $("#booleanExpiry:checked").length !== 0 ){
+            return parseIsoToTimestamp($("[id=smsDatesScheduleDate:1:true-date]").val()) <= parseIsoToTimestamp($("[id=smsDatesExpiryDate:1:true-date]").val());
+        }
+        return true;
     }
 
 })(jQuery);

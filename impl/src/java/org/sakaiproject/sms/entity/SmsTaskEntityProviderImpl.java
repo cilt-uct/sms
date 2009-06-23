@@ -146,13 +146,13 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		return task;
 	}
 
-	@SuppressWarnings("deprecation")
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) entity;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
-		cal.add(Calendar.MINUTE, -5);
+		//Give a 15 minute leeway before deeming a task as a past task. Better this be done here than by client JS
+		cal.add(Calendar.MINUTE, -15);
 		Date simpleDate = cal.getTime();
 		if (smsTask.getDateCreated() == null)
 			smsTask.setDateCreated(simpleDate);
@@ -168,11 +168,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		if (smsTask.getSakaiSiteId() == null){
 			throw new IllegalArgumentException( getMessage(ValidationConstants.TASK_SAKAI_SITE_ID_EMPTY) );
 		}
-		if (smsTask.getDeliveryEntityList() == null && smsTask.getSakaiUserIdsList() == null && smsTask.getDeliveryMobileNumbersSet() == null ){
+		if ( (smsTask.getDeliveryEntityList() == null || smsTask.getDeliveryEntityList().size() == 0) 
+				&& (smsTask.getSakaiUserIdsList() == null || smsTask.getSakaiUserIdsList().size() == 0)
+				&& (smsTask.getDeliveryMobileNumbersSet() == null || smsTask.getDeliveryMobileNumbersSet().size() == 0 ) ){
 			throw new IllegalArgumentException( getMessage(ValidationConstants.TASK_RECIPIENTS_EMPTY) );
 		}
-		
-         smsService.calculateEstimatedGroupSize(smsTask);
+		 smsService.calculateEstimatedGroupSize(smsTask);
 		
 		if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
 			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
@@ -181,7 +182,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		try {
 			smsService.insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
-			throw new IllegalArgumentException("SMS failed validation");
+			throw new IllegalArgumentException(e.getErrorMessagesAsBlock());
 		} catch (SmsSendDeniedException e) {
             throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_SEND_SMS ));
 		} catch (SmsSendDisabledException e) {
@@ -339,7 +340,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
          smsService.calculateEstimatedGroupSize(smsTask);
        
-		return JSONTranscoder.makeJSON(smsTask);
+         if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
+ 			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
+ 		}
+         
+		
+        return JSONTranscoder.makeJSON(smsTask);
 	}
 	
 	//Custom action to handle /sms-task/memberships
