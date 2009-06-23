@@ -261,12 +261,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 				&& EntityReference.getIdFromRefByKey(entityReference, "role") != null) {
 
 			String role = EntityReference.getIdFromRefByKey(entityReference,
-					"role");
+			"role");
 			String siteRef = "/"
-					+ EntityReference.getPrefix(entityReference)
-					+ "/"
-					+ EntityReference
-							.getIdFromRefByKey(entityReference, "site");
+				+ EntityReference.getPrefix(entityReference)
+				+ "/"
+				+ EntityReference
+				.getIdFromRefByKey(entityReference, "site");
 
 			// Fetch the site
 			AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
@@ -410,14 +410,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 					// not exits. Get
 					// the username
 					result = userDirectoryService.getUser(userId)
-							.getDisplayId() == null ? userDirectoryService
+					.getDisplayId() == null ? userDirectoryService
 							.getUser(userId).getEid() : userDirectoryService
 							.getUser(userId).getDisplayId();
 				}
 			} catch (UserNotDefinedException e) {
 				LOG
-						.warn("Cannot getSakaiUserDisplayName for user id "
-								+ userId);
+				.warn("Cannot getSakaiUserDisplayName for user id "
+						+ userId);
 			}
 		}
 		return result;
@@ -471,7 +471,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		replyTo[0] = fromAddress;
 		InternetAddress[] toAddresses = listAddresses
-				.toArray(new InternetAddress[listAddresses.size()]);
+		.toArray(new InternetAddress[listAddresses.size()]);
 		setupSession(smsTask.getSenderUserId());
 		emailService.sendMail(fromAddress, toAddresses, subject, message, null,
 				null, null);
@@ -547,56 +547,54 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	public SmsSmppProperties getSmppProperties() {
-		SmsSmppProperties smsSmppProperties = new SmsSmppProperties();
+	public SmsSmppProperties getSmppProperties(SmsSmppProperties smsSmppProperties) {
+
 
 		LOG.debug("Reading properties from ServerConfigurationService");
 
-		try {
-			String smscAddress = serverConfigurationService.getString(
-					"sms.SMSCAddress").trim();
-			if (smscAddress == null || smscAddress.equals("")) {
-				LOG.debug("sms.SMSCAddress not found");
-				return null;
-			} else {
-				smsSmppProperties.setSMSCAddress(smscAddress);
-			}
+		String smscAddress = serverConfigurationService.getString(
+		"sms.SMSCAddress").trim();
+		if (smscAddress == null || smscAddress.equals("")) {
+			LOG.debug("sms.SMSCAddress not found");
+		} else {
+			smsSmppProperties.setSMSCAddress(smscAddress);
+		}
 
-			String smscPort = serverConfigurationService.getString(
-					"sms.SMSCPort").trim();
+		String smscPort = serverConfigurationService.getString(
+		"sms.SMSCPort").trim();
 
-			if (smscPort == null || smscPort.equals("")) {
-				LOG.debug("sms.SMSCPort not found");
-				return null;
-			} else {
+		if (smscPort == null || smscPort.equals("")) {
+			LOG.debug("sms.SMSCPort not found");
+		} else {
+			try {
 				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
 			}
-
-			String smscUserName = serverConfigurationService.getString(
-					"sms.SMSCUserName").trim();
-
-			if (smscUserName == null || smscUserName.equals("")) {
-				LOG.debug("sms.SMSCUserName not found");
-				return null;
-			} else {
-				smsSmppProperties.setSMSCUsername(smscUserName);
+			catch (NumberFormatException nfe) {
+				LOG.error("Value supplied for sms.SMSPort is not a valid Interger: " + smscPort);
 			}
 
-			String smscPassword = serverConfigurationService.getString(
-					"sms.SMSCPassword").trim();
-
-			if (smscPassword == null || smscPassword.equals("")) {
-				LOG.debug("sms.SMSCPassword not found");
-				return null;
-			} else {
-				smsSmppProperties.setSMSCPassword(smscPassword);
-			}
-		} catch (Exception e) {
-			// smpp properties is not set up in sakai.properties, so we are
-			// going to use smpp.properties
-			LOG.warn("Error reading SMPP properties", e);
-			return null;
 		}
+
+		String smscUserName = serverConfigurationService.getString(
+		"sms.SMSCUserName").trim();
+
+		if (smscUserName == null || smscUserName.equals("")) {
+			LOG.debug("sms.SMSCUserName not found");
+		} else {
+			smsSmppProperties.setSMSCUsername(smscUserName);
+		}
+
+		String smscPassword = serverConfigurationService.getString(
+		"sms.SMSCPassword").trim();
+
+		if (smscPassword == null || smscPassword.equals("")) {
+			LOG.debug("sms.SMSCPassword not found");
+		} else {
+			smsSmppProperties.setSMSCPassword(smscPassword);
+		}
+
+		boolean bind = serverConfigurationService.getBoolean("sms.BindThisNode", true);
+		smsSmppProperties.setBindThisNode(bind);
 
 		LOG.debug("Read properties from ServerConfigurationService");
 
@@ -643,7 +641,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (isValidUser(sakaiUserId)) { // user may be null or not a Sakai user
 			try {
 				result = userDirectoryService.getUser(sakaiUserId)
-						.getSortName();
+				.getSortName();
 			} catch (UserNotDefinedException e) {
 				LOG.warn("Cannot getSakaiUserSortName for user id "
 						+ sakaiUserId);
@@ -657,7 +655,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		Map<String, String> groups = new HashMap<String, String>();
 		try {
 			Collection<Group> groupsCollection = siteService.getSite(siteId)
-					.getGroups();
+			.getGroups();
 			for (Group grp : groupsCollection) {
 				groups.put(grp.getReference(), grp.getTitle());
 			}
@@ -674,7 +672,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
 			for (Role r : rolesCollection) {
 				String siteReference = siteService.getSite(siteId)
-						.getReference();
+				.getReference();
 				roles.put(siteReference + "/role/" + r.getId(), r.getId());
 			}
 		} catch (IdUnusedException e) {
@@ -749,15 +747,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
 		List<String> userIds = new ArrayList<String>();
 		List<User> users = new ArrayList<User>();
-		
+
 		try {
 			Site site = siteService.getSite(siteId);
-			
+
 			// Fetch the site
 			LOG.debug( "Fetching members for site:" + siteId );
 			Set<Member> allMembers = site.getMembers();
 			Set<String> activeUserIds = new HashSet<String>();
-	
+
 			// Only record user id if member is flagged as active
 			for (Member member : allMembers) {
 				if ( member.isActive() ) {
@@ -793,5 +791,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return usernames;
 	}
+
+
 
 }
