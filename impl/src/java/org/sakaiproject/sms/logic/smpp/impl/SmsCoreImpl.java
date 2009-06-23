@@ -963,7 +963,7 @@ public class SmsCoreImpl implements SmsCore {
 				+ threadGroup.activeCount());
 		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-		if (threadGroup.activeCount() < maxThreadCount) {
+		if ((threadGroup.activeCount() < maxThreadCount)) {
 			new ProcessThread(smsTask, threadGroup);
 		} else {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);

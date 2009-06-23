@@ -451,6 +451,11 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
 					+ " on port " + smsSmppProperties.getSMSCPort()
 					+ " with Username " + smsSmppProperties.getSMSCUsername());
+			
+			if (!smsSmppProperties.isBindThisNode()) {
+				LOG.info("This node is set not to bind");
+				return false;
+			}
 			try {
 				session = new SMPPSession();
 				session.connectAndBind(smsSmppProperties.getSMSCAddress(),
@@ -577,8 +582,12 @@ public class SmsSmppImpl implements SmsSmpp {
 		LOG.info("init()");
 		loadPropertiesFile();
 		loadSmsSmppProperties();
-		connectToGateway();
-		setupStatusBridge();
+		//if (smsSmppProperties.isBindThisNode()) {
+			connectToGateway();
+			setupStatusBridge();
+		/*} else {
+			LOG.warn("this node won't bind to the gateway");
+		}*/
 		LOG.debug("SmsSmpp implementation is started");
 	}
 
@@ -645,8 +654,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	 */
 	private void loadSmsSmppProperties() {
 
-		smsSmppProperties = hibernateLogicLocator.getExternalLogic()
-				.getSmppProperties();
 		if (smsSmppProperties == null) {
 			smsSmppProperties = new SmsSmppProperties();
 
@@ -816,6 +823,12 @@ public class SmsSmppImpl implements SmsSmpp {
 			smsSmppProperties
 					.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
 		}
+		
+		
+		//get the overides of defaults from Sakai properties
+		smsSmppProperties = hibernateLogicLocator.getExternalLogic()
+		.getSmppProperties(smsSmppProperties);
+		
 
 	}
 
@@ -961,9 +974,15 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		// Not gateway bound
 		if (!gatewayBound) {
-			LOG.error("Sms Gateway is not bound sending failed");
-			message.setFailReason("Sms Gateway is not bound");
-			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			if (smsSmppProperties.isBindThisNode()) {
+				LOG.error("Sms Gateway is not bound sending failed");
+				message.setFailReason("Sms Gateway is not bound");
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			} else {
+				LOG.debug("Sms gateway not bound on this node queueing message");
+				message.setFailReason("Sms gateway not bound on this node");
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+			}
 			return message;
 		}
 		String messageText = message.getSmsTask().getMessageBody();
