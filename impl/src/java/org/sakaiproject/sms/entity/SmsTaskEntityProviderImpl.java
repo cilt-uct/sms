@@ -60,6 +60,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	
 	//Used by the MessageCatalogue class to fetch the messages bundle from the pom.xml defined location
 	private static String MESSAGE_BUNDLE = "messages.";
+	
+	private static String STATUS_SCHEDULED = "scheduled";
 
 	/**
 	 * Inject services
@@ -244,7 +246,16 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), userReference} ));
         }
 
-		smsTaskLogic.deleteSmsTask(task);
+        if ( params.containsValue(STATUS_SCHEDULED)){
+        	try {
+    			log.debug("Starting abort and delete process for task:" + task.getId());
+    			smsService.abortPendingTask(task.getId());
+    		} catch (SmsTaskNotFoundException e) {
+    			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_INVALID, new String[] {ref.getId()} )); 
+    		}
+        }
+        
+        smsTaskLogic.deleteSmsTask(task);
 	}
 
     public String[] getHandledOutputFormats() {
@@ -280,32 +291,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		return null;
 	}
 	
-	//Custom action to handle /sms-task/abort-task
-	@EntityCustomAction(action=CUSTOM_ACTION_ABORT,viewKey=EntityView.VIEW_EDIT)
-	public void abort(EntityReference ref, Map<String, Object> params){
-		String id = ref.getId();
-		if (id == null){
-			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_NOEXIST )); 
-		}
-		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
-		if (task == null) {
-			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_NOEXIST )); 
-        }
-
-		String userReference = developerHelperService.getCurrentUserReference();
-		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
-        if (!allowedSend) {
-            throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_SEND_SMS ));
-        }
-
-		try {
-			log.debug("Starting abort process for task:" + task.getId());
-			smsService.abortPendingTask(task.getId());
-		} catch (SmsTaskNotFoundException e) {
-			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_INVALID, new String[] {ref.getId()} )); 
-		}
-	}
-
 	//Custom action to handle /sms-task/calculate
 	@EntityCustomAction(action=CUSTOM_ACTION_CALCULATE,viewKey=EntityView.VIEW_NEW)
 	public String calculate(EntityReference ref, Map<String, Object> params) {

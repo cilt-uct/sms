@@ -12,8 +12,4 @@ public interface SmsTaskEntityProvider extends EntityProvider {
 	 * Custom action locator for method retrieving a list of site users only with mobile numbers
 	 */
 	public final static String CUSTOM_ACTION_USERS = "memberships";
-	/**
-	 * Custom action locator for method to abort/stop a pending/inprogress task
-	 */
-	public final static String CUSTOM_ACTION_ABORT = "abort-task";
 }

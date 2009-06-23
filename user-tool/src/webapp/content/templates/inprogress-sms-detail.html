@@ -11,6 +11,8 @@
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+    <script type="text/javascript" language="JavaScript"
+                        src="../js/sms.utils.js"></script>
 <script type="text/javascript" language="JavaScript"
                 src="../js/sms.task.js"></script>
 <title rsf:id="page-title">In Progress SMS Detail</title>
@@ -49,6 +51,14 @@
                     </span>
           </div>
   <form rsf:id="form">
+      <div id="error" style="display:none;" class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.invalidparams">
+                        100
+                    </span>
+          </div>
   <div class="act">
   	<span rsf:id="actionDelete" id="" style="display:none;">Are you sure?</span>
   	<span rsf:id="actionAbort" id="" style="display:none;">Are you sure?</span>
@@ -56,7 +66,7 @@
     <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
     <input rsf:id="statusToShow" type="hidden" value="" name="statusToShow"/>
     <input rsf:id="abortMessage" type="hidden" value="" name="abortMessage"/>
-    <input rsf:id="edit" type="submit" value="Edit" class="active"/>
+    <input rsf:id="edit" type="submit" value="Edit" class="active" class="active" />
     <input rsf:id="delete" type="button" value="Delete" rel="task"/>
     <input rsf:id="back" type="button" value="Back" rel="back"/>
   </div>

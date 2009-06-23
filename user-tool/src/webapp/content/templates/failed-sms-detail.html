@@ -11,10 +11,11 @@
           media="all"/>
 <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
 <script type="text/javascript" src="../js/jquery-1.2.6.js"></script>
+        <script type="text/javascript" language="JavaScript"
+                        src="../js/sms.utils.js"></script>
 <script type="text/javascript" language="JavaScript"
                 src="../js/sms.task.js"></script>
-     <script type="text/javascript" src="../js/facebox.js">
-        </script>
+
 
 <title rsf:id="page-title">Failed SMS Detail</title>
 </head>
@@ -33,11 +34,19 @@
     <div rsf:id="reason">Failure reason: blah</div>
     <h4 rsf:id="recipients">Recipients: blah</h4>
       <form rsf:id="editForm">
+          <div id="error" style="display:none;" class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.invalidparams">
+                        100
+                    </span>
+          </div>
   <div class="act">
   	<span rsf:id="actionDelete" id="" style="display:none;">Are you sure?</span>
   	<input rsf:id="smsId" type="hidden" value="" name="smsId"/>
     <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
-    <input rsf:id="edit" type="submit" value="Edit and resend"/>
+    <input rsf:id="edit" type="submit" value="Edit and resend" class="active"/>                      
     <input rsf:id="delete" id="smsDelete" type="button" value="Delete SMS" rel="task"/>
     <input rsf:id="back" type="button" value="Back" rel="back"/>
   </div>

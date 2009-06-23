@@ -43,8 +43,7 @@ $(document).ready(function() {
                 url: $.fn.task.defaults.EB_DELETE_PATH.replace(':ID:', $.fn.task.defaults.getSmsId()) + getTaskParams(),
                 type: "DELETE",
                 error: function(xhr, ajaxOptions, thrownError) {
-                    $.facebox("ERROR: " + xhr.statusCode + ": " + xhr.statusText);
-                    _that.disabled = false;
+                     smsUtils.error.server(xhr, $(_that), "error");
                 },
                 success: function() {
                     window.location.href = $.fn.task.defaults.SUCCESS_PATH();
