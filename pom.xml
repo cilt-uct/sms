@@ -194,6 +194,16 @@
 					<address>david.horwitz@uct.ac.za</address>
 				</configuration>
 			</notifier>
+			<notifier>
+				<type>mail</type>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+				<configuration>
+					<address>lovemore.nalube@uct.ac.za</address>
+				</configuration>
+			</notifier>
 		</notifiers>
 	</ciManagement>
 	<developers>
