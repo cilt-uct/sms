@@ -287,4 +287,9 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public boolean isBindThisNode() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }
