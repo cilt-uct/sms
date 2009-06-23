@@ -18,7 +18,6 @@
 
 package org.sakaiproject.sms.logic.external;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -187,7 +186,7 @@ public interface ExternalLogic {
 	 * @param smsSmppProperties
 	 * @return
 	 */
-	public SmsSmppProperties getSmppProperties();
+	public SmsSmppProperties getSmppProperties(SmsSmppProperties smsSmppProperties);
 
 	/**
 	 * Returns siteId from alias (null if none found)
@@ -260,4 +259,6 @@ public interface ExternalLogic {
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId);
 	
 	public Map<String, String> getSakaiUsernames(Set<String> userIds);
+	
+
 }

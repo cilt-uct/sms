@@ -54,6 +54,15 @@ public class SmsSmppProperties {
 	private int transactionTimer;
 	private int sendingDelay;
 	private int bindThreadTimer;
+	private boolean bindThisNode = false;
+
+	public boolean isBindThisNode() {
+		return bindThisNode;
+	}
+
+	public void setBindThisNode(boolean bindThisNode) {
+		this.bindThisNode = bindThisNode;
+	}
 
 	public byte getDestAddressNPI() {
 		return destAddressNPI;
