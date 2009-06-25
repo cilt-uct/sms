@@ -89,6 +89,7 @@
 			ref="org.sakaiproject.sms.logic.incoming.SmsMessageParser" />
 		<property name="smsIncomingLogicManager"
 			ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 
 	</bean>
 	<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser"
