@@ -792,6 +792,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return usernames;
 	}
 
+	public boolean isNodeBindToGateway() {
+		return serverConfigurationService.getBoolean("sms.BindThisNode", true);
+	}
+
 
 
 }
