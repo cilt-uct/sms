@@ -292,4 +292,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return true;
 	}
 
+	public boolean isNodeBindToGateway() {
+		return true;
+	}
+
 }
