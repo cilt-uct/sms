@@ -260,5 +260,9 @@ public interface ExternalLogic {
 	
 	public Map<String, String> getSakaiUsernames(Set<String> userIds);
 	
-
+	/**
+	 * Is this node set to bind to the gateway
+	 * @return
+	 */
+	public boolean isNodeBindToGateway();
 }
