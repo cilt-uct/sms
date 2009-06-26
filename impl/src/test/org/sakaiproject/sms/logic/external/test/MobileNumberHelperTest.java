@@ -6,8 +6,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+
 import org.sakaiproject.sms.logic.external.MobileNumberHelperImpl;
 import org.sakaiproject.sms.logic.stubs.SakaiPersonManagerStub;
+import org.sakaiproject.sms.logic.stubs.ServerConfigurationServiceStubb;
 import org.sakaiproject.sms.logic.stubs.UserDirectoryServiceStub;
 
 public class MobileNumberHelperTest extends TestCase {
@@ -19,7 +21,7 @@ public class MobileNumberHelperTest extends TestCase {
 		mobileNumberHelper = new MobileNumberHelperImpl();
 		mobileNumberHelper.setSakaiPersonManager(new SakaiPersonManagerStub());
 		mobileNumberHelper.setUserDirectoryService(new UserDirectoryServiceStub());
-
+		mobileNumberHelper.setServerConfigurationService(new ServerConfigurationServiceStubb());
 	}
 
 	public void testGetMobile() {

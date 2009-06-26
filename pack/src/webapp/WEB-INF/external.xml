@@ -29,6 +29,7 @@
 			<bean class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
 				<property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
 				<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
+				<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 			</bean>
 		</property>
 		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>

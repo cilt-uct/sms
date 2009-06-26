@@ -35,9 +35,22 @@ public interface ExternalLogic {
 
 	// Permissions for SMS
 
-	// Allow sending of messages in site.
-	// Implies Create a new Sms task in current site
+	/**
+	 * Allow sending of messages in site.
+	 * Implies Create a new Sms task in current site
+	 * 
+	 */
 	public final static String SMS_SEND = "sms.send";
+	
+	/**
+	 * Preference key for international dialing prefix (default is 27)
+	 */
+	public static final String PREF_INTERNATIONAL_PREFIX = "sms.interNationalPrefix";
+	
+	/**
+	 * The default value for the international dialing prefix
+	 */
+	public static final String PREF_INTERNATIONAL_PREFIX_DEFAULT = "27";
 	
 	/**
 	 * Check if this user has super admin access
@@ -265,4 +278,10 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public boolean isNodeBindToGateway();
+	
+	/**
+	 * The international prefix for the server (eg 27 for south africa)
+	 * @return
+	 */
+	public String getLocalInternationalPrefix();
 }

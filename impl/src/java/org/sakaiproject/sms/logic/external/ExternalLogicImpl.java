@@ -70,6 +70,8 @@ import org.sakaiproject.user.api.UserNotDefinedException;
  */
 public class ExternalLogicImpl implements ExternalLogic {
 
+	
+
 	private static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
@@ -794,6 +796,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public boolean isNodeBindToGateway() {
 		return serverConfigurationService.getBoolean("sms.BindThisNode", true);
+	}
+
+	public String getLocalInternationalPrefix() {
+		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX, PREF_INTERNATIONAL_PREFIX_DEFAULT);
 	}
 
 

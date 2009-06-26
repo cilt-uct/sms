@@ -55,4 +55,11 @@ public interface MobileNumberHelper {
 	 */
 	List<String> getUsersWithMobileNumbers(Set<String> userids);
 
+	/**
+	 * Normalize a number e.g convert numbers startign with 0 to the int format (e.g 072... to 2772)
+	 * @param mobileNumber
+	 * @return
+	 */
+	public String normalizeNumber(String mobileNumber);
+	
 }

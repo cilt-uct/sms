@@ -296,4 +296,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return true;
 	}
 
+	public String getLocalInternationalPrefix() {
+		return "27";
+	}
+
 }

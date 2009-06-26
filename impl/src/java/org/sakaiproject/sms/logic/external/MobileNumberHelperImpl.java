@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -42,7 +43,9 @@ import org.sakaiproject.user.api.UserNotDefinedException;
  * from Profile Tool
  * 
  */
-public class MobileNumberHelperImpl implements MobileNumberHelper {
+public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRoutingHelper {
+
+	
 
 	private static final String PREF_SMS_NOTIFICATIONS = "smsnotifications";
 
@@ -57,6 +60,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	private UserDirectoryService userDirectoryService;	
 	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
 		this.userDirectoryService = userDirectoryService;
+	}
+
+	private ServerConfigurationService serverConfigurationService;
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
 	}
 
 	/**
@@ -77,7 +86,11 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			LOG.debug("Profile not found for userid: " + userid);
 			return null;
 		} else {
-			return sakaiPerson.getMobile();
+			if (isNumberRoutable(sakaiPerson.getMobile())) {
+				return sakaiPerson.getMobile();
+			} else {
+				return null;
+			}
 
 		}
 	}
@@ -101,7 +114,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		while ( selector.hasNext() ) {
 			Entry<String, SakaiPerson> pairs = selector.next();
         	SakaiPerson sp = pairs.getValue();
-        	if (sp != null && sp.getMobile() != null) {
+        	if (sp != null && sp.getMobile() != null && isNumberRoutable(sp.getMobile())) {
         		userMobileMap.put(pairs.getKey(), sp.getMobile());
     		}
 		}
@@ -114,15 +127,13 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
 		
 		List<String> result = new ArrayList<String>();
-		Set<String> usersWantingSms = new HashSet<String>();
-		//first strip the users who don't want sms
-		usersWantingSms = filterUserListForPreference(userIds);
-		Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(usersWantingSms, sakaiPersonManager.getUserMutableType());
+		
+		Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(filterUserListForPreference(userIds), sakaiPersonManager.getUserMutableType());
 		Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
 		while ( selector.hasNext() ) {
         	Entry<String, SakaiPerson> pairs = selector.next();
         	SakaiPerson sp = pairs.getValue();
-        	if (sp != null && sp.getMobile() != null && sp.getMobile() != "") {
+        	if (sp != null && sp.getMobile() != null && sp.getMobile() != "" && isNumberRoutable(sp.getMobile())) {
         		result.add( sp.getUid() );
     		}
 		}
@@ -200,5 +211,36 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		}
 		
 		return ret;
+	}
+
+	private String getInternationalPrefix() {
+		return serverConfigurationService.getString(ExternalLogic.PREF_INTERNATIONAL_PREFIX, ExternalLogic.PREF_INTERNATIONAL_PREFIX_DEFAULT);
+	}
+	
+	public boolean isNumberRoutable(String mobileNumber) {
+		if (mobileNumber == null || "".equals(mobileNumber)) {
+			return false;
+		}
+		
+		//normalize the number first
+		mobileNumber = normalizeNumber(mobileNumber);
+		String regex= "^" + getInternationalPrefix() + "[0-9]+$";
+		if (mobileNumber.matches(regex)) {
+			return true;
+		}
+		System.out.println(" it didn't!");
+		return false;
+	}
+
+	public String normalizeNumber(String mobileNumber) {
+		mobileNumber = mobileNumber.replace("\\s", "");
+		mobileNumber = mobileNumber.replace("+", "");
+		//if it starts with '0' replace with the international prefix
+		if (mobileNumber.startsWith("0")) {
+			String end = mobileNumber.substring(1, mobileNumber.length());
+			mobileNumber = getInternationalPrefix() + end;
+		}
+		
+		return mobileNumber;
 	}
 }
