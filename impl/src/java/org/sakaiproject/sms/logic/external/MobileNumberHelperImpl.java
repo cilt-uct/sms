@@ -233,8 +233,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 	}
 
 	public String normalizeNumber(String mobileNumber) {
-		mobileNumber = mobileNumber.replace("\\s", "");
-		mobileNumber = mobileNumber.replace("+", "");
+		mobileNumber = mobileNumber.replace("+", "").replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
 		//if it starts with '0' replace with the international prefix
 		if (mobileNumber.startsWith("0")) {
 			String end = mobileNumber.substring(1, mobileNumber.length());
