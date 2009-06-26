@@ -276,7 +276,8 @@
             $('#' + tabName + ' a')
                     .css($.fn.SMS.settings.css.tabDisabled)
                     .attr('title', err)
-                    .unbind('click')
+            $('#' + tabName + ' a')
+			 		.unbind('click')
                     .bind('click', function(){
                 return false;
             });
