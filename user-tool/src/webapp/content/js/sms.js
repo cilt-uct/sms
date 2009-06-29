@@ -65,7 +65,7 @@
             $('#checkNumbers').click(); // Fire numbers check function
             if ($.fn.SMS.get.isSelectionMade()) {
                 _this.disabled = true;
-                $(".loadingImage").show();
+                $("#facebox .loadingImage").show();
                 $("#sakaiUserIds").val($.fn.SMS.get.getSelectedRecipientsListIDs("names").toString());
                 var entityList = [];
                 if ($.fn.SMS.get.getSelectedRecipientsListIDs("groups").length > 0) {
@@ -91,8 +91,7 @@
 	                    var cSelected = json.groupSizeEstimate; 	 
 	                    var cCredits = json.creditEstimate; 	 
 	                    var cCost = json.costEstimate; 	 
-	                    var cTotal = $("#cReportConsole .console-total").text(); 	 
-	                    $("#cReportConsole .console-selected").text(cSelected); 	 
+	                    $("#cReportConsole .console-selected").text(cSelected);
 	                    $("#cReportConsole .console-credits").text(cCredits); 	 
 	                    $("#cReportConsole .console-cost").text($("#currency").val() + cCost);
                         $("#cReportConsole").slideDown('fast', function() {
@@ -105,7 +104,7 @@
                         }else{
                             $("#cReportConsole .mayChange").hide();
                         }
-                        $(".loadingImage").hide();
+                        $("#facebox .loadingImage").hide();
                         return false;
                     },
                     error: function(xhr) {
