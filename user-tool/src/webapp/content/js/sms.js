@@ -88,6 +88,13 @@
                     success: function(json) {
                         _this.disabled = false;
                         $("#recipientsCmd").removeAttr("disabled");
+	                    var cSelected = json.groupSizeEstimate; 	 
+	                    var cCredits = json.creditEstimate; 	 
+	                    var cCost = json.costEstimate; 	 
+	                    var cTotal = $("#cReportConsole .console-total").text(); 	 
+	                    $("#cReportConsole .console-selected").text(cSelected); 	 
+	                    $("#cReportConsole .console-credits").text(cCredits); 	 
+	                    $("#cReportConsole .console-cost").text($("#currency").val() + cCost);
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
                             $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
