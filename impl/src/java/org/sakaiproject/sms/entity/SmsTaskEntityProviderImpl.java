@@ -126,6 +126,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	            }
 		 }
 		 task = anonymiseTask(task);
+		//round off cost properties to 2 decimal places
+         roundOffTaskCosts(task);
 		return task;
 	}
 
