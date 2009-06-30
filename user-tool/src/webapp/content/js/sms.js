@@ -92,8 +92,13 @@
 	                    var cCredits = json.creditEstimate; 	 
 	                    var cCost = json.costEstimate; 	 
 	                    $("#cReportConsole .console-selected").text(cSelected);
-	                    $("#cReportConsole .console-credits").text(cCredits); 	 
-	                    $("#cReportConsole .console-cost").text($("#currency").val() + cCost);
+	                    $("#cReportConsole .console-credits").text(cCredits);
+                        //make sure there are 2 decimal points in the cost
+                        var cost = String(cCost);
+                        if ( cost.length - ( cost.indexOf(".") + 1) === 1){
+                            cost = ( cost + 0 );
+                        };
+	                    $("#cReportConsole .console-cost").text($("#currency").val() + cost);
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
                             $.fn.SMS.set.frameGrow($("#cReportConsole").height(), "grow");
