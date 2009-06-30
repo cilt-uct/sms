@@ -53,7 +53,9 @@ $(document).ready(function() {
                 $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
                 $.fn.SMS.get.previousSelectionsGroups = $.fn.SMS.get.getSelectedRecipientsListIDs("groups");
                 $.fn.SMS.get.previousSelectionsNames = $.fn.SMS.get.getSelectedRecipientsListIDs("names");
-                $("#recipientsCmd").attr("disabled", "disabled");
+                $("#recipientsCmd")
+                        .attr("disabled", "disabled")
+                        .removeClass("active");
                 $("#facebox").fadeIn('fast');
             } else {
                 $(document).unbind('afterReveal.facebox');

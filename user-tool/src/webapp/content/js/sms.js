@@ -87,7 +87,9 @@
                     },
                     success: function(json) {
                         _this.disabled = false;
-                        $("#recipientsCmd").removeAttr("disabled");
+                        $("#recipientsCmd")
+                                .removeAttr("disabled")
+                                .addClass("active");
 	                    var cSelected = json.groupSizeEstimate; 	 
 	                    var cCredits = json.creditEstimate; 	 
 	                    var cCost = json.costEstimate; 	 
@@ -114,7 +116,9 @@
                     },
                     error: function(xhr) {
                         smsUtils.error.server(xhr, $(_this), "errorFacebox");
-                        $("#recipientsCmd").attr("disabled", "disabled");
+                        $("#recipientsCmd")
+                                .attr("disabled", "disabled")
+                                .removeClass("active");
                     }
                 });
             } else {
@@ -286,7 +290,7 @@
             var err = $('#'+ tabErrorElement ).text() === "" ? $('#'+ tabErrorElement ).val() : $('#'+ tabErrorElement ).text();
             $('#' + tabName + ' a')
                     .css($.fn.SMS.settings.css.tabDisabled)
-                    .attr('title', err)
+                    .attr('title', err);
             $('#' + tabName + ' a')
 			 		.unbind('click')
                     .bind('click', function(){
@@ -295,7 +299,9 @@
         },
         disableContinue: function(){
             //Disable the continue button and force user to calculate before saving any new changes
-            $("#recipientsCmd").attr("disabled", "disabled");
+            $("#recipientsCmd")
+                    .attr("disabled", "disabled")
+                    .removeClass("active");
         },
         isRecipientsLinkClicked: false
     };
