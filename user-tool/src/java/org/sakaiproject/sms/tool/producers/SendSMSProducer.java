@@ -309,7 +309,7 @@ public class SendSMSProducer implements ViewComponentProducer,
 						smsId.decorate(new UIIDStrategyDecorator("smsId"));
 
 						UIInput.make(form, "taskcopyMe", null,
-								smsTask.getSakaiUserIds().contains(
+								smsTask.getSakaiUserIdsList().contains(
 										currentUserId) ? Boolean
 										.toString(Boolean.TRUE) : Boolean
 										.toString(Boolean.FALSE)).fossilize = false;
