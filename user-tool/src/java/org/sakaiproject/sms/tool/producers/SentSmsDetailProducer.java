@@ -141,8 +141,8 @@ public class SentSmsDetailProducer implements ViewComponentProducer,
 											.getStatusFullName(userStatusCode)));
 				}
 
-				UICommand.make(tofill, "back-button", UIMessage
-						.make("sms.general.back"));
+				UIMessage.make(tofill, "back-button", 
+						("sms.general.back"));
 
 			} else {
 				// TODO: show error message since sms.id() is not specified
