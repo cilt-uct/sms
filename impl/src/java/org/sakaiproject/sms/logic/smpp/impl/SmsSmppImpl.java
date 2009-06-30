@@ -369,7 +369,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				return;
 			}
 			LOG.info("Receiving delivery receipt for message '"
-					+ deliveryReceipt.getId() + " ' from "
+					+ deliveryReceipt.getId() + "' from "
 					+ deliverSm.getSourceAddr() + " to "
 					+ deliverSm.getDestAddress() + " : " + deliveryReceipt);
 			SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
