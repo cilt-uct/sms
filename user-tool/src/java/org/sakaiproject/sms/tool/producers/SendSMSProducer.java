@@ -11,7 +11,6 @@ import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
-import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
@@ -60,12 +59,6 @@ public class SendSMSProducer implements ViewComponentProducer,
 
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
-	}
-
-	private UserNavBarRenderer userNavBarRenderer;
-
-	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
-		this.userNavBarRenderer = userNavBarRenderer;
 	}
 
 	private FormatAwareDateInputEvolver dateEvolver;
@@ -135,15 +128,9 @@ public class SendSMSProducer implements ViewComponentProducer,
 					if (smsParams.id != null && !"".equals(smsParams.id)) {
 						smsTask = smsTaskLogic.getSmsTask(Long
 								.parseLong(smsParams.id));
-						// Top links
-						userNavBarRenderer.makeNavBar(tofill, "navIntraTool:",
-								null, currentUserId, currentUserId);
 						UIMessage.make(tofill, "sms-header",
 								"ui.edit.sms.header");
 					} else {
-						// Top links
-						userNavBarRenderer.makeNavBar(tofill, "navIntraTool:",
-								VIEW_ID, currentUserId, currentUserId);
 						UIMessage.make(tofill, "sms-header",
 								"ui.create.sms.header");
 					}

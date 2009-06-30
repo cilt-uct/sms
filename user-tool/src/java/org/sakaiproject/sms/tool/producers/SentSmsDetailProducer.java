@@ -50,12 +50,6 @@ public class SentSmsDetailProducer implements ViewComponentProducer,
 		this.smsTaskLogic = smsTaskLogic;
 	}
 
-	private UserNavBarRenderer userNavBarRenderer;
-
-	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
-		this.userNavBarRenderer = userNavBarRenderer;
-	}
-
 	private DateUtil dateUtil;
 
 	public void setDateUtil(DateUtil dateUtil) {
@@ -83,10 +77,6 @@ public class SentSmsDetailProducer implements ViewComponentProducer,
 
 				Long smsId = Long.parseLong(statusParams.id);
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
-
-				// Top links
-				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID,
-						null, null);
 
 				// Show message
 				smsMessageRenderer.renderMessage(smsTask, tofill, "message:");

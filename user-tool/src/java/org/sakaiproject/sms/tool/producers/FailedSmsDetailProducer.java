@@ -38,11 +38,6 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 		this.smsTaskLogic = smsTaskLogic;
 	}
 
-	private UserNavBarRenderer userNavBarRenderer;
-	public void setUserNavBarRenderer(UserNavBarRenderer userNavBarRenderer) {
-		this.userNavBarRenderer = userNavBarRenderer;
-	}
-	
 	private DateUtil dateUtil;
 	public void setDateUtil(DateUtil dateUtil) {
 		this.dateUtil = dateUtil;
@@ -75,9 +70,6 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				String currentSiteId = externalLogic.getCurrentSiteId();
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
 		
-				//Top links
-				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, null, null);
-				
 				//Show message
 				smsMessageRenderer.renderMessage(smsTask, tofill, "message:");
 				
