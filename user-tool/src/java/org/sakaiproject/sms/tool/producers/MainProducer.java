@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -88,6 +89,11 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		}
 		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
 		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
+		boolean hasSendPermission = externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId );
+		//Use only current users's tasks if user doesn't have the send permission
+		if ( ! hasSendPermission ){
+			smsTasks = filterTasksBySender(currentUserId, smsTasks);
+		}
 		boolean hasTasks = smsTasks.size() > 0;
 		
 		if (! hasAccount ){
@@ -98,7 +104,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			if ( hasCredits ){
 				//Top links
 				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, currentUserId, currentSiteId);
-				if ( externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId )){
+				if ( hasSendPermission ){
 					UIOutput.make(tofill, "send");
 					UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 					UIOutput.make(tofill, "reportConsole");
@@ -150,10 +156,19 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), (sms.getGroupSizeActual() == null || sms.getGroupSizeActual() == 0) ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
 				UIOutput.make(row, "task-cost", sms.getCreditCost() == 0 ?  sms.getCreditEstimate().toString():  (int) sms.getCreditCost() + "" );
 			}
-		}else{
-			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");
 		}
 	}
+	private List<SmsTask> filterTasksBySender(String currentUserId,
+			List<SmsTask> smsTasks) {
+		List<SmsTask> taskList = new ArrayList<SmsTask>();
+		for (SmsTask smsTask : smsTasks){
+			if ( smsTask.getSenderUserId().equals(currentUserId) ){
+				taskList.add(smsTask);
+			}
+		}
+		return taskList;
+	}
+
 	private void fillTableHeaders(UIContainer tofill, String[] headers) {
 		// Render table headers
 		for (int i=0; i < headers.length; i++){
