@@ -150,6 +150,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			redMessage.setDateDelivered(message.getDateDelivered());
 			redMessage.setFailReason(message.getFailReason());
 			redMessage.setSmscMessageId(message.getSmscMessageId());
+			redMessage.setSmscId(message.getSmscId());
 			redMessage.setSmscDeliveryStatusCode(message.getSmscDeliveryStatusCode());
 			redacted.add(redMessage);
 		}
