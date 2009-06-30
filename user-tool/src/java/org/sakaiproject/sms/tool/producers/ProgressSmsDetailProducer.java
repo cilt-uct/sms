@@ -114,7 +114,7 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				savedSelectionsRenderer.renderSelections(smsTask, tofill, "savedSelections:");
 				
 				UIMessage.make(tofill, "cost", "ui.inprogress.sms.cost.title");
-				UIOutput.make(tofill, "cost-credits",smsTask.getCreditEstimate().toString() );
+				UIOutput.make(tofill, "cost-credits", smsTask.getCreditCost() == 0 ? smsTask.getCreditEstimate().toString() :  (int) smsTask.getCreditCost() + "" );
 				UIOutput.make(tofill, "cost-cost", currencyUtil.toServerLocale(( smsTask.getCostEstimate() )) );
 				
 				UIForm form = UIForm.make(tofill, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), const_Scheduled.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));

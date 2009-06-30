@@ -148,7 +148,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				}
 
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), (sms.getGroupSizeActual() == null || sms.getGroupSizeActual() == 0) ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
-				UIOutput.make(row, "task-cost", sms.getCreditEstimate() + "");
+				UIOutput.make(row, "task-cost", sms.getCreditCost() == 0 ?  sms.getCreditEstimate().toString():  (int) sms.getCreditCost() + "" );
 			}
 		}else{
 			UIMessage.make(tofill, "tasks-none", "ui.error.notasks");
