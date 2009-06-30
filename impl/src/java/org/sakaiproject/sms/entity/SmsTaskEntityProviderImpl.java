@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.entity;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	private static String MESSAGE_BUNDLE = "messages.";
 	
 	private static String STATUS_SCHEDULED = "scheduled";
-
+	
 	/**
 	 * Inject services
 	 */
@@ -284,6 +285,10 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         }
         try {
         	List<SmsTask> tasks = smsTaskLogic.getAllSmsTasksForCriteria(new SearchFilterBean());
+        	for ( SmsTask smsTask : tasks ){
+        		 //round off cost properties to 2 decimal places
+                roundOffTaskCosts(smsTask);
+        	}
 			return tasks;
 		} catch (SmsSearchException e) {}
 
@@ -329,10 +334,18 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
  			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
  		}
          
-		
+         //round off cost properties to 2 decimal places
+        roundOffTaskCosts(smsTask);
         return JSONTranscoder.makeJSON(smsTask);
 	}
 	
+	private SmsTask roundOffTaskCosts(final SmsTask smsTask) {
+		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+		smsTask.setCostEstimate( Double.parseDouble(decimalFormat.format(smsTask.getCostEstimate())) );
+		smsTask.setCreditCost( Double.parseDouble(decimalFormat.format(smsTask.getCreditCost())) );
+		return smsTask;
+	}
+
 	//Custom action to handle /sms-task/memberships
 	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_SHOW)
 	public List<User> memberships(EntityReference ref, Map<String, Object> params) {
