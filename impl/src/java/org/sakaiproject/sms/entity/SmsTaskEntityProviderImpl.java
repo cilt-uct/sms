@@ -142,13 +142,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			SmsMessage message = iterator.next();
 			SmsMessage redMessage = new SmsMessage();
 			redMessage.setStatusCode(message.getStatusCode());
-			if (message.getSakaiUserId() != null) {
+			if (message.getSakaiUserId() != null  && !"".equals(message.getSakaiUserId())) {
 				redMessage.setSakaiUserId(message.getSakaiUserId());
 			} else {
 				redMessage.setMobileNumber(message.getMobileNumber());
 			}
 			redMessage.setDateDelivered(message.getDateDelivered());
 			redMessage.setFailReason(message.getFailReason());
+			redMessage.setSmscMessageId(message.getSmscMessageId());
+			redMessage.setSmscDeliveryStatusCode(message.getSmscDeliveryStatusCode());
 			redacted.add(redMessage);
 		}
 		task.setSmsMessages(redacted);
