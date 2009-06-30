@@ -26,7 +26,7 @@ public class MobileNumberHelperTest extends TestCase {
 
 	public void testGetMobile() {
 		String number = mobileNumberHelper.getUserMobileNumber("test");
-		assertEquals("0123456789", number);
+		assertEquals("27123456789", number);
 	}
 
 	public void testNullGetMobile() {
@@ -42,9 +42,9 @@ public class MobileNumberHelperTest extends TestCase {
 		Map<String, String> numbers = mobileNumberHelper
 				.getUserMobileNumbers(userids);
 		assertEquals(3, numbers.size());
-		assertEquals("0123456789", numbers.get("test1"));
-		assertEquals("0123456789", numbers.get("test2"));
-		assertEquals("0123456789", numbers.get("test3"));
+		assertEquals("27123456789", numbers.get("test1"));
+		assertEquals("27123456789", numbers.get("test2"));
+		assertEquals("27123456789", numbers.get("test3"));
 	}
 
 	public void testMultipleWithNull() {
@@ -55,8 +55,8 @@ public class MobileNumberHelperTest extends TestCase {
 		Map<String, String> numbers = mobileNumberHelper
 				.getUserMobileNumbers(userids);
 		assertEquals(2, numbers.size());
-		assertEquals("0123456789", numbers.get("test1"));
+		assertEquals("27123456789", numbers.get("test1"));
 		assertEquals(null, numbers.get("test2"));
-		assertEquals("0123456789", numbers.get("test3"));
+		assertEquals("27123456789", numbers.get("test3"));
 	}
 }

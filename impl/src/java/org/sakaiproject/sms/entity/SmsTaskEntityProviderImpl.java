@@ -142,7 +142,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			SmsMessage message = iterator.next();
 			SmsMessage redMessage = new SmsMessage();
 			redMessage.setStatusCode(message.getStatusCode());
-			redMessage.setSakaiUserId(message.getSakaiUserId());
+			if (message.getSakaiUserId() != null) {
+				redMessage.setSakaiUserId(message.getSakaiUserId());
+			} else {
+				redMessage.setMobileNumber(message.getMobileNumber());
+			}
 			redMessage.setDateDelivered(message.getDateDelivered());
 			redMessage.setFailReason(message.getFailReason());
 			redacted.add(redMessage);
@@ -209,7 +213,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
         String userReference = developerHelperService.getCurrentUserReference();
         if (userReference == null) {
-			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), userReference} ));
+			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), null} ));
         }
 
 
