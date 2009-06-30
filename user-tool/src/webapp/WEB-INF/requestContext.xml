@@ -58,6 +58,7 @@
 
   <bean class="org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
+	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="dateUtil" ref="dateUtil" />
   	<property name="statusUtils" ref="statusUtils" />
 	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
@@ -66,6 +67,7 @@
 
   <bean class="org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer">
   	<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
+	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="dateUtil" ref="dateUtil" />
 	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
   	<property name="statusUtils" ref="statusUtils" />

@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -81,6 +82,11 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
 		this.currencyUtil = currencyUtil;
 	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -90,6 +96,8 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 			if ( statusParams != null && statusParams.id != null && statusParams.status != null ){
 				
 				Long smsId = Long.parseLong(statusParams.id);
+				String currentUserId = externalLogic.getCurrentUserId();
+				String currentSiteId = externalLogic.getCurrentSiteId();
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
 				String statusToShow = statusParams.status;
 		
@@ -134,10 +142,13 @@ public class ProgressSmsDetailProducer implements ViewComponentProducer, ViewPar
 				}else if( const_Scheduled.equals(statusToShow)){
 					statusText.decorate(new UIStyleDecorator("smsOrange"));
 					UIMessage.make(tofill, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
-					UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
+					//Check permissions before rendering control buttons
+					if ( externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId ) ) {
+						UICommand.make(form, "edit", UIMessage.make("sms.general.edit.sms"))
 						.decorate(new UIIDStrategyDecorator("smsEdit"));
-					UICommand.make(form, "delete", UIMessage.make("sms.general.delete"));
-					UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
+						UICommand.make(form, "delete", UIMessage.make("sms.general.delete"));
+			        	UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
+					}
 				}else{
 					throw new IllegalArgumentException("Cannot act on this status type: " + statusToShow);
 				}

@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
@@ -56,6 +57,11 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 	public void setSmsMessageRenderer(SmsMessageRenderer smsMessageRenderer) {
 		this.smsMessageRenderer = smsMessageRenderer;
 	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
@@ -65,6 +71,8 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 			if ( statusParams != null && statusParams.id != null){
 				
 				Long smsId = Long.parseLong(statusParams.id);
+				String currentUserId = externalLogic.getCurrentUserId();
+				String currentSiteId = externalLogic.getCurrentSiteId();
 				SmsTask smsTask = smsTaskLogic.getSmsTask(smsId);
 		
 				//Top links
@@ -97,10 +105,13 @@ public class FailedSmsDetailProducer implements ViewComponentProducer, ViewParam
 				/**
 				 * These 3 action buttons are handled by JS. RSF is only needed for i18N
 				 */
-				UICommand.make(form, "edit", UIMessage.make("sms.general.editandsend"))
-					.decorate(new UIIDStrategyDecorator("smsEdit"));
-				UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
-					.decorate(new UIIDStrategyDecorator("smsDelete"));
+				//Check permissions before rendering control buttons
+				if ( externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId ) ) {
+			        UICommand.make(form, "edit", UIMessage.make("sms.general.editandsend"))
+						.decorate(new UIIDStrategyDecorator("smsEdit"));
+			        UICommand.make(form, "delete", UIMessage.make("sms.general.delete"))
+						.decorate(new UIIDStrategyDecorator("smsDelete"));
+				}
 				UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 				
 				UIMessage.make(tofill, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
