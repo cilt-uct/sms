@@ -212,8 +212,7 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 			currencyVal.decorate(new UIIDStrategyDecorator("currency"));
 			UIMessage.make(tofill, "errorNoNames", "ui.error.no.names");
 
-			UICommand.make(tofill, "cancel", UIMessage
-					.make("sms.general.cancel"));
+			UIMessage.make(tofill, "cancel", "sms.general.cancel");
 			UICommand.make(form, "continue",
 					UIMessage.make("ui.recipients.choose.continue"), null)
 					.decorate(new UIIDStrategyDecorator("recipientsCmd"));
