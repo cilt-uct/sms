@@ -79,7 +79,9 @@ $(document).ready(function() {
 
     if ($("#statusType").length !== 0) {
         if ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE") {
-            $("#smsSend").removeAttr("disabled");
+            $("#smsSend")
+                    .removeAttr("disabled")
+                    .addClass("active");;
             $.fn.SMS.get.preserveDomSelections = true;
         }else{
 			$("#reportConsole").hide();

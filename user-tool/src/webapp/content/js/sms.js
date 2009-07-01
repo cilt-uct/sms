@@ -172,9 +172,13 @@
             }
             var isRecipientsChosen = ($.fn.SMS.get.isSelectionMade() || $("input[id^=task]").length > 0);
             if ( isRecipientsChosen && $("#messageBody").val().length > 0 ) {
-                $("#smsSend").removeAttr("disabled");
+                $("#smsSend")
+                        .removeAttr("disabled")
+                        .addClass("active");;
             } else {
-                $("#smsSend").attr("disabled", "disabled");
+                $("#smsSend")
+                        .attr("disabled", "disabled")
+                        .removeClass("active");;
             }
         },
         addSelectedRecipientsListName: function(array) {
