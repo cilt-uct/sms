@@ -83,8 +83,29 @@ $(document).ready(function() {
                     .removeAttr("disabled")
                     .addClass("active");;
             $.fn.SMS.get.preserveDomSelections = true;
+            //Hide set controls for dates
+            $("#newSchedule").hide();
+            $("#newExpiry").hide();
+            $("#booleanScheduleDate").hide();
+            $("#booleanExpiryDate").hide();
+            //bind change date events
+            $("#editScheduleChange").bind('click', function(){
+                $("#editSchedule").hide();
+                $("#newSchedule").show();
+                $("#booleanSchedule").triggerHandler('click');
+                return false;
+            });
+            $("#editExpiryChange").bind('click', function(){
+                $("#editExpiry").hide();
+                $("#newExpiry").show();
+                $("#booleanExpiry").triggerHandler('click');
+                return false;
+            });
         }else{
 			$("#reportConsole").hide();
+            //Hide edit controls for dates
+            $("#editSchedule").hide();
+            $("#editExpiry").hide();
 		}
     }
 
@@ -95,13 +116,21 @@ $(document).ready(function() {
                     $("#" + item + "Date").slideDown('normal');
                     $.fn.SMS.set.frameGrow(70, 'grow');
                 } else {
+                    if ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE") {
+                        if(item.search(/Schedule/) === -1){
+                            //Hide set controls for dates
+                             $("#newExpiry").hide();
+                             //Show edit controls for dates
+                            $("#editExpiry").show();
+                        }else{
+                            //Hide set controls for dates
+                            $("#newSchedule").hide();
+                            //Show edit controls for dates
+                            $("#editSchedule").show();
+                        }
+                    }
                     $("#" + item + "Date").slideUp('normal');
                     $.fn.SMS.set.frameGrow(-20, 'shrink');
-                }
-            });
-            $("#" + item + ":checked").each(function() {
-                if (this.checked) {
-                    $(this).triggerHandler('click');
                 }
             });
         });

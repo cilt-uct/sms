@@ -98,12 +98,19 @@
                  </div>
 
                     <div id="smsDates">
-                        <div id="smsDatesSchedule">
-                        <h4 class="schedule">Schedule for a later date/time</h4>
-                        <input rsf:id="booleanSchedule" type="checkbox" name="booleanSchedule" id="booleanSchedule" />
-                        <label rsf:id="booleanSchedule-label">
-                            Yes, I would like to schedule a later date to send this message.
-                        </label>
+                    	
+                    	<div id="smsDatesSchedule">
+                    		<div id="editSchedule" class="clear">
+								<span rsf:id="msg=ui.send.schedule.edit" class="schedule">Scheduled to be sent on:</span> <span rsf:id="schedule.date" class="console-cost">04 Jun 09 13.45 pm </span>
+								<a id="editScheduleChange" rsf:id="msg=ui.send.date.change" href="#">Change</a>
+							</div>
+						<div id="newSchedule">	
+							<h4 rsf:id="msg=ui.send.schedule.new" class="schedule">Schedule for a later date/time</h4>
+	                        <input rsf:id="booleanSchedule" type="checkbox" name="booleanSchedule" id="booleanSchedule" />
+	                        <label rsf:id="booleanSchedule-label">
+	                            Yes, I would like to schedule a later date to send this message.
+	                        </label>
+						</div>
                         <div id="booleanScheduleDate" name="date" style="display:none;">
                                 <span rsf:id="smsDatesScheduleDate:">
                             	<input type="text" id="smsDatesScheduleDate" name="smsDatesScheduleDate" value="YYYY/MM/DD" size="12" maxlength="10" />
@@ -112,11 +119,17 @@
                         </div>
                     </div>
                     <div id="smsDatesExpiry">
-                        <h4 class="exipry">Set expiry date/time</h4>
-                        <input rsf:id="booleanExpiry" type="checkbox" name="booleanExpiry" id="booleanExpiry" />
-                        <label rsf:id="booleanExpiry-label">
-                            Yes, I would like to set an Expiry date.
-                        </label>
+                    	<div id="editExpiry" class="clear">
+								<span rsf:id="msg=ui.send.expiry.edit" class="exipry">Message to expire on:</span> <span rsf:id="expiry.date" class="console-cost">04 Jun 09 13.45 pm </span>
+								<a id="editExpiryChange" rsf:id="msg=ui.send.date.change" href="#">Change</a>
+							</div>
+						<div id="newExpiry">	
+	                        <h4 rsf:id="msg=ui.send.expiry.new" class="exipry">Set expiry date/time</h4>
+	                        <input rsf:id="booleanExpiry" type="checkbox" name="booleanExpiry" id="booleanExpiry" />
+	                        <label rsf:id="booleanExpiry-label">
+	                            Yes, I would like to set an Expiry date.
+	                        </label>
+						</div>
                         <div id="booleanExpiryDate" name="date" style="display:none;">
                             <span rsf:id="smsDatesExpiryDate:">
                             	<input type="text" id="smsDatesExpiryDate" name="smsDatesExpiryDate" value="YYYY/MM/DD" size="12" maxlength="10" />

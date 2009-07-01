@@ -12,6 +12,7 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
+import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
 import uk.org.ponder.messageutil.MessageLocator;
@@ -59,6 +60,12 @@ public class SendSMSProducer implements ViewComponentProducer,
 
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
+	}
+	
+	private DateUtil dateUtil;
+
+	public void setDateUtil(DateUtil dateUtil) {
+		this.dateUtil = dateUtil;
 	}
 
 	private FormatAwareDateInputEvolver dateEvolver;
@@ -202,6 +209,8 @@ public class SendSMSProducer implements ViewComponentProducer,
 								new UILabelTargetDecorator(boolSchedule));
 						dateEvolver.evolveDateInput(scheduleDate, new Date());
 					} else {
+						UIOutput.make(form, "schedule.date", dateUtil.formatDate(smsTask
+								.getDateToSend()) );
 						UIBoundBoolean boolSchedule = UIBoundBoolean.make(form,
 								"booleanSchedule", Boolean.TRUE);
 						UIMessage.make(form, "booleanSchedule-label",
@@ -230,6 +239,7 @@ public class SendSMSProducer implements ViewComponentProducer,
 								.getSmsTaskMaxLifeTime());
 						dateEvolver.evolveDateInput(expireDate, cal.getTime());
 					} else {
+						UIOutput.make(form, "expiry.date", dateUtil.formatDate(smsTask.getDateToExpire()) );
 						UIBoundBoolean boolExpiry = UIBoundBoolean.make(form,
 								"booleanExpiry", Boolean.TRUE);
 						UIMessage.make(form, "booleanExpiry-label",
