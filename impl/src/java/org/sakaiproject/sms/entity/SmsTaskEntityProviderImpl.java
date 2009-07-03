@@ -466,7 +466,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		
 		// Set copy me status
 		Set<String> newUserIds = new HashSet<String>();
-		if (copy) {
+		if (copy && ! task.getSakaiUserIdsList().contains(task.getSenderUserId()) ) {
 			newUserIds.add(task.getSenderUserId());
 			if (task.getSakaiUserIdsList() != null) {
 				newUserIds.addAll(task.getSakaiUserIdsList());
@@ -474,14 +474,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			} else {
 				task.setSakaiUserIdsList(newUserIds);
 			}
-		} else {
-			if (task.getSakaiUserIdsList().contains(task.getSenderUserId())) {
-				newUserIds = task.getSakaiUserIdsList();
-				newUserIds.remove(task.getSenderUserId());
-				task.setSakaiUserIdsList(newUserIds);
-			}
 		}
-
 	}
 	
 	public static class SortNameComparator implements Comparator<User> {
