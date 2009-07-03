@@ -398,7 +398,7 @@
             if (filter === "Names") {
                     if ($('input[name=sakaiSiteId]').val() !== null) {
                         $.ajax({
-                            url: '/direct/sms-task/' + $('input[name=sakaiSiteId]').val() + '/memberships.json',
+                            url: '/direct/sms-task/memberships/site/' + $('input[name=sakaiSiteId]').val() + '.json',
                             dataType: "json",
                             cache: false,
                             success: function(data) {

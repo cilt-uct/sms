@@ -376,15 +376,20 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 
 	//Custom action to handle /sms-task/memberships
-	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_SHOW)
-	public List<FakeUser> memberships(EntityReference ref, Map<String, Object> params) {
-		
+	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_LIST)
+	public List<FakeUser> memberships(EntityView view, Map<String, Object> params) {
+		String siteId = view.getPathSegment(3);
+		if (siteId == null) {
+        	siteId = (String) params.get("site");
+            if (siteId == null) {
+                throw new IllegalArgumentException("The site id must be set in order to get the site memberships, set in params or in the URL /sms-task/memberships/site/siteId");
+            }
+        }
 		String currentUser = developerHelperService.getCurrentUserReference();
         if (currentUser == null) {
-            throw new SecurityException( getMessage(ValidationConstants.USER_ANONYMOUS_CANNOT_VIEW_MEMBERS, new String[] {ref.getId()} ));
+            throw new SecurityException( getMessage(ValidationConstants.USER_ANONYMOUS_CANNOT_VIEW_MEMBERS, new String[] { siteId } ));
         }
 		
-		String siteId = ref.getId();
 		String userId = developerHelperService.getCurrentUserId();
 		
 		if (!SecurityService.unlock(userId, PERMISSION_SEND, SiteService.siteReference(siteId))) {
