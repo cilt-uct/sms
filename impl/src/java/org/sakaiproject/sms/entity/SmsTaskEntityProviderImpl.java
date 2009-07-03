@@ -377,7 +377,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 	//Custom action to handle /sms-task/memberships
 	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_SHOW)
-	public List<User> memberships(EntityReference ref, Map<String, Object> params) {
+	public List<FakeUser> memberships(EntityReference ref, Map<String, Object> params) {
 		
 		String currentUser = developerHelperService.getCurrentUserReference();
         if (currentUser == null) {
@@ -391,19 +391,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new SecurityException( getMessage(ValidationConstants.USER_ANONYMOUS_CANNOT_VIEW_MEMBERS, new String[] {siteId, userId} ));
 		}
 		
-        List<User> usersCloned = new ArrayList<User>();
+        List<FakeUser> users = new ArrayList<FakeUser>();
 		List<User> usersFull = externalLogic.getUsersWithMobileNumbersOnly(siteId);
 	
 		for ( User user : usersFull ){
 			//trim down user object to only show essential non-sensitive properties
-			User clone = developerHelperService.cloneBean(user, 0, new String[] {} );
-			usersCloned.add(clone);
+			FakeUser fakeUser = new FakeUser( user.getId(), user.getEid(), user.getSortName() );
+			users.add(fakeUser);
 		}
 		
 		 // handle the sorting
-        Collections.sort(usersCloned, new SortNameComparator());
+        Collections.sort(users, new SortNameComparator());
         
-    	return usersCloned;
+    	return users;
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params, EntityReference ref) {
@@ -477,9 +477,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
 	}
 	
-	public static class SortNameComparator implements Comparator<User> {
+	public static class SortNameComparator implements Comparator<FakeUser> {
         public static final long serialVersionUID = 31L;
-        public int compare(User o1, User o2) {
+        public int compare(FakeUser o1, FakeUser o2) {
             return o1.getSortName().compareTo(o2.getSortName());
         }
     }
@@ -492,5 +492,43 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	private String getMessage( String key , String[] parameters){
 		String fullKey = MESSAGE_BUNDLE + key;
 		return MessageCatalog.getMessage(fullKey, parameters);
+	}
+	
+	/**
+	 * Inner class holds trimmed-down properties of the user object
+	 * @author lovemorenalube
+	 *
+	 */
+	public class FakeUser {
+		private String id, eid, sortName;
+		public FakeUser (String id, String eid, String sortName){
+			this.id = id;
+			this.eid = eid;
+			this.sortName = sortName;
+		}
+		
+		public String getSortName() {
+			return this.sortName;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getEid() {
+			return eid;
+		}
+
+		public void setEid(String eid) {
+			this.eid = eid;
+		}
+
+		public void setSortName(String sortName) {
+			this.sortName = sortName;
+		}	
 	}
 }
