@@ -403,7 +403,7 @@
                             cache: false,
                             success: function(data) {
                                 $.each(data["sms-task_collection"], function(i, item) {
-                                    query.push([item.sortName, item.id, item.eid]);
+                                    query.push([item.sortName, item.id, item.displayId]);
                                 });
                             }
                         });

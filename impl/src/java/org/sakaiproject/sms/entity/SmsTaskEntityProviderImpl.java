@@ -377,7 +377,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 	//Custom action to handle /sms-task/memberships
 	@EntityCustomAction(action=CUSTOM_ACTION_USERS,viewKey=EntityView.VIEW_LIST)
-	public List<FakeUser> memberships(EntityView view, Map<String, Object> params) {
+	public List<SimpleUser> memberships(EntityView view, Map<String, Object> params) {
 		String siteId = view.getPathSegment(3);
 		if (siteId == null) {
         	siteId = (String) params.get("site");
@@ -396,12 +396,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new SecurityException( getMessage(ValidationConstants.USER_ANONYMOUS_CANNOT_VIEW_MEMBERS, new String[] {siteId, userId} ));
 		}
 		
-        List<FakeUser> users = new ArrayList<FakeUser>();
+        List<SimpleUser> users = new ArrayList<SimpleUser>();
 		List<User> usersFull = externalLogic.getUsersWithMobileNumbersOnly(siteId);
 	
 		for ( User user : usersFull ){
 			//trim down user object to only show essential non-sensitive properties
-			FakeUser fakeUser = new FakeUser( user.getId(), user.getEid(), user.getSortName() );
+			SimpleUser fakeUser = new SimpleUser( user.getId(), user.getDisplayId(), user.getSortName() );
 			users.add(fakeUser);
 		}
 		
@@ -482,9 +482,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
 	}
 	
-	public static class SortNameComparator implements Comparator<FakeUser> {
+	public static class SortNameComparator implements Comparator<SimpleUser> {
         public static final long serialVersionUID = 31L;
-        public int compare(FakeUser o1, FakeUser o2) {
+        public int compare(SimpleUser o1, SimpleUser o2) {
             return o1.getSortName().compareTo(o2.getSortName());
         }
     }
@@ -504,11 +504,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	 * @author lovemorenalube
 	 *
 	 */
-	public class FakeUser {
-		private String id, eid, sortName;
-		public FakeUser (String id, String eid, String sortName){
+	public class SimpleUser {
+		private String id, displayId, sortName;
+		public SimpleUser (String id, String displayId, String sortName){
 			this.id = id;
-			this.eid = eid;
+			this.displayId = displayId;
 			this.sortName = sortName;
 		}
 		
@@ -524,12 +524,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			this.id = id;
 		}
 
-		public String getEid() {
-			return eid;
+		public String getDisplayId() {
+			return displayId;
 		}
 
-		public void setEid(String eid) {
-			this.eid = eid;
+		public void setDisplayId(String displayId) {
+			this.displayId = displayId;
 		}
 
 		public void setSortName(String sortName) {
