@@ -25,9 +25,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
@@ -101,9 +103,6 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
-		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
-		//Show only the current site's tasks
-		smsTasks = filterTasksBySite(currentSiteId, smsTasks);
 		boolean hasAccount = smsAccount != null;
 		boolean hasAccountEnabled = Boolean.FALSE;
 		if ( hasAccount ){
@@ -112,9 +111,19 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
 		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
 		boolean hasSendPermission = externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId );
+		//Do search with no date restrictions
+		SearchFilterBean searchFilterBean = new SearchFilterBean(null, null);
+		//Show only the current site's tasks
+		searchFilterBean.setSakaiSiteId(currentSiteId);
 		//Use only current users's tasks if user doesn't have the send permission
 		if ( ! hasSendPermission ){
-			smsTasks = filterTasksBySender(currentUserId, smsTasks);
+			searchFilterBean.setSenderUserId(currentUserId);
+		}
+		List<SmsTask> smsTasks = new ArrayList<SmsTask>();
+		try {
+			smsTasks = smsTaskLogic.getAllSmsTasksForCriteria(searchFilterBean);
+		} catch (SmsSearchException e) {
+			log.info("SmsSearchException: " + e.getMessage());
 		}
 		boolean hasTasks = smsTasks.size() > 0;
 		
@@ -180,28 +189,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			}
 		}
 	}
-	private List<SmsTask> filterTasksBySite(String currentSiteId,
-			List<SmsTask> smsTasks) {
-		List<SmsTask> taskList = new ArrayList<SmsTask>();
-		for (SmsTask smsTask : smsTasks){
-			if ( smsTask.getSakaiSiteId().equals(currentSiteId) ){
-				taskList.add(smsTask);
-			}
-		}
-		return taskList;
-	}
-
-	private List<SmsTask> filterTasksBySender(String currentUserId,
-			List<SmsTask> smsTasks) {
-		List<SmsTask> taskList = new ArrayList<SmsTask>();
-		for (SmsTask smsTask : smsTasks){
-			if ( smsTask.getSenderUserId().equals(currentUserId) ){
-				taskList.add(smsTask);
-			}
-		}
-		return taskList;
-	}
-
+	
 	private void fillTableHeaders(UIContainer tofill, String[] headers) {
 		// Render table headers
 		for (int i=0; i < headers.length; i++){

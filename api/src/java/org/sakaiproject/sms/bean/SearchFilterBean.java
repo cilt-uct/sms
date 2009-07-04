@@ -76,7 +76,27 @@ public class SearchFilterBean {
 	/** The sort direction. */
 	private String sortDirection;
 
+	/** The sakai site Id. */
+	private String sakaiSiteId;
+
+	/** The sakai sender user Id. */
+	private String senderUserId;
+
 	private boolean newSearch;
+
+	/**
+	 * Instantiates a simple search filter bean.
+	 * @param dateFrom 
+	 * 			Set a FROM date to filter results by. Can be <code>null</code>
+	 * @param dateTo 
+	 * 			Set a TO date to filter results by. Can be <code>null</code>
+	 */
+	public SearchFilterBean(Date dateFrom, Date dateTo) {
+		super();
+		this.newSearch = false;
+		this.dateFrom = dateFrom;
+		this.dateTo = dateTo;
+	}
 
 	/**
 	 * Instantiates a new search filter bean.
@@ -373,6 +393,38 @@ public class SearchFilterBean {
 	public void setNewSearch(boolean newSearch) {
 		this.newSearch = newSearch;
 	}
+	
+	/**
+	 * Gets the sakai site id
+	 * @return the sakai Site Id
+	 */
+	public String getSakaiSiteId() {
+		return sakaiSiteId;
+	}
+
+	/**
+	 * Sets the sakai site id
+	 * @param the sakai Site Id
+	 */
+	public void setSakaiSiteId(String sakaiSiteId) {
+		this.sakaiSiteId = sakaiSiteId;
+	}
+
+	/**
+	 * Gets the sender id
+	 * @return the sender Id
+	 */
+	public String getSenderUserId() {
+		return senderUserId;
+	}
+	
+	/**
+	 * Sets the sender id
+	 * @param the sender Id
+	 */
+	public void setSenderUserId(String senderUserId) {
+		this.senderUserId = senderUserId;
+	}
 
 	@Override
 	public String toString() {
@@ -394,6 +446,8 @@ public class SearchFilterBean {
 		retStr.append("transactionType: ").append(transactionType).append("\n");
 		retStr.append("sortDirection: ").append(sortDirection).append("\n");
 		retStr.append("newSearch: ").append(newSearch).append("\n");
+		retStr.append("sakaiSiteId: ").append(sakaiSiteId).append("\n");
+		retStr.append("senderUserId: ").append(senderUserId).append("\n");
 		retStr.append("----------\n");
 		return retStr.toString();
 	}

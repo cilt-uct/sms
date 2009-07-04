@@ -194,6 +194,18 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 				crit.add(Restrictions.eq("messageTypeId", searchBean
 						.getMessageTypeId()));
 			}
+			
+			// Sakai site Id
+			if (searchBean.getSakaiSiteId() != null) {
+				crit.add(Restrictions.eq("sakaiSiteId", searchBean
+						.getSakaiSiteId()));
+			}
+			
+			// Sender user Id
+			if (searchBean.getSenderUserId() != null) {
+				crit.add(Restrictions.eq("senderUserId", searchBean
+						.getSenderUserId()));
+			}
 
 			// Sakai tool name
 			if (searchBean.getToolName() != null
