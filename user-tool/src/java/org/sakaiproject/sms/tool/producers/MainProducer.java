@@ -102,6 +102,8 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		String currentUserId = externalLogic.getCurrentUserId();
 		SmsAccount smsAccount = smsAccountLogic.getSmsAccount(currentSiteId, currentUserId);
 		List<SmsTask> smsTasks = smsTaskLogic.getAllSmsTask();
+		//Show only the current site's tasks
+		smsTasks = filterTasksBySite(currentSiteId, smsTasks);
 		boolean hasAccount = smsAccount != null;
 		boolean hasAccountEnabled = Boolean.FALSE;
 		if ( hasAccount ){
@@ -178,6 +180,17 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			}
 		}
 	}
+	private List<SmsTask> filterTasksBySite(String currentSiteId,
+			List<SmsTask> smsTasks) {
+		List<SmsTask> taskList = new ArrayList<SmsTask>();
+		for (SmsTask smsTask : smsTasks){
+			if ( smsTask.getSakaiSiteId().equals(currentSiteId) ){
+				taskList.add(smsTask);
+			}
+		}
+		return taskList;
+	}
+
 	private List<SmsTask> filterTasksBySender(String currentUserId,
 			List<SmsTask> smsTasks) {
 		List<SmsTask> taskList = new ArrayList<SmsTask>();
