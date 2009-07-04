@@ -32,6 +32,7 @@ import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.UserNavBarRenderer;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
@@ -112,7 +113,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
 		boolean hasSendPermission = externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId );
 		//Do search with no date restrictions
-		SearchFilterBean searchFilterBean = new SearchFilterBean(null, null);
+		SearchFilterBean searchFilterBean = new SearchFilterBean(null, null, "dateToSend", SmsConstants.SORT_DESC);
 		//Show only the current site's tasks
 		searchFilterBean.setSakaiSiteId(currentSiteId);
 		//Use only current users's tasks if user doesn't have the send permission

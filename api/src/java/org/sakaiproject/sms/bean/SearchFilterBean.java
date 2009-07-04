@@ -23,6 +23,7 @@ package org.sakaiproject.sms.bean;
 
 import java.util.Date;
 
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
@@ -90,12 +91,16 @@ public class SearchFilterBean {
 	 * 			Set a FROM date to filter results by. Can be <code>null</code>
 	 * @param dateTo 
 	 * 			Set a TO date to filter results by. Can be <code>null</code>
+	 * @param orderBy 
+	 * 			Filed to order by eg. dateToSend. Ordering will be asc
 	 */
-	public SearchFilterBean(Date dateFrom, Date dateTo) {
+	public SearchFilterBean(Date dateFrom, Date dateTo, String orderBy, String sortDirection) {
 		super();
 		this.newSearch = false;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
+		this.orderBy = orderBy;
+		this.sortDirection = sortDirection;
 	}
 
 	/**
