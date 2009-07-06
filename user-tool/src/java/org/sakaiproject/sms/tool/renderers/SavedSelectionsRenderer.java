@@ -71,75 +71,76 @@ public class SavedSelectionsRenderer {
 				}
 			}
 		}
-		StringBuffer rolesSb = new StringBuffer();
-		StringBuffer groupsSb = new StringBuffer();
-		StringBuffer usersSb = new StringBuffer();
-		StringBuffer numbersSb = new StringBuffer();
+		StringBuffer sb = new StringBuffer();
 		int count = 1;
 		if (roles.size() > 0) {
 			for (String role : roles) {
 				if (role != null) {
-					rolesSb.append(role);
+					sb.append(role);
 					if (count != roles.size()) {
-						rolesSb.append(", ");
+						sb.append(", ");
 					}
 					count++;
 				}
 			}
-			if (!"".equals(rolesSb.toString())) {
+			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections1",
 						"ui.inprogress.selections.roles",
-						new String[] { rolesSb.toString() });
+						new String[] { sb.toString() });
 			}
 		}
 		count = 1;
+		sb.setLength(0);
 		if (groups.size() > 0) {
 			for (String group : groups) {
-				groupsSb.append(group);
+				sb.append(group);
 				if (count < groups.size()) {
-					groupsSb.append(", ");
+					sb.append(", ");
 				}
 				count++;
 			}
-			if (!"".equals(groupsSb.toString())) {
+			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections2",
 						"ui.inprogress.selections.groups",
-						new String[] { groupsSb.toString() });
+						new String[] { sb.toString() });
 			}
 		}
 
 		Set<String> sakaiUserIds = smsTask.getSakaiUserIdsList();
 		count = 1;
+		sb.setLength(0);
 		if (sakaiUserIds != null && sakaiUserIds.size() > 0) {
 			for (String user : sakaiUserIds) {
-				usersSb.append(externalLogic.getSakaiUserSortName(user));
+				sb.append(externalLogic.getSakaiUserSortName(user));
 				if (count != sakaiUserIds.size()) {
-					usersSb.append(", ");
+					sb.append(", ");
 				}
 				count++;
 			}
-			if (!"".equals(usersSb.toString())) {
+			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections3",
 						"ui.inprogress.selections.names",
-						new String[] { usersSb.toString() });
+						new String[] { sb.toString() });
 			}
 		}
 
 		Set<String> numbers = smsTask.getDeliveryMobileNumbersSet();
 		count = 1;
+		sb.setLength(0);
 		if (numbers != null && numbers.size() > 0) {
 			for (String num : numbers) {
-				numbersSb.append(num);
+				sb.append(num);
 				if (count != numbers.size()) {
-					numbersSb.append(", ");
+					sb.append(", ");
 				}
 				count++;
 			}
-			if (!"".equals(numbersSb.toString())) {
+			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections4",
 						"ui.inprogress.selections.numbers",
-						new String[] { numbersSb.toString() });
+						new String[] { sb.toString() });
 			}
 		}
+		sb.setLength(0);
 	}
 }
