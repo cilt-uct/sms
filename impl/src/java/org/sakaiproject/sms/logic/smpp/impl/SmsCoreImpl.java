@@ -75,12 +75,11 @@ public class SmsCoreImpl implements SmsCore {
 		return lastSendMoOverdraftEmail;
 	}
 
-	
-	private ExternalLogic externalLogic;	
+	private ExternalLogic externalLogic;
+
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-
 
 	public void setLastSendMoOverdraftEmail(Calendar lastSendMoOverdraftEmail) {
 		this.lastSendMoOverdraftEmail = lastSendMoOverdraftEmail;
@@ -144,6 +143,8 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setCreditEstimate(groupSize);
 		smsTask.setCostEstimate(smsBilling.convertCreditsToAmount(groupSize)
 				.doubleValue());
+		smsTask.setCreditCost(hibernateLogicLocator.getSmsConfigLogic()
+				.getOrCreateSystemSmsConfig().getCreditCost());
 		return smsTask;
 	}
 
@@ -451,7 +452,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setSmsMessages(smsMessages);
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			//only try this if this node is designated to bind
+			// only try this if this node is designated to bind
 			if (externalLogic.isNodeBindToGateway()) {
 				tryProcessTaskRealTime(smsTask);
 			}
@@ -540,7 +541,7 @@ public class SmsCoreImpl implements SmsCore {
 			if (!externalLogic.isNodeBindToGateway()) {
 				return;
 			}
-			
+
 			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 					.getNextSmsTask();
 
@@ -873,11 +874,11 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
-		
+
 		if (!externalLogic.isNodeBindToGateway()) {
 			return;
 		}
-		
+
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
 			processTaskInThread(smsTask, smsThreadGroup);
 		}
