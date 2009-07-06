@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>0.8-SNAPSHOT</version><!--Sms.version-->
+        <version>0.8</version><!--Sms.version-->
     </parent>
    <!--   --> 
    <dependencyManagement>
@@ -24,7 +24,7 @@
             <dependency>
                <groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-stubs</artifactId>
-				<version>0.8-SNAPSHOT</version>
+				<version>0.8</version>
 				<scope>compile</scope>
             </dependency>
         </dependencies>
