@@ -205,7 +205,7 @@
         sliceSelectedRecipientsListName: function(id) {
             $.each(selectedRecipientsList.names, function(i, parent) {
                 if (parent) {
-                    if (parent[1] === id) {
+                    if (parent[0] === id) {
                         selectedRecipientsList.names.splice(Number(i), 1);
                     }
                 }
@@ -239,21 +239,30 @@
                             $.each(var_getEveryoneInSite_participants, function(n, userArray) {
                                 if( userArray[1] === entityId ){
                                     var v = '<li class="acfb-data" personName="' + userArray[0] + '" personId="' + userArray[1] + '"><span>' + userArray[0] + '</span> <img class="p" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
-
-                                    //bind delete image event
-                                    v.find('img.p').bind('click', function() {
-                                        $.fn.SMS.set.sliceSelectedRecipientsListName(userArray[0]);
-                                        $(this).parent().fadeOut(function() {
-                                            $(this).remove();
-                                        });
-                                        
-                                    });
-                                    $(".ac_input").insertBefore(v);
+                                    //add this user to the selected list
+                                    selectedRecipientsList.names.push([userArray[1], userArray[0]]);
+                                    $(v).insertBefore("#peopleListNamesSuggest input.acfb-input");
                                     $('#peopleTabsNames span[rel=recipientsSum]').fadeIn().text(getSelectedRecipientsList.length('names'));
                                 }
                             });
                         }
                     });
+                    //bind delete images
+                    $(".acfb-data img.p").click(function() {
+                        $.fn.SMS.set.sliceSelectedRecipientsListName($(this).parent().attr("personId"));
+                        $(this).parent().fadeOut(function() {
+                            $(this).remove();
+                        });
+                        //Refresh {peopleTabsNames} Number on TAB
+                        if (getSelectedRecipientsList.length('names') > 0){
+                            $('#peopleTabsNames span[rel=recipientsSum]').text(getSelectedRecipientsList.length('names'));
+                        }
+                        else{
+                            $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
+                        }
+                         $.fn.SMS.set.disableContinue();
+                    });
+
 
                 }else if (var_getEveryoneInSite_participants.length > 0) {
                     $.each(userIds, function(i, entityId) {
@@ -546,7 +555,7 @@
         });
 
         //Initialise the Individuals Tab
-        if (var_getEveryoneInSite_participants.length > 16) {
+        if (var_getEveryoneInSite_participants.length > 16) {  
             $("#instructionsNames").show();
             $(".autocompleteParent").click(function(){
                 $(".ac_input").focus();
