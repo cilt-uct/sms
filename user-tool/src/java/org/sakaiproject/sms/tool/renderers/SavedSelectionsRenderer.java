@@ -86,7 +86,7 @@ public class SavedSelectionsRenderer {
 			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections1",
 						"ui.inprogress.selections.roles",
-						new String[] { sb.toString() });
+						new String[] { sb.toString() + "."});
 			}
 		}
 		count = 1;
@@ -102,7 +102,7 @@ public class SavedSelectionsRenderer {
 			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections2",
 						"ui.inprogress.selections.groups",
-						new String[] { sb.toString() });
+						new String[] { sb.toString() + "."});
 			}
 		}
 
@@ -111,16 +111,20 @@ public class SavedSelectionsRenderer {
 		sb.setLength(0);
 		if (sakaiUserIds != null && sakaiUserIds.size() > 0) {
 			for (String user : sakaiUserIds) {
+				/**TODO: Extracting names one by one may not be db efficient or 
+				scallable. External logic should be extended to 
+				call a list of ids and return a map with corresponding
+				names **/
 				sb.append(externalLogic.getSakaiUserSortName(user));
 				if (count != sakaiUserIds.size()) {
-					sb.append(", ");
+					sb.append("; ");
 				}
 				count++;
 			}
 			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections3",
 						"ui.inprogress.selections.names",
-						new String[] { sb.toString() });
+						new String[] { sb.toString() + "."});
 			}
 		}
 
@@ -138,7 +142,7 @@ public class SavedSelectionsRenderer {
 			if (!"".equals(sb.toString())) {
 				UIMessage.make(parent, "selections4",
 						"ui.inprogress.selections.numbers",
-						new String[] { sb.toString() });
+						new String[] { sb.toString() + "."});
 			}
 		}
 		sb.setLength(0);
