@@ -194,10 +194,10 @@ $(document).ready(function() {
             $.fn.SMS.set.restoreSelections();
         }
 
-        if($("#statusType").length != 0 ){
-            if($("#statusType").val() == "EDIT" || $("#statusType").val() == "REUSE"){
+        if($("#statusType").length !== 0 ){
+            if($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE"){
                 $.fn.SMS.get.preserveDomSelections = true;
-                if($("#facebox").length != 0){
+                if($("#facebox").length !== 0){
                     $.fn.SMS.set.restoreTaskSelections();
                 }
             }
