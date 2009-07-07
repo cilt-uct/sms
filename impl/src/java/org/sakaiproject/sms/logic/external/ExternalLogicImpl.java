@@ -259,8 +259,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	@SuppressWarnings("unchecked")
 	private Set<Object> getMembersForEntityRef(String entityReference) {
 		final Set<Object> members = new HashSet<Object>();
-		Object obj = entityBroker.fetchEntity(entityReference);
-
+		
 		// if in the format /site/123/role/something
 		if ("site".equals(EntityReference.getPrefix(entityReference))
 				&& EntityReference.getIdFromRefByKey(entityReference, "role") != null) {
@@ -284,9 +283,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 				}
 			}
 
-		} else if (obj instanceof AuthzGroup) { // Any other authz group
-			AuthzGroup group = (AuthzGroup) obj;
-			members.addAll(group.getMembers());
+		} else { // Any other authz group
+			String groupId = EntityReference.getIdFromRefByKey(entityReference, "group");
+			if ( groupId != null ){
+				AuthzGroup group = siteService.findGroup(groupId);
+				members.addAll(group.getMembers());
+			}
 		}
 		return members;
 	}
