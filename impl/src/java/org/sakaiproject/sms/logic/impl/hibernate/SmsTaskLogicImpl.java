@@ -29,8 +29,10 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.sakaiproject.genericdao.api.search.Order;
+import org.sakaiproject.genericdao.api.search.Restriction;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.SmsLogic;
@@ -44,6 +46,8 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
+
+import com.sun.jmx.snmp.tasks.Task;
 
 /**
  * The data service will handle all sms task database transactions for the sms
@@ -182,67 +186,68 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 	private List<SmsTask> getSmsTasksForCriteria(SearchFilterBean searchBean)
 			throws SmsSearchException {
-		Criteria crit = smsDao.createCriteria(SmsTask.class);
+		Search search = new Search();
 		try {
 			// Message status
 			if (searchBean.getStatus() != null
 					&& !searchBean.getStatus().trim().equals("")) {
-				crit.add(Restrictions.ilike("statusCode", searchBean
+				search.addRestriction(new Restriction("statusCode", searchBean
 						.getStatus()));
 			}
 			if (searchBean.getMessageTypeId() != null) {
-				crit.add(Restrictions.eq("messageTypeId", searchBean
+				search.addRestriction(new Restriction("messageTypeId", searchBean
 						.getMessageTypeId()));
 			}
 			
 			// Sakai site Id
 			if (searchBean.getSakaiSiteId() != null) {
-				crit.add(Restrictions.eq("sakaiSiteId", searchBean
+				search.addRestriction(new Restriction("sakaiSiteId", searchBean
 						.getSakaiSiteId()));
 			}
 			
 			// Sender user Id
 			if (searchBean.getSenderUserId() != null) {
-				crit.add(Restrictions.eq("senderUserId", searchBean
+				search.addRestriction(new Restriction("senderUserId", searchBean
 						.getSenderUserId()));
 			}
 
 			// Sakai tool name
 			if (searchBean.getToolName() != null
 					&& !searchBean.getToolName().trim().equals("")) {
-				crit.add(Restrictions.ilike("sakaiToolName", searchBean
-						.getToolName(), MatchMode.ANYWHERE));
+				search.addRestriction(new Restriction("sakaiToolName", searchBean.getToolName()));
 			}
 
 			// Date to send start
 			if (searchBean.getDateFrom() != null) {
 				Date date = DateUtil.getDateFromStartDateString(searchBean
 						.getDateFrom());
-				crit.add(Restrictions.ge("dateToSend", date));
+				search.addRestriction(new Restriction("dateToSend", date, Restriction.GREATER));
 			}
 
 			// Date to send end
 			if (searchBean.getDateTo() != null) {
 				Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
-				crit.add(Restrictions.le("dateToSend", date));
+				search.addRestriction(new Restriction("dateToSend", date, Restriction.LESS));
 			}
 
 			// Sender name
 			if (searchBean.getSender() != null
 					&& !searchBean.getSender().trim().equals("")) {
-				crit.add(Restrictions.ilike("senderUserName", searchBean
-						.getSender(), MatchMode.ANYWHERE));
+				search.addRestriction(new Restriction("senderUserName", searchBean
+						.getSender()));
 			}
 
 			// Ordering
 			if (searchBean.getOrderBy() != null
 					&& !searchBean.getOrderBy().trim().equals("")) {
-				crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
-						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
+			/*	crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
+						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));*/
+				
+				search.addOrder(new Order(searchBean.getOrderBy(), searchBean.sortAsc()));
 			}
 
-			crit.setMaxResults(SmsConstants.READ_LIMIT);
+			
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -250,9 +255,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 			throw new SmsSearchException(e);
 		}
 
-		LOG.debug(crit.toString());
-
-		return crit.list();
+		return smsDao.findBySearch(SmsTask.class, search);
 	}
 
 	private int getPageSize() {

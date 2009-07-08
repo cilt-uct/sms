@@ -91,6 +91,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 	 * @return the sms config by sakai site id
 	 */
 	public SmsConfig getOrCreateSmsConfigBySakaiSiteId(String sakaiSiteId) {
+		
 		final List<SmsConfig> configs = smsDao.runQuery(
 				"from SmsConfig conf where conf.sakaiSiteId = :id",
 				new QueryParameter("id", sakaiSiteId, Hibernate.STRING));

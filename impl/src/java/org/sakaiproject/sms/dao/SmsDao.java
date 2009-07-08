@@ -1,5 +1,5 @@
 /**********************************************************************************
- * $URL:$
+ 	* $URL:$
  * $Id:$
  ***********************************************************************************
  *
@@ -25,20 +25,21 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
+import org.sakaiproject.genericdao.api.GeneralGenericDao;
 
-@SuppressWarnings("unchecked")
-public interface SmsDao {
-	
-	public void save(Object obj);
-	
-	public void delete(Object obj);
+public interface SmsDao extends GeneralGenericDao {
 	
 	public List runQuery(String hql, QueryParameter... queryParameters);
 	
 	public int executeUpdate(String hql, QueryParameter... queryParameters);
 		
-	public Object findById(Class className, Serializable id);
 	
+	/*
 	public Criteria createCriteria(Class className);
-
+	public void save(Object obj);
+	
+	public void delete(Object obj);
+		
+	public Object findById(Class className, Serializable id);
+ 	*/
 }	

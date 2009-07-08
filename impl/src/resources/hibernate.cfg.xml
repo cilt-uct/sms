@@ -6,11 +6,10 @@
 <hibernate-configuration>
 
 	<session-factory>
-<property name="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</property>
-		<!-- Hibernate properties are read from hibernate.properties -->
-		<!-- Only specify location of mapping files here-->
-		
-		<!-- This is causing the hibernate3 pluging to load the file twice -->
+        <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>
+        <property name="hibernate.connection.url">jdbc:hsqldb:.</property>
+        <property name="hibernate.connection.username">sa</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property>
 		<mapping resource="hibernate-mappings.hbm.xml" />
 	
 	</session-factory>

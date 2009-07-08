@@ -29,6 +29,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.sakaiproject.genericdao.api.search.Restriction;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.SmsLogic;
@@ -138,20 +140,22 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	private List<SmsTransaction> getSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
+		/*final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
 				.createAlias("smsAccount", "smsAccount");
-
+		 */
+		Search search = new Search();
 		try {
 			// Transaction type
 			if (searchBean.getTransactionType() != null
 					&& !searchBean.getTransactionType().trim().equals("")) {
-				crit.add(Restrictions.ilike("transactionTypeCode", searchBean
+				
+				search.addRestriction(new Restriction("transactionTypeCode", searchBean
 						.getTransactionType()));
 			}
 
 			// Account number
 			if (searchBean.getNumber() != null) {
-				crit.add(Restrictions.like("smsAccount.id", Long
+				search.addRestriction(new Restriction("smsAccount.id", Long
 						.valueOf(searchBean.getNumber())));
 			}
 
@@ -159,35 +163,35 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			if (searchBean.getDateFrom() != null) {
 				final Date date = DateUtil
 						.getDateFromStartDateString(searchBean.getDateFrom());
-				crit.add(Restrictions.ge("transactionDate", date));
+				search.addRestriction(new Restriction("transactionDate", date, Restriction.GREATER));
 			}
 
 			// Transaction date end
 			if (searchBean.getDateTo() != null) {
 				final Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
-				crit.add(Restrictions.le("transactionDate", date));
+				search.addRestriction(new Restriction("transactionDate", date, Restriction.LESS)); 
 			}
 
 			// Sender name
 			if (searchBean.getSender() != null
 					&& !searchBean.getSender().trim().equals("")) {
-				crit.add(Restrictions.ilike("sakaiUserId", searchBean
-						.getSender(), MatchMode.ANYWHERE));
+				search.addRestriction(new Restriction("sakaiUserId", searchBean
+						.getSender()));
 			}
 
 			// Ordering
 			if (searchBean.getOrderBy() != null
 					&& !searchBean.getOrderBy().trim().equals("")) {
-				crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
-						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
+				
+				search.addOrder(new org.sakaiproject.genericdao.api.search.Order(searchBean.getOrderBy(), searchBean.sortAsc()));
 			}
 			if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
-				crit.add(Restrictions.like("smsTaskId", Long.valueOf(searchBean
+				search.addRestriction(new Restriction("smsTaskId", Long.valueOf(searchBean
 						.getTaskId())));
 			}
-			crit.setMaxResults(SmsConstants.READ_LIMIT);
+			
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -195,7 +199,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			throw new SmsSearchException(e);
 		}
 
-		return crit.list();
+		return smsDao.findBySearch(SmsTransaction.class, search);
 	}
 
 	private int getPageSize() {
