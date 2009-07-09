@@ -279,9 +279,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		// The < test because very late delivery reports can change a message
 		// status from Timed out to Delivered, causing another increase of
 		// MESSAGES_PROCESSED called from MessageReceiverListenerImpl
-		String hql = "update SmsTask set MESSAGES_PROCESSED = MESSAGES_PROCESSED + 1  where TASK_ID = :smsTaskID and MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL";
-		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask
-				.getId(), Hibernate.LONG));
+		String hql = "update SmsTask set MESSAGES_PROCESSED = MESSAGES_PROCESSED + 1  where TASK_ID = ? and MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL";
+		smsDao.executeUpdate(hql, smsTask.getId());
 
 	}
 
@@ -293,8 +292,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 
 		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = :smsTaskID";
-		smsDao.executeUpdate(hql, new QueryParameter("smsTaskID", smsTask
-				.getId(), Hibernate.LONG));
+		smsDao.executeUpdate(hql, smsTask.getId());
 	}
 
 	/**
@@ -312,15 +310,9 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 						Hibernate.STRING));
 
-		String hql = "update SmsTask set STATUS_CODE = :doneStatus where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (:smsTaskStatus)";
-		smsDao.executeUpdate(hql,
-				new QueryParameter("doneStatus",
-						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-						Hibernate.STRING), new QueryParameter("smsTaskStatus",
-						new Object[] {
-								SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-								SmsConst_DeliveryStatus.STATUS_FAIL },
-						Hibernate.STRING));
+		String hql = "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN ('" +
+		  SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED + "','" + SmsConst_DeliveryStatus.STATUS_FAIL +"')";
+		smsDao.executeUpdate(hql,SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
 		return smsTasks;
 	}
 

@@ -336,7 +336,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * Tests the incrementing of messages processed and the updating of the
 	 * tasks status to complete.
 	 */
-	/* not sure why this test is failing ...
+	
 	public void testMessagesProcessedAndSetCompleteTasks() {
 		SmsTask testTask = createTestTask();
 		testTask.setGroupSizeActual(10);
@@ -358,7 +358,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(testTask);
 
 	}
-	*/
+	
 
 	/**
 	 * Test insert sms task.

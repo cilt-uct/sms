@@ -33,7 +33,7 @@ public interface SmsDao extends GeneralGenericDao {
 	
 	public int executeUpdate(String hql, QueryParameter... queryParameters);
 		
-	
+	public int executeUpdate(String hql, Object queryParameter);
 	/*
 	public Criteria createCriteria(Class className);
 	public void save(Object obj);

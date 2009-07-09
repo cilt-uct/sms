@@ -83,14 +83,30 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	public int executeUpdate(String hql, QueryParameter... queryParameters) {
 		Map<String, Object> paramsMap = paramToMap(queryParameters);
-		Collection<Object> values = paramsMap.values();
+		
 		int affected = 0;
-		System.out.println("we got: " + values.toArray().length + " paramaters");
-		affected = getHibernateTemplate().bulkUpdate(hql, values.toArray());
+		
+		if (paramsMap.size() > 1) {
+			Collection<Object> values = paramsMap.values();
+			System.out.println("we got: " + values.toArray().length + " paramaters");
+			affected = getHibernateTemplate().bulkUpdate(hql, values.toArray());
+		} else {
+			System.out.println("updating task: " + paramsMap.get(0));
+			affected = getHibernateTemplate().bulkUpdate(hql, paramsMap.get(0));
+		}
 		return affected;
 	}
 
+	public int executeUpdate(String hql, Object queryParameter) {
+		System.out.println(hql);
+		return getHibernateTemplate().bulkUpdate(hql, queryParameter);
+	}
 
+
+
+
+	
+	/*
 
 	private Query buildQuery(String hql, QueryParameter... queryParameters) {
 		Query query = getSession().createQuery(hql);
@@ -109,16 +125,16 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	}
 
 
+
+
+
+
 	private void rollback(TransactionStatus transaction) {
 		if (!transaction.isCompleted()) {
 			transactionManager.rollback(transaction);
 		}
 	}
-
-
 	
-	/*
-
 	public Criteria createCriteria(Class className) {
 		return getSession().createCriteria(className);
 	}
