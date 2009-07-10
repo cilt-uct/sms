@@ -21,14 +21,11 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -140,17 +137,18 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 
 	private List<SmsTransaction> getSmsTransactionsForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
-		/*final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
-				.createAlias("smsAccount", "smsAccount");
+		/*
+		 * final Criteria crit = smsDao.createCriteria(SmsTransaction.class)
+		 * .createAlias("smsAccount", "smsAccount");
 		 */
 		Search search = new Search();
 		try {
 			// Transaction type
 			if (searchBean.getTransactionType() != null
 					&& !searchBean.getTransactionType().trim().equals("")) {
-				
-				search.addRestriction(new Restriction("transactionTypeCode", searchBean
-						.getTransactionType()));
+
+				search.addRestriction(new Restriction("transactionTypeCode",
+						searchBean.getTransactionType()));
 			}
 
 			// Account number
@@ -163,14 +161,16 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			if (searchBean.getDateFrom() != null) {
 				final Date date = DateUtil
 						.getDateFromStartDateString(searchBean.getDateFrom());
-				search.addRestriction(new Restriction("transactionDate", date, Restriction.GREATER));
+				search.addRestriction(new Restriction("transactionDate", date,
+						Restriction.GREATER));
 			}
 
 			// Transaction date end
 			if (searchBean.getDateTo() != null) {
 				final Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
-				search.addRestriction(new Restriction("transactionDate", date, Restriction.LESS)); 
+				search.addRestriction(new Restriction("transactionDate", date,
+						Restriction.LESS));
 			}
 
 			// Sender name
@@ -183,15 +183,16 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 			// Ordering
 			if (searchBean.getOrderBy() != null
 					&& !searchBean.getOrderBy().trim().equals("")) {
-				
-				search.addOrder(new org.sakaiproject.genericdao.api.search.Order(searchBean.getOrderBy(), searchBean.sortAsc()));
+
+				search
+						.addOrder(new org.sakaiproject.genericdao.api.search.Order(
+								searchBean.getOrderBy(), searchBean.sortAsc()));
 			}
 			if (searchBean.getTaskId() != null
 					&& !"".equals(searchBean.getTaskId().trim())) {
-				search.addRestriction(new Restriction("smsTaskId", Long.valueOf(searchBean
-						.getTaskId())));
+				search.addRestriction(new Restriction("smsTaskId", Long
+						.valueOf(searchBean.getTaskId())));
 			}
-			
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -343,16 +344,18 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 	 */
 	private void insertTransaction(SmsTransaction smsTransaction,
 			String transactionType) {
+
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTransaction.getSmsAccount().getId());
 		smsTransaction.setTransactionTypeCode(transactionType);
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
-		// Update the account balance
-		account.setCredits(account.getCredits()
+		smsTransaction.setCreditBalance(account.getCredits()
 				+ smsTransaction.getTransactionCredits());
-		smsTransaction.setCreditBalance(account.getCredits());
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
-
+		String hql = "update SmsAccount set CREDITS = (CREDITS+?)  where ACCOUNT_ID = ?";
+		ArrayList<Object> parms = new ArrayList<Object>();
+		parms.add((smsTransaction.getTransactionCredits()));
+		parms.add(account.getId());
+		smsDao.executeUpdate(hql, parms);
 		persist(smsTransaction);
 	}
 

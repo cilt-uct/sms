@@ -21,15 +21,13 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.genericdao.api.search.Order;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -46,8 +44,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
-
-import com.sun.jmx.snmp.tasks.Task;
 
 /**
  * The data service will handle all sms task database transactions for the sms
@@ -195,59 +191,63 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						.getStatus()));
 			}
 			if (searchBean.getMessageTypeId() != null) {
-				search.addRestriction(new Restriction("messageTypeId", searchBean
-						.getMessageTypeId()));
+				search.addRestriction(new Restriction("messageTypeId",
+						searchBean.getMessageTypeId()));
 			}
-			
+
 			// Sakai site Id
 			if (searchBean.getSakaiSiteId() != null) {
 				search.addRestriction(new Restriction("sakaiSiteId", searchBean
 						.getSakaiSiteId()));
 			}
-			
+
 			// Sender user Id
 			if (searchBean.getSenderUserId() != null) {
-				search.addRestriction(new Restriction("senderUserId", searchBean
-						.getSenderUserId()));
+				search.addRestriction(new Restriction("senderUserId",
+						searchBean.getSenderUserId()));
 			}
 
 			// Sakai tool name
 			if (searchBean.getToolName() != null
 					&& !searchBean.getToolName().trim().equals("")) {
-				search.addRestriction(new Restriction("sakaiToolName", searchBean.getToolName()));
+				search.addRestriction(new Restriction("sakaiToolName",
+						searchBean.getToolName()));
 			}
 
 			// Date to send start
 			if (searchBean.getDateFrom() != null) {
 				Date date = DateUtil.getDateFromStartDateString(searchBean
 						.getDateFrom());
-				search.addRestriction(new Restriction("dateToSend", date, Restriction.GREATER));
+				search.addRestriction(new Restriction("dateToSend", date,
+						Restriction.GREATER));
 			}
 
 			// Date to send end
 			if (searchBean.getDateTo() != null) {
 				Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
-				search.addRestriction(new Restriction("dateToSend", date, Restriction.LESS));
+				search.addRestriction(new Restriction("dateToSend", date,
+						Restriction.LESS));
 			}
 
 			// Sender name
 			if (searchBean.getSender() != null
 					&& !searchBean.getSender().trim().equals("")) {
-				search.addRestriction(new Restriction("senderUserName", searchBean
-						.getSender()));
+				search.addRestriction(new Restriction("senderUserName",
+						searchBean.getSender()));
 			}
 
 			// Ordering
 			if (searchBean.getOrderBy() != null
 					&& !searchBean.getOrderBy().trim().equals("")) {
-			/*	crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
-						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));*/
-				
-				search.addOrder(new Order(searchBean.getOrderBy(), searchBean.sortAsc()));
-			}
+				/*
+				 * crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
+				 * .getOrderBy()) : Order.desc(searchBean.getOrderBy())));
+				 */
 
-			
+				search.addOrder(new Order(searchBean.getOrderBy(), searchBean
+						.sortAsc()));
+			}
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
@@ -291,7 +291,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 
-		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = :smsTaskID";
+		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = :?";
 		smsDao.executeUpdate(hql, smsTask.getId());
 	}
 
@@ -310,9 +310,14 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 						Hibernate.STRING));
 
-		String hql = "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN ('" +
-		  SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED + "','" + SmsConst_DeliveryStatus.STATUS_FAIL +"')";
-		smsDao.executeUpdate(hql,SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+		String hql = "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
+
+		ArrayList<Object> parms = new ArrayList<Object>();
+		parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+		parms.add(SmsConst_DeliveryStatus.STATUS_FAIL);
+		parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+		smsDao.executeUpdate(hql, parms);
+
 		return smsTasks;
 	}
 
