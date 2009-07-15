@@ -291,7 +291,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 
-		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = :?";
+		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = ?";
 		smsDao.executeUpdate(hql, smsTask.getId());
 	}
 
