@@ -43,7 +43,7 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, inprogressIcon);
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "time");
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, inprogressIcon);
-		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "tick");
+		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, inprogressIcon);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "tick");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cross");	
 		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	
