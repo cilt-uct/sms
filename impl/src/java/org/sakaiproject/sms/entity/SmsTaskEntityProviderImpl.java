@@ -29,9 +29,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -46,6 +48,7 @@ import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.Statisticable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
@@ -67,8 +70,9 @@ import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 
-public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful{
+public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful, Statisticable {
 
 	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
 
@@ -83,6 +87,16 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	private static String MESSAGE_BUNDLE = "messages.";
 	
 	private static String STATUS_SCHEDULED = "scheduled";
+
+	// Statisticable for event visibility in SiteStats
+	public final static String		TOOL_ID			= "sakai.sms.user";
+	public final static String		EVENT_NEW		= "sms.task.new";
+	public final static String		EVENT_EDIT		= "sms.task.revise";
+	public final static String		EVENT_DELETE	= "sms.task.delete";
+	public final static String[]	EVENT_KEYS		= 
+							new String[] {
+								EVENT_NEW, EVENT_EDIT, EVENT_DELETE
+							};
 	
 	/**
 	 * Inject services
@@ -538,4 +552,23 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			this.sortName = sortName;
 		}	
 	}
+
+	public String getAssociatedToolId() {
+		return TOOL_ID;
+	}
+
+	public String[] getEventKeys() {
+		return EVENT_KEYS;
+	}
+
+	public Map<String, String> getEventNames(Locale locale) {
+		Map<String, String> localeEventNames = new HashMap<String, String>(); 
+		ResourceLoader msgs = new ResourceLoader("Events");
+		msgs.setContextLocale(locale);
+		for(int i=0; i<EVENT_KEYS.length; i++) {
+			localeEventNames.put(EVENT_KEYS[i], msgs.getString(EVENT_KEYS[i]));
+		}
+		return localeEventNames;
+	}
+
 }
