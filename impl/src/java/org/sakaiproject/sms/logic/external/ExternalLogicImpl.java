@@ -810,6 +810,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX, PREF_INTERNATIONAL_PREFIX_DEFAULT);
 	}
 
+	@SuppressWarnings("unchecked")
+	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
+		Map<String, String> usernames = new HashMap<String, String>();
+		if (sakaiUserIds != null && sakaiUserIds.size() > 0) {
+			List<User> users = userDirectoryService.getUsers(sakaiUserIds);
+			for (User user : users) {
+				usernames.put(user.getId(), user.getSortName());
+			}
+		}
+		return usernames;
+	}
+
 	public void postEvent(String event, String ref, String context) {
 
 		/* If using this code with 2-5-x, use this instead (but events will lack context information): 

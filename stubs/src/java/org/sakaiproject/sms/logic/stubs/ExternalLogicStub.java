@@ -300,6 +300,11 @@ public class ExternalLogicStub implements ExternalLogic {
 		return "27";
 	}
 
+	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public void postEvent(String event, String ref, String context) {
 		return;
 	}

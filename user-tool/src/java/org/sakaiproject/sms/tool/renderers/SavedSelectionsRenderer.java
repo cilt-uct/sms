@@ -21,7 +21,9 @@
 package org.sakaiproject.sms.tool.renderers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -110,12 +112,10 @@ public class SavedSelectionsRenderer {
 		count = 1;
 		sb.setLength(0);
 		if (sakaiUserIds != null && sakaiUserIds.size() > 0) {
-			for (String user : sakaiUserIds) {
-				/**TODO: Extracting names one by one may not be db efficient or 
-				scallable. External logic should be extended to 
-				call a list of ids and return a map with corresponding
-				names **/
-				sb.append(externalLogic.getSakaiUserSortName(user));
+			Map<String, String> sortNamesMap = externalLogic.getSakaiUserDisplayNames(sakaiUserIds);
+			Collection<String> sortNames = sortNamesMap.values();
+			for (String name : sortNames) {
+				sb.append(name);
 				if (count != sakaiUserIds.size()) {
 					sb.append("; ");
 				}

@@ -293,6 +293,13 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public String getLocalInternationalPrefix();
+
+	/**
+	 * Get a list of sakai users sortnames with corresponding UUIds.
+	 * @param sakaiUserIds
+	 * @return each map entry has a userId and corresponding sortname
+	 */
+	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds);
 	
 	/**
 	 * Log an event
