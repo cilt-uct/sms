@@ -300,4 +300,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return "27";
 	}
 
+	public void postEvent(String event, String ref, String context) {
+		return;
+	}
+
 }
