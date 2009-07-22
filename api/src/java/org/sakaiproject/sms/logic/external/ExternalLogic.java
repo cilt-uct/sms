@@ -36,6 +36,12 @@ import org.sakaiproject.user.api.User;
  */
 public interface ExternalLogic {
 
+	// Events for task actions
+	
+	public final static String SMS_EVENT_TASK_CREATE = "sms.task.new";
+	public final static String SMS_EVENT_TASK_REVISE = "sms.task.revise";
+	public final static String SMS_EVENT_TASK_DELETE = "sms.task.delete";
+	
 	// Permissions for SMS
 
 	/**
@@ -287,4 +293,11 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public String getLocalInternationalPrefix();
+	
+	/**
+	 * Log an event
+	 * @return 
+	 */
+	public void postEvent(String event, String ref, String context);
+
 }

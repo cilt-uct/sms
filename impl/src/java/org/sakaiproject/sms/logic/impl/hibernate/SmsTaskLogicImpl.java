@@ -79,6 +79,9 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * Deletes and the given entity from the DB
 	 */
 	public void deleteSmsTask(SmsTask smsTask) {
+
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_DELETE, "/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
+
 		delete(smsTask);
 	}
 

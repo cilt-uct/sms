@@ -808,6 +808,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX, PREF_INTERNATIONAL_PREFIX_DEFAULT);
 	}
 
+	public void postEvent(String event, String ref, String context) {
+
+		// TODO - we want to record context here, but may break 2-5-x compatibility by doing so 
+		entityBroker.fireEvent(event, ref);
+	}
+
 
 
 }

@@ -258,6 +258,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         developerHelperService.copyBean(task, current, 0, new String[] {"id", "creationDate"}, true);
         //TODO validate the task
         smsTaskLogic.persistSmsTask(task);
+        
+        externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_REVISE, "/sms-task/" + task.getId(), task.getSakaiSiteId());
 	}
 
 	public void deleteEntity(EntityReference ref, Map<String, Object> params) {

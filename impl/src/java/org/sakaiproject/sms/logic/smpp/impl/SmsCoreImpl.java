@@ -458,6 +458,8 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE, "/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
+		
 		return smsTask;
 	}
 
