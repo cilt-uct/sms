@@ -98,7 +98,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	private ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
-	private BindThread reBindTheard;
+	private BindThread reBindThread;
 
 	private boolean gatewayBound = false;
 
@@ -474,9 +474,9 @@ public class SmsSmppImpl implements SmsSmpp {
 										.valueOf(smsSmppProperties
 												.getDestAddressNPI()),
 								smsSmppProperties.getAddressRange()));
-				if (reBindTheard != null) {
-					reBindTheard.allDone = true;
-					reBindTheard = null;
+				if (reBindThread != null) {
+					reBindThread.allDone = true;
+					reBindThread = null;
 				}
 				gatewayBound = true;
 				LOG.info("EnquireLinkTimer is set to "
@@ -506,9 +506,9 @@ public class SmsSmppImpl implements SmsSmpp {
 							session.unbindAndClose();
 							if (arg0.equals(SessionState.CLOSED)
 									&& !appserverShuttingDown
-									&& reBindTheard == null) {
+									&& reBindThread == null) {
 
-								reBindTheard = new BindThread();
+								reBindThread = new BindThread();
 
 							}
 						}
@@ -519,9 +519,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error("Bind operation failed. " + e);
 				gatewayBound = false;
 				session.unbindAndClose();
-				if (!appserverShuttingDown && reBindTheard == null) {
+				if (!appserverShuttingDown && reBindThread == null) {
 					LOG.info("Starting Binding thread");
-					reBindTheard = new BindThread();
+					reBindThread = new BindThread();
 				}
 
 			}
@@ -599,11 +599,11 @@ public class SmsSmppImpl implements SmsSmpp {
 		LOG.info("destroy()");
 		disconnectGateWay();
 		appserverShuttingDown = true;
-		if (reBindTheard != null) {
+		if (reBindThread != null) {
 			LOG.debug("Stopping Bind Thread....");
-			reBindTheard.allDone = true;
-			reBindTheard.stop();
-			reBindTheard = null;
+			reBindThread.allDone = true;
+			reBindThread.stop();
+			reBindThread = null;
 			LOG.debug("Stopped....");
 
 		}
