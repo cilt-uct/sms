@@ -3,7 +3,7 @@
  * $Id: $
  ***********************************************************************************
  *
- * Copyright (c) 2006, 2007 The Sakai Foundation
+ * Copyright (c) 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
+
 package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
@@ -69,13 +70,9 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
- * Implementation of {@link ExternalLogic} with Sakai-specific code commented
- * out for the moment
- * 
+ * Implementation of {@link ExternalLogic} for Sakai-specific code.
  */
 public class ExternalLogicImpl implements ExternalLogic {
-
-	
 
 	private static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
 
@@ -559,7 +556,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public SmsSmppProperties getSmppProperties(SmsSmppProperties smsSmppProperties) {
 
-
 		LOG.debug("Reading properties from ServerConfigurationService");
 
 		String smscAddress = serverConfigurationService.getString(
@@ -606,6 +602,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 		boolean bind = serverConfigurationService.getBoolean("sms.BindThisNode", true);
 		smsSmppProperties.setBindThisNode(bind);
 
+		int sendingDelay = serverConfigurationService.getInt("sms.sendingDelay", -1);
+		if (sendingDelay >= 0) {
+			smsSmppProperties.setSendingDelay(sendingDelay);
+		}
+		
 		LOG.debug("Read properties from ServerConfigurationService");
 
 		return smsSmppProperties;
