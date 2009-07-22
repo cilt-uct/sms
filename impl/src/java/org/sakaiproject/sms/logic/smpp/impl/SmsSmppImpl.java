@@ -451,14 +451,15 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		if (!gatewayBound) {
 
-			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
-					+ " on port " + smsSmppProperties.getSMSCPort()
-					+ " with Username " + smsSmppProperties.getSMSCUsername());
-			
 			if (!smsSmppProperties.isBindThisNode()) {
-				LOG.info("This node is set not to bind");
+				LOG.info("This node is set not to connect to an SMPP gateway");
 				return false;
 			}
+			
+			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
+					+ " on port " + smsSmppProperties.getSMSCPort()
+					+ " with username " + smsSmppProperties.getSMSCUsername());
+			
 			try {
 				session = new SMPPSession();
 				session.connectAndBind(smsSmppProperties.getSMSCAddress(),
@@ -480,14 +481,14 @@ public class SmsSmppImpl implements SmsSmpp {
 				gatewayBound = true;
 				LOG.info("EnquireLinkTimer is set to "
 						+ smsSmppProperties.getEnquireLinkTimeOut()
-						+ " miliseconds");
+						+ " milliseconds");
 				session.setEnquireLinkTimer(smsSmppProperties
 						.getEnquireLinkTimeOut());
 
 				gatewayBound = true;
 				LOG.info("TransactionTimer is set to "
 						+ smsSmppProperties.getTransactionTimer()
-						+ " miliseconds");
+						+ " milliseconds");
 				session.setTransactionTimer(smsSmppProperties
 						.getTransactionTimer());
 				session
