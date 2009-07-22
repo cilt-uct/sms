@@ -49,6 +49,8 @@ import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.event.api.NotificationService;
+import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -810,9 +812,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public void postEvent(String event, String ref, String context) {
 
-		// TODO - we want to record context here, but may break 2-5-x compatibility by doing so 
-		entityBroker.fireEvent(event, ref);
+		/* If using this code with 2-5-x, use this instead (but events will lack context information): 
+			EventTrackingService.post(EventTrackingService.newEvent(event, ref, true, NotificationService.NOTI_NONE));
+		*/
+		
+		EventTrackingService.post(EventTrackingService.newEvent(event, ref, context, true, NotificationService.NOTI_NONE));
 	}
+	
+	
 
 
 
