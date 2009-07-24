@@ -78,8 +78,10 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 */
 	public synchronized void deleteSmsAccount(SmsAccount smsAccount) {
 		delete(smsAccount);
-		
-		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_DELETE, "/sms-account/" + smsAccount.getId(), null);
+	
+		if (externalLogic != null) {
+			externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_DELETE, "/sms-account/" + smsAccount.getId(), null);
+		}
 	}		
 
 	/**
