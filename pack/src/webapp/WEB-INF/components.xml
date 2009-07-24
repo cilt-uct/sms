@@ -19,9 +19,12 @@
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl">
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+        <property name="externalLogic"
+            ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 		<property name="smsDao" ref="org.sakaiproject.sms.dao.SmsDao" />
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 	</bean>
+	
 	<bean id="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"
 		class="org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl">
 		<property name="externalLogic"
@@ -68,6 +71,8 @@
 		init-method="init">
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+        <property name="externalLogic"
+            ref="org.sakaiproject.sms.logic.external.ExternalLogic" />			
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsSmpp" class="org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl"

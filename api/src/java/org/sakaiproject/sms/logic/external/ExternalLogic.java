@@ -41,6 +41,11 @@ public interface ExternalLogic {
 	public final static String SMS_EVENT_TASK_CREATE = "sms.task.new";
 	public final static String SMS_EVENT_TASK_REVISE = "sms.task.revise";
 	public final static String SMS_EVENT_TASK_DELETE = "sms.task.delete";
+
+	public final static String SMS_EVENT_ACCOUNT_CREATE = "sms.account.new";
+	public final static String SMS_EVENT_ACCOUNT_DELETE = "sms.account.delete";
+	public final static String SMS_EVENT_ACCOUNT_REVISE = "sms.account.revise";
+	public final static String SMS_EVENT_ACCOUNT_CREDIT = "sms.account.credit";
 	
 	// Permissions for SMS
 

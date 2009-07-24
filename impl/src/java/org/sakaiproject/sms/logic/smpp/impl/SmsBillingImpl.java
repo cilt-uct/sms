@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
@@ -62,6 +63,12 @@ public class SmsBillingImpl implements SmsBilling {
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
+	}
+
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
 
 	public void setHibernateLogicLocator(
@@ -124,6 +131,9 @@ public class SmsBillingImpl implements SmsBilling {
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
+		
+		String txRef = "/sms-account/" + account.getId() + "/transaction/" + smsTransaction.getId();
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef, null);
 	}
 
 	/**

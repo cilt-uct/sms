@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.hibernate.Hibernate;
 import org.sakaiproject.sms.logic.SmsLogic;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
@@ -51,6 +52,12 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
 	}
@@ -71,7 +78,9 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 */
 	public synchronized void deleteSmsAccount(SmsAccount smsAccount) {
 		delete(smsAccount);
-	}
+		
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_DELETE, "/sms-account/" + smsAccount.getId(), null);
+	}		
 
 	/**
 	 * Gets a SmsAccount entity for the given id
