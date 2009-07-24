@@ -122,6 +122,12 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		}
 
 		persist(smsAccount);
+		
+		// TODO - Distinguish between creation and update events
+		
+		if (externalLogic != null) {
+			externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_REVISE, "/sms-account/" + smsAccount.getId(), null);
+		}
 	}
 
 	/**
