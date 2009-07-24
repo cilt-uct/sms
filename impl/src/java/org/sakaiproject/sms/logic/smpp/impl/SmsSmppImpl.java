@@ -40,37 +40,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jsmpp.InvalidResponseException;
-import org.jsmpp.PDUException;
-import org.jsmpp.bean.Address;
-import org.jsmpp.bean.AlertNotification;
-import org.jsmpp.bean.Alphabet;
-import org.jsmpp.bean.BindType;
-import org.jsmpp.bean.DataSm;
-import org.jsmpp.bean.DeliverSm;
-import org.jsmpp.bean.DeliveryReceipt;
-import org.jsmpp.bean.ESMClass;
-import org.jsmpp.bean.GeneralDataCoding;
-import org.jsmpp.bean.MessageClass;
-import org.jsmpp.bean.MessageType;
-import org.jsmpp.bean.NumberingPlanIndicator;
-import org.jsmpp.bean.RegisteredDelivery;
-import org.jsmpp.bean.ReplaceIfPresentFlag;
-import org.jsmpp.bean.SMSCDeliveryReceipt;
-import org.jsmpp.bean.TypeOfNumber;
-import org.jsmpp.extra.NegativeResponseException;
-import org.jsmpp.extra.ProcessRequestException;
-import org.jsmpp.extra.ResponseTimeoutException;
-import org.jsmpp.extra.SessionState;
-import org.jsmpp.session.BindParameter;
-import org.jsmpp.session.DataSmResult;
-import org.jsmpp.session.MessageReceiverListener;
-import org.jsmpp.session.SMPPSession;
-import org.jsmpp.session.SessionStateListener;
-import org.jsmpp.util.AbsoluteTimeFormatter;
-import org.jsmpp.util.DeliveryReceiptState;
-import org.jsmpp.util.InvalidDeliveryReceiptException;
-import org.jsmpp.util.TimeFormatter;
+import org.sakaiproject.event.api.SessionState;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -170,12 +140,16 @@ public class SmsSmppImpl implements SmsSmpp {
 					return;
 				}
 				try {
+					LOG.info("Trying to rebind");
+					connectToGateway();
 					Thread.sleep(smsSmppProperties.getBindThreadTimer());
 				} catch (InterruptedException e) {
 
+				} catch (Exception e) {
+					LOG.error("BindThread encountered an error:");
+					LOG.error(e.getMessage());
+
 				}
-				LOG.info("Trying to rebind");
-				connectToGateway();
 
 			}
 		}
@@ -215,7 +189,8 @@ public class SmsSmppImpl implements SmsSmpp {
 					Thread.sleep(1000);
 
 				} catch (Exception e) {
-
+					LOG.error("MOmessageQueueThread encountered an error:");
+					LOG.error(e.getMessage());
 				}
 			}
 		}
@@ -279,7 +254,9 @@ public class SmsSmppImpl implements SmsSmpp {
 					Thread.sleep(1000);
 
 				} catch (Exception e) {
-
+					LOG
+							.error("DeliveryReportQueueThread encountered an error:");
+					LOG.error(e.getMessage());
 				}
 			}
 		}
@@ -459,7 +436,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
 					+ " on port " + smsSmppProperties.getSMSCPort()
 					+ " with username " + smsSmppProperties.getSMSCUsername());
-			
+
 			try {
 				session = new SMPPSession();
 				session.connectAndBind(smsSmppProperties.getSMSCAddress(),
@@ -586,12 +563,12 @@ public class SmsSmppImpl implements SmsSmpp {
 		LOG.info("init()");
 		loadPropertiesFile();
 		loadSmsSmppProperties();
-		//if (smsSmppProperties.isBindThisNode()) {
-			connectToGateway();
-			setupStatusBridge();
-		/*} else {
-			LOG.warn("this node won't bind to the gateway");
-		}*/
+		// if (smsSmppProperties.isBindThisNode()) {
+		connectToGateway();
+		setupStatusBridge();
+		/*
+		 * } else { LOG.warn("this node won't bind to the gateway"); }
+		 */
 		LOG.debug("SmsSmpp implementation is started");
 	}
 
@@ -827,12 +804,10 @@ public class SmsSmppImpl implements SmsSmpp {
 			smsSmppProperties
 					.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
 		}
-		
-		
-		//get the overides of defaults from Sakai properties
+
+		// get the overides of defaults from Sakai properties
 		smsSmppProperties = hibernateLogicLocator.getExternalLogic()
-		.getSmppProperties(smsSmppProperties);
-		
+				.getSmppProperties(smsSmppProperties);
 
 	}
 
@@ -983,7 +958,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				message.setFailReason("Sms Gateway is not bound");
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			} else {
-				LOG.debug("Sms gateway not bound on this node queueing message");
+				LOG
+						.debug("Sms gateway not bound on this node queueing message");
 				message.setFailReason("Sms gateway not bound on this node");
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 			}

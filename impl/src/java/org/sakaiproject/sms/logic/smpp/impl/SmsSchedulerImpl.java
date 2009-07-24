@@ -112,8 +112,9 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		}
 
 		public void work() {
-			try {
-				while (true) {
+
+			while (true) {
+				try {
 					if (stopScheduler) {
 						return;
 					}
@@ -122,14 +123,13 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					smsCore.processTimedOutDeliveryReports();
 					smsCore.checkAndSetTasksCompleted();
 					smsCore.processVeryLateDeliveryReports();
-
 					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000);
+				} catch (InterruptedException e) {
+					// no need to log the error
+				} catch (Exception e) {
+					LOG.error("SoScheduler encountered an error : "
+							+ e.getMessage());
 				}
-			} catch (InterruptedException e) {
-				// no need to log the error
-			} catch (Exception e) {
-				LOG.error("SoScheduler encountered an error : "
-						+ e.getMessage());
 			}
 		}
 	}
