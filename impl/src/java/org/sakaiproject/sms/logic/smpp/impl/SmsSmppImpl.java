@@ -40,7 +40,37 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.event.api.SessionState;
+import org.jsmpp.InvalidResponseException;
+import org.jsmpp.PDUException;
+import org.jsmpp.bean.Address;
+import org.jsmpp.bean.AlertNotification;
+import org.jsmpp.bean.Alphabet;
+import org.jsmpp.bean.BindType;
+import org.jsmpp.bean.DataSm;
+import org.jsmpp.bean.DeliverSm;
+import org.jsmpp.bean.DeliveryReceipt;
+import org.jsmpp.bean.ESMClass;
+import org.jsmpp.bean.GeneralDataCoding;
+import org.jsmpp.bean.MessageClass;
+import org.jsmpp.bean.MessageType;
+import org.jsmpp.bean.NumberingPlanIndicator;
+import org.jsmpp.bean.RegisteredDelivery;
+import org.jsmpp.bean.ReplaceIfPresentFlag;
+import org.jsmpp.bean.SMSCDeliveryReceipt;
+import org.jsmpp.bean.TypeOfNumber;
+import org.jsmpp.extra.NegativeResponseException;
+import org.jsmpp.extra.ProcessRequestException;
+import org.jsmpp.extra.ResponseTimeoutException;
+import org.jsmpp.extra.SessionState;
+import org.jsmpp.session.BindParameter;
+import org.jsmpp.session.DataSmResult;
+import org.jsmpp.session.MessageReceiverListener;
+import org.jsmpp.session.SMPPSession;
+import org.jsmpp.session.SessionStateListener;
+import org.jsmpp.util.AbsoluteTimeFormatter;
+import org.jsmpp.util.DeliveryReceiptState;
+import org.jsmpp.util.InvalidDeliveryReceiptException;
+import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -432,7 +462,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.info("This node is set not to connect to an SMPP gateway");
 				return false;
 			}
-			
+
 			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
 					+ " on port " + smsSmppProperties.getSMSCPort()
 					+ " with username " + smsSmppProperties.getSMSCUsername());
