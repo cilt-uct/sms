@@ -607,6 +607,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setSendingDelay(sendingDelay);
 		}
 		
+		String systemType = serverConfigurationService.getString("sms.systemType").trim();
+		if (systemType == null || systemType.equals("")) {
+			LOG.debug("systemType not found");
+		} else {
+			smsSmppProperties.setSystemType(systemType);
+		}
+		
 		LOG.debug("Read properties from ServerConfigurationService");
 
 		return smsSmppProperties;
