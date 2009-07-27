@@ -155,31 +155,18 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			//show table rows
 			for (SmsTask sms : smsTasks){
 				UIBranchContainer row = UIBranchContainer.make(tofill, "task-row:");
-				String status = sms.getStatusCode();
-				String detailView = statusUtils.getStatusProducer(status);
-				String statusFullName = statusUtils.getStatusFullName(status);
+				String statusCode = sms.getStatusCode();
+				String statusFullName = statusUtils.getStatusFullName(statusCode);
 				SmsParams statusParams = new SmsParams();
-				
-				//Fix additional parameter. Used by the {@link ProgressSmsDetailProducer} to show either inprogress or scheduled task
-				if (ProgressSmsDetailProducer.const_Inprogress.equals(detailView)){
-					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
-					statusParams.status = ProgressSmsDetailProducer.const_Inprogress;
-				}else if (ProgressSmsDetailProducer.const_Scheduled.equals(detailView)){
-					statusParams.viewID = ProgressSmsDetailProducer.VIEW_ID;
-					statusParams.status = ProgressSmsDetailProducer.const_Scheduled;
-				}else{
-					statusParams.viewID = detailView;
-					statusParams.status = ProgressSmsDetailProducer.const_Normal;
-				}
-				
 				statusParams.setId(sms.getId() + "");
+				statusParams.viewID = SmsDetailProducer.VIEW_ID;
 				UIInternalLink.make(row, "task-message", sms.getMessageBody(), statusParams);
-				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(status));
+				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(statusCode));
 				statusIcon.decorate(new UIAlternativeTextDecorator(statusFullName)); 
 				statusIcon.decorate(new UITooltipDecorator(statusFullName)); 
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				
-				if ( ProgressSmsDetailProducer.const_Inprogress.equals(detailView)){
+				if ( StatusUtils.key_inprogress.equals(statusUtils.getStatusUIKey(statusCode)) ){
 					UIOutput.make(row, "task-time", statusFullName);
 				}else{
 					UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));

@@ -53,7 +53,7 @@ $(document).ready(function() {
     }
 
     function smsConfirm() {
-        var msg = $("#actionDelete").text();
+        var msg = $("span[id*=actionDelete]").eq(0).text();
         return confirm(msg);
     }
 

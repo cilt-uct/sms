@@ -15,7 +15,7 @@
                         src="../js/sms.utils.js"></script>
 <script type="text/javascript" language="JavaScript"
                 src="../js/sms.task.js"></script>
-<title rsf:id="page-title">In Progress SMS Detail</title>
+<title rsf:id="page-title">Sent SMS Detail</title>
 </head>
 <body>
 <div class="portletBody">
@@ -24,7 +24,12 @@
       <li>Message for user here</li>
     </ul>
   </div>
-    <div rsf:id="message:" />
+  
+  
+  <div rsf:id="sms-message:" />
+  
+  	<!-- Start Active Task -->
+	<div rsf:id="active:">
   <h2 rsf:id="status:" class="title"> <img rsf:id="sms-status" src="../images/calx.gif" alt="Delivered" />
     <span rsf:id="sms-status-title" class="">Delivered</span>
   </h2>
@@ -71,6 +76,70 @@
     <input rsf:id="back" type="button" value="Back" rel="back"/>
   </div>
   </form>
+  </div>
+    <!-- End Active Task -->
+  
+  <!-- Start Sent Task -->
+  <div rsf:id="sent:">
+  <h2 rsf:id="status:" class="title">
+  	<img rsf:id="sms-status" src="../images/calx.gif" alt="Delivered" />
+    <span rsf:id="sms-status-title" class="smsGreen">Delivered</span>
+  </h2>
+  <div rsf:id="sms-sent">Sending completed: 10/12/2009 11.15pm</div>
+  <h3 rsf:id="recipients">Recipients: 54 of 67</h3>
+  <table width="274" class="listHier lines" id="smsTable">
+    <thead>
+      <tr>
+        <th width="40%"><span rsf:id="recipient-header">Recipient Name</span></th>
+        <th width="40%"><span rsf:id="username-header">Username</span></th>
+        <th width="20%"><span rsf:id="status-header">Status</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr rsf:id="sms-row:">
+        <td rsf:id="sms-recipient" rel="Recipient">Bloggs Joe</td>
+        <td rsf:id="sms-recipient-username" rel="Recipient Username">----</td>
+        <td rel="sent-status">
+        <img rsf:id="sms-recipient-status" src="../images/calx.gif" alt="Delivered" /></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="act">
+        <input rsf:id="back-button" type="button" value="Back" rel="back"/>
+      </div>
+	 </div>  
+	<!-- End Sent Task -->  
+	
+	<!-- Start Failed Task -->
+  <div rsf:id="failed:">
+  <h2 rsf:id="status:" class="title"> <img rsf:id="sms-status" src="../images/calx.gif" alt="Delivered" />
+    <span rsf:id="sms-status-title" class="smsRed">Delivered</span>
+  </h2>
+  <div rsf:id="sms-sent">Sending completed: 10/12/2009 11.15pm</div>
+    <div rsf:id="reason">Failure reason: blah</div>
+    <h4 rsf:id="recipients">Recipients: blah</h4>
+      <form rsf:id="editForm">
+          <div id="error" style="display:none;" class="smsAlert">
+                    <div rsf:id="msg=ui.console.alert">
+                        Alert:
+                    </div>
+                    <span rsf:id="msg=ui.console.alert.invalidparams">
+                        100
+                    </span>
+          </div>
+  <div class="act">
+  	<span rsf:id="actionDelete" id="" style="display:none;">Are you sure?</span>
+  	<input rsf:id="smsId" type="hidden" value="" name="smsId"/>
+    <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
+    <input rsf:id="edit" type="submit" value="Edit and resend" class="active"/>                      
+    <input rsf:id="delete" id="smsDelete" type="button" value="Delete SMS" rel="task"/>
+    <input rsf:id="back" type="button" value="Back" rel="back"/>
+  </div>
+  </form>
+  </div>
+    <!-- End Failed Task -->
+	
+	
 </div>
 </body>
 </html>

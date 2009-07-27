@@ -4,11 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.tool.producers.FailedSmsDetailProducer;
-import org.sakaiproject.sms.tool.producers.ProgressSmsDetailProducer;
-import org.sakaiproject.sms.tool.producers.SendSMSProducer;
-import org.sakaiproject.sms.tool.producers.SentSmsDetailProducer;
-
 import uk.org.ponder.messageutil.MessageLocator;
 
 public class StatusUtils {
@@ -25,6 +20,12 @@ public class StatusUtils {
 	public static final String statusType_EDIT = "EDIT";
 	public static final String statusType_REUSE = "REUSE";
 	
+	//Status keywords for the task statuses grouped and simplified
+	public static final String key_sent = "tick";
+	public static final String key_failed = "cross";
+	public static final String key_pending = "time";
+	public static final String key_inprogress = inprogressIcon;
+	
 	private MessageLocator messageLocator;
 	public void setMessageLocator(MessageLocator messageLocator) {
 		this.messageLocator = messageLocator;
@@ -33,20 +34,20 @@ public class StatusUtils {
 	//populate status icon library
 	private Map<String, String> getStatusLibrary(){
 		Map<String, String> lib = new HashMap<String, String>();
-		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, inprogressIcon);
-		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, "tick");
-		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, "cross");
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, inprogressIcon);
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, inprogressIcon);
+		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, key_failed);
+		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, key_inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, key_sent);
+		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, key_failed);
+		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, key_failed);
+		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, key_failed);
+		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, key_inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, key_inprogress);
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "time");
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, inprogressIcon);
-		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, inprogressIcon);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "tick");
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "cross");	
-		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	
+		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, key_inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, key_inprogress);
+		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_sent);
+		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_failed);	
+		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	//Drafts not yet supported
 		return lib;	
 	}
 	
@@ -69,28 +70,9 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "status.draft");	
 		return lib;	
 	}
-	//populate path to specific view producer depending on status code
-	private Map<String, String> getStatusProducer(){
-		Map<String, String> lib = new HashMap<String, String>();
-		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, ProgressSmsDetailProducer.const_Inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, SentSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, ProgressSmsDetailProducer.const_Inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, ProgressSmsDetailProducer.const_Inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, ProgressSmsDetailProducer.const_Scheduled);
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, ProgressSmsDetailProducer.const_Inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, SentSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, SentSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, FailedSmsDetailProducer.VIEW_ID);
-		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, SendSMSProducer.VIEW_ID);	
-		
-		return lib;	
-	}
+	
 	/**
-	 * Retrieve full path to status icon
+	 * Retrieve full path to status icon 
 	 * @param statusCode Can be any of the {@link SmsConst_DeliveryStatus.STATUS_*}
 	 * @return full path to icon e.g. "/library/image/silk/tick.png"
 	 */
@@ -112,12 +94,13 @@ public class StatusUtils {
 	}	
 	
 	/**
-	 * Retrieve readable name of status code
+	 * Retrieve a key representing the group of a status 
+	 * eg: {@link StatusUtils.key_sent} = status codes corresponding to a successfully processed task
 	 * @param statusCode Can be any of the {@link SmsConst_DeliveryStatus.STATUS_*}
-	 * @return Readable i18N name
+	 * @return key can be any of the {@link StatusUtils.key_*}
 	 */
-	public String getStatusProducer(String statusCode) {
-		String view = getStatusProducer().get(statusCode);
+	public String getStatusUIKey(String statusCode) {
+		String view = getStatusLibrary().get(statusCode);
 		return view;
 	}
 }
