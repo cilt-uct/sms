@@ -150,7 +150,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		if ( hasTasks ){
 			UIMessage.make(tofill, "tasks-title", "ui.tasks.title");
 			UIOutput.make(tofill, "tasks-table");
-			fillTableHeaders( tofill, new String[] {"message", "status", "author", "time", "recipients", "cost"});
+			fillTableHeaders( tofill, new String[] {"message", "status", "author", "time", "recipients"});
 
 			//show table rows
 			for (SmsTask sms : smsTasks){
@@ -173,7 +173,6 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				}
 
 				UIMessage.make(row, "task-recipients", "ui.task.recipents", new Object[] {sms.getMessagesDelivered(), (sms.getGroupSizeActual() == null || sms.getGroupSizeActual() == 0) ? sms.getGroupSizeEstimate() : sms.getGroupSizeActual()}); 
-				UIOutput.make(row, "task-cost", sms.getCreditCost() == 0 ?  sms.getCreditEstimate().toString():  (int) sms.getCreditCost() + "" );
 			}
 		}
 	}
@@ -182,8 +181,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		// Render table headers
 		for (int i=0; i < headers.length; i++){
 			String header = headers[i];
-			UIMessage.make(tofill, "tasks-" + header, "ui.tasks.headers." + header)
-				.decorate(new UITooltipDecorator(UIMessage.make("ui.tasks.headers." + header + ".tooltip")));
+			UIMessage.make(tofill, "tasks-" + header, "ui.tasks.headers." + header);
 		}
 	}
 }
