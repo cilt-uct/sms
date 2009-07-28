@@ -59,7 +59,7 @@ public class AccountProducer implements ViewComponentProducer,
 	private MessageFixupHelper messageFixupHelper;
 	private NavBarRenderer navBarRenderer;
 	private SmsConfigLogic smsConfigLogic;
-	
+
 	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
 		this.navBarRenderer = navBarRenderer;
 	}
@@ -113,25 +113,29 @@ public class AccountProducer implements ViewComponentProducer,
 		createAccountEnabledBooleanSelection(accountOTP, form);
 
 		SmsConfig systemConfig = smsConfigLogic.getOrCreateSystemSmsConfig();
-		
+
 		// Only allow for site or user level
 		if (systemConfig.getUseSiteAcc()) {
-			UIMessage.make(form, "sakai-site-id-label",	"sms.sms-account.sakai-site-id");
+			UIMessage.make(form, "sakai-site-id-label",
+					"sms.sms-account.sakai-site-id");
 			UIInput.make(form, "sakai-site-id", accountOTP + ".sakaiSiteId");
-			form.addParameter(new UIELBinding(accountOTP + ".sakaiUserId", null));
+			form
+					.addParameter(new UIELBinding(accountOTP + ".sakaiUserId",
+							null));
 		} else {
-			UIMessage.make(form, "sakai-user-id-label",	"sms.sms-account.sakai-user-id");
+			UIMessage.make(form, "sakai-user-id-label",
+					"sms.sms-account.sakai-user-id");
 			UIInput.make(form, "sakai-user-id", accountOTP + ".sakaiUserId");
-			form.addParameter(new UIELBinding(accountOTP + ".sakaiSiteId", null));
+			form
+					.addParameter(new UIELBinding(accountOTP + ".sakaiSiteId",
+							null));
 		}
-		
+
 		UIMessage.make(form, "overdraft-limit-label",
 				"sms.sms-account.overdraft-limit");
 		UIInput.make(form, "overdraft-limit", accountOTP + ".overdraftLimit");
-		UIMessage.make(form, "credits-label", "sms.sms-account.credits");
-		UIInput.make(form, "credits", accountOTP + ".credits");
-
-		UIMessage.make(form, "notiEmail-label", "sms.sms-account.notificationEmail");
+		UIMessage.make(form, "notiEmail-label",
+				"sms.sms-account.notificationEmail");
 		UIInput.make(form, "notiEmail", accountOTP + ".notificationEmail");
 
 		UIMessage.make(form, "end-date-label", "sms.sms-account.end-date");
@@ -194,9 +198,9 @@ public class AccountProducer implements ViewComponentProducer,
 	public void setELEvaluator(BeanGetter ELEvaluator) {
 		this.ELEvaluator = ELEvaluator;
 	}
-	
+
 	public void setSmsConfigLogic(SmsConfigLogic smsConfigLogic) {
 		this.smsConfigLogic = smsConfigLogic;
 	}
-	
+
 }
