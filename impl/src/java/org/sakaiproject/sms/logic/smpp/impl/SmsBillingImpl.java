@@ -131,9 +131,11 @@ public class SmsBillingImpl implements SmsBilling {
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
-		
-		String txRef = "/sms-account/" + account.getId() + "/transaction/" + smsTransaction.getId();
-		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef, null);
+
+		String txRef = "/sms-account/" + account.getId() + "/transaction/"
+				+ smsTransaction.getId();
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef,
+				null);
 	}
 
 	/**
@@ -419,7 +421,7 @@ public class SmsBillingImpl implements SmsBilling {
 		int credits = smsTask.getCreditEstimate() * -1;
 		smsTransaction.setCreditBalance(Long.valueOf(credits));
 		smsTransaction.setTransactionCredits(credits);
-		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
 
@@ -451,7 +453,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		smsTransaction.setCreditBalance((-1L));
 		smsTransaction.setTransactionCredits(-1);
-		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
 
@@ -537,7 +539,7 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setTransactionCredits(transactionCredits);
 		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
 
-		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(smsAccount);
 		smsTransaction.setSmsTaskId(smsTask.getId());
 
@@ -576,7 +578,7 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
 		smsTransaction.setTransactionCredits(transactionCredits);
 
-		smsTransaction.setSakaiUserId(smsTask.getSenderUserName());
+		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(smsTask.getId());
 
