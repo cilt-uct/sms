@@ -28,6 +28,9 @@ import org.sakaiproject.sms.logic.hibernate.QueryParameter;
 
 public interface SmsDao extends GeneralGenericDao {
 
+	public List executeQuery(String hql, Object[] params, int start,
+			int limit);
+
 	public List runQuery(String hql, QueryParameter... queryParameters);
 
 	public int executeUpdate(String hql, Collection<Object> values);

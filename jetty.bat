@@ -17,4 +17,4 @@ copy test-resources\spring-hibernate.xml target\sms_ui\WEB-INF\spring-hibernate.
 copy test-resources\sakai-hibernate.xml target\sms_ui\WEB-INF\sakai-hibernate.xml /y
 
 
-mvn -o -Dmaven.test.skip=true jetty:run-exploded
+mvn  -Dmaven.test.skip=true jetty:run-exploded

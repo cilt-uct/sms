@@ -38,7 +38,7 @@
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar" sourcepath="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/google/code/jsmpp/2.0/jsmpp-2.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/google/code/jsmpp/2.1b_01/jsmpp-2.1b_01.jar"/>
 	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO/net/sourceforge/groboutils/groboutils-core/5/groboutils-core-5.jar"/>
 	<classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/5.1.5/mysql-connector-java-5.1.5.jar"/>
@@ -54,5 +54,6 @@
 	<classpathentry excluding="WEB-INF/bundle/|WEB-INF/bundle/|WEB-INF/|WEB-INF/|WEB-INF/bundle/" kind="src" path="tool/src/webapp"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/entitybroker/entitybroker-utils/1.3.5-SNAPSHOT/entitybroker-utils-1.3.5-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.0/sakai-component-manager-1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Documents and Settings/Developer/.m2/repository/org/sakaiproject/sakai-common-type-api/M2/sakai-common-type-api-M2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

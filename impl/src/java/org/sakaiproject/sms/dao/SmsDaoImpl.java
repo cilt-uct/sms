@@ -56,6 +56,11 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		this.transactionManager = transactionManager;
 	}
 
+	public List executeQuery(String hql, Object[] params, int start, int limit) {
+		return  executeHqlQuery(hql, params, start,limit);
+		
+	}
+
 	public List runQuery(final String hql, QueryParameter... queryParameters) {
 
 		Map<String, Object> paramsMap = paramToMap(queryParameters);

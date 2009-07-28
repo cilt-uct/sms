@@ -80,7 +80,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public void deleteSmsTask(SmsTask smsTask) {
 
-		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_DELETE, "/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_DELETE,
+				"/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
 
 		delete(smsTask);
 	}
@@ -304,22 +305,35 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public List<SmsTask> checkAndSetTasksCompleted() {
 
-		List<SmsTask> smsTasks = smsDao
-				.runQuery(
-						"from SmsTask mes where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (:smsTaskStatus)",
-						new QueryParameter("smsTaskStatus", new Object[] {
-								SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED,
-								SmsConst_DeliveryStatus.STATUS_FAIL },
+		String sql = "from SmsTask mes where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
+		Object[] params1 = new Object[2];
+		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
+		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
+		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
 
-						Hibernate.STRING));
-
-		String hql = "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED =GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
-
+		String inSql = "";
 		ArrayList<Object> parms = new ArrayList<Object>();
 		parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
-		parms.add(SmsConst_DeliveryStatus.STATUS_FAIL);
-		parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
-		smsDao.executeUpdate(hql, parms);
+		for (int i = 0; i < smsTasks.size(); i++) {
+			inSql += "?";
+			if (i < smsTasks.size() - 1) {
+				inSql += ",";
+			}
+			parms.add(smsTasks.get(i).getId());
+		}
+		if (!inSql.equals("")) {
+			LOG.info("--------------------> marking SMS tasks as complete: "
+					+ smsTasks.size());
+			// SMS-89: The original sql below caused a table lock on SMS_TASK
+			// due to the nature of the WHERE clause, for more info see
+			// http://dev.mysql.com/doc/refman/5.0/en/innodb-locks-set.html
+			// String hql =
+			// "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
+			String hql = "update SmsTask set STATUS_CODE = ? where id IN ("
+					+ inSql + ")";
+			smsDao.executeUpdate(hql, parms);
+
+		}
 
 		return smsTasks;
 	}
