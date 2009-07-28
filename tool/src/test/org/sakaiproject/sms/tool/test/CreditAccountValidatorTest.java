@@ -32,15 +32,6 @@ public class CreditAccountValidatorTest extends TestCase {
 
 	}
 
-	public void testNegativeCreditAmount() {
-		creditAccountBean.setAccountId(1L);
-		creditAccountBean.setCreditsToCredit(-10L);
-		validator.validate(creditAccountBean, bindException);
-		assertTrue(bindException.hasErrors());
-		assertEquals("sms.errors.creditsToCredit.empty", bindException
-				.getFieldError().getCode());
-	}
-
 	public void testValidationPasses() {
 		creditAccountBean.setAccountId(1L);
 		creditAccountBean.setCreditsToCredit(20L);

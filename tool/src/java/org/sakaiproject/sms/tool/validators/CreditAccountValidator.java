@@ -37,15 +37,6 @@ public class CreditAccountValidator implements Validator {
 			errors.reject("sms.errors.accountId.empty");
 		}
 
-		if (account.getCreditsToCredit() == null) {
-			errors.reject("sms.errors.creditsToCredit.invalid");
-		} else if (account.getCreditsToCredit() < 0) {
-			errors.rejectValue("creditsToCredit",
-					"sms.errors.creditsToCredit.empty");
-		} else {
-
-		}
-
 	}
 
 }

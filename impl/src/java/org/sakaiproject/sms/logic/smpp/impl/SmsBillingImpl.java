@@ -111,11 +111,6 @@ public class SmsBillingImpl implements SmsBilling {
 	public synchronized void creditAccount(final Long accountId,
 			final long creditsToDebit) {
 
-		if (creditsToDebit < 0) {
-			throw new RuntimeException(
-					"The amount of credits supplied to debit an account must be positive");
-		}
-
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountId);
 
