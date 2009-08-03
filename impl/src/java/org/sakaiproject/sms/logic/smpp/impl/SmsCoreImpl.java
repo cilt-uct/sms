@@ -711,11 +711,17 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null || smsTask.getMessageBody() == null
 				|| smsTask.getMessageBody().equals("")
 				|| taskMessageType == null) {
-			LOG
-					.error("sendEmailNotification: smsTask or taskMessageType may not to null");
+			LOG.error("sendEmailNotification: smsTask or taskMessageType may not to null");
 			return false;
 		}
 
+		if (!smsTask.getMessageTypeId().equals(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
+			LOG.debug("Email notifications only sent for system originating messages, ignoring task id = " + smsTask.getId());
+			return false;
+		}
+		
+		LOG.debug("sendEmailNotification: task id = " + smsTask.getId());
+		
 		if (additionInformation == null) {
 			additionInformation = "";
 		}
@@ -729,10 +735,12 @@ public class SmsCoreImpl implements SmsCore {
 				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId());
 		SmsConfig configSystem = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
+
 		// Get the balance available to calculate the available credit.
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
+			LOG.debug("No account associated with task id = " + smsTask.getId());
 			return false;
 		}
 		Long credits = account.getCredits();
@@ -840,31 +848,17 @@ public class SmsCoreImpl implements SmsCore {
 
 		}
 		boolean systemNotification = false;
-		if (notiToAddress == null || notiToAddress.length() == 0) {
-
-			return false;
-		} else {
-
-			systemNotification = sendNotificationEmail(smsTask, notiToAddress,
-					subject, body);
-
+		boolean ownerNotification = false;
+		
+		if (notiToAddress != null && notiToAddress.length() > 0) {
+			systemNotification = sendNotificationEmail(smsTask, notiToAddress, subject, body);
 		}
 
-		if (ownerToAddress == null || ownerToAddress.length() == 0) {
-			return false;
-
-		} else {
-			if (smsTask.getMessageTypeId().equals(
-					SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
-				boolean ownerNotification = sendNotificationEmail(smsTask,
-						ownerToAddress, subject, body);
-
-				return (systemNotification && ownerNotification);
-			} else {
-				return systemNotification;
-			}
+		if (ownerToAddress != null && ownerToAddress.length() > 0) {
+			ownerNotification = sendNotificationEmail(smsTask, ownerToAddress, subject, body);
 		}
 
+		return (systemNotification && ownerNotification);
 	}
 
 	public void setSmsBilling(SmsBilling smsBilling) {
