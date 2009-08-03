@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <name>Sakai SMS Help</name>
+  <groupId>org.sakaiproject.sms</groupId>
+  <artifactId>sms-help</artifactId>
+
+  <parent>
+        <groupId>org.sakaiproject.sms</groupId>
+        <artifactId>sms</artifactId>
+        <version>0.9-SNAPSHOT</version><!--Sms.version-->
+  </parent>
+
+  <packaging>jar</packaging>
+  <properties>
+    <deploy.target>shared</deploy.target>
+  </properties>
+  <build>
+    <resources>
+      <resource>
+        <directory>src</directory>
+      </resource>
+    </resources>
+    <sourceDirectory>src</sourceDirectory>
+  </build>
+</project>
