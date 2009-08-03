@@ -731,8 +731,6 @@ public class SmsCoreImpl implements SmsCore {
 		String ownerToAddress = null;
 		String notiToAddress = null;
 
-		SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSmsConfigBySakaiSiteId(smsTask.getSakaiSiteId());
 		SmsConfig configSystem = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 
@@ -757,9 +755,16 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask.getCreditEstimate() != null) {
 			creditsRequired = Long.toString(smsTask.getCreditEstimate());
 		}
+		
+		// Email address for the task owner
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
-		notiToAddress = configSite.getNotificationEmail();
+		
+		// Email address for the site
+		notiToAddress = account.getNotificationEmail();
+
+		// TODO - Use the EmailTemplateService to construct message bodies
+		
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
@@ -800,9 +805,7 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationMOSubjectOverdraftLimitExceeded",
 					String.valueOf(account.getCredits()));
 
-		}
-
-		else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
+		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
@@ -847,18 +850,18 @@ public class SmsCoreImpl implements SmsCore {
 									+ account.getCredits()));
 
 		}
-		boolean systemNotification = false;
+		boolean accountNotification = false;
 		boolean ownerNotification = false;
 		
 		if (notiToAddress != null && notiToAddress.length() > 0) {
-			systemNotification = sendNotificationEmail(smsTask, notiToAddress, subject, body);
+			accountNotification = sendNotificationEmail(smsTask, notiToAddress, subject, body);
 		}
 
-		if (ownerToAddress != null && ownerToAddress.length() > 0) {
+		if (ownerToAddress != null && ownerToAddress.length() > 0 && !ownerToAddress.equals(notiToAddress)) {
 			ownerNotification = sendNotificationEmail(smsTask, ownerToAddress, subject, body);
 		}
 
-		return (systemNotification && ownerNotification);
+		return (accountNotification && ownerNotification);
 	}
 
 	public void setSmsBilling(SmsBilling smsBilling) {

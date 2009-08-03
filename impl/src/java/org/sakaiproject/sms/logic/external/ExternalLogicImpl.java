@@ -459,6 +459,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 */
 	private String[] sendEmails(SmsTask smsTask, InternetAddress fromAddress,
 			Collection<String> toEmails, String subject, String message) {
+
+		if (!serverConfigurationService.getBoolean("sms.notify.email", false)) {
+			LOG.debug("Enable notification is disabled (sms.notify.email=false in sakai.properties)");
+			return new String[0];
+		}
+		
 		InternetAddress[] replyTo = new InternetAddress[1];
 		List<InternetAddress> listAddresses = new ArrayList<InternetAddress>();
 		EmailValidator emailValidator = EmailValidator.getInstance();
@@ -471,7 +477,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					listAddresses.add(toAddress);
 				}
 			} catch (AddressException e) {
-				LOG.error("Invalid to address: " + email
+				LOG.warn("Invalid to address: " + email
 						+ ", cannot send email", e);
 			}
 		}
