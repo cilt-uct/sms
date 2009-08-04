@@ -8,7 +8,7 @@
   <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>0.9</version><!--Sms.version-->
+        <version>0.10-SNAPSHOT</version><!--Sms.version-->
   </parent>
 
   <packaging>jar</packaging>
