@@ -36,7 +36,7 @@ public class SmsConst_DeliveryStatus {
 	public final static String STATUS_SENT = "S";
 
 	/**
-	 * <b>SMS Task</b>: The maximum retry count of the task has been reached, mark task as failed
+	 * <b>SMS Task</b>: The maximum retry count for the task has been reached, mark task as failed
 	 * and do nothing further with it.
 	 * <br/><br/>
 	 * <b>SMS Message</b>: The gateway reported that the message could not be delivered. The mobile
@@ -64,7 +64,7 @@ public class SmsConst_DeliveryStatus {
 	// SMS_MESSAGE status codes. See also org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus
 	
 	/**
-	 * <b>SMS Message</b>: The gateway reported  that the message was successfully delivered.
+	 * <b>SMS Message</b>: The gateway reported that the message was successfully delivered.
 	 */
 	public final static String STATUS_DELIVERED = "D";
 
@@ -107,12 +107,12 @@ public class SmsConst_DeliveryStatus {
 	 * <b>SMS Task</b>: Rescheduled for later delivery.
 	 * 
 	 * The gateway connection was down when a delivery attempt was made. If
-	 * maximum retry count has not been reached, reschedule the delivery.
+	 * the maximum retry count has not been reached, reschedule the delivery.
 	 */
 	public final static String STATUS_RETRY = "R";
 
 	/**
-	 * <b>SMS Task</b>: This indicates that there are no outstanding messages to be sent for the
+	 * <b>SMS Task</b>: There are no outstanding messages to be sent for the
 	 * task, and the gateway timeout period for receiving delivery reports has expired.
 	 */
 	public final static String STATUS_TASK_COMPLETED = "C";
