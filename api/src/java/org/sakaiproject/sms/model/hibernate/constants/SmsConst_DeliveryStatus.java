@@ -23,84 +23,109 @@ package org.sakaiproject.sms.model.hibernate.constants;
 //TODO move to sms_core project later on
 
 public class SmsConst_DeliveryStatus {
-	/**
-	 * The gateway reported back that the message was successfully delivered to
-	 * the mobile number.
-	 */
-	public final static String STATUS_DELIVERED = "D";
 
+	// Status codes used for both SMS_TASK and SMS_MESSAGE.
 
 	/**
-	 * The gateway reported back that the message was successfully delivered to
-	 * the mobile number.
-	 */
-	public final static String STATUS_ABORT = "A";
-
-	/**
-	 * The gateway reported back that the message was successfully delivered to
-	 * the mobile number.
-	 */
-	public final static String STATUS_LATE = "L";
-
-	/**
-	 * This indicates that there is no outstanding messages to be send on the
-	 * task.
-	 */
-	public final static String STATUS_TASK_COMPLETED = "C";
-
-	/**
-	 * The message has successfully sent to the gateway. We know nothing more
+	 * <b>SMS Task</b>: All messages for this task have been sent to the gateway. Delivery reports
+	 * are awaited.
+	 * <br/><br/>
+	 * <b>SMS Message</b>: The message has been successfully sent to the gateway. We know nothing more
 	 * about the message status at this stage.
 	 */
 	public final static String STATUS_SENT = "S";
 
 	/**
-	 * An error occurred when we tried to delivery the message to the gateway.
-	 */
-	public final static String STATUS_ERROR = "E";
-
-	/**
-	 * Pending message are awaiting delivery to the gateway.
-	 */
-	public final static String STATUS_PENDING = "P";
-
-	/**
-	 * The gateway connection was down during a sent attempt to the gateway. If
-	 * maximum retry count has not been reached, then we reschedule the
-	 * delivery.
-	 */
-	public final static String STATUS_RETRY = "R";
-
-	/**
-	 * The gateway connection went down during the delivery of task messages.
-	 * Not all messages could be sent to gateway. Mark task as incomplete aand
-	 * try to re-sent the rest of the messages later.
-	 */
-	public final static String STATUS_INCOMPLETE = "I";
-	/**
-	 * The maximum retry count of the task has been reached, mark taska s failed
+	 * <b>SMS Task</b>: The maximum retry count of the task has been reached, mark task as failed
 	 * and do nothing further with it.
+	 * <br/><br/>
+	 * <b>SMS Message</b>: The gateway reported that the message could not be delivered. The mobile
+	 * number may be invalid or unrouteable.
 	 */
 	public final static String STATUS_FAIL = "F";
 
 	/**
-	 * The task is busy when its messages are being sent to the gateway.
-	 */
-	public final static String STATUS_BUSY = "B";
-
-	/**
-	 * The task is expired when its max time to live is to old to be processed.
+	 * <b>SMS Task</b>: The expiry time for this task passed without it being delivered successfully.
+	 * <br/><br/>
+	 * <b>SMS Message</b>: The expiry time for the task containing this message passed without the message being 
+	 * delivered.
 	 */
 	public final static String STATUS_EXPIRE = "X";
 
 	/**
-	 * The message did not receive a delivery report within the timeout period.
+	 * <b>SMS Task</b>: Messages are awaiting delivery to the gateway, for example because the
+	 * task is scheduled for delivery at a later date/time.
+	 * <br/><br/>
+	 * <b>SMS Message</b>: The message is awaiting delivery to the gateway, for example because the
+	 * task for this message originated on a server in a cluster which is not bound to the gateway. 
+	 */
+	public final static String STATUS_PENDING = "P";
+	
+	// SMS_MESSAGE status codes. See also org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus
+	
+	/**
+	 * <b>SMS Message</b>: The gateway reported  that the message was successfully delivered.
+	 */
+	public final static String STATUS_DELIVERED = "D";
+
+	/**
+	 * <b>SMS Message</b>: No delivery report was received for this message within the 
+	 * task delivery timeout period (i.e. the task has changed status to STATUS_TASK_COMPLETED).
+	 * The mobile number may be valid but the message could not be delivered (for example
+	 * if the mobile phone was switched off or not active on the network).
+	 * <br/><br/>
+	 * <i>Transient</i>: STATUS_TIMEOUT messages may be changed to STATUS_LATE and then 
+	 * STATUS_DELIVERED should a delivery report arrive for them.
 	 */
 	public final static String STATUS_TIMEOUT = "T";
 	
 	/**
-	 * The create message workflow was started by the user but never finished. Task is a draft.
+	 * <b>SMS Message</b>: The gateway reported that the message was successfully delivered 
+	 * (although the message was delivered after the task for this message changed status 
+	 * from STATUS_SENT to STATUS_TASK_COMPLETED).
+	 * <br/><br/>
+	 * <i>Transient</i>: STATUS_LATE messages are changed to STATUS_DELIVERED once
+	 * billing adjustments have been paid.
 	 */
-	public final static String STATUS_DRAFT = "DR";
+	public final static String STATUS_LATE = "L";
+
+	/**
+	 * <b>SMS Message</b>: The task for this message was aborted, and the message was therefore not
+	 * sent.
+	 */
+	public final static String STATUS_ABORT = "A";
+
+	/**
+	 * <b>SMS Message</b>: An error occurred when we tried to delivery the message to the gateway 
+	 * (the gateway was unexpectedly not available). 
+	 */
+	public final static String STATUS_ERROR = "E";
+
+	// SMS_TASK status codes.
+	
+	/**
+	 * <b>SMS Task</b>: Rescheduled for later delivery.
+	 * 
+	 * The gateway connection was down when a delivery attempt was made. If
+	 * maximum retry count has not been reached, reschedule the delivery.
+	 */
+	public final static String STATUS_RETRY = "R";
+
+	/**
+	 * <b>SMS Task</b>: This indicates that there are no outstanding messages to be sent for the
+	 * task, and the gateway timeout period for receiving delivery reports has expired.
+	 */
+	public final static String STATUS_TASK_COMPLETED = "C";
+
+	/**
+	 * <b>SMS Task</b>: The gateway connection went down during the delivery of task messages.
+	 * Not all messages could be sent to the gateway. Try to re-send the remaining messages later.
+	 */
+	public final static String STATUS_INCOMPLETE = "I";
+
+	/**
+	 * <b>SMS Task</b>: Messages for this task are in the process of being sent to the gateway.
+	 */
+	public final static String STATUS_BUSY = "B";
 
 }

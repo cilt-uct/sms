@@ -47,7 +47,6 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, key_inprogress);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_sent);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_failed);	
-		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "comment_edit");	//Drafts not yet supported
 		return lib;	
 	}
 	
@@ -67,7 +66,6 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "status.sent");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, "status.completed");
 		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, "status.timeout");	
-		lib.put(SmsConst_DeliveryStatus.STATUS_DRAFT, "status.draft");	
 		return lib;	
 	}
 	
