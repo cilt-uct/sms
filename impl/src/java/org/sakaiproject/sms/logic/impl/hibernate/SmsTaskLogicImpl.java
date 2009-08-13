@@ -21,13 +21,13 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.sakaiproject.genericdao.api.search.Order;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -302,40 +302,38 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	/**
 	 * Checks for tasks that can be marked as complete. If the total messages
 	 * processed equals the actual group size the task is marked as complete.
+	 * Limit to batch size of 100.
 	 */
-	public List<SmsTask> checkAndSetTasksCompleted() {
+	public List<SmsTask> getTasksToMarkAsCompleted() {
 
-		String sql = "from SmsTask mes where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
+		String sql = "from SmsTask where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
 		Object[] params1 = new Object[2];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
 		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
 		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
-
-		String inSql = "";
-		ArrayList<Object> parms = new ArrayList<Object>();
-		parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
-		for (int i = 0; i < smsTasks.size(); i++) {
-			inSql += "?";
-			if (i < smsTasks.size() - 1) {
-				inSql += ",";
-			}
-			parms.add(smsTasks.get(i).getId());
-		}
-		if (!inSql.equals("")) {
-			LOG.info("--------------------> marking SMS tasks as complete: "
-					+ smsTasks.size());
-			// SMS-89: The original sql below caused a table lock on SMS_TASK
-			// due to the nature of the WHERE clause, for more info see
-			// http://dev.mysql.com/doc/refman/5.0/en/innodb-locks-set.html
-			// String hql =
-			// "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
-			String hql = "update SmsTask set STATUS_CODE = ? where id IN ("
-					+ inSql + ")";
-			smsDao.executeUpdate(hql, parms);
-
-		}
-
 		return smsTasks;
+		/*
+		 * String inSql = "";
+		 * 
+		 * ArrayList<Object> parms = new ArrayList<Object>();
+		 * parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED); for (int i
+		 * = 0; i < smsTasks.size(); i++) { inSql += "?"; if (i <
+		 * smsTasks.size() - 1) { inSql += ","; }
+		 * parms.add(smsTasks.get(i).getId()); } if (!inSql.equals("")) {
+		 * LOG.info("--------------------> marking SMS tasks as complete: " +
+		 * smsTasks.size()); // SMS-89: The original sql below caused a table
+		 * lock on SMS_TASK // due to the nature of the WHERE clause, for more
+		 * info see //
+		 * http://dev.mysql.com/doc/refman/5.0/en/innodb-locks-set.html //
+		 * String hql = //
+		 * "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)"
+		 * ; String hql = "update SmsTask set STATUS_CODE = ? where id IN (" +
+		 * inSql + ")"; smsDao.executeUpdate(hql, parms);
+		 * 
+		 * }
+		 * 
+		 * return smsTasks;
+		 */
 	}
 
 	public List<SmsTask> getAllMOTasks() {
@@ -363,4 +361,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		return null;
 	}
 
+	public Session getNewHibernateSession() {
+		return smsDao.getTheHibernateTemplate().getSessionFactory()
+				.openSession();
+	}
 }

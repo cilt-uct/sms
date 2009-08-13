@@ -258,18 +258,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 	@SuppressWarnings("unchecked")
 	private Set<Object> getMembersForEntityRef(String entityReference) {
 		final Set<Object> members = new HashSet<Object>();
-		
+
 		// if in the format /site/123/role/something
 		if ("site".equals(EntityReference.getPrefix(entityReference))
 				&& EntityReference.getIdFromRefByKey(entityReference, "role") != null) {
 
 			String role = EntityReference.getIdFromRefByKey(entityReference,
-			"role");
+					"role");
 			String siteRef = "/"
-				+ EntityReference.getPrefix(entityReference)
-				+ "/"
-				+ EntityReference
-				.getIdFromRefByKey(entityReference, "site");
+					+ EntityReference.getPrefix(entityReference)
+					+ "/"
+					+ EntityReference
+							.getIdFromRefByKey(entityReference, "site");
 
 			// Fetch the site
 			AuthzGroup group = (AuthzGroup) entityBroker.fetchEntity(siteRef);
@@ -283,10 +283,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 
 		} else { // Any other authz group
-			String groupId = EntityReference.getIdFromRefByKey(entityReference, "group");
-			if ( groupId != null ){
+			String groupId = EntityReference.getIdFromRefByKey(entityReference,
+					"group");
+			if (groupId != null) {
 				AuthzGroup group = siteService.findGroup(groupId);
-				LOG.debug("Found group " + group.getDescription() + " with id " + groupId + " of size: " + group.getMembers().size());
+				LOG.debug("Found group " + group.getDescription() + " with id "
+						+ groupId + " of size: " + group.getMembers().size());
 				members.addAll(group.getMembers());
 			}
 		}
@@ -302,8 +304,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		setupSession(smsTask.getSenderUserId());
 		Set members = getMembersForEntityRef(entityReference);
 
-		LOG.debug("Getting group members for : " + entityReference + " (size = "
-				+ members.size() + ")");
+		LOG.debug("Getting group members for : " + entityReference
+				+ " (size = " + members.size() + ")");
 		for (Object oObject : members) {
 			addMemberToDelList = true;
 			SmsMessage message = new SmsMessage();
@@ -331,8 +333,38 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return messages;
 	}
 
+	// temp, to be removed
+	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
+		final Set<SmsMessage> messages = new HashSet<SmsMessage>();
+
+		String[] users;
+		final int numberOfMessages = 200 + (int) Math.round(Math.random() * 10);
+		users = new String[10];
+		String[] celnumbers = new String[10];
+		for (int i = 0; i < users.length; i++) {
+			users[i] = "SakaiUser" + i;
+			celnumbers[i] = "+2773"
+					+ (int) Math.round(Math.random() * 10000000);
+		}
+		for (int i = 0; i < numberOfMessages; i++) {
+			final SmsMessage message = new SmsMessage();
+			message.setMobileNumber(celnumbers[(int) Math
+					.round(Math.random() * 9)]);
+			message.setSakaiUserId(users[(int) Math.round(Math.random() * 9)]);
+			message.setSmsTask(smsTask);
+			messages.add(message);
+		}
+		return messages;
+	}
+
 	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
 			boolean getMobileNumbers) {
+		return this.generateDummySmsMessages(smsTask);
+
+	}
+
+	public Set<SmsMessage> getSakaiGroupMembers_temp_remove_for_testing(
+			SmsTask smsTask, boolean getMobileNumbers) {
 
 		if (smsTask.getId() == null) {
 			LOG.debug("Getting recipient numbers for preliminary task ");
@@ -417,14 +449,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 					// not exits. Get
 					// the username
 					result = userDirectoryService.getUser(userId)
-					.getDisplayId() == null ? userDirectoryService
+							.getDisplayId() == null ? userDirectoryService
 							.getUser(userId).getEid() : userDirectoryService
 							.getUser(userId).getDisplayId();
 				}
 			} catch (UserNotDefinedException e) {
 				LOG
-				.warn("Cannot getSakaiUserDisplayName for user id "
-						+ userId);
+						.warn("Cannot getSakaiUserDisplayName for user id "
+								+ userId);
 			}
 		}
 		return result;
@@ -484,7 +516,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		replyTo[0] = fromAddress;
 		InternetAddress[] toAddresses = listAddresses
-		.toArray(new InternetAddress[listAddresses.size()]);
+				.toArray(new InternetAddress[listAddresses.size()]);
 		setupSession(smsTask.getSenderUserId());
 		emailService.sendMail(fromAddress, toAddresses, subject, message, null,
 				null, null);
@@ -560,35 +592,37 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	public SmsSmppProperties getSmppProperties(SmsSmppProperties smsSmppProperties) {
+	public SmsSmppProperties getSmppProperties(
+			SmsSmppProperties smsSmppProperties) {
 
 		LOG.debug("Reading properties from ServerConfigurationService");
 
 		String smscAddress = serverConfigurationService.getString(
-		"sms.SMSCAddress").trim();
+				"sms.SMSCAddress").trim();
 		if (smscAddress == null || smscAddress.equals("")) {
 			LOG.debug("sms.SMSCAddress not found");
 		} else {
 			smsSmppProperties.setSMSCAddress(smscAddress);
 		}
 
-		String smscPort = serverConfigurationService.getString(
-		"sms.SMSCPort").trim();
+		String smscPort = serverConfigurationService.getString("sms.SMSCPort")
+				.trim();
 
 		if (smscPort == null || smscPort.equals("")) {
 			LOG.debug("sms.SMSCPort not found");
 		} else {
 			try {
 				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
-			}
-			catch (NumberFormatException nfe) {
-				LOG.error("Value supplied for sms.SMSPort is not a valid Interger: " + smscPort);
+			} catch (NumberFormatException nfe) {
+				LOG
+						.error("Value supplied for sms.SMSPort is not a valid Interger: "
+								+ smscPort);
 			}
 
 		}
 
 		String smscUserName = serverConfigurationService.getString(
-		"sms.SMSCUserName").trim();
+				"sms.SMSCUserName").trim();
 
 		if (smscUserName == null || smscUserName.equals("")) {
 			LOG.debug("sms.SMSCUserName not found");
@@ -597,7 +631,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 
 		String smscPassword = serverConfigurationService.getString(
-		"sms.SMSCPassword").trim();
+				"sms.SMSCPassword").trim();
 
 		if (smscPassword == null || smscPassword.equals("")) {
 			LOG.debug("sms.SMSCPassword not found");
@@ -605,21 +639,24 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setSMSCPassword(smscPassword);
 		}
 
-		boolean bind = serverConfigurationService.getBoolean("sms.BindThisNode", true);
+		boolean bind = serverConfigurationService.getBoolean(
+				"sms.BindThisNode", true);
 		smsSmppProperties.setBindThisNode(bind);
 
-		int sendingDelay = serverConfigurationService.getInt("sms.sendingDelay", -1);
+		int sendingDelay = serverConfigurationService.getInt(
+				"sms.sendingDelay", -1);
 		if (sendingDelay >= 0) {
 			smsSmppProperties.setSendingDelay(sendingDelay);
 		}
-		
-		String systemType = serverConfigurationService.getString("sms.systemType").trim();
+
+		String systemType = serverConfigurationService.getString(
+				"sms.systemType").trim();
 		if (systemType == null || systemType.equals("")) {
 			LOG.debug("systemType not found");
 		} else {
 			smsSmppProperties.setSystemType(systemType);
 		}
-		
+
 		LOG.debug("Read properties from ServerConfigurationService");
 
 		return smsSmppProperties;
@@ -665,7 +702,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (isValidUser(sakaiUserId)) { // user may be null or not a Sakai user
 			try {
 				result = userDirectoryService.getUser(sakaiUserId)
-				.getSortName();
+						.getSortName();
 			} catch (UserNotDefinedException e) {
 				LOG.warn("Cannot getSakaiUserSortName for user id "
 						+ sakaiUserId);
@@ -679,7 +716,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		Map<String, String> groups = new HashMap<String, String>();
 		try {
 			Collection<Group> groupsCollection = siteService.getSite(siteId)
-			.getGroups();
+					.getGroups();
 			for (Group grp : groupsCollection) {
 				groups.put(grp.getReference(), grp.getTitle());
 			}
@@ -696,7 +733,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Set<Role> rolesCollection = siteService.getSite(siteId).getRoles();
 			for (Role r : rolesCollection) {
 				String siteReference = siteService.getSite(siteId)
-				.getReference();
+						.getReference();
 				roles.put(siteReference + "/role/" + r.getId(), r.getId());
 			}
 		} catch (IdUnusedException e) {
@@ -776,24 +813,25 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Site site = siteService.getSite(siteId);
 
 			// Fetch the site
-			LOG.debug( "Fetching members for site:" + siteId );
+			LOG.debug("Fetching members for site:" + siteId);
 			Set<Member> allMembers = site.getMembers();
 			Set<String> activeUserIds = new HashSet<String>();
 
 			// Only record user id if member is flagged as active
 			for (Member member : allMembers) {
-				if ( member.isActive() ) {
+				if (member.isActive()) {
 					activeUserIds.add(member.getUserId());
 				}
 			}
-			if( activeUserIds.size() > 0 ){
-				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
+			if (activeUserIds.size() > 0) {
+				userIds = mobileNumberHelper
+						.getUsersWithMobileNumbers(activeUserIds);
 			}
-			if( userIds.size() > 0 ){
+			if (userIds.size() > 0) {
 				users = userDirectoryService.getUsers(userIds);
 			}
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: "+ getCurrentLocationId());
+			LOG.warn("Site not found for id: " + getCurrentLocationId());
 		}
 
 		return users;
@@ -821,7 +859,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getLocalInternationalPrefix() {
-		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX, PREF_INTERNATIONAL_PREFIX_DEFAULT);
+		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX,
+				PREF_INTERNATIONAL_PREFIX_DEFAULT);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -838,15 +877,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public void postEvent(String event, String ref, String context) {
 
-		/* If using this code with 2-5-x, use this instead (but events will lack context information): 
-			EventTrackingService.post(EventTrackingService.newEvent(event, ref, true, NotificationService.NOTI_NONE));
-		*/
-		
-		EventTrackingService.post(EventTrackingService.newEvent(event, ref, context, true, NotificationService.NOTI_NONE));
+		/*
+		 * If using this code with 2-5-x, use this instead (but events will lack
+		 * context information):
+		 * EventTrackingService.post(EventTrackingService.newEvent(event, ref,
+		 * true, NotificationService.NOTI_NONE));
+		 */
+
+		EventTrackingService.post(EventTrackingService.newEvent(event, ref,
+				context, true, NotificationService.NOTI_NONE));
 	}
-	
-	
-
-
 
 }

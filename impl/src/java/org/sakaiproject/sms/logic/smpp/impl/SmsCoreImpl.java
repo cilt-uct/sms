@@ -31,6 +31,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.LockMode;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
@@ -458,8 +461,9 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 
-		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE, "/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
-		
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE,
+				"/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
+
 		return smsTask;
 	}
 
@@ -886,31 +890,51 @@ public class SmsCoreImpl implements SmsCore {
 	public void checkAndSetTasksCompleted() {
 
 		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
-				.checkAndSetTasksCompleted();
+				.getTasksToMarkAsCompleted();
 
-		for (SmsTask smsTask : smsTasks) {
-			smsBilling.settleCreditDifference(smsTask);
-			checkOverdraft(smsTask);
-			if (smsTask.getMessageTypeId().equals(
-					SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
-				sendEmailNotification(smsTask,
-						SmsConstants.TASK_NOTIFICATION_COMPLETED);
-			} else {
-				if (smsTask.getSmsMessages() != null) {
-					for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
-						if (smsMessages.getStatusCode().equals(
-								SmsConst_DeliveryStatus.STATUS_ERROR)
-								|| smsMessages.getStatusCode().equals(
-										SmsConst_DeliveryStatus.STATUS_FAIL)) {
-							smsTask
-									.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-							smsTask.setFailReason(smsMessages.getFailReason());
-							hibernateLogicLocator.getSmsTaskLogic()
-									.persistSmsTask(smsTask);
+		for (SmsTask task : smsTasks) {
+			Session session = getHibernateLogicLocator().getSmsTaskLogic()
+					.getNewHibernateSession();
+			Transaction tx = session.beginTransaction();
+			// SMS-128/113 : lock the task so that other schedulers wont pick it
+			// up causing duplicate settlements
+			SmsTask smsTask = (SmsTask) session.get(SmsTask.class,
+					task.getId(), LockMode.UPGRADE);
+			if ((smsTask.getStatusCode() != SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED)
+					&& (smsTask.getStatusCode() != SmsConst_DeliveryStatus.STATUS_FAIL)) {
+				LOG
+						.debug("Mark task as completed: taskId = "
+								+ smsTask.getId());
+				smsTask
+						.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+				session.update(smsTask);
+				smsBilling.settleCreditDifference(smsTask);
+				checkOverdraft(smsTask);
+				if (smsTask.getMessageTypeId().equals(
+						SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
+					sendEmailNotification(smsTask,
+							SmsConstants.TASK_NOTIFICATION_COMPLETED);
+				} else {
+					if (smsTask.getSmsMessages() != null) {
+						for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
+							if (smsMessages.getStatusCode().equals(
+									SmsConst_DeliveryStatus.STATUS_ERROR)
+									|| smsMessages
+											.getStatusCode()
+											.equals(
+													SmsConst_DeliveryStatus.STATUS_FAIL)) {
+								smsTask
+										.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+								smsTask.setFailReason(smsMessages
+										.getFailReason());
+								session.update(smsTask);
+							}
 						}
 					}
 				}
 			}
+			tx.commit();
+			session.close();
 		}
 	}
 
@@ -930,21 +954,32 @@ public class SmsCoreImpl implements SmsCore {
 		List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessagesWithStatus(null,
 						SmsConst_DeliveryStatus.STATUS_LATE);
-
-		for (SmsMessage smsMessage : messages) {
-			if (smsMessage.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
-				smsMessage
-						.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-				hibernateLogicLocator.getSmsTaskLogic()
-						.incrementMessagesDelivered(smsMessage.getSmsTask());
-				smsBilling.debitLateMessage(smsMessage);
-			} else {
-				smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+		for (SmsMessage smsMsg : messages) {
+			if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
+				Session session = getHibernateLogicLocator().getSmsTaskLogic()
+						.getNewHibernateSession();
+				Transaction tx = session.beginTransaction();
+				// SMS-128/113 : lock the message row
+				SmsMessage smsMessage = (SmsMessage) session.get(
+						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
+				// test again with the lock, this will prevent other schedulers
+				// doing the same thing
+				if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
+					smsMessage
+							.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+					hibernateLogicLocator
+							.getSmsTaskLogic()
+							.incrementMessagesDelivered(smsMessage.getSmsTask());
+					smsBilling.debitLateMessage(smsMessage);
+				} else {
+					smsMessage
+							.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+				}
+				session.update(smsMessage);
+				tx.commit();
+				session.close();
 			}
-			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
-					smsMessage);
 		}
-
 	}
 
 	public void abortPendingTask(Long smsTaskID)

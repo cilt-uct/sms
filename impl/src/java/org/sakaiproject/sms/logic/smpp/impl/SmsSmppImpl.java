@@ -40,6 +40,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.LockMode;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.jsmpp.InvalidResponseException;
 import org.jsmpp.PDUException;
 import org.jsmpp.bean.Address;
@@ -77,6 +80,7 @@ import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.exception.PropertyZeroOrSmallerException;
 import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -382,19 +386,19 @@ public class SmsSmppImpl implements SmsSmpp {
 					+ deliveryReceipt.getId() + "' from "
 					+ deliverSm.getSourceAddr() + " to "
 					+ deliverSm.getDestAddress() + " : " + deliveryReceipt);
-			SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
+			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
-			if (smsMessage == null) {
+			if (smsMsg == null) {
 				for (int i = 0; i < 5; i++) {
 					LOG.warn("SMSC_DEL_RECEIPT retry " + i
 							+ " out of 5 for messageSmscID"
 							+ deliveryReceipt.getId());
-					smsMessage = hibernateLogicLocator.getSmsMessageLogic()
+					smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 							.getSmsMessageBySmscMessageId(
 									deliveryReceipt.getId(),
 									SmsConstants.SMSC_ID);
-					if (smsMessage != null) {
+					if (smsMsg != null) {
 						break;
 					}
 					try {
@@ -405,16 +409,19 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 
 			}
-			if (smsMessage == null) {
-
+			if (smsMsg == null) {
 				LOG
 						.error("Delivery report received for message not in database. MessageSMSCID="
 								+ deliveryReceipt.getId());
-
 			} else {
+				Session session = getHibernateLogicLocator().getSmsTaskLogic()
+						.getNewHibernateSession();
+				Transaction tx = session.beginTransaction();
+				// SMS-128/113 : lock the message row
+				SmsMessage smsMessage = (SmsMessage) session.get(
+						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
 				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 						.get((deliveryReceipt.getFinalStatus())));
-
 				smsMessage
 						.setDateDelivered(new Date(System.currentTimeMillis()));
 
@@ -422,9 +429,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
 					smsMessage
 							.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
-
 				} else {
-
 					if (smsDeliveryStatus.get(deliveryReceipt.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
 						smsMessage
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
@@ -438,8 +443,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 				hibernateLogicLocator.getSmsTaskLogic()
 						.incrementMessagesProcessed(smsMessage.getSmsTask());
-				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
-						smsMessage);
+				session.update(smsMessage);
+				tx.commit();
+				session.close();
 			}
 		} catch (InvalidDeliveryReceiptException e) {
 			LOG.error("Failed getting delivery receipt" + e);

@@ -23,6 +23,7 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;

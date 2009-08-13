@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -57,8 +58,8 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	}
 
 	public List executeQuery(String hql, Object[] params, int start, int limit) {
-		return  executeHqlQuery(hql, params, start,limit);
-		
+		return executeHqlQuery(hql, params, start, limit);
+
 	}
 
 	public List runQuery(final String hql, QueryParameter... queryParameters) {
@@ -84,7 +85,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	public int executeUpdate(String hql, Collection<Object> values) {
 		int affected = 0;
 		if (values.toArray() != null) {
-			LOG.debug("we got: " + values.toArray().length + " paramaters");
+			//LOG.debug("we got: " + values.toArray().length + " paramaters");
 		}
 		affected = getHibernateTemplate().bulkUpdate(hql, values.toArray());
 		return affected;
@@ -114,6 +115,11 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	public int executeUpdate(String hql, Object value) {
 		return getHibernateTemplate().bulkUpdate(hql, value);
+
+	}
+
+	public HibernateTemplate getTheHibernateTemplate() {
+		return getHibernateTemplate();
 
 	}
 

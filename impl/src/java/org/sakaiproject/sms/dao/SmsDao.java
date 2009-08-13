@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.sakaiproject.genericdao.api.GeneralGenericDao;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public interface SmsDao extends GeneralGenericDao {
 
@@ -37,6 +38,7 @@ public interface SmsDao extends GeneralGenericDao {
 
 	public int executeUpdate(String hql, Object value);
 
+	public HibernateTemplate getTheHibernateTemplate();
 	/*
 	 * public Criteria createCriteria(Class className); public void save(Object
 	 * obj);

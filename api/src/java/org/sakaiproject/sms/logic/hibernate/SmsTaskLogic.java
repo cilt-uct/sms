@@ -22,6 +22,7 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
@@ -116,7 +117,7 @@ public interface SmsTaskLogic {
 	 * Checks for tasks that can be marked as complete. If the total messages
 	 * processed equals the actual group size the task is marked as complete.
 	 */
-	public List<SmsTask> checkAndSetTasksCompleted();
+	public List<SmsTask> getTasksToMarkAsCompleted();
 
 	/**
 	 * Increments the total messages delivered on a task by one.
@@ -124,4 +125,12 @@ public interface SmsTaskLogic {
 	 * @param smsTask
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask);
+
+	/**
+	 * Get a new session to be used for row locking to prevent concurrent task
+	 * status update to status C
+	 * 
+	 * @return
+	 */
+	public Session getNewHibernateSession();
 }

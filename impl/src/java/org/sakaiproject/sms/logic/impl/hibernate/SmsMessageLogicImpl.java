@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -247,7 +248,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			if (searchBean.getDateFrom() != null) {
 				Date date = DateUtil.getDateFromStartDateString(searchBean
 						.getDateFrom());
-				search.addRestriction(new Restriction("dateDelivered", date, 
+				search.addRestriction(new Restriction("dateDelivered", date,
 						Restriction.GREATER));
 			}
 
@@ -255,37 +256,35 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			if (searchBean.getDateTo() != null) {
 				Date date = DateUtil.getDateFromEndDateString(searchBean
 						.getDateTo());
-				search.addRestriction(new Restriction("dateDelivered", date, 
+				search.addRestriction(new Restriction("dateDelivered", date,
 						Restriction.LESS));
 			}
 
 			/*
-			// Sender name
-			if (searchBean.getSender() != null
-					&& !searchBean.getSender().trim().equals("")) {
-				search.addRestriction(new Restriction("smsTask.senderUserName",
-						searchBean.getSender()));
-			}
+			 * // Sender name if (searchBean.getSender() != null &&
+			 * !searchBean.getSender().trim().equals("")) {
+			 * search.addRestriction(new Restriction("smsTask.senderUserName",
+			 * searchBean.getSender())); }
 			 */
 
 			// Mobile number
 			if (searchBean.getNumber() != null
 					&& !searchBean.getNumber().trim().equals("")) {
-				search.addRestriction(new Restriction("mobileNumber", searchBean
-						.getNumber()));
+				search.addRestriction(new Restriction("mobileNumber",
+						searchBean.getNumber()));
 			}
 
 			// Ordering
 			if (searchBean.getOrderBy() != null
 					&& !searchBean.getOrderBy().trim().equals("")) {
-				/*crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
-						.getOrderBy()) : Order.desc(searchBean.getOrderBy())));
-				*/
-				search.addOrder(new org.sakaiproject.genericdao.api.search.Order(searchBean.getOrderBy(),
-						searchBean.sortAsc()));
+				/*
+				 * crit.addOrder((searchBean.sortAsc() ? Order.asc(searchBean
+				 * .getOrderBy()) : Order.desc(searchBean.getOrderBy())));
+				 */
+				search
+						.addOrder(new org.sakaiproject.genericdao.api.search.Order(
+								searchBean.getOrderBy(), searchBean.sortAsc()));
 			}
-
-			
 
 		} catch (ParseException e) {
 			throw new SmsSearchException(e);
