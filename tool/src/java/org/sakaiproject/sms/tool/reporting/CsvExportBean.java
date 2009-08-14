@@ -195,8 +195,8 @@ public class CsvExportBean {
 			CsvExportStrategy {
 
 		private final String[] transactionLogColumns = new String[] { "id",
-				"credits", "sakaiUserId", "transactionCredits",
-				"transactionDate", "transactionTypeCode", "smsTaskId" };
+				"sakaiUserId", "transactionCredits", "transactionDate",
+				"transactionTypeCode", "smsTaskId" };
 
 		@Override
 		public String[] getCsvColumns() {
