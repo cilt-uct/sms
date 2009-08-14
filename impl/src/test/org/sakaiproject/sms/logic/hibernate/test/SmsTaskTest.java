@@ -336,10 +336,9 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * Tests the incrementing of messages processed and the updating of the
 	 * tasks status to complete.
 	 */
-	
-	public void testMessagesProcessedAndSetCompleteTasks() {
-		
-		/*
+
+	public void testMessagesProcessedAndGetTaskToMarkComplete() {
+
 		SmsTask testTask = createTestTask();
 		testTask.setGroupSizeActual(10);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(testTask);
@@ -351,16 +350,14 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 		assertTrue(hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				testTask.getId()).getMessagesProcessed() == 10);
+		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
+				.getTasksToMarkAsCompleted();
 
-		hibernateLogicLocator.getSmsTaskLogic().checkAndSetTasksCompleted();
-		assertTrue(hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				testTask.getId()).getStatusCode().equals(
-				SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED));
+		assertTrue(smsTasks.get(0).getId().equals(testTask.getId()));
 
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(testTask);
-		*/
+
 	}
-	
 
 	/**
 	 * Test insert sms task.
