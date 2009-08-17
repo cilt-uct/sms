@@ -21,6 +21,7 @@
 package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -207,12 +208,17 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 			try {
 				boolean wantsSMS = u.getProperties().getBooleanProperty(PREF_SMS_NOTIFICATIONS);
 				if (wantsSMS) {
-					ret.add(u.getId());
+					if (userTypeToSMS(u.getType())) {
+						ret.add(u.getId());
+					}
 				}else{
 					LOG.debug("User: " + u.getSortName() + " doesn't want to get SMS messages!");
 				}
+				
 			} catch (EntityPropertyNotDefinedException e) {
-				ret.add(u.getId());
+				if (userTypeToSMS(u.getType())) {
+					ret.add(u.getId());
+				}
 			} catch (EntityPropertyTypeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -221,6 +227,24 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		}
 		
 		return ret;
+	}
+
+	/**
+	 * There may be certain types of users we don't sms
+	 * @param type
+	 * @return
+	 */
+	private boolean userTypeToSMS(String type) {
+		String typesToSms = serverConfigurationService.getString("sms.usertypes.allow");
+		if (typesToSms == null) {
+			return true;
+		}
+		
+		List<String> types = Arrays.asList(typesToSms.split(","));
+		if (types.contains(type)) {
+			return true;
+		}
+		return false;
 	}
 
 	private String getInternationalPrefix() {
