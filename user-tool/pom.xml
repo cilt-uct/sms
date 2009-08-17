@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Sakai Sms User Tool</name>
 	<groupId>org.sakaiproject.sms</groupId>
@@ -14,18 +15,16 @@
 
 
 	<!-- the base is the parent pom -->
-	    <parent>
-        <groupId>org.sakaiproject.sms</groupId>
-        <artifactId>sms</artifactId>
-        <version>0.10-SNAPSHOT</version><!--Sms.version-->
-    </parent>
-    
-    <properties>
-    <sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>
-    <rsfutil.version>0.7.4</rsfutil.version>
-    <mysql.connector.version>5.1.5</mysql.connector.version>
-  </properties>
-    
+	<parent>
+		<groupId>org.sakaiproject.sms</groupId>
+		<artifactId>sms</artifactId>
+		<version>0.10-SNAPSHOT</version><!--Sms.version-->
+	</parent>
+	<properties>
+		<sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>
+		<rsfutil.version>0.7.4</rsfutil.version>
+		<mysql.connector.version>5.1.5</mysql.connector.version>
+	</properties>
 	<dependencies>
 
 		
@@ -34,43 +33,37 @@
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-api</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-stubs</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>		
-		</dependency>
-  <dependency>
-      <groupId>uk.org.ponder.sakairsf</groupId>
-      <artifactId>sakairsf</artifactId>
-      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>uk.org.ponder.sakairsf</groupId>
-      <artifactId>SakaiRSFComponents-evolvers</artifactId>
-      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>uk.org.ponder.sakairsf</groupId>
-      <artifactId>SakaiRSFComponents-templates</artifactId>
-      <version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
-      <type>war</type>
-    </dependency>
-	
-	<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>uk.org.ponder.sakairsf</groupId>
+			<artifactId>sakairsf</artifactId>
+			<version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.org.ponder.sakairsf</groupId>
+			<artifactId>SakaiRSFComponents-evolvers</artifactId>
+			<version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>uk.org.ponder.sakairsf</groupId>
+			<artifactId>SakaiRSFComponents-templates</artifactId>
+			<version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
 	</dependencies>
-
-
- 	<build>
+	<build>
 		<finalName>sms-user-tool</finalName>
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
 		<testSourceDirectory>${basedir}/src/test</testSourceDirectory>
@@ -82,14 +75,9 @@
 				<configuration>
 					<contextPath>${project.build.finalName}</contextPath>
 					<webAppSourceDirectory>${basedir}/src/webapp/</webAppSourceDirectory>
-					
-					
-							
-					
 					<configuration>
 						<webApp>${basedir}/target/${project.build.finalName}</webApp>
 					</configuration>
-
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
@@ -99,62 +87,11 @@
 					</connectors>
 					<useTestClasspath>true</useTestClasspath>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.sakaiproject.sms</groupId>
-						<artifactId>sms-impl</artifactId>
-						<version>0.8-SNAPSHOT</version>
-					</dependency>
-					<dependency>
-						<groupId>org.sakaiproject.sms</groupId>
-						<artifactId>sms-api</artifactId>
-						<version>0.8-SNAPSHOT</version>
-					</dependency>
-					
-					<dependency>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-						<version>1.1</version>
-						<type>jar</type>
-					</dependency>
-					<dependency>
-						<groupId>uk.org.ponder.rsfutil</groupId>
-						<artifactId>rsfutil</artifactId>
-						<version>0.7.4</version>
-					</dependency>
-					<dependency>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring</artifactId>
-						<version>2.5.4</version>
-					</dependency>
-					<dependency>
-						<groupId>org.hibernate</groupId>
-						<artifactId>hibernate</artifactId>
-						<version>3.2.5.ga</version>
-					</dependency>
-					<dependency>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-						<version>5.1.5</version>
-					</dependency>
-					<dependency>
-						<groupId>commons-lang</groupId>
-						<artifactId>commons-lang</artifactId>
-						<version>2.1</version>
-					</dependency> 
-				  	<!-- generic DAO -->
-			      	<dependency>
-			         	<groupId>org.sakaiproject</groupId>
-			         	<artifactId>generic-dao</artifactId>
-			         	<version>0.9.12</version>
-			     	</dependency>
-	  
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId> 
-				<!-- 
+				<artifactId>maven-surefire-plugin</artifactId>
+				<!--
 					By default, the surefire plugin will automatically include all test
 					classes with the following wildcard patterns: "**/Test*.java" -
 					includes all of its subdirectory and all java filenames that start
@@ -166,6 +103,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
-
