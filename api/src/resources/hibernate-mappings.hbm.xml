@@ -101,7 +101,9 @@
 			column="SMSC_DELIVERY_STATUS_CODE" not-null="false" />
 		<property name="dateDelivered" type="timestamp" column="DATE_DELIVERED"
 			not-null="false" />
-		<property name="failReason" type="string" column="FAIL_REASON"
+		<property name="dateQueued" type="timestamp" column="DATE_QUEUED" />
+		<property name="dateSent" type="timestamp" column="DATE_SENT" not-null="false"/>
+		 <property name="failReason" type="string" column="FAIL_REASON"
 			not-null="false" length="200" />
 		<many-to-one name="smsTask" lazy="false"
 			class="org.sakaiproject.sms.model.hibernate.SmsTask" column="TASK_ID"

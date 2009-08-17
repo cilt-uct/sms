@@ -1037,6 +1037,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 			message
 					.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
+			message.setDateSent(new Date());
 
 			LOG.info("Message submitted, smsc_id = " + messageId
 					+ " MessageID = " + message.getId() + " TaskID = "

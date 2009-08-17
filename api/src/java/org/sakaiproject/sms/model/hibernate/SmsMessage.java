@@ -36,7 +36,13 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsMessage extends BaseModel {
 
-	/** The date-time when the task was delivered. */
+	/** The date-time when the message was queued. */
+	private Date dateQueued;
+	
+	/** The date-time when the message was sent to the gateway. */
+	private Date dateSent;
+
+	/** The date-time when the message was delivered. */
 	private Date dateDelivered;
 
 	/** Info for debugging purposes. */
@@ -91,6 +97,7 @@ public class SmsMessage extends BaseModel {
 	public SmsMessage() {
 		super();
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
+		this.setDateQueued(new Date());
 
 	}
 
@@ -119,6 +126,23 @@ public class SmsMessage extends BaseModel {
 		return dateDelivered;
 	}
 
+	public Date getDateQueued() {
+		return dateQueued;
+	}
+
+	public void setDateQueued(Date dateQueued) {
+		this.dateQueued = dateQueued;
+	}
+	
+	public Date getDateSent() {
+		return dateSent;
+	}
+
+	public void setDateSent(Date dateSent) {
+		this.dateSent = dateSent;
+	}
+
+	
 	/**
 	 * Gets the debug info.
 	 * 
