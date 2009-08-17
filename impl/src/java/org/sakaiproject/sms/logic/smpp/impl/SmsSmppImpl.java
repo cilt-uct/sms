@@ -385,7 +385,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.info("Receiving delivery receipt for message '"
 					+ deliveryReceipt.getId() + "' from "
 					+ deliverSm.getSourceAddr() + " to "
-					+ deliverSm.getDestAddress() + " : " + deliveryReceipt);
+					+ deliverSm.getDestAddress() + " : " + deliveryReceipt + " at: " + deliveryReceipt.getDoneDate());
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
@@ -422,8 +422,13 @@ public class SmsSmppImpl implements SmsSmpp {
 						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
 				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 						.get((deliveryReceipt.getFinalStatus())));
-				smsMessage
-						.setDateDelivered(new Date(System.currentTimeMillis()));
+				if (deliveryReceipt.getDoneDate() != null) {
+					smsMessage
+					.setDateDelivered(deliveryReceipt.getDoneDate());
+				} else {
+					smsMessage
+					.setDateDelivered(new Date(System.currentTimeMillis()));
+				}
 
 				if (smsMessage.getStatusCode().equals(
 						SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
