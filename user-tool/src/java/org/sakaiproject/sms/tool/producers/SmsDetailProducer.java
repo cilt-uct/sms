@@ -11,6 +11,7 @@ import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer;
 import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
@@ -272,8 +273,15 @@ public static final String VIEW_ID = "sms";
 							UILink statusIcon = UILink.make(row, "sms-recipient-status", statusUtils.getMessageStatusIcon(messageStatusCode));
 							//show alt and tooltips for status detail on status icon
 							DecoratorList iconDecorators = new DecoratorList();
-							iconDecorators.add(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(messageStatusCode)));
-							iconDecorators.add(new UITooltipDecorator(statusUtils.getStatusFullName(messageStatusCode)));
+							String messageFullStatus = statusUtils.getStatusFullName(messageStatusCode);
+							iconDecorators.add(new UIAlternativeTextDecorator(messageFullStatus));
+							if( SmsConst_DeliveryStatus.STATUS_DELIVERED.equals(sms.getStatusCode()) && sms.getDateDelivered() != null ){
+								iconDecorators.add(new UITooltipDecorator(messageFullStatus + ": " + dateUtil.formatDate(sms.getDateDelivered())));
+							}else if( SmsConst_DeliveryStatus.STATUS_SENT.equals(sms.getStatusCode()) && sms.getDateSent() != null ){
+								iconDecorators.add(new UITooltipDecorator(messageFullStatus + ": " + dateUtil.formatDate(sms.getDateSent())));
+							}else {
+								iconDecorators.add(new UITooltipDecorator(messageFullStatus));
+							}
 							statusIcon.decorators = iconDecorators;
 							
 						}
