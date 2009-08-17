@@ -1,8 +1,12 @@
 package org.sakaiproject.sms.tool.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import uk.org.ponder.messageutil.MessageLocator;
 
@@ -13,6 +17,9 @@ public class StatusUtils {
 	
 	private static final String statusIconExtension = ".png";
 	
+	private static final String status_task = "task";
+	private static final String status_message = "message";
+	
 	//Special case for custom progress icon that is not included in the silk library 
 	private static final String inprogressIcon = "phone_go";
 	
@@ -21,10 +28,10 @@ public class StatusUtils {
 	public static final String statusType_REUSE = "REUSE";
 	
 	//Status keywords for the task statuses grouped and simplified
-	public static final String key_sent = "tick";
-	public static final String key_failed = "cross";
-	public static final String key_pending = "time";
-	public static final String key_inprogress = inprogressIcon;
+	public static final String key_tick = "tick";
+	public static final String key_cross = "cross";
+	public static final String key_time = "time";
+	public static final String key_phone = inprogressIcon;
 	
 	private MessageLocator messageLocator;
 	public void setMessageLocator(MessageLocator messageLocator) {
@@ -32,21 +39,27 @@ public class StatusUtils {
 	}
 
 	//populate status icon library
-	private Map<String, String> getStatusLibrary(){
+	private Map<String, String> getStatusLibrary(String type){
 		Map<String, String> lib = new HashMap<String, String>();
-		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, key_failed);
-		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, key_inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, key_sent);
-		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, key_failed);
-		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, key_failed);
-		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, key_failed);
-		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, key_inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, key_inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "time");
-		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, key_inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, key_inprogress);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_sent);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_failed);	
+		if( status_task.equals(type)){
+			lib.put(SmsConst_DeliveryStatus.STATUS_SENT, key_tick);
+		}
+		else{
+			lib.put(SmsConst_DeliveryStatus.STATUS_SENT, key_phone);
+		}
+		//Add icons that are the same between a task and message
+		lib.put(SmsConst_DeliveryStatus.STATUS_ABORT, key_cross);
+		lib.put(SmsConst_DeliveryStatus.STATUS_BUSY, key_phone);
+		lib.put(SmsConst_DeliveryStatus.STATUS_DELIVERED, key_tick);
+		lib.put(SmsConst_DeliveryStatus.STATUS_ERROR, key_cross);
+		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, key_cross);
+		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, key_cross);
+		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, key_phone);
+		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, key_tick);
+		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, key_time);
+		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, key_time);
+		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_tick);
+		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_cross);
 		return lib;	
 	}
 	
@@ -70,12 +83,24 @@ public class StatusUtils {
 	}
 	
 	/**
-	 * Retrieve full path to status icon 
+	 * Retrieve full path to status icon for A {@link SmsMessage}
 	 * @param statusCode Can be any of the {@link SmsConst_DeliveryStatus.STATUS_*}
 	 * @return full path to icon e.g. "/library/image/silk/tick.png"
 	 */
-	public String getStatusIcon(String statusCode) {
-		String icon = getStatusLibrary().get(statusCode);
+	public String getMessageStatusIcon(String statusCode) {
+		String icon = getStatusLibrary(status_message).get(statusCode);
+		return inprogressIcon.equals(icon) ? 
+				localImageDirectory + inprogressIcon + statusIconExtension 
+				: statusIconDirectory + icon + statusIconExtension;
+	}
+	
+	/**
+	 * Retrieve full path to status icon FOR AN {@link SmsTask}
+	 * @param statusCode Can be any of the {@link SmsConst_DeliveryStatus.STATUS_*}
+	 * @return full path to icon e.g. "/library/image/silk/tick.png"
+	 */
+	public String getTaskStatusIcon(String statusCode) {
+		String icon = getStatusLibrary(status_task).get(statusCode);
 		return inprogressIcon.equals(icon) ? 
 				localImageDirectory + inprogressIcon + statusIconExtension 
 				: statusIconDirectory + icon + statusIconExtension;
@@ -98,7 +123,21 @@ public class StatusUtils {
 	 * @return key can be any of the {@link StatusUtils.key_*}
 	 */
 	public String getStatusUIKey(String statusCode) {
-		String view = getStatusLibrary().get(statusCode);
+		String view = getStatusLibrary(status_task).get(statusCode);
 		return view;
+	}
+	
+	/**
+	 * Check is the UI should show this task as a 'busy' task.
+	 * In this context, eg. the date/time column will not show a date/time but rather readable text version of the status.
+	 * @param statusCode Can be any of the {@link SmsConst_DeliveryStatus.STATUS_*}
+	 * @return 
+	 */
+	public boolean isTaskBusy(String statusCode){
+		List<String> busyStatusCodes = new ArrayList<String>();
+		//Store codes that the UI should read as 'busy' codes
+		busyStatusCodes.add(SmsConst_DeliveryStatus.STATUS_INCOMPLETE);
+		busyStatusCodes.add(SmsConst_DeliveryStatus.STATUS_BUSY);
+		return busyStatusCodes.contains(statusCode);
 	}
 }

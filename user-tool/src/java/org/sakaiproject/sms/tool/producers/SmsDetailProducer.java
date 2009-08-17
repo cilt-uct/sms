@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -27,9 +26,11 @@ import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UIIDStrategyDecorator;
 import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
+import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.request.EarlyRequestParser;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
@@ -120,13 +121,13 @@ public static final String VIEW_ID = "sms";
 					//Show Task message
 					smsMessageRenderer.renderMessage(smsTask, tofill, "sms-message:");
 					
-					if(StatusUtils.key_inprogress.equals(statusToShow) || StatusUtils.key_pending.equals(statusToShow)){
+					if(StatusUtils.key_phone.equals(statusToShow) || StatusUtils.key_time.equals(statusToShow)){
 						
 					//***Start Inprogress/Scheduled Task rendering
 						UIBranchContainer wrapper = UIBranchContainer.make(tofill, "active:");
 						UIBranchContainer status = UIBranchContainer.make(wrapper, "status:");
 						
-						UILink.make(status, "sms-status", statusUtils.getStatusIcon(statusCode))
+						UILink.make(status, "sms-status", statusUtils.getTaskStatusIcon(statusCode))
 							.decorate(new UIAlternativeTextDecorator(statusFullName));
 						SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 						.getOrCreateSystemSmsConfig();
@@ -143,7 +144,7 @@ public static final String VIEW_ID = "sms";
 						
 						UIOutput.make(wrapper, "cost-cost", currencyUtil.toServerLocale(( smsTask.getCostEstimate() )) );
 						
-						UIForm form = UIForm.make(wrapper, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.key_pending.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
+						UIForm form = UIForm.make(wrapper, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.key_time.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 						form.type = EarlyRequestParser.RENDER_REQUEST;
 						//keep the id somewhere that the JS can grab and use it for processing actions edit or delete
 						UIInput.make(wrapper, "smsId", null, smsTask.getId() + "")
@@ -154,11 +155,11 @@ public static final String VIEW_ID = "sms";
 						/**
 						 * The action buttons are handled by JS. RSF is only needed for i18N
 						 */
-						if ( StatusUtils.key_inprogress.equals(statusToShow)){
+						if ( StatusUtils.key_phone.equals(statusToShow)){
 							statusText.decorate(new UIStyleDecorator("smsGreenish"));
 							UIMessage.make(wrapper, "sms-started", "ui.inprogress.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 							UIMessage.make(wrapper, "delivered", "ui.inprogress.sms.delivered", new Object[] { smsTask.getMessagesDelivered(), (smsTask.getGroupSizeActual() == null || smsTask.getGroupSizeActual() == 0) ? smsTask.getGroupSizeEstimate() : smsTask.getGroupSizeActual() });
-						}else if( StatusUtils.key_pending.equals(statusToShow)){
+						}else if( StatusUtils.key_time.equals(statusToShow)){
 							statusText.decorate(new UIStyleDecorator("smsOrange"));
 							UIMessage.make(wrapper, "sms-started", "ui.scheduled.sms.started", new Object[] { dateUtil.formatDate(smsTask.getDateToSend()) });
 							//Check permissions before rendering control buttons
@@ -176,12 +177,12 @@ public static final String VIEW_ID = "sms";
 						UICommand.make(form, "back", UIMessage.make("sms.general.back"));
 					//***End Inprogress/Scheduled Task rendering
 						
-					}else if(StatusUtils.key_failed.equals(statusToShow)){
+					}else if(StatusUtils.key_cross.equals(statusToShow)){
 						
 					//***Start Failed Task Rendering
 						UIBranchContainer wrapper = UIBranchContainer.make(tofill, "failed:");
 						UIBranchContainer statusFailed = UIBranchContainer.make(wrapper, "status:");
-						UILink.make(statusFailed, "sms-status", statusUtils.getStatusIcon(statusCode))
+						UILink.make(statusFailed, "sms-status", statusUtils.getTaskStatusIcon(statusCode))
 							.decorate(new UIAlternativeTextDecorator(statusFullName));
 						UIOutput.make(statusFailed, "sms-status-title", statusFullName);
 						
@@ -215,14 +216,14 @@ public static final String VIEW_ID = "sms";
 						UIMessage.make(wrapper, "actionDelete", "ui.action.confirm.sms.delete", new String[] { smsTask.getMessageBody() });
 					//***End Failed Task rendering
 						
-					}else if(StatusUtils.key_sent.equals(statusToShow)){
+					}else if(StatusUtils.key_tick.equals(statusToShow)){
 						
 					//***Start Sent Task rendering
 						UIBranchContainer wrapper = UIBranchContainer.make(tofill, "sent:");
 						UIBranchContainer statusSent = UIBranchContainer.make(wrapper,
 								"status:");
 						UILink.make(statusSent, "sms-status",
-								statusUtils.getStatusIcon(statusCode)).decorate(
+								statusUtils.getTaskStatusIcon(statusCode)).decorate(
 								new UIAlternativeTextDecorator(statusFullName));
 						UIOutput.make(statusSent, "sms-status-title", statusFullName);
 				
@@ -267,13 +268,14 @@ public static final String VIEW_ID = "sms";
 								UIOutput.make(row, "sms-recipient-username",
 										usernamesMap.get(smsUserId));
 							}
-							String userStatusCode = sms.getStatusCode();
-							UILink
-									.make(row, "sms-recipient-status",
-											statusUtils.getStatusIcon(userStatusCode))
-									.decorate(
-											new UIAlternativeTextDecorator(statusUtils
-													.getStatusFullName(userStatusCode)));
+							String messageStatusCode = sms.getStatusCode();
+							UILink statusIcon = UILink.make(row, "sms-recipient-status", statusUtils.getMessageStatusIcon(messageStatusCode));
+							//show alt and tooltips for status detail on status icon
+							DecoratorList iconDecorators = new DecoratorList();
+							iconDecorators.add(new UIAlternativeTextDecorator(statusUtils.getStatusFullName(messageStatusCode)));
+							iconDecorators.add(new UITooltipDecorator(statusUtils.getStatusFullName(messageStatusCode)));
+							statusIcon.decorators = iconDecorators;
+							
 						}
 				
 						UIMessage.make(wrapper, "back-button", 

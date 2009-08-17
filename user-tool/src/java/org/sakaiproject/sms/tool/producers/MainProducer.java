@@ -45,6 +45,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UILink;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.DecoratorList;
 import uk.org.ponder.rsf.components.decorators.UIAlternativeTextDecorator;
 import uk.org.ponder.rsf.components.decorators.UITooltipDecorator;
 import uk.org.ponder.rsf.view.ComponentChecker;
@@ -161,12 +162,16 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 				statusParams.setId(sms.getId() + "");
 				statusParams.viewID = SmsDetailProducer.VIEW_ID;
 				UIInternalLink.make(row, "task-message", sms.getMessageBody(), statusParams);
-				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getStatusIcon(statusCode));
-				statusIcon.decorate(new UIAlternativeTextDecorator(statusFullName)); 
-				statusIcon.decorate(new UITooltipDecorator(statusFullName)); 
+				UILink statusIcon = UILink.make(row, "task-status", statusUtils.getTaskStatusIcon(statusCode));
+				//show alt and tooltips for status detail on status icon
+				DecoratorList iconDecorators = new DecoratorList();
+				iconDecorators.add(new UIAlternativeTextDecorator(statusFullName));
+				iconDecorators.add(new UITooltipDecorator(statusFullName));
+				statusIcon.decorators = iconDecorators;
+				
 				UIOutput.make(row, "task-author", sms.getSenderUserName());
 				
-				if ( StatusUtils.key_inprogress.equals(statusUtils.getStatusUIKey(statusCode)) ){
+				if ( statusUtils.isTaskBusy(statusCode) ){
 					UIOutput.make(row, "task-time", statusFullName);
 				}else{
 					UIOutput.make(row, "task-time", dateUtil.formatDate(sms.getDateToSend()));
