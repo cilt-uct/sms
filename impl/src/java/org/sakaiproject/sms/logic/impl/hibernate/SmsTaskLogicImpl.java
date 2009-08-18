@@ -93,8 +93,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *            sms task id
 	 * @return sms task
 	 */
-	public SmsTask getSmsTask(Long smsTaskId) {
-		return (SmsTask) findById(SmsTask.class, smsTaskId);
+	public SmsTask getSmsTask(Long smsTaskId){
+		try{
+			return (SmsTask) findById(SmsTask.class, smsTaskId);
+		}catch (NumberFormatException numEx){
+			throw new IllegalArgumentException("Supplied task parameter is invalid: " + smsTaskId);
+		}
 	}
 
 	/**
@@ -360,7 +364,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		}
 		return null;
 	}
-
+	
 	public Session getNewHibernateSession() {
 		return smsDao.getTheHibernateTemplate().getSessionFactory()
 				.openSession();

@@ -105,6 +105,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 	 */
 	public Map<String, String> getUserMobileNumbers(List<String> userids) {
 		LOG.debug("getUserMobileNumbers()");
+		
+
 		final Map<String, String> userMobileMap = new HashMap<String, String>();
 		Set<String> userSet = new HashSet<String>(userids);
 		//first strip the users who don't want sms
@@ -114,7 +116,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		//there'a possiblity we have an empty map
 		if(userMap== null || userMap.size() == 0)
 			return userMobileMap;
-		
+
 		Iterator<Entry<String, SakaiPerson>> selector = userMap.entrySet().iterator();
 		while ( selector.hasNext() ) {
 			Entry<String, SakaiPerson> pairs = selector.next();
@@ -136,18 +138,21 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		
 		List<String> result = new ArrayList<String>();
 		
-		Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(filterUserListForPreference(userIds), sakaiPersonManager.getUserMutableType());
-		Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
-		while ( selector.hasNext() ) {
-        	Entry<String, SakaiPerson> pairs = selector.next();
-        	SakaiPerson sp = pairs.getValue();
-        	if (sp != null) {
-        		String mobile = normalizeNumber(sp.getMobile());
-        		if (mobile != null && mobile != "" && isNumberRoutable(mobile)) {
-        			result.add( sp.getUid() );
-        		}
-        	}
-		}
+        Set<String> usersWhoWantSMS = filterUserListForPreference(userIds);
+        if( usersWhoWantSMS.size() > 0){
+			Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(usersWhoWantSMS, sakaiPersonManager.getUserMutableType());
+			Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
+			while ( selector.hasNext() ) {
+	        	Entry<String, SakaiPerson> pairs = selector.next();
+	        	SakaiPerson sp = pairs.getValue();
+	        	if (sp != null) {
+	        		String mobile = normalizeNumber(sp.getMobile());
+	                if (mobile != null && mobile != "" && isNumberRoutable(mobile)) {
+	        			result.add( sp.getUid() );
+	        		}
+	        	}
+			}
+        }
 		return result;
 	}
 
@@ -262,7 +267,6 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		if (mobileNumber.matches(regex)) {
 			return true;
 		}
-		System.out.println(" it didn't!");
 		return false;
 	}
 

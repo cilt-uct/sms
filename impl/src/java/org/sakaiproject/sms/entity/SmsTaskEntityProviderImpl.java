@@ -414,17 +414,16 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		
         List<SimpleUser> users = new ArrayList<SimpleUser>();
 		List<User> usersFull = externalLogic.getUsersWithMobileNumbersOnly(siteId);
-	
-		for ( User user : usersFull ){
-			//trim down user object to only show essential non-sensitive properties
-			SimpleUser fakeUser = new SimpleUser( user.getId(), user.getDisplayId(), user.getSortName() );
-			users.add(fakeUser);
+		if (usersFull.size() > 0){
+			for ( User user : usersFull ){
+				//trim down user object to only show essential non-sensitive properties
+				SimpleUser fakeUser = new SimpleUser( user.getId(), user.getDisplayId(), user.getSortName() );
+				users.add(fakeUser);
+			}
+			 // handle the sorting
+	        Collections.sort(users, new SortNameComparator());
 		}
-		
-		 // handle the sorting
-        Collections.sort(users, new SortNameComparator());
-        
-    	return users;
+		return users;
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params, EntityReference ref) {

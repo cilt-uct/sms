@@ -781,11 +781,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Set<String> activeUserIds = new HashSet<String>();
 
 			// Only record user id if member is flagged as active
-			for (Member member : allMembers) {
-				if ( member.isActive() ) {
-					activeUserIds.add(member.getUserId());
+	        if( allMembers.size() >0){
+				for (Member member : allMembers) {
+					if ( member.isActive() ) {
+						activeUserIds.add(member.getUserId());
+					}
 				}
-			}
+	        }
 			if( activeUserIds.size() > 0 ){
 				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
 			}
@@ -795,7 +797,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		} catch (IdUnusedException e) {
 			LOG.warn("Site not found for id: "+ getCurrentLocationId());
 		}
-
 		return users;
 	}
 
