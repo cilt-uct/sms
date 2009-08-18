@@ -80,7 +80,6 @@ import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.exception.PropertyZeroOrSmallerException;
 import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -423,8 +422,14 @@ public class SmsSmppImpl implements SmsSmpp {
 				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 						.get((deliveryReceipt.getFinalStatus())));
 				if (deliveryReceipt.getDoneDate() != null) {
-					smsMessage
-					.setDateDelivered(deliveryReceipt.getDoneDate());
+					//seeing this currently has only minute precision it may appear to be before the sent date
+					if (deliveryReceipt.getDoneDate().before(smsMessage.getDateSent())) {
+						smsMessage
+						.setDateDelivered(new Date(System.currentTimeMillis()));
+					} else {
+						smsMessage
+						.setDateDelivered(deliveryReceipt.getDoneDate());
+					}
 				} else {
 					smsMessage
 					.setDateDelivered(new Date(System.currentTimeMillis()));
