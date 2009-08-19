@@ -48,12 +48,13 @@ public class SmsAccountValidatorTest extends TestCase {
 	private static int VALID_MAX_FIELD_SIZE = 99;
 
 	private String generateString(int length) {
-		String toReturn = "";
+		
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < length; i++) {
-			toReturn += "x";
+			sb.append("x");
 		}
 
-		return toReturn;
+		return sb.toString();
 	}
 
 	/**
