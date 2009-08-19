@@ -111,6 +111,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Collection findUsersByEmail(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
@@ -148,15 +149,16 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
-	public List getUsers() {
+	public List<User> getUsers() {
 		UserEdit u = new UserStubb();
 		List<User>  ret = new ArrayList<User>();
 		ret.add(u);
 		return ret;
 	}
 
-	public List getUsers(Collection arg0) {
-		List ret = new ArrayList<User>();
+	@SuppressWarnings("unchecked")
+	public List<User> getUsers(Collection arg0) {
+		List<User> ret = new ArrayList<User>();
 		Iterator<String> it = arg0.iterator();
 		while (it.hasNext()) {
 			String val = it.next();
@@ -168,7 +170,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return ret;
 	}
 
-	public List getUsers(int arg0, int arg1) {
+	public List<User> getUsers(int arg0, int arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -189,7 +191,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 
 	}
 
-	public List searchUsers(String arg0, int arg1, int arg2) {
+	public List<User> searchUsers(String arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -199,6 +201,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String archive(String arg0, Document arg1, Stack arg2, String arg3,
 			List arg4) {
 		// TODO Auto-generated method stub
@@ -209,7 +212,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
 	public Collection getEntityAuthzGroups(Reference arg0, String arg1) {
 		// TODO Auto-generated method stub
 		return null;
@@ -240,6 +243,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String merge(String arg0, Element arg1, String arg2, String arg3,
 			Map arg4, Map arg5, Set arg6) {
 		// TODO Auto-generated method stub

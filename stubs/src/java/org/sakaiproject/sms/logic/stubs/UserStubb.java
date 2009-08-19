@@ -168,7 +168,7 @@ public class UserStubb implements UserEdit {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
 	public Element toXml(Document arg0, Stack arg1) {
 		// TODO Auto-generated method stub
 		return null;
