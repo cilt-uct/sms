@@ -41,21 +41,24 @@ public class SakaiPersonManagerStub implements SakaiPersonManager {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List findAllFerpaEnabled() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List findSakaiPerson(SakaiPerson arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
 	public List findSakaiPerson(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List findSakaiPersonByUid(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
@@ -100,6 +103,7 @@ public class SakaiPersonManagerStub implements SakaiPersonManager {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List isFerpaEnabled(Collection arg0) {
 		// TODO Auto-generated method stub
 		return null;

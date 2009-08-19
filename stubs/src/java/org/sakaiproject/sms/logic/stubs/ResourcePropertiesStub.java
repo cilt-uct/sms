@@ -241,6 +241,7 @@ public class ResourcePropertiesStub implements ResourceProperties {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public Element toXml(Document arg0, Stack arg1) {
 		// TODO Auto-generated method stub
 		return null;

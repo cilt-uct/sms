@@ -21,6 +21,7 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		return dflt;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List getDefaultTools(String category) {
 		// TODO Auto-generated method stub
 		return null;
@@ -110,6 +111,7 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List getToolOrder(String category) {
 		// TODO Auto-generated method stub
 		return null;
@@ -125,6 +127,7 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List getToolsRequired(String category) {
 		// TODO Auto-generated method stub
 		return null;
