@@ -10,7 +10,7 @@
 	</organization>
 	<inceptionYear>2008</inceptionYear>
 	<packaging>pom</packaging>
-	<version>0.10</version><!--Sms.version-->
+	<version>0.11-SNAPSHOT</version><!--Sms.version-->
 	<description>The SMS service provides SMS (short message service or
 		texting) capablities to Sakai.The module consists of 1) A SMPP service
 		to forward messages to an SMPP complient gateway. 2) An admin tool to
@@ -65,18 +65,18 @@
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-api</artifactId>
-				<version>0.10</version>
+				<version>0.11-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-impl</artifactId>
-				<version>0.10</version>
+				<version>0.11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-stubs</artifactId>
-				<version>0.10</version>
+				<version>0.11-SNAPSHOT</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -169,9 +169,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/tags/sms-0.10</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/tags/sms-0.10</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/tags/sms-0.10</url>
+		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</connection>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
+		<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
 	</scm>
         <distributionManagement> 
 	  <site>
