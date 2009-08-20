@@ -58,7 +58,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl.SimpleUser;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -815,15 +814,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, String> getSakaiUsernames(Set<String> userIds) {
-		Map<String, String> usernames = new HashMap<String, String>();
+	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds) {
+		Map<String, Map<String, String>> parentUserMap = new HashMap<String, Map<String, String>>();
 		if (userIds != null && userIds.size() > 0) {
 			List<User> users = userDirectoryService.getUsers(userIds);
 			for (User user : users) {
-				usernames.put(user.getId(), user.getDisplayId());
+				Map<String, String> childUserMap = new HashMap<String, String>();
+				childUserMap.put(user.getDisplayId(), user.getSortName());
+				parentUserMap.put(user.getId(), childUserMap);
 			}
 		}
-		return usernames;
+		return parentUserMap;
 	}
 
 	public boolean isNodeBindToGateway() {
@@ -861,6 +862,29 @@ public class ExternalLogicImpl implements ExternalLogic {
             return o1.getTitle().compareTo(o2.getTitle());
         }
     }
+
+	public Set<String> getUserIdsFromTask(SmsTask smsTask) {
+		
+		Set<String> smsUserIds = new HashSet<String>();
+		smsUserIds = smsTask.getSakaiUserIdsList();
+		List<String> entityList = smsTask.getDeliveryEntityList();
+		Set<String> idsFromEntityLists = new HashSet<String>();
+		if( entityList != null && entityList.size() > 0){
+			//We are dealing with a task that has an entity list. Append those users to Set<String> taskIds
+			for ( String reference : entityList){
+				Set<Object> members = getMembersForEntityRef(reference);
+				//Extract for this entity
+				for ( Object memberObject : members ){
+					Member member = (Member) memberObject;
+					idsFromEntityLists.add( member.getUserId() );
+				}
+			}
+		}
+		//This will also trim out duplicates
+		smsUserIds.addAll(idsFromEntityLists);
+		return smsUserIds;
+	}
+
 
 
 

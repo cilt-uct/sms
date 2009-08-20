@@ -277,7 +277,7 @@ public class ExternalLogicStub implements ExternalLogic {
 		return false;
 	}
 
-	public Map<String, String> getSakaiUsernames(Set<String> userIds) {
+	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -307,6 +307,11 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public void postEvent(String event, String ref, String context) {
 		return;
+	}
+
+	public Set<String> getUserIdsFromTask(SmsTask smsTask) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

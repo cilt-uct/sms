@@ -290,7 +290,12 @@ public interface ExternalLogic {
 	 */
 	public boolean isUserAllowedSiteUpdate(String userId, String locationId);
 	
-	public Map<String, String> getSakaiUsernames(Set<String> userIds);
+	/**
+	 * Gets these corresponding values for each of the Ids in the parameter userIds:
+	 * @param userIds
+	 * @return Parent map with userId as key, secondary map with key as displayName (username) and value sakai sortName
+	 */
+	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds);
 	
 	/**
 	 * Is this node set to bind to the gateway
@@ -316,5 +321,12 @@ public interface ExternalLogic {
 	 * @return 
 	 */
 	public void postEvent(String event, String ref, String context);
+
+	/**
+	 * Extract all the userIds associated with an {@link SmsTask}.
+	 * @param smsTask
+	 * @return Internal userIds from userId list AND entity lists of a task.
+	 */
+	public Set<String> getUserIdsFromTask(SmsTask smsTask);
 
 }

@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -249,25 +250,31 @@ public static final String VIEW_ID = "sms";
 								"ui.sent.sms.header.username");
 						UIMessage.make(wrapper, "status-header",
 								"ui.sent.sms.header.status");
-				
-						Set<String> smsUserIds = smsTask.getSakaiUserIdsList();
-						Map<String, String> usernamesMap = externalLogic
-								.getSakaiUsernames(smsUserIds);
-				
+						Set<String> smsUserIds = externalLogic.getUserIdsFromTask(smsTask);
+						Map<String, Map<String, String>> userMap = externalLogic
+								.getSakaiUserDetails(smsUserIds);
+						
 						Set<SmsMessage> smses = smsTask.getSmsMessages();
 						for (SmsMessage sms : smses) {
 							UIBranchContainer row = UIBranchContainer.make(wrapper,
 									"sms-row:");
 							String smsUserId = sms.getSakaiUserId();
+							String smsUserName = "----";
+							String smsUserSortName = "----";
+							//populate names from userMap value
+							Set<Map.Entry<String, String>> userMapEntry = userMap.get(smsUserId).entrySet();
+							for ( Map.Entry<String, String> userDetails : userMapEntry ){
+								smsUserName = userDetails.getKey();
+								smsUserSortName = userDetails.getValue();
+							}
+							
 							if (smsUserId == null || "".equals(smsUserId)) {
 								UIOutput.make(row, "sms-recipient", sms
 										.getMobileNumber());
 								UIOutput.make(row, "sms-recipient-username", "----");
 							} else {
-								UIOutput.make(row, "sms-recipient", externalLogic
-										.getSakaiUserSortName(smsUserId));
-								UIOutput.make(row, "sms-recipient-username",
-										usernamesMap.get(smsUserId));
+								UIOutput.make(row, "sms-recipient", smsUserSortName);
+								UIOutput.make(row, "sms-recipient-username", smsUserName);
 							}
 							String messageStatusCode = sms.getStatusCode();
 							UILink statusIcon = UILink.make(row, "sms-recipient-status", statusUtils.getMessageStatusIcon(messageStatusCode));
@@ -285,7 +292,6 @@ public static final String VIEW_ID = "sms";
 							statusIcon.decorators = iconDecorators;
 							
 						}
-				
 						UIMessage.make(wrapper, "back-button", 
 								("sms.general.back"));
 					//***End Sent Task rendering
