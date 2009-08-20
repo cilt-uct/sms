@@ -23,9 +23,11 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +58,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.sms.entity.SmsTaskEntityProviderImpl.SimpleUser;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -68,6 +71,8 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Implementation of {@link ExternalLogic} for Sakai-specific code.
@@ -676,11 +681,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiGroupsForSite(String siteId) {
-		Map<String, String> groups = new HashMap<String, String>();
+		//Using a {@link LinkedHashMap} to preserve the sorting order we will do later
+		Map<String, String> groups = new LinkedHashMap<String, String>();
 		try {
 			Collection<Group> groupsCollection = siteService.getSite(siteId)
 			.getGroups();
-			for (Group grp : groupsCollection) {
+			List<Group> groupsList = new ArrayList<Group>(groupsCollection);
+			//Sort groups by title alphabetical order
+			Collections.sort(groupsList, new GroupNameComparator());
+			for (Group grp : groupsList) {
 				groups.put(grp.getReference(), grp.getTitle());
 			}
 		} catch (IdUnusedException e) {
@@ -846,7 +855,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 		EventTrackingService.post(EventTrackingService.newEvent(event, ref, context, true, NotificationService.NOTI_NONE));
 	}
 	
-	
+	public static class GroupNameComparator implements Comparator<Group> {
+        public static final long serialVersionUID = 31L;
+        public int compare(Group o1, Group o2) {
+            return o1.getTitle().compareTo(o2.getTitle());
+        }
+    }
 
 
 

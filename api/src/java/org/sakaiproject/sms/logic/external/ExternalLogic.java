@@ -244,6 +244,11 @@ public interface ExternalLogic {
 
 	public Map<String, String> getSakaiRolesForSite(String siteId);
 
+	/**
+	 * Get site group in title alphabetical order
+	 * @param siteId
+	 * @return groupId as key and title as Value
+	 */
 	public Map<String, String> getSakaiGroupsForSite(String siteId);
 
 	public String getSakaiGroupNameFromId(String siteId, String groupId);
