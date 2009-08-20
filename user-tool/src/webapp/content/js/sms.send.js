@@ -202,6 +202,10 @@ $(document).ready(function() {
                 }
             }
         }
+        //Disable form submission compleletly to fix auto form submit bug SMS-136
+        $("form[id=chooseForm]").bind("submit", function(){
+            return false;
+        });
         //preload small cancel icon. Dimensions are not important
         var preload1 = new Image(12,12);
         preload1.src = $.fn.SMS.settings.images.deleteAutocompleteImage;
