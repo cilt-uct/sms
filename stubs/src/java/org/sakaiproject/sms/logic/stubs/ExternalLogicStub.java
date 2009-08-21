@@ -277,7 +277,7 @@ public class ExternalLogicStub implements ExternalLogic {
 		return false;
 	}
 
-	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds) {
+	public Map<String, User> getSakaiUsers(Set<String> userIds) {
 		// TODO Auto-generated method stub
 		return null;
 	}

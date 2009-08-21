@@ -818,17 +818,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds) {
-		Map<String, Map<String, String>> parentUserMap = new HashMap<String, Map<String, String>>();
+	public Map<String, User> getSakaiUsers(Set<String> userIds) {
+		Map<String, User> userMap = new HashMap<String, User>();
 		if (userIds != null && userIds.size() > 0) {
 			List<User> users = userDirectoryService.getUsers(userIds);
 			for (User user : users) {
-				Map<String, String> childUserMap = new HashMap<String, String>();
-				childUserMap.put(user.getDisplayId(), user.getSortName());
-				parentUserMap.put(user.getId(), childUserMap);
+				userMap.put(user.getId(), user);
 			}
 		}
-		return parentUserMap;
+		return userMap;
 	}
 
 	public boolean isNodeBindToGateway() {

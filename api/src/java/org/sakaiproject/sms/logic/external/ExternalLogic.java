@@ -295,7 +295,7 @@ public interface ExternalLogic {
 	 * @param userIds
 	 * @return Parent map with userId as key, secondary map with key as displayName (username) and value sakai sortName
 	 */
-	public Map<String, Map<String, String>> getSakaiUserDetails(Set<String> userIds);
+	public Map<String, User> getSakaiUsers(Set<String> userIds);
 	
 	/**
 	 * Is this node set to bind to the gateway

@@ -1,6 +1,5 @@
 package org.sakaiproject.sms.tool.producers;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +18,7 @@ import org.sakaiproject.sms.tool.renderers.SmsMessageRenderer;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
+import org.sakaiproject.user.api.User;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
@@ -251,8 +251,8 @@ public static final String VIEW_ID = "sms";
 						UIMessage.make(wrapper, "status-header",
 								"ui.sent.sms.header.status");
 						Set<String> smsUserIds = externalLogic.getUserIdsFromTask(smsTask);
-						Map<String, Map<String, String>> userMap = externalLogic
-								.getSakaiUserDetails(smsUserIds);
+						Map<String, User> userMap = externalLogic
+								.getSakaiUsers(smsUserIds);
 						
 						Set<SmsMessage> smses = smsTask.getSmsMessages();
 						for (SmsMessage sms : smses) {
@@ -267,13 +267,10 @@ public static final String VIEW_ID = "sms";
 								String smsUserName = "----";
 								String smsUserSortName = "----";
 								//populate names from userMap value
-								Map<String, String> uniqueUserMap = userMap.get(smsUserId); 
-								if( uniqueUserMap != null && uniqueUserMap.size() > 0){
-									Set<Map.Entry<String, String>> userMapEntry = uniqueUserMap.entrySet();
-									for ( Map.Entry<String, String> userDetails : userMapEntry ){
-										smsUserName = userDetails.getKey();
-										smsUserSortName = userDetails.getValue();
-									}
+								User user = userMap.get(smsUserId); 
+								if( user != null ){
+									smsUserName = user.getDisplayId();
+									smsUserSortName = user.getSortName();
 								}
 
 								UIOutput.make(row, "sms-recipient", smsUserSortName);
