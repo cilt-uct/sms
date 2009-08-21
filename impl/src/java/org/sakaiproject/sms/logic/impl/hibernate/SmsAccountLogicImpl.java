@@ -238,7 +238,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			smsAccount.setAccountName(SmsConstants.DEFAULT_MO_ACCOUNT_NAME);
 			smsAccount.setCredits(0l);
 			smsAccount.setOverdraftLimit(0l);
-			smsAccount.setMessageTypeCode(SmsConstants.MESSAGE_TYPE_CODE);
+			smsAccount.setMessageTypeCode(SmsConstants.MESSAGE_TYPE_CODE_SO);
 			smsAccount.setStartdate(new Date());
 			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_ADMIN_ACCOUNT);
 			persistSmsAccount(smsAccount);

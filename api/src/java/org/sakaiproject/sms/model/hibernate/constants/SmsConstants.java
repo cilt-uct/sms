@@ -186,10 +186,17 @@ public class SmsConstants {
 	 * The default sms account name to create if none exists.
 	 */
 	public static final String DEFAULT_MO_ACCOUNT_NAME = "defaultMOAccount";
+
 	/**
-	 * System originating
+	 * System originating message type code (for accounts)
 	 */
-	public static final String MESSAGE_TYPE_CODE = "SO";
+	public static final String MESSAGE_TYPE_CODE_SO = "SO";
+
+	/**
+	 * Mobile originating message type code (for accounts)
+	 */
+	public static final String MESSAGE_TYPE_CODE_MO = "MO";
+	
 	/**
 	 * The thread group responsible for receiving MO's
 	 */
