@@ -6,23 +6,9 @@ use Data::Dumper;
 
 ## SMS Library functions
 
-my $debug = 1;
+my $debug = 0;
 
 ## Login to Sakai server. Return true if successful, otherwise false.
-
-sub loginToSakai($$$$) {
-  my $ua = shift;
-  my $host = shift;
-  my $username = shift;
-  my $password = shift;
- 
-  my $response = $ua->post("$host/portal/xlogin", 
-    [ eid => $username,
-      pw  => $password,
-      submit => 'Login' ]);
-
-  return (($response->is_redirect) && ($response->header("Location") eq "$host/portal")); 
-}
 
 ## Get account ID for a given site ID. Return the new account ID if successful, otherwise empty string
 
@@ -102,12 +88,13 @@ sub deleteAccount($$$$) {
 
 ## Credit an account
 
-sub creditAccount($$$) {
+sub creditAccount($$$$) {
 
     my $ua = shift;
     my $host = shift;
     my $accountId = shift;
     my $credits = shift;
+    my $comment = shift;
     
     $response = $ua->post("$host/direct/sms-account/new", [
         accountName => $accountName,
