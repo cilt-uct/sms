@@ -324,9 +324,9 @@ public interface ExternalLogic {
 
 	/**
 	 * Extract all the userIds associated with an {@link SmsTask}.
-	 * @param smsTask
-	 * @return Internal userIds from userId list AND entity lists of a task.
+	 * @param messages Messaages to extract the user Ids from
+	 * @return Internal userIds
 	 */
-	public Set<String> getUserIdsFromTask(SmsTask smsTask);
+	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages);
 
 }

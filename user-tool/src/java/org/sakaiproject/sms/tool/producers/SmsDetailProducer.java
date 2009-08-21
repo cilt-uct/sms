@@ -250,12 +250,13 @@ public static final String VIEW_ID = "sms";
 								"ui.sent.sms.header.username");
 						UIMessage.make(wrapper, "status-header",
 								"ui.sent.sms.header.status");
-						Set<String> smsUserIds = externalLogic.getUserIdsFromTask(smsTask);
-						Map<String, User> userMap = externalLogic
-								.getSakaiUsers(smsUserIds);
 						
-						Set<SmsMessage> smses = smsTask.getSmsMessages();
-						for (SmsMessage sms : smses) {
+						Set<SmsMessage> smsMessages = smsTask.getSmsMessages();
+						
+						Set<String> smsUserIds = externalLogic.getUserIdsFromSmsMessages(smsMessages);
+						Map<String, User> userMap = externalLogic.getSakaiUsers(smsUserIds);
+						
+						for (SmsMessage sms : smsMessages) {
 							UIBranchContainer row = UIBranchContainer.make(wrapper,
 									"sms-row:");
 							String smsUserId = sms.getSakaiUserId();

@@ -309,7 +309,7 @@ public class ExternalLogicStub implements ExternalLogic {
 		return;
 	}
 
-	public Set<String> getUserIdsFromTask(SmsTask smsTask) {
+	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages) {
 		// TODO Auto-generated method stub
 		return null;
 	}

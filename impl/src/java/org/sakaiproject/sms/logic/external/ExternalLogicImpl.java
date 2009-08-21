@@ -865,25 +865,14 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
     }
 
-	public Set<String> getUserIdsFromTask(SmsTask smsTask) {
-		
+	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages) {
 		Set<String> smsUserIds = new HashSet<String>();
-		smsUserIds = smsTask.getSakaiUserIdsList();
-		List<String> entityList = smsTask.getDeliveryEntityList();
-		Set<String> idsFromEntityLists = new HashSet<String>();
-		if( entityList != null && entityList.size() > 0){
-			//We are dealing with a task that has an entity list. Append those users to Set<String> taskIds
-			for ( String reference : entityList){
-				Set<Object> members = getMembersForEntityRef(reference);
-				//Extract for this entity
-				for ( Object memberObject : members ){
-					Member member = (Member) memberObject;
-					idsFromEntityLists.add( member.getUserId() );
-				}
+		for (SmsMessage message : messages){
+			String userId = message.getSakaiUserId();
+			if ( userId != null ){
+				smsUserIds.add(userId);
 			}
 		}
-		//This will also trim out duplicates
-		smsUserIds.addAll(idsFromEntityLists);
 		return smsUserIds;
 	}
 
