@@ -24,5 +24,9 @@ import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
 
 public interface SmsAccountEntityProvider extends EntityProvider {
 	public final static String ENTITY_PREFIX = "sms-account";
+	/**
+	 * Custom action locator for crediting or debiting an account
+	 */
+	public final static String CUSTOM_ACTION_CREDIT = "credit";
 
 }

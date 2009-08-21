@@ -13,6 +13,7 @@
 	<bean id="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp" class="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp">
 		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"/>
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
+		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">

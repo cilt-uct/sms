@@ -28,15 +28,19 @@ import java.util.Map;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
+import org.sakaiproject.entitybroker.exception.EntityNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+
+import org.sakaiproject.sms.logic.smpp.SmsBilling;
 
 public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		RESTful, AutoRegisterEntityProvider {
@@ -56,6 +60,12 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 
 	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
+	}
+	
+	private SmsBilling smsBilling;
+
+	public void setSmsBilling(SmsBilling smsBilling) {
+		this.smsBilling = smsBilling;
 	}
 
 	public String createEntity(EntityReference ref, Object entity,
@@ -199,8 +209,8 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		}
 		SmsAccount account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
 		if (account == null) {
-			throw new IllegalArgumentException(
-					"No account found for the given reference: " + ref);
+			throw new EntityNotFoundException(
+					"No account found for the given reference", id);
 		}
 
 		smsAccountLogic.deleteSmsAccount(account);
@@ -239,6 +249,43 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 
 	}
 
+	//Custom action to handle /sms-account/:ID:/credit 
+	@EntityCustomAction(action=CUSTOM_ACTION_CREDIT,viewKey="")
+	public String creditAccount(EntityReference ref, Map<String, Object> params) {
+
+		if (!SecurityService.isSuperUser()) {
+        	throw new SecurityException("Only admin users may manage accounts");	
+        }
+
+		String id = ref.getId();
+		SmsAccount account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
+		if (account == null) {
+			throw new EntityNotFoundException(
+					"No account found for the given reference", id);
+		}
+		
+		try {
+			String credit = (String) params.get("credits");
+			if (credit == null) {
+				throw new IllegalArgumentException("No credit value given");
+			}
+			
+			Long cred = Long.valueOf(credit);
+			
+			 smsBilling.creditAccount(account.getId(), cred);
+			
+ 		} catch (NumberFormatException e){
+ 			throw new IllegalArgumentException("Invalid credit value");
+ 		}
+		
+ 		// Update balance
+ 		account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
+ 		
+		// return new balance of account
+		return account.getCredits().toString();
+	}
+	
+	
 	public String[] getHandledOutputFormats() {
 		return new String[] { Formats.XML, Formats.JSON };
 	}

@@ -141,6 +141,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the account id
 	 * @param creditCount
 	 *            the credit count
+	 * @deprecated Not implemented
 	 */
 	public synchronized void allocateCredits(Long accountID, int creditCount) {
 		// TODO Auto-generated method stub
@@ -269,6 +270,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the account id
 	 * 
 	 * @return the account balance
+	 * @deprecated Not implemented
 	 */
 	public double getAccountBalance(Long accountID) {
 		// TODO Auto-generated method stub
@@ -282,6 +284,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the account id
 	 * 
 	 * @return the account credits
+	 * @deprecated Not implemented
 	 */
 	public int getAccountCredits(Long accountID) {
 		// TODO Auto-generated method stub
@@ -328,6 +331,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the end date
 	 * 
 	 * @return the acc transactions
+	 * @deprecated Not implemented
 	 */
 	public Set getAccTransactions(Long accountID, Date startDate, Date endDate) {
 		// TODO Auto-generated method stub
@@ -342,6 +346,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the sakai site id
 	 * 
 	 * @return the all site accounts
+	 * @deprecated Not implemented
 	 */
 	public Set getAllSiteAccounts(String sakaiSiteID) {
 		// TODO Auto-generated method stub
@@ -356,6 +361,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the sakai site id
 	 * 
 	 * @return true, if insert account
+	 * @deprecated Not implemented
 	 */
 	public boolean insertAccount(String sakaiSiteID) {
 		return false;
@@ -370,7 +376,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 *            the trans code id
 	 * @param creditAmount
 	 * @return true, if insert transaction the credit amount
-	 * 
+	 * @deprecated Not implemented
 	 */
 	public boolean insertTransaction(Long accountID, int transCodeID,
 			int creditAmount) {
