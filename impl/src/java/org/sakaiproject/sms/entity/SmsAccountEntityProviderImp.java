@@ -20,11 +20,14 @@
  **********************************************************************************/
 package org.sakaiproject.sms.entity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
@@ -35,6 +38,8 @@ import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.entitybroker.exception.EntityNotFoundException;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
@@ -44,6 +49,8 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 
 public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		RESTful, AutoRegisterEntityProvider {
+
+	private static final Log LOG = LogFactory.getLog(SmsAccountEntityProviderImp.class);
 
 	public String getEntityPrefix() {
 		return ENTITY_PREFIX;
@@ -84,7 +91,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		if (smsAccount.getStartdate() == null)
 			smsAccount.setStartdate(cal.getTime());
 				
-		if (smsAccount.getSakaiSiteId() == null){
+		if (smsAccount.getSakaiSiteId() == null || "".equals(smsAccount.getSakaiSiteId().trim())) {
 			throw new IllegalArgumentException( "must have a site id" );
 		}
 		
@@ -209,8 +216,8 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		}
 		SmsAccount account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
 		if (account == null) {
-			throw new EntityNotFoundException(
-					"No account found for the given reference", id);
+			throw new IllegalArgumentException(
+					"No account found for the given account "+ id);
 		}
 
 		smsAccountLogic.deleteSmsAccount(account);
@@ -224,29 +231,64 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 					+ ref);
 		}
 		
-		// TODO support searching by site id
+		// Return all accounts, or the account for a specific user or site
 		
 		Restriction userRes = search.getRestrictionByProperty("userId");
-		String userId = null;
-		if (userRes == null || userRes.getSingleValue() == null) {
-			userId = developerHelperService.getCurrentUserId();
-			if (userId == null) {
-				throw new SecurityException(
-						"User must be logged in in order to access sms accounts");
+		Restriction siteRes = search.getRestrictionByProperty("siteId");
+
+		// All accounts - admin only
+		if (userRes == null && siteRes == null) {
+
+			if (!SecurityService.isSuperUser()) {
+				throw new SecurityException("Only admin users may manage accounts");	
 			}
-			String userReference = developerHelperService
-					.getCurrentUserReference();
-			boolean allowedManage = developerHelperService
-					.isUserAdmin(userReference);
-			if (!allowedManage) {
-				throw new SecurityException("User (" + userReference
-						+ ") not allowed to access sms account: " + ref);
-			}
+
+			List<SmsAccount> accounts = smsAccountLogic.getAllSmsAccounts();
+			return accounts;
 
 		}
-		List<SmsAccount> tasks = smsAccountLogic.getAllSmsAccounts();
-		return tasks;
 
+		// Site - if the user has send permission in this site
+		
+		if (siteRes != null && siteRes.getStringValue() != null) {
+			
+			String siteId = siteRes.getStringValue();
+			
+			if (!SecurityService.unlock(ExternalLogic.SMS_SEND, SiteService.siteReference(siteId))) {
+				throw new SecurityException("No permission to view account info for this site");
+			}
+
+			LOG.info("looking for "  + siteId);
+			
+			List<SmsAccount> accounts = new ArrayList<SmsAccount>();
+			SmsAccount account = smsAccountLogic.getSmsAccount(siteId, null);
+			
+			if (account != null) {
+				accounts.add(account);
+				LOG.info("added account");
+			}
+			
+			return accounts;			
+		}
+		
+		// User - if admin a given userid, otherwise current user
+		
+		// TODO - allow search by user eid as well
+		
+		String userId = developerHelperService.getCurrentUserId();
+		
+		if (userRes != null && userRes.getStringValue() != null && SecurityService.isSuperUser()) {
+			userId = userRes.getStringValue();
+		}
+			
+		List<SmsAccount> accounts = new ArrayList<SmsAccount>();
+		SmsAccount account = smsAccountLogic.getSmsAccount(null, userId);
+		
+		if (account != null) {
+			accounts.add(account);
+		}
+		
+		return accounts;
 	}
 
 	//Custom action to handle /sms-account/:ID:/credit 
@@ -260,8 +302,8 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		String id = ref.getId();
 		SmsAccount account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
 		if (account == null) {
-			throw new EntityNotFoundException(
-					"No account found for the given reference", id);
+			throw new IllegalArgumentException(
+					"No account found for the given reference "  + id);
 		}
 		
 		try {

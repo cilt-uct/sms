@@ -206,29 +206,51 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * 
 	 * @param sakaiSiteId
 	 *            the sakai site id. Can be null.
-	 * @param SakaiUserId
+	 * @param sakaiUserId
 	 *            the sakai user id. Can be null.
 	 * 
 	 * @return sms configuration
 	 * 
 	 */
 	public synchronized SmsAccount getSmsAccount(String sakaiSiteId,
-			String SakaiUserId) {
+			String sakaiUserId) {
 		final SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		boolean useSiteAccount = config.getUseSiteAcc();
 		SmsAccount account = null;
+		
 		if (SmsConstants.SMS_DEV_MODE) {
 			if (useSiteAccount) {
 				insertTestSmsAccount(sakaiSiteId, null);
 			} else {
-				insertTestSmsAccount(null, SakaiUserId);
+				insertTestSmsAccount(null, sakaiUserId);
 			}
 		}
-		if (useSiteAccount) {
+		
+		// If only 1 has been specified, use that to lookup
+
+		if (sakaiSiteId != null && sakaiUserId == null) {
 			account = getAccountBySakaiSiteId(sakaiSiteId);
-		} else {
-			account = getAccountBySakaiUserId(SakaiUserId);
+		}
+
+		if (sakaiUserId != null && sakaiSiteId == null) {
+			account = getAccountBySakaiSiteId(sakaiSiteId);
+		}
+
+		// Resolve according to system preference
+		
+		if (sakaiUserId != null && sakaiSiteId != null) {
+			if (useSiteAccount) {
+				account = getAccountBySakaiSiteId(sakaiSiteId);
+				if (account == null) {
+					account = getAccountBySakaiUserId(sakaiUserId);					
+				}
+			} else {
+				account = getAccountBySakaiUserId(sakaiUserId);
+				if (account == null) {
+					account = getAccountBySakaiSiteId(sakaiUserId);					
+				}
+			}
 		}
 
 		if (account == null
@@ -243,7 +265,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_ADMIN_ACCOUNT);
 			persistSmsAccount(smsAccount);
 
-			return getSmsAccount(sakaiSiteId, SakaiUserId);
+			return getSmsAccount(sakaiSiteId, sakaiUserId);
 		}
 
 		// may return null if acc does not exist
