@@ -290,8 +290,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 			String groupId = EntityReference.getIdFromRefByKey(entityReference, "group");
 			if ( groupId != null ){
 				AuthzGroup group = siteService.findGroup(groupId);
-				LOG.debug("Found group " + group.getDescription() + " with id " + groupId + " of size: " + group.getMembers().size());
-				members.addAll(group.getMembers());
+				if(group != null){
+					LOG.debug("Found group " + group.getDescription() + " with id " + groupId + " of size: " + group.getMembers().size());
+					members.addAll(group.getMembers());
+				}else{
+					LOG.debug("Could not find group with id: " + groupId);
+				}
 			}
 		}
 		return members;

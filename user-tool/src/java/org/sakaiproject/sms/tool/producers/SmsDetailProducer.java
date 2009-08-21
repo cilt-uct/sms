@@ -259,20 +259,23 @@ public static final String VIEW_ID = "sms";
 							UIBranchContainer row = UIBranchContainer.make(wrapper,
 									"sms-row:");
 							String smsUserId = sms.getSakaiUserId();
-							String smsUserName = "----";
-							String smsUserSortName = "----";
-							//populate names from userMap value
-							Set<Map.Entry<String, String>> userMapEntry = userMap.get(smsUserId).entrySet();
-							for ( Map.Entry<String, String> userDetails : userMapEntry ){
-								smsUserName = userDetails.getKey();
-								smsUserSortName = userDetails.getValue();
-							}
 							
 							if (smsUserId == null || "".equals(smsUserId)) {
-								UIOutput.make(row, "sms-recipient", sms
-										.getMobileNumber());
+								UIOutput.make(row, "sms-recipient", sms.getMobileNumber() == null? "----" : sms.getMobileNumber());
 								UIOutput.make(row, "sms-recipient-username", "----");
 							} else {
+								String smsUserName = "----";
+								String smsUserSortName = "----";
+								//populate names from userMap value
+								Map<String, String> uniqueUserMap = userMap.get(smsUserId); 
+								if( uniqueUserMap != null && uniqueUserMap.size() > 0){
+									Set<Map.Entry<String, String>> userMapEntry = uniqueUserMap.entrySet();
+									for ( Map.Entry<String, String> userDetails : userMapEntry ){
+										smsUserName = userDetails.getKey();
+										smsUserSortName = userDetails.getValue();
+									}
+								}
+
 								UIOutput.make(row, "sms-recipient", smsUserSortName);
 								UIOutput.make(row, "sms-recipient-username", smsUserName);
 							}
