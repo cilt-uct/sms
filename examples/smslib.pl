@@ -42,16 +42,21 @@ sub getAccountIdForSite($$$) {
 
 ## Create a new account
 
-sub createAccount($$$$) {
+sub createAccount($$$$$$) {
 
     my $ua = shift;
     my $host = shift;
-    my $accountName = shift;
     my $siteId = shift;
+    my $accountName = shift;
+    my $ownerEid = shift;
+    my $ownerEmail = shift;
+    my $overdraft = shift;
     
     $response = $ua->post("$host/direct/sms-account/new", [
         accountName => $accountName,
-        sakaiSiteId => $siteId ]);
+        sakaiSiteId => $siteId,
+	notificationEmail => $ownerEmail,
+	overdraftLimit => $overdraft ]);
 
     ## Return the new account ID if successful, otherwise empty string
        
