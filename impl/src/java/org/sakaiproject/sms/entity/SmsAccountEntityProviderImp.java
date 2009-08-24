@@ -105,7 +105,6 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		
 		// 0 credits for opening balance
 		smsAccount.setCredits(0L);
-		smsAccount.setOverdraftLimit(0L);
 		
 		smsAccount.setAccountEnabled(true);
 		
