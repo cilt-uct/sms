@@ -68,7 +68,6 @@ import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 
@@ -353,12 +352,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		
 		//Set sensitive sender info now
 		smsTask.setSenderUserId(senderId);
-		try {
-			smsTask.setSenderUserName(UserDirectoryService.getUser(senderId).getDisplayName());
-			log.debug("User with id="+ senderId +" and name: "+UserDirectoryService.getUser(senderId).getDisplayName() + " calculating a new SMS.");
-		} catch (UserNotDefinedException e) {
-			//Don't exit just in case the sender id is valid but no name is set. Setting new task will fail at validation stage if this sender is not legit
-		}
+		//At this stage we don't really need the correct sender username since this sms task is never persisted
+		smsTask.setSenderUserName( "---" );
+		log.debug("User with id="+ senderId +" is calculating a new SMS.");
 		
 		
 		if (smsTask.getSakaiSiteId() == null){
@@ -481,7 +477,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		// Set user info - only allow sending as someone else if admin
 		User user = UserDirectoryService.getCurrentUser();
 
-		task.setSenderUserName(user.getDisplayName());
+		task.setSenderUserName(getSenderUserName(user));
 		task.setSenderUserId(user.getId());
 		
 		// Set copy me status
@@ -568,6 +564,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			localeEventNames.put(EVENT_KEYS[i], msgs.getString(EVENT_KEYS[i]));
 		}
 		return localeEventNames;
+	}
+	
+	private String getSenderUserName(User sakaiUser){
+		String senderDisplayName = "----";
+		try{
+		senderDisplayName = sakaiUser.getDisplayName();
+		if ( "----".equals(senderDisplayName) ){
+			senderDisplayName = sakaiUser.getDisplayId();
+		}
+		}catch (Exception e) {
+			log.warn("User with id: " + sakaiUser.getId() + " has no UI readable name set in sakai.");
+		}
+		return senderDisplayName;
 	}
 
 }
