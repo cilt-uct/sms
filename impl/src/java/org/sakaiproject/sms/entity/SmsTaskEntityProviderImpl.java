@@ -477,7 +477,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		// Set user info - only allow sending as someone else if admin
 		User user = UserDirectoryService.getCurrentUser();
 
-		task.setSenderUserName(getSenderUserName(user));
+		String senderDisplayName = user.getDisplayName();
+		if ( senderDisplayName == null || "".equals(senderDisplayName) ){
+			senderDisplayName = user.getDisplayId();
+		}
+		task.setSenderUserName(senderDisplayName);
 		task.setSenderUserId(user.getId());
 		
 		// Set copy me status
@@ -564,19 +568,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			localeEventNames.put(EVENT_KEYS[i], msgs.getString(EVENT_KEYS[i]));
 		}
 		return localeEventNames;
-	}
-	
-	private String getSenderUserName(User sakaiUser){
-		String senderDisplayName = "----";
-		try{
-		senderDisplayName = sakaiUser.getDisplayName();
-		if ( "----".equals(senderDisplayName) ){
-			senderDisplayName = sakaiUser.getDisplayId();
-		}
-		}catch (Exception e) {
-			log.warn("User with id: " + sakaiUser.getId() + " has no UI readable name set in sakai.");
-		}
-		return senderDisplayName;
 	}
 
 }
