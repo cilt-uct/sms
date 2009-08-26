@@ -928,10 +928,7 @@ public class SmsTask extends BaseModel {
 				number++;
 			}
 			
-			// Do some minimal de-punctuation
-			deliveryMobileNumbers = buffer.toString().
-				replace("-", "").replace(" ", "").
-				replace("(", "").replace(")", "");
+			deliveryMobileNumbers = buffer.toString();
 		}
 	}
 
