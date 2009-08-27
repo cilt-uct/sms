@@ -144,6 +144,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 		this.mobileNumberHelper = mobileNumberHelper;
 	}
 
+	private NumberRoutingHelper numberRoutingHelper;
+	
+	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
+		this.numberRoutingHelper = numberRoutingHelper;
+	}
+
 	private AliasService aliasService;
 
 	public void setAliasService(AliasService aliasService) {
@@ -365,12 +371,22 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		if (smsTask.getDeliveryMobileNumbersSet() != null) {
 			LOG.debug("Adding numbers from list of mobile numbers");
-			// a list of mobile numbers, not necessarily from sakai users
+
+			// a list of mobile numbers, not necessarily from Sakai users
 			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
-				SmsMessage message = new SmsMessage();
-				message.setMobileNumber(mobileNumber);
-				message.setSmsTask(smsTask);
-				messages.add(message);
+				
+				String normalizedNumber = numberRoutingHelper.normalizeNumber(mobileNumber);
+				
+				// TODO At some point we may wish to exclude numbers here from users
+				// who have this number set in their profile and have opted-out of 
+				// SMS notification.
+				
+				if (numberRoutingHelper.isNumberRoutable(normalizedNumber)) {
+					SmsMessage message = new SmsMessage();
+					message.setMobileNumber(normalizedNumber);
+					message.setSmsTask(smsTask);
+					messages.add(message);
+				}
 			}
 		}
 		if (smsTask.getDeliveryUserId() != null) {
@@ -833,10 +849,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return serverConfigurationService.getBoolean("sms.BindThisNode", true);
 	}
 
-	public String getLocalInternationalPrefix() {
-		return serverConfigurationService.getString(PREF_INTERNATIONAL_PREFIX, PREF_INTERNATIONAL_PREFIX_DEFAULT);
-	}
-
 	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
 		Map<String, String> usernames = new HashMap<String, String>();
@@ -875,8 +887,5 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return smsUserIds;
 	}
-
-
-
 
 }

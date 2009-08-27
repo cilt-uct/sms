@@ -27,10 +27,10 @@ import java.util.Set;
 public interface MobileNumberHelper {
 	
 	/**
-	 * Retrieves mobile number for user
+	 * Retrieves mobile number for user.
 	 * 
 	 * @param userid user id to retrieve 
-	 * @return user's mobile number of null if not available / unset.
+	 * @return user's mobile number in normalized international form, or null if not available / unset.
 	 */
 	String getUserMobileNumber(String userid);
 	
@@ -38,8 +38,8 @@ public interface MobileNumberHelper {
 	 * Retrieves mobile numbers of multiple users
 	 * 
 	 * @param userids list of userid's
-	 * @return returns map of mobile numbers. Userid is key, value is mobile number or null if
-	 *	unset/unavailable.
+	 * @return returns map of mobile numbers. Userid is key, value is mobile number in 
+	 * normalized international form, or null if unset/unavailable.
 	 */
 	Map<String,String> getUserMobileNumbers(List<String> userids);
 
@@ -57,12 +57,4 @@ public interface MobileNumberHelper {
 	 * @return
 	 */
 	List<String> getUsersWithMobileNumbers(Set<String> userids);
-
-	/**
-	 * Normalize a number e.g convert numbers startign with 0 to the int format (e.g 072... to 2772)
-	 * @param mobileNumber
-	 * @return
-	 */
-	public String normalizeNumber(String mobileNumber);
-	
 }

@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 
 
 import org.sakaiproject.sms.logic.external.MobileNumberHelperImpl;
+import org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl;
 import org.sakaiproject.sms.logic.stubs.SakaiPersonManagerStub;
 import org.sakaiproject.sms.logic.stubs.ServerConfigurationServiceStubb;
 import org.sakaiproject.sms.logic.stubs.UserDirectoryServiceStub;
@@ -15,13 +16,19 @@ import org.sakaiproject.sms.logic.stubs.UserDirectoryServiceStub;
 public class MobileNumberHelperTest extends TestCase {
 
 	private MobileNumberHelperImpl mobileNumberHelper;
-
+	private NumberRoutingHelperImpl numberRoutingHelper;
+	
 	@Override
 	public void setUp() {
+		
+		numberRoutingHelper = new NumberRoutingHelperImpl();
+		numberRoutingHelper.setServerConfigurationService(new ServerConfigurationServiceStubb());
+		
 		mobileNumberHelper = new MobileNumberHelperImpl();
 		mobileNumberHelper.setSakaiPersonManager(new SakaiPersonManagerStub());
 		mobileNumberHelper.setUserDirectoryService(new UserDirectoryServiceStub());
 		mobileNumberHelper.setServerConfigurationService(new ServerConfigurationServiceStubb());
+		mobileNumberHelper.setNumberRoutingHelper(numberRoutingHelper);
 	}
 
 	public void testGetMobile() {

@@ -16,6 +16,17 @@
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 	</bean>
 
+    <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl">
+        <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+    </bean>
+
+    <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
+        <property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
+        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
+        <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
+    </bean>
+
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
@@ -26,13 +37,8 @@
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
 		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
-		<property name="mobileNumberHelper">
-			<bean class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
-				<property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
-				<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
-				<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
-			</bean>
-		</property>
+		<property name="mobileNumberHelper" ref="org.sakaiproject.sms.logic.external.MobileNumberHelper" />
+        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 	</bean>

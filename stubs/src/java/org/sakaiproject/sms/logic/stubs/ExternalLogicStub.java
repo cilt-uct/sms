@@ -296,10 +296,6 @@ public class ExternalLogicStub implements ExternalLogic {
 		return true;
 	}
 
-	public String getLocalInternationalPrefix() {
-		return "27";
-	}
-
 	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
 		// TODO Auto-generated method stub
 		return null;

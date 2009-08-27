@@ -43,18 +43,21 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 /**
- * Default implementation of {@link MobileNumberHelper} Mobile numbers retrieved
- * from Profile Tool
+ * Default implementation of {@link MobileNumberHelper}. Mobile numbers retrieved
+ * from Profile Tool, with user opt-in / opt-out preference from user property.
  * 
  */
-public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRoutingHelper {
-
-	
+public class MobileNumberHelperImpl implements MobileNumberHelper {
 
 	private static final String PREF_SMS_NOTIFICATIONS = "smsnotifications";
 
 	private static final Log LOG = LogFactory
 			.getLog(MobileNumberHelperImpl.class);
+
+	private NumberRoutingHelper numberRoutingHelper;
+	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
+		this.numberRoutingHelper = numberRoutingHelper;
+	}
 
 	private SakaiPersonManager sakaiPersonManager;
 	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
@@ -82,22 +85,19 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		if (!userWantsSms(userid))
 			return null;
 			
-		
 		final SakaiPerson sakaiPerson = sakaiPersonManager.getSakaiPerson(
 				userid, sakaiPersonManager.getUserMutableType());
 		if (sakaiPerson == null) {
-			// this is to be expected not all Sakai Users have profiles
+			// this is to be expected as not all Sakai Users have profiles
 			LOG.debug("Profile not found for userid: " + userid);
-			return null;
 		} else {
-			String mobile = normalizeNumber(sakaiPerson.getMobile());
-			if (isNumberRoutable(mobile)) {
+			String mobile = numberRoutingHelper.normalizeNumber(sakaiPerson.getMobile());
+			if (numberRoutingHelper.isNumberRoutable(mobile)) {
 				return mobile;
-			} else {
-				return null;
-			}
-
+			} 
 		}
+		
+		return null;
 	}
 
 	/**
@@ -122,8 +122,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 			Entry<String, SakaiPerson> pairs = selector.next();
         	SakaiPerson sp = pairs.getValue();
         	if (sp != null) {
-        		String mobile = normalizeNumber(sp.getMobile());
-        		if (mobile != null && isNumberRoutable(mobile)) {
+        		String mobile = numberRoutingHelper.normalizeNumber(sp.getMobile());
+        		if (mobile != null && numberRoutingHelper.isNumberRoutable(mobile)) {
         			userMobileMap.put(pairs.getKey(), mobile);
         		}
         	}
@@ -146,8 +146,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 	        	Entry<String, SakaiPerson> pairs = selector.next();
 	        	SakaiPerson sp = pairs.getValue();
 	        	if (sp != null) {
-	        		String mobile = normalizeNumber(sp.getMobile());
-	                if (mobile != null && mobile != "" && isNumberRoutable(mobile)) {
+	        		String mobile = numberRoutingHelper.normalizeNumber(sp.getMobile());
+	                if (mobile != null && mobile != "" && numberRoutingHelper.isNumberRoutable(mobile)) {
 	        			result.add( sp.getUid() );
 	        		}
 	        	}
@@ -252,39 +252,4 @@ public class MobileNumberHelperImpl implements MobileNumberHelper, NumberRouting
 		return false;
 	}
 
-	private String getInternationalPrefix() {
-		return serverConfigurationService.getString(ExternalLogic.PREF_INTERNATIONAL_PREFIX, ExternalLogic.PREF_INTERNATIONAL_PREFIX_DEFAULT);
-	}
-	
-	public boolean isNumberRoutable(String mobileNumber) {
-		if (mobileNumber == null || "".equals(mobileNumber)) {
-			return false;
-		}
-		
-		//normalize the number first
-		mobileNumber = normalizeNumber(mobileNumber);
-		String regex= "^" + getInternationalPrefix() + "[0-9]+$";
-		if (mobileNumber.matches(regex)) {
-			return true;
-		}
-		return false;
-	}
-
-	public String normalizeNumber(String mobileNumber) {
-
-		if (mobileNumber == null || "".equals(mobileNumber)) {
-			return mobileNumber;
-		}
-		
-		mobileNumber = mobileNumber.replace("\\s", "");
-		mobileNumber = mobileNumber.replace("+", "").replace("-", "").replace(" ", "").replace("(", "").replace(")", "");
-
-		//if it starts with '0' replace with the international prefix
-		if (mobileNumber.startsWith("0") && !mobileNumber.startsWith("00")) {
-			String end = mobileNumber.substring(1, mobileNumber.length());
-			mobileNumber = getInternationalPrefix() + end;
-		}
-		
-		return mobileNumber;
-	}
 }

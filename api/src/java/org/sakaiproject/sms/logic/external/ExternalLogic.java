@@ -52,19 +52,26 @@ public interface ExternalLogic {
 	/**
 	 * Allow sending of messages in site.
 	 * Implies Create a new Sms task in current site
-	 * 
 	 */
 	public final static String SMS_SEND = "sms.send";
 	
-	/**
-	 * Preference key for international dialing prefix (default is 27)
-	 */
-	public static final String PREF_INTERNATIONAL_PREFIX = "sms.interNationalPrefix";
+	/** Preference key for international dialing prefix */
+	public static final String PREF_INT_PREFIX = "sms.number.intprefix";
 	
-	/**
-	 * The default value for the international dialing prefix
-	 */
-	public static final String PREF_INTERNATIONAL_PREFIX_DEFAULT = "27";
+	/** Preference key for local dialing prefix */
+	public static final String PREF_LOCAL_PREFIX = "sms.number.localprefix";
+	
+	/** Preference key for country code */
+	public static final String PREF_COUNTRY_CODE= "sms.number.countrycode";
+	
+	/** Default value for international dialing prefix */
+	public static final String PREF_INT_PREFIX_DEFAULT = "00";
+	
+	/** Default value for local dialing prefix */
+	public static final String PREF_LOCAL_PREFIX_DEFAULT = "0";
+	
+	/** Default value for country code (South Africa) */
+	public static final String PREF_COUNTRY_CODE_DEFAULT = "27";
 	
 	/**
 	 * Check if this user has super admin access
@@ -303,12 +310,6 @@ public interface ExternalLogic {
 	 */
 	public boolean isNodeBindToGateway();
 	
-	/**
-	 * The international prefix for the server (eg 27 for south africa)
-	 * @return
-	 */
-	public String getLocalInternationalPrefix();
-
 	/**
 	 * Get a list of sakai users sortnames with corresponding UUIds.
 	 * @param sakaiUserIds
