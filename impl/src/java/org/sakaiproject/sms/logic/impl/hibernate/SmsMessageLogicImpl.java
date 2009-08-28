@@ -358,6 +358,10 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		if (smsMessage.getSakaiUserId() == null) {
 			smsMessage.setSakaiUserId("");
 		}
+		if (smsMessage.getDateQueued() == null) {
+			smsMessage.setDateQueued(new Date());
+		}
+		
 		persist(smsMessage);
 	}
 

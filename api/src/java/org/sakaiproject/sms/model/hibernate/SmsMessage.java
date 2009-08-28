@@ -97,7 +97,7 @@ public class SmsMessage extends BaseModel {
 	public SmsMessage() {
 		super();
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
-		this.setDateQueued(new Date());
+		
 
 	}
 
@@ -114,6 +114,7 @@ public class SmsMessage extends BaseModel {
 		super();
 		this.mobileNumber = mobileNumber;
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
+		this.setDateQueued(new Date());
 
 	}
 
