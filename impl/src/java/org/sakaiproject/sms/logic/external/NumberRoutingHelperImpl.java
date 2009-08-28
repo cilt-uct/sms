@@ -38,26 +38,29 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	}
 
 	public String normalizeNumber(String mobileNumber) {
+		return normalizeNumber(mobileNumber, getInternationalPrefix(), getLocalPrefix(), getCountryCode());
+	}
+	
+	public String normalizeNumber(String mobileNumber, final String intprefix, final String localprefix, final String countrycode) {
 
 		if (mobileNumber == null || "".equals(mobileNumber)) {
 			return mobileNumber;
 		}
 		
 		// Get rid of punctuation
-		mobileNumber = mobileNumber.replace("\\s", "").replace("+", "").replace("-", "").
+		mobileNumber = mobileNumber.replace("\\s", "").replace("-", "").replace("+", "").
 			replace(" ", "").replace("(", "").replace(")", "");
 
-		// Drop international dialing prefix if present
-		if (mobileNumber.startsWith(getInternationalPrefix())) {
-			mobileNumber = mobileNumber.substring(getInternationalPrefix().length(), mobileNumber.length());
-		}
-		
-		// Replace local dialling prefix if present with country code 
-		if (mobileNumber.startsWith(getLocalPrefix())) {
-			mobileNumber = getCountryCode() + mobileNumber.substring(getLocalPrefix().length(), mobileNumber.length());
+		// Replace international dialling prefix with + if present
+		if (mobileNumber.startsWith(intprefix)) {
+			mobileNumber = mobileNumber.substring(intprefix.length(), mobileNumber.length());
+		} else {
+			// Replace local dialling prefix if present with country code 
+			if (mobileNumber.startsWith(localprefix)) {
+				mobileNumber = countrycode + mobileNumber.substring(localprefix.length(), mobileNumber.length());
+			}	
 		}
 		
 		return mobileNumber;
 	}
-
 }

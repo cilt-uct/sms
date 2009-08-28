@@ -66,4 +66,31 @@ public class MobileNumberHelperTest extends TestCase {
 		assertEquals(null, numbers.get("test2"));
 		assertEquals("27123456789", numbers.get("test3"));
 	}
+	
+	public void testNormalizeNumber() {
+		
+		// normalizeNumber(String mobileNumber, final String intprefix, final String localprefix, final String countrycode)
+		
+		// South Africa (00 / 0 / 27)
+		
+		assertEquals(numberRoutingHelper.normalizeNumber("0831234567", "00", "0", "27"),    
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("083-123-4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("083 123-4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("083 123 4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("+27 83 123-4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("+27 83 123-4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("+27 83 123-4567", "00", "0", "27"),
+			"27831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("00 44 83 123-4567", "00", "0", "27"),
+			"44831234567");
+		assertEquals(numberRoutingHelper.normalizeNumber("+44 83 123-4567", "00", "0", "27"),
+			"44831234567");
+		
+	}
 }
