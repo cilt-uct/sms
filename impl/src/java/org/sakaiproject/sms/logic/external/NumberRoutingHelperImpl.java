@@ -47,18 +47,39 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 			return mobileNumber;
 		}
 		
-		// Get rid of punctuation
-		mobileNumber = mobileNumber.replace("\\s", "").replace("-", "").replace("+", "").
-			replace(" ", "").replace("(", "").replace(")", "");
+		StringBuilder newNum = new StringBuilder();
+		
+		// Get rid of everything except leading + and 0-9
+		if (mobileNumber.trim().startsWith("+")) {
+			newNum.append('+');
+		}
+		
+		for (char c : mobileNumber.toCharArray()) {
+			if (c >= '0' && c <= '9') {
+				newNum.append(c);
+			}
+		}
+		
+		mobileNumber = newNum.toString();
 
-		// Replace international dialling prefix with + if present
+		// Is this already an international number with a country code?
+
+		if (mobileNumber.startsWith("+")) {
+			return mobileNumber.substring(1, mobileNumber.length());
+		}
+
 		if (mobileNumber.startsWith(intprefix)) {
-			mobileNumber = mobileNumber.substring(intprefix.length(), mobileNumber.length());
+			return mobileNumber.substring(intprefix.length(), mobileNumber.length());
+		}
+		
+		// Local number
+
+		if (mobileNumber.startsWith(localprefix)) {
+			// Replace local dialling prefix with country code
+			mobileNumber = countrycode + mobileNumber.substring(localprefix.length(), mobileNumber.length());
 		} else {
-			// Replace local dialling prefix if present with country code 
-			if (mobileNumber.startsWith(localprefix)) {
-				mobileNumber = countrycode + mobileNumber.substring(localprefix.length(), mobileNumber.length());
-			}	
+			// Prefix with country code
+			mobileNumber = countrycode + mobileNumber;
 		}
 		
 		return mobileNumber;
