@@ -101,12 +101,8 @@ sub creditAccount($$$$) {
     my $credits = shift;
     my $comment = shift;
     
-    $response = $ua->post("$host/direct/sms-account/new", [
-        accountName => $accountName,
-        sakaiSiteId => $siteid ]);
-
     $response = $ua->request(POST "$host/direct/sms-account/$accountId/credit", 
-        Content => [credits=>$credits]);
+        Content => [credits=>$credits, description=>$comment]);
 
     ## Return the new account balance if successful, otherwise empty string
     
