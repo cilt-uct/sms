@@ -106,7 +106,7 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 					"sms.transaction-log-search-results.trans.type");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-transaction-description", sortViewParams,
-					"transactionTypeCode",
+					"description",
 					"sms.transaction-log-search-results.trans.description");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-transaction-date:", sortViewParams,
