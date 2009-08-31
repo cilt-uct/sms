@@ -313,7 +313,9 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 			
 			Long cred = Long.valueOf(credit);
 			
-			 smsBilling.creditAccount(account.getId(), cred);
+			String description = (String) params.get("description");
+			
+			 smsBilling.creditAccount(account.getId(), cred, description);
 			
  		} catch (NumberFormatException e){
  			throw new IllegalArgumentException("Invalid credit value");

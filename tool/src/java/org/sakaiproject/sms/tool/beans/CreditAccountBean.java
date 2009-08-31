@@ -24,6 +24,15 @@ public class CreditAccountBean {
 
 	private Long accountId;
 	private Long creditsToCredit;
+	private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public Long getAccountId() {
 		return accountId;

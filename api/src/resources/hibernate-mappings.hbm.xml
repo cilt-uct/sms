@@ -165,6 +165,7 @@
 		<many-to-one name="smsAccount"
 			class="org.sakaiproject.sms.model.hibernate.SmsAccount" column="SMS_ACCOUNT_ID"
 			not-null="true" />
+		<property name="description" type="text" column="TRANSACTION_DESCRIPTION"/>
 	</class>
 
 	<class name="org.sakaiproject.sms.model.hibernate.SmsConfig"

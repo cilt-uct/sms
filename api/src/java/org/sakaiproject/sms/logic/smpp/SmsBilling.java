@@ -44,8 +44,9 @@ public interface SmsBilling {
 	 * 
 	 * @param accountId
 	 * @param creditsToCredit
+	 * @param description 
 	 */
-	public void creditAccount(Long accountId, long creditsToCredit);
+	public void creditAccount(Long accountId, long creditsToCredit, String Description);
 
 	/**
 	 * Add extra credits to the specific account by making an entry into

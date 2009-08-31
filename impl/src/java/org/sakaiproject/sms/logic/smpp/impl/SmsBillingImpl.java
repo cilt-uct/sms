@@ -109,7 +109,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param creditsToDebit
 	 */
 	public synchronized void creditAccount(final Long accountId,
-			final long creditsToDebit) {
+			final long creditsToDebit, String description) {
 
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountId);
@@ -123,7 +123,8 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setSmsTaskId(0L);
 		smsTransaction.setSakaiUserId(hibernateLogicLocator.getExternalLogic()
 				.getCurrentUserId());
-
+		smsTransaction.setDescription(description);
+		
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
 

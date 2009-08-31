@@ -31,7 +31,7 @@ public class CreditAccountActionBean {
 	public void creditAccount() {
 		try {
 			smsBilling.creditAccount(creditAccountBean.getAccountId(),
-					creditAccountBean.getCreditsToCredit());
+					creditAccountBean.getCreditsToCredit(), creditAccountBean.getDescription());
 		} catch (Exception e) {
 
 			LOG.error(e.getMessage(), e);

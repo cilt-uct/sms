@@ -29,7 +29,7 @@ public class CreditAccountProducer implements ViewComponentProducer {
 
 	public void init() {
 		messageFixupHelper.fixupMessages("account-id-input",
-				"account-amount-input");
+		"account-amount-input");
 	}
 
 	public String getViewID() {
@@ -43,20 +43,19 @@ public class CreditAccountProducer implements ViewComponentProducer {
 		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		UIMessage.make(tofill, "page-title", "sms.credit.account.title");
-		UIMessage.make(tofill, "sms-credit-account-heading",
-				"sms.credit.account.title");
+		UIMessage.make(tofill, "sms-credit-account-heading","sms.credit.account.title");
 
 		UIForm form = UIForm.make(tofill, "credit-account-form");
 
 		UIMessage.make(form, "account-id-label", "sms.credit.account.id");
 		UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}");
 
-		UIMessage
-				.make(form, "account-amount-label", "sms.credit.account.amount");
+		UIMessage.make(form, "account-amount-label", "sms.credit.account.amount");
+		UIInput.make(form, "account-amount-input","#{creditAccountBean.creditsToCredit}");
 
-		UIInput.make(form, "account-amount-input",
-				"#{creditAccountBean.creditsToCredit}");
-		UICommand.make(form, "save-btn",
-				"#{creditAccountActionBean.creditAccount}");
+		UIMessage.make(form, "account-description-label", "sms.credit.account.description");
+		UIInput.make(form, "account-description-input","#{creditAccountBean.description}");
+
+		UICommand.make(form, "save-btn","#{creditAccountActionBean.creditAccount}");
 	}
 }

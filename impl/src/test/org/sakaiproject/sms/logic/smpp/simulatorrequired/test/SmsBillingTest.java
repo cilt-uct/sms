@@ -464,7 +464,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsAccountLogic()
 				.persistSmsAccount(smsAccount);
 
-		smsBillingImpl.creditAccount(smsAccount.getId(), 100L);
+		smsBillingImpl.creditAccount(smsAccount.getId(), 100L, "something");
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);

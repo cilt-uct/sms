@@ -65,6 +65,10 @@ public class SmsTransaction extends BaseModel {
 	/** The sms task id. */
 	private Long smsTaskId;
 
+	
+	/** The transaction description */
+	private String description;
+	
 	/**
 	 * Instantiates a new sms transaction.
 	 */
@@ -203,6 +207,23 @@ public class SmsTransaction extends BaseModel {
 		this.smsTaskId = smsTaskId;
 	}
 
+	/**
+	 * Get the transaction description
+	 * @return
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Set the transaction description
+	 * @param description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
