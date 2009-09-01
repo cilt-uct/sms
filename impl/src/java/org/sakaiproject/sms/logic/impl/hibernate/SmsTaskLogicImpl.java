@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sakaiproject.genericdao.api.search.Order;
@@ -130,7 +131,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * 
 	 * @return next sms task
 	 */
-	
+
 	public SmsTask getNextSmsTask() {
 		final StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
@@ -288,12 +289,15 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 		Session session = getHibernateLogicLocator().getSmsTaskLogic()
 				.getNewHibernateSession();
+		SmsTask smsTaskUpdate = (SmsTask) session.get(SmsTask.class, smsTask
+				.getId(), LockMode.UPGRADE);
 		Transaction tx = session.beginTransaction();
 		try {
-			if (smsTask.getMessagesProcessed() < smsTask.getGroupSizeActual()) {
-				smsTask
-						.setMessagesProcessed(smsTask.getMessagesProcessed() + 1);
-				session.update(smsTask);
+			if (smsTaskUpdate.getMessagesProcessed() < smsTaskUpdate
+					.getGroupSizeActual()) {
+				smsTaskUpdate.setMessagesProcessed(smsTaskUpdate
+						.getMessagesProcessed() + 1);
+				session.update(smsTaskUpdate);
 				tx.commit();
 			}
 
@@ -313,10 +317,13 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	public void incrementMessagesDelivered(SmsTask smsTask) {
 		Session session = getHibernateLogicLocator().getSmsTaskLogic()
 				.getNewHibernateSession();
+		SmsTask smsTaskUpdate = (SmsTask) session.get(SmsTask.class, smsTask
+				.getId(), LockMode.UPGRADE);
 		Transaction tx = session.beginTransaction();
 		try {
-			smsTask.setMessagesDelivered(smsTask.getMessagesDelivered() + 1);
-			session.update(smsTask);
+			smsTaskUpdate.setMessagesDelivered(smsTaskUpdate
+					.getMessagesDelivered() + 1);
+			session.update(smsTaskUpdate);
 			tx.commit();
 		} catch (Exception e) {
 			LOG.error(e);
