@@ -372,7 +372,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private void handleDeliveryReport(DeliverSm deliverSm) {
 		try {
-
+			boolean incrementMessagesDelivered = false;
 			DeliveryReceipt deliveryReceipt = deliverSm
 					.getShortMessageAsDeliveryReceipt();
 
@@ -449,15 +449,20 @@ public class SmsSmppImpl implements SmsSmpp {
 					} else {
 						smsMessage
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-						hibernateLogicLocator.getSmsTaskLogic()
-								.incrementMessagesDelivered(
-										smsMessage.getSmsTask());
+						incrementMessagesDelivered = true;
+
 					}
 				}
 
 				session.update(smsMessage);
 				tx.commit();
 				session.close();
+
+				if (incrementMessagesDelivered) {
+					hibernateLogicLocator
+							.getSmsTaskLogic()
+							.incrementMessagesDelivered(smsMessage.getSmsTask());
+				}
 				hibernateLogicLocator.getSmsTaskLogic()
 						.incrementMessagesProcessed(smsMessage.getSmsTask());
 			}
