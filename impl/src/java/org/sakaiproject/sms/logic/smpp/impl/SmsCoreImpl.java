@@ -715,17 +715,21 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null || smsTask.getMessageBody() == null
 				|| smsTask.getMessageBody().equals("")
 				|| taskMessageType == null) {
-			LOG.error("sendEmailNotification: smsTask or taskMessageType may not to null");
+			LOG
+					.error("sendEmailNotification: smsTask or taskMessageType may not to null");
 			return false;
 		}
 
-		if (!smsTask.getMessageTypeId().equals(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
-			LOG.debug("Email notifications only sent for system originating messages, ignoring task id = " + smsTask.getId());
+		if (!smsTask.getMessageTypeId().equals(
+				SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
+			LOG
+					.debug("Email notifications only sent for system originating messages, ignoring task id = "
+							+ smsTask.getId());
 			return false;
 		}
-		
+
 		LOG.debug("sendEmailNotification: task id = " + smsTask.getId());
-		
+
 		if (additionInformation == null) {
 			additionInformation = "";
 		}
@@ -742,7 +746,9 @@ public class SmsCoreImpl implements SmsCore {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
-			LOG.debug("No account associated with task id = " + smsTask.getId());
+			LOG
+					.debug("No account associated with task id = "
+							+ smsTask.getId());
 			return false;
 		}
 		Long credits = account.getCredits();
@@ -759,16 +765,16 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask.getCreditEstimate() != null) {
 			creditsRequired = Long.toString(smsTask.getCreditEstimate());
 		}
-		
+
 		// Email address for the task owner
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
-		
+
 		// Email address for the site
 		notiToAddress = account.getNotificationEmail();
 
 		// TODO - Use the EmailTemplateService to construct message bodies
-		
+
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
@@ -809,7 +815,8 @@ public class SmsCoreImpl implements SmsCore {
 					"messages.notificationMOSubjectOverdraftLimitExceeded",
 					String.valueOf(account.getCredits()));
 
-		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
+		} else if (taskMessageType
+				.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectExpired", smsTask.getId()
 							.toString());
@@ -856,13 +863,16 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		boolean accountNotification = false;
 		boolean ownerNotification = false;
-		
+
 		if (notiToAddress != null && notiToAddress.length() > 0) {
-			accountNotification = sendNotificationEmail(smsTask, notiToAddress, subject, body);
+			accountNotification = sendNotificationEmail(smsTask, notiToAddress,
+					subject, body);
 		}
 
-		if (ownerToAddress != null && ownerToAddress.length() > 0 && !ownerToAddress.equals(notiToAddress)) {
-			ownerNotification = sendNotificationEmail(smsTask, ownerToAddress, subject, body);
+		if (ownerToAddress != null && ownerToAddress.length() > 0
+				&& !ownerToAddress.equals(notiToAddress)) {
+			ownerNotification = sendNotificationEmail(smsTask, ownerToAddress,
+					subject, body);
 		}
 
 		return (accountNotification && ownerNotification);
@@ -900,11 +910,15 @@ public class SmsCoreImpl implements SmsCore {
 			// up causing duplicate settlements
 			SmsTask smsTask = (SmsTask) session.get(SmsTask.class,
 					task.getId(), LockMode.UPGRADE);
-			if ((smsTask.getStatusCode() != SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED)
-					&& (smsTask.getStatusCode() != SmsConst_DeliveryStatus.STATUS_FAIL)) {
-				LOG
-						.debug("Mark task as completed: taskId = "
-								+ smsTask.getId());
+			LOG.debug(smsTask.getId() + " was in status : "
+					+ smsTask.getStatusCode());
+
+			if (!smsTask.getStatusCode().equals(
+					SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED)
+					&& !smsTask.getStatusCode().equals(
+							SmsConst_DeliveryStatus.STATUS_FAIL)) {
+				LOG.debug("Marking task as completed: taskId = " + smsTask.getId()
+						+ " its status was " + smsTask.getStatusCode());
 				smsTask
 						.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
 				session.update(smsTask);

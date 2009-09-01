@@ -384,7 +384,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.info("Receiving delivery receipt for message '"
 					+ deliveryReceipt.getId() + "' from "
 					+ deliverSm.getSourceAddr() + " to "
-					+ deliverSm.getDestAddress() + " : " + deliveryReceipt + " at: " + deliveryReceipt.getDoneDate());
+					+ deliverSm.getDestAddress() + " : " + deliveryReceipt
+					+ " at: " + deliveryReceipt.getDoneDate());
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
@@ -422,17 +423,19 @@ public class SmsSmppImpl implements SmsSmpp {
 				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 						.get((deliveryReceipt.getFinalStatus())));
 				if (deliveryReceipt.getDoneDate() != null) {
-					//seeing this currently has only minute precision it may appear to be before the sent date
-					if (deliveryReceipt.getDoneDate().before(smsMessage.getDateSent())) {
-						smsMessage
-						.setDateDelivered(new Date(System.currentTimeMillis()));
+					// seeing this currently has only minute precision it may
+					// appear to be before the sent date
+					if (deliveryReceipt.getDoneDate().before(
+							smsMessage.getDateSent())) {
+						smsMessage.setDateDelivered(new Date(System
+								.currentTimeMillis()));
 					} else {
-						smsMessage
-						.setDateDelivered(deliveryReceipt.getDoneDate());
+						smsMessage.setDateDelivered(deliveryReceipt
+								.getDoneDate());
 					}
 				} else {
-					smsMessage
-					.setDateDelivered(new Date(System.currentTimeMillis()));
+					smsMessage.setDateDelivered(new Date(System
+							.currentTimeMillis()));
 				}
 
 				if (smsMessage.getStatusCode().equals(
@@ -451,11 +454,12 @@ public class SmsSmppImpl implements SmsSmpp {
 										smsMessage.getSmsTask());
 					}
 				}
-				hibernateLogicLocator.getSmsTaskLogic()
-						.incrementMessagesProcessed(smsMessage.getSmsTask());
+
 				session.update(smsMessage);
 				tx.commit();
 				session.close();
+				hibernateLogicLocator.getSmsTaskLogic()
+						.incrementMessagesProcessed(smsMessage.getSmsTask());
 			}
 		} catch (InvalidDeliveryReceiptException e) {
 			LOG.error("Failed getting delivery receipt" + e);
@@ -1091,6 +1095,11 @@ public class SmsSmppImpl implements SmsSmpp {
 					message.getSmsTask());
 			LOG.error(e);
 
+		} catch (Exception e) {
+			message.setFailReason(e.getMessage());
+			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
+					message.getSmsTask());
 		}
 		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(message);
 		return message;

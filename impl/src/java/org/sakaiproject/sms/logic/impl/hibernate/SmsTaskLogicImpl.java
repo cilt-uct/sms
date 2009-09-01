@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.sakaiproject.genericdao.api.search.Order;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -93,11 +94,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *            sms task id
 	 * @return sms task
 	 */
-	public SmsTask getSmsTask(Long smsTaskId){
-		try{
+	public SmsTask getSmsTask(Long smsTaskId) {
+		try {
 			return (SmsTask) findById(SmsTask.class, smsTaskId);
-		}catch (NumberFormatException numEx){
-			throw new IllegalArgumentException("Supplied task parameter is invalid: " + smsTaskId);
+		} catch (NumberFormatException numEx) {
+			throw new IllegalArgumentException(
+					"Supplied task parameter is invalid: " + smsTaskId);
 		}
 	}
 
@@ -284,11 +286,22 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 */
 	public void incrementMessagesProcessed(SmsTask smsTask) {
 
-		// The < test because very late delivery reports can change a message
-		// status from Timed out to Delivered, causing another increase of
-		// MESSAGES_PROCESSED called from MessageReceiverListenerImpl
-		String hql = "update SmsTask set MESSAGES_PROCESSED = MESSAGES_PROCESSED + 1  where TASK_ID = ? and MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL";
-		smsDao.executeUpdate(hql, smsTask.getId());
+		Session session = getHibernateLogicLocator().getSmsTaskLogic()
+				.getNewHibernateSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			if (smsTask.getMessagesProcessed() < smsTask.getGroupSizeActual()) {
+				smsTask
+						.setMessagesProcessed(smsTask.getMessagesProcessed() + 1);
+				session.update(smsTask);
+				tx.commit();
+			}
+
+		} catch (Exception e) {
+			LOG.error(e);
+			tx.rollback();
+		}
+		session.close();
 
 	}
 
@@ -298,9 +311,19 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * @param smsTask
 	 */
 	public void incrementMessagesDelivered(SmsTask smsTask) {
+		Session session = getHibernateLogicLocator().getSmsTaskLogic()
+				.getNewHibernateSession();
+		Transaction tx = session.beginTransaction();
+		try {
+			smsTask.setMessagesDelivered(smsTask.getMessagesDelivered() + 1);
+			session.update(smsTask);
+			tx.commit();
+		} catch (Exception e) {
+			LOG.error(e);
+			tx.rollback();
+		}
+		session.close();
 
-		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = ?";
-		smsDao.executeUpdate(hql, smsTask.getId());
 	}
 
 	/**
@@ -364,7 +387,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		}
 		return null;
 	}
-	
+
 	public Session getNewHibernateSession() {
 		return smsDao.getTheHibernateTemplate().getSessionFactory()
 				.openSession();
