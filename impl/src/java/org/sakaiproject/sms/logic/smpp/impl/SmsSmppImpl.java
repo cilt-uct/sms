@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -94,11 +95,9 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private final ThreadGroup moReceivingThread = new ThreadGroup(
 			SmsConstants.SMS_MO_RECEIVING_THREAD_GROUP);
-	private final ThreadGroup deliveryReportThreadGroup = new ThreadGroup(
-			SmsConstants.SMS_DELIVERY_REPORT_THREAD_GROUP);
 
 	private ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
-	private ArrayList<DeliverSm> receivedDeliveryReports = new ArrayList<DeliverSm>();
+	private ConcurrentLinkedQueue<DeliverSm> receivedDeliveryReports = new ConcurrentLinkedQueue<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
 	private BindThread reBindThread;
@@ -273,53 +272,23 @@ public class SmsSmppImpl implements SmsSmpp {
 			while (!allDone) {
 				try {
 
-					LOG.debug("Processing Delivery Report queue of "
-							+ receivedDeliveryReports.size() + " messages");
-
-					// TODO is this thread-safe ?
-					
-					ArrayList<DeliverSm> currentDeliveryReports = receivedDeliveryReports;
-					
-					for (int i = 0; i < currentDeliveryReports.size(); i++) {
-						if (deliveryReportThreadGroup.activeCount() <= SmsConstants.SMS_DELIVERY_REPORT_MAX_THREAD_COUNT) {
-							DeliverSm deliverSm = currentDeliveryReports.get(i);
-							receivedDeliveryReports.remove(deliverSm);
-
-							handleDeliveryReport(deliverSm);
-
-							// new DeliveryReportProcessThread(deliverSm,
-							//		deliveryReportThreadGroup);
-						}
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Delivery report queue has "
+								+ receivedDeliveryReports.size() + " message(s)");
 					}
-
-					Thread.sleep(1000);
-
+						
+					DeliverSm deliverSm = receivedDeliveryReports.poll();
+					
+					if (deliverSm != null) {
+						handleDeliveryReport(deliverSm);
+					} else {
+						Thread.sleep(1000);	
+					}
+						
 				} catch (Exception e) {
-					LOG
-							.error("DeliveryReportQueueThread encountered an error:");
-					LOG.error(e.getMessage());
+					LOG.error("DeliveryReportQueueThread encountered an error", e);
 				}
 			}
-		}
-	}
-
-	private class DeliveryReportProcessThread implements Runnable {
-
-		DeliverSm deliverSm;
-
-		DeliveryReportProcessThread(final DeliverSm deliverSm,
-				final ThreadGroup threadGroup) {
-			this.deliverSm = deliverSm;
-			Thread thread = new Thread(threadGroup, this);
-			thread.start();
-		}
-
-		public void run() {
-			work();
-		}
-
-		public void work() {
-			handleDeliveryReport(deliverSm);
 		}
 	}
 
