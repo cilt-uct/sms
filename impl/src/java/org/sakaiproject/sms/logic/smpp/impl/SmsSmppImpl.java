@@ -273,15 +273,23 @@ public class SmsSmppImpl implements SmsSmpp {
 			while (!allDone) {
 				try {
 
+					LOG.debug("Processing Delivery Report queue of "
+							+ receivedDeliveryReports.size() + " messages");
+
+					// TODO is this thread-safe ?
+					
 					ArrayList<DeliverSm> currentDeliveryReports = receivedDeliveryReports;
+					
 					for (int i = 0; i < currentDeliveryReports.size(); i++) {
 						if (deliveryReportThreadGroup.activeCount() <= SmsConstants.SMS_DELIVERY_REPORT_MAX_THREAD_COUNT) {
 							DeliverSm deliverSm = currentDeliveryReports.get(i);
 							receivedDeliveryReports.remove(deliverSm);
-							new DeliveryReportProcessThread(deliverSm,
-									deliveryReportThreadGroup);
-						}
 
+							handleDeliveryReport(deliverSm);
+
+							// new DeliveryReportProcessThread(deliverSm,
+							//		deliveryReportThreadGroup);
+						}
 					}
 
 					Thread.sleep(1000);
@@ -311,12 +319,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		public void work() {
-
-			LOG.debug("Processing Delivery Report queue of "
-					+ receivedDeliveryReports.size() + " messages");
-
 			handleDeliveryReport(deliverSm);
-
 		}
 	}
 
@@ -343,11 +346,14 @@ public class SmsSmppImpl implements SmsSmpp {
 			if (MessageType.SMSC_DEL_RECEIPT.containedIn(deliverSm
 					.getEsmClass())) {
 
+				LOG.debug("Queuing delivery receipt from: "
+						+ deliverSm.getSourceAddr());
+							
 				receivedDeliveryReports.add(deliverSm);
 
 			} else {
-				LOG.info("Received MO message from: "
-						+ deliverSm.getSourceAddr() + " adding it into queue.");
+				LOG.info("Queuing MO message from: "
+						+ deliverSm.getSourceAddr());
 				SmsMOMessage moMessage = new SmsMOMessage();
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				String messageBody = "";
@@ -381,11 +387,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				notifyDeliveryReportRemotely(deliveryReceipt);
 				return;
 			}
-			LOG.info("Receiving delivery receipt for message '"
+			LOG.info("Processing delivery receipt for message '"
 					+ deliveryReceipt.getId() + "' from "
-					+ deliverSm.getSourceAddr() + " to "
-					+ deliverSm.getDestAddress() + " : " + deliveryReceipt
-					+ " at: " + deliveryReceipt.getDoneDate());
+					+ deliverSm.getSourceAddr() +  " : " + deliveryReceipt);
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
@@ -468,7 +472,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 		} catch (InvalidDeliveryReceiptException e) {
 			LOG.error("Failed getting delivery receipt" + e);
-
 		}
 	}
 
