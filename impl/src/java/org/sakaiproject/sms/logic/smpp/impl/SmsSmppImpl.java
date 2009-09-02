@@ -41,6 +41,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -387,57 +388,76 @@ public class SmsSmppImpl implements SmsSmpp {
 						.error("Delivery report received for message not in database. MessageSMSCID="
 								+ deliveryReceipt.getId());
 			} else {
-				Session session = getHibernateLogicLocator().getSmsTaskLogic()
-						.getNewHibernateSession();
-				Transaction tx = session.beginTransaction();
+				
+				Session session = null;
+				Transaction tx = null;
+				
 				// SMS-128/113 : lock the message row
-				SmsMessage smsMessage = (SmsMessage) session.get(
-						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
-				smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
-						.get((deliveryReceipt.getFinalStatus())));
-				if (deliveryReceipt.getDoneDate() != null) {
-					// seeing this currently has only minute precision it may
-					// appear to be before the sent date
-					if (deliveryReceipt.getDoneDate().before(
-							smsMessage.getDateSent())) {
+				SmsMessage smsMessage = null;
+				
+				try {
+					session = getHibernateLogicLocator().getSmsTaskLogic()
+							.getNewHibernateSession();
+					tx = session.beginTransaction();
+
+					smsMessage = (SmsMessage) session.get(
+							SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
+					smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
+							.get((deliveryReceipt.getFinalStatus())));
+					if (deliveryReceipt.getDoneDate() != null) {
+						// seeing this currently has only minute precision it may
+						// appear to be before the sent date
+						if (deliveryReceipt.getDoneDate().before(
+								smsMessage.getDateSent())) {
+							smsMessage.setDateDelivered(new Date(System
+									.currentTimeMillis()));
+						} else {
+							smsMessage.setDateDelivered(deliveryReceipt
+									.getDoneDate());
+						}
+					} else {
 						smsMessage.setDateDelivered(new Date(System
 								.currentTimeMillis()));
-					} else {
-						smsMessage.setDateDelivered(deliveryReceipt
-								.getDoneDate());
 					}
-				} else {
-					smsMessage.setDateDelivered(new Date(System
-							.currentTimeMillis()));
-				}
 
-				if (smsMessage.getStatusCode().equals(
-						SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
-					smsMessage
-							.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
-				} else {
-					if (smsDeliveryStatus.get(deliveryReceipt.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
+					if (smsMessage.getStatusCode().equals(
+							SmsConst_DeliveryStatus.STATUS_TIMEOUT)) {
 						smsMessage
-								.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+								.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
 					} else {
-						smsMessage
-								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-						incrementMessagesDelivered = true;
+						if (smsDeliveryStatus.get(deliveryReceipt.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
+							smsMessage
+									.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+						} else {
+							smsMessage
+									.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+							incrementMessagesDelivered = true;
 
+						}
+					}
+
+					session.update(smsMessage);
+					tx.commit();
+					session.close();
+				} catch (HibernateException e) {
+					LOG.error("Error handling delivery report: " + deliverSm, e);
+					if (tx != null) {
+						tx.rollback();
+					}
+					if (session != null) {
+						session.close();
 					}
 				}
 
-				session.update(smsMessage);
-				tx.commit();
-				session.close();
-
-				if (incrementMessagesDelivered) {
-					hibernateLogicLocator
-							.getSmsTaskLogic()
-							.incrementMessagesDelivered(smsMessage.getSmsTask());
+				if (smsMessage != null) {
+					if (incrementMessagesDelivered) {
+						hibernateLogicLocator
+								.getSmsTaskLogic()
+								.incrementMessagesDelivered(smsMessage.getSmsTask());
+					}
+					hibernateLogicLocator.getSmsTaskLogic()
+							.incrementMessagesProcessed(smsMessage.getSmsTask());
 				}
-				hibernateLogicLocator.getSmsTaskLogic()
-						.incrementMessagesProcessed(smsMessage.getSmsTask());
 			}
 		} catch (InvalidDeliveryReceiptException e) {
 			LOG.error("Failed getting delivery receipt" + e);
