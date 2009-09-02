@@ -274,8 +274,10 @@ public class SmsSmppImpl implements SmsSmpp {
 				try {
 
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("Delivery report queue has "
-								+ receivedDeliveryReports.size() + " message(s)");
+						int qsize = receivedDeliveryReports.size();
+						if (qsize >= 10 && qsize % 10 == 0) 
+							LOG.debug("Delivery report queue has "
+								+ qsize + " message(s)");
 					}
 						
 					DeliverSm deliverSm = receivedDeliveryReports.poll();
