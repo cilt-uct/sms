@@ -45,6 +45,9 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsTask extends BaseModel {
 
+	/** Maximum length of FAIL_REASON field in database */
+	private int MAX_FAIL_LEN = 200;
+	
 	/**
 	 * Approximate credit cost for this task as calculated when the task is
 	 * created. The exact credits can only be calculated when the task is
@@ -989,7 +992,12 @@ public class SmsTask extends BaseModel {
 	 *            the new fail reason
 	 */
 	public void setFailReason(String failReason) {
-		this.failReason = failReason;
+		
+		if (failReason != null && failReason.length() > MAX_FAIL_LEN) {
+			this.failReason = failReason.substring(0, MAX_FAIL_LEN);			
+		} else {
+			this.failReason = failReason;
+		}
 	}
 
 	/**

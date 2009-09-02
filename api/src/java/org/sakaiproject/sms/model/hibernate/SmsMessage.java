@@ -36,6 +36,9 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsMessage extends BaseModel {
 
+	/** Maximum length of FAIL_REASON field in database */
+	private int MAX_FAIL_LEN = 200;
+	
 	/** The date-time when the message was queued. */
 	private Date dateQueued;
 	
@@ -376,7 +379,12 @@ public class SmsMessage extends BaseModel {
 	 * @param failReason
 	 */
 	public void setFailReason(String failReason) {
-		this.failReason = failReason;
+		
+		if (failReason != null && failReason.length() > MAX_FAIL_LEN) {
+			this.failReason = failReason.substring(0, MAX_FAIL_LEN);			
+		} else {
+			this.failReason = failReason;
+		}
 	}
 
 	@Override
