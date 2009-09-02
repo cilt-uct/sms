@@ -72,6 +72,10 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 			return mobileNumber.substring(intprefix.length(), mobileNumber.length());
 		}
 		
+		if (mobileNumber.length() > 10 && !mobileNumber.startsWith(localprefix)) {
+			return mobileNumber;
+		}
+		
 		// Local number
 
 		if (mobileNumber.startsWith(localprefix)) {

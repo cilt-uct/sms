@@ -96,11 +96,21 @@ public class MobileNumberHelperTest extends TestCase {
 		assertEquals("447831234567", numberRoutingHelper.normalizeNumber("00 44 783 123-4567", "00", "1", "1"));
 
 		// UK (00 / 0 / 44)
+		
 		assertEquals("12121234567", numberRoutingHelper.normalizeNumber("+1 212 123 4567", "00", "0", "44"));
 		assertEquals("27831234567", numberRoutingHelper.normalizeNumber("+27 83 123-4567", "00", "0", "44"));
 		assertEquals("12121234567", numberRoutingHelper.normalizeNumber("00 1 212 123 4567", "00", "0", "44"));
 		assertEquals("27831234567", numberRoutingHelper.normalizeNumber("00 27 83 123-4567", "00", "0", "44"));
 		assertEquals("447831234567", numberRoutingHelper.normalizeNumber("0783 123-4567", "00", "0", "44"));
+		
+		// Numbers already in canonical international form should stay unchanged
+		
+		assertEquals("447831234567", numberRoutingHelper.normalizeNumber("44 783 123 4567", "00", "0", "44"));
+		assertEquals("447831234567", numberRoutingHelper.normalizeNumber("44 783 123 4567", "00", "0", "27"));
+		assertEquals("447831234567", numberRoutingHelper.normalizeNumber("44 783 123 4567", "00", "1", "1"));
+		assertEquals("27831234567", numberRoutingHelper.normalizeNumber("27 83 123-4567", "00", "0", "27"));
+		assertEquals("27831234567", numberRoutingHelper.normalizeNumber("27831234567", "00", "0", "27"));
+		
 		
 	}
 }
