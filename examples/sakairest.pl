@@ -51,7 +51,7 @@ sub getSiteName($$$) {
 
 ## Get user's email address
 
-sub getUserEmail($$$$) {
+sub getUserEmail($$$) {
 
     my $ua = shift;
     my $host = shift;
@@ -75,6 +75,40 @@ sub getUserEmail($$$$) {
     my $json_text = $json->decode($response->content);
  
     return $json_text->{email};
+}
+
+## Get user's eid given email address, if the email address is unique
+
+sub getUserEidByEmail($$$) {
+
+    my $ua = shift;
+    my $host = shift;
+    my $userEmail = shift;
+    
+    $response = $ua->get("$host/direct/user.json?email=$userEmail");
+
+    ## Return the eid if successful and the email address is unique, otherwise empty string
+       
+    if ($debug) {
+        print "getUserEidByEmail status: " . $response->status_line . "\n";
+    }
+    
+    ## Parse the JSON 
+
+    my $json = new JSON; 
+    my $json_text = $json->decode($response->content);
+
+    ## Found and unique ?
+   
+    my $rcount = @{$json_text->{user_collection}};
+    
+    if ($rcount == 1) {
+	return $json_text->{user_collection}[0]->{eid};
+    }
+
+    ## Not found or not unique
+
+    return "";
 }
 
 return 1;
