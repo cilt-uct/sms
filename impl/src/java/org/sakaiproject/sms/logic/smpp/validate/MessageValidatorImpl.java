@@ -28,7 +28,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 
 /**
- * This class is used to do varaious validations involving SmsTasks
+ * This class is used to do various validations on an SmsMessage.
  * 
  * @author julian@psybergate.com
  * @version 1.0

@@ -23,13 +23,7 @@ package org.sakaiproject.sms.logic;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class SmsLogic extends BaseLogic {
-
-	/** The log. */
-	private static final Log LOG = LogFactory.getLog(SmsLogic.class);
 
 	/**
 	 * Gets the current Date.

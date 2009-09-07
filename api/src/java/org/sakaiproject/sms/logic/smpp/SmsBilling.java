@@ -21,14 +21,10 @@
 
 package org.sakaiproject.sms.logic.smpp;
 
-import java.util.Date;
-import java.util.Set;
-
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
-// TODO: Auto-generated Javadoc
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
@@ -47,17 +43,6 @@ public interface SmsBilling {
 	 * @param description 
 	 */
 	public void creditAccount(Long accountId, long creditsToCredit, String Description);
-
-	/**
-	 * Add extra credits to the specific account by making an entry into
-	 * SMS_TRANSACTION . Also update the available credits on the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param creditCount
-	 *            the credit count
-	 */
-	void allocateCredits(Long accountID, int creditCount);
 
 	/**
 	 * Return true of the account has the required credits available. Take into
@@ -119,26 +104,6 @@ public interface SmsBilling {
 	public Float convertCreditsToAmount(long creditCount);
 
 	/**
-	 * Return the currency amount available in the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * 
-	 * @return the account balance
-	 */
-	public double getAccountBalance(Long accountID);
-
-	/**
-	 * Return credits available in the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * 
-	 * @return the account credits
-	 */
-	public int getAccountCredits(Long accountID);
-
-	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
 	 * id. AccountType is only outgoing masses for now.
 	 * 
@@ -154,56 +119,6 @@ public interface SmsBilling {
 	 */
 	public Long getAccountID(String sakaiSiteID, String sakaiUserID)
 			throws SmsAccountNotFoundException;
-
-	/**
-	 * Return a list of all transactions between startDate and endDate for the
-	 * specific account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param startDate
-	 *            the start date
-	 * @param endDate
-	 *            the end date
-	 * 
-	 * @return the acc transactions
-	 */
-	public Set getAccTransactions(Long accountID, Date startDate, Date endDate);
-
-	/**
-	 * Return all accounts linked to the given Sakai site.
-	 * 
-	 * @param sakaiSiteID
-	 *            (e.g. !admin)
-	 * 
-	 * @return the all site accounts
-	 */
-	public Set getAllSiteAccounts(String sakaiSiteID);
-
-	/**
-	 * Insert a new account and return the new account id.
-	 * 
-	 * @param sakaiSiteID
-	 *            (e.g. !admin)
-	 * 
-	 * @return true, if insert account
-	 */
-	public boolean insertAccount(String sakaiSiteID);
-
-	/**
-	 * Insert a new transaction for the given account id.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param transCodeID
-	 *            the trans code id
-	 * @param credits
-	 *            the amount of credits
-	 * 
-	 * @return true, if insert transaction
-	 */
-	public boolean insertTransaction(Long accountID, int transCodeID,
-			int credits);
 
 	/**
 	 * Insert a new transaction and indicate that the credits are reserved. If

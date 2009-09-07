@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -43,7 +42,6 @@ import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
-// TODO: Auto-generated Javadoc
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
@@ -132,20 +130,6 @@ public class SmsBillingImpl implements SmsBilling {
 				+ smsTransaction.getId();
 		externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef,
 				null);
-	}
-
-	/**
-	 * Add extra credits to the specific account by making an entry into
-	 * SMS_TRANSACTION Also update the available credits on the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param creditCount
-	 *            the credit count
-	 * @deprecated Not implemented
-	 */
-	public synchronized void allocateCredits(Long accountID, int creditCount) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -265,34 +249,6 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
-	 * Return the currency amount available in the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * 
-	 * @return the account balance
-	 * @deprecated Not implemented
-	 */
-	public double getAccountBalance(Long accountID) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/**
-	 * Return credits available in the account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * 
-	 * @return the account credits
-	 * @deprecated Not implemented
-	 */
-	public int getAccountCredits(Long accountID) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
 	 * id. AccountType is only outgoing masses for now.
 	 * 
@@ -318,71 +274,6 @@ public class SmsBillingImpl implements SmsBilling {
 
 		}
 
-	}
-
-	/**
-	 * Return a list of all transactions between startDate and endDate for the
-	 * specific account.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param startDate
-	 *            the start date
-	 * @param endDate
-	 *            the end date
-	 * 
-	 * @return the acc transactions
-	 * @deprecated Not implemented
-	 */
-	public Set getAccTransactions(Long accountID, Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
-
-	}
-
-	/**
-	 * Return all accounts linked to the given Sakai site.
-	 * 
-	 * @param sakaiSiteID
-	 *            the sakai site id
-	 * 
-	 * @return the all site accounts
-	 * @deprecated Not implemented
-	 */
-	public Set getAllSiteAccounts(String sakaiSiteID) {
-		// TODO Auto-generated method stub
-		return null;
-
-	}
-
-	/**
-	 * Insert a new account and return the new account id.
-	 * 
-	 * @param sakaiSiteID
-	 *            the sakai site id
-	 * 
-	 * @return true, if insert account
-	 * @deprecated Not implemented
-	 */
-	public boolean insertAccount(String sakaiSiteID) {
-		return false;
-	}
-
-	/**
-	 * Insert a new transaction for the given account id.
-	 * 
-	 * @param accountID
-	 *            the account id
-	 * @param transCodeID
-	 *            the trans code id
-	 * @param creditAmount
-	 * @return true, if insert transaction the credit amount
-	 * @deprecated Not implemented
-	 */
-	public boolean insertTransaction(Long accountID, int transCodeID,
-			int creditAmount) {
-		// TODO Auto-generated method stub
-		return true;
 	}
 
 	/**

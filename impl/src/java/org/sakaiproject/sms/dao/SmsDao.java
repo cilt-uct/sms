@@ -39,12 +39,4 @@ public interface SmsDao extends GeneralGenericDao {
 	public int executeUpdate(String hql, Object value);
 
 	public HibernateTemplate getTheHibernateTemplate();
-	/*
-	 * public Criteria createCriteria(Class className); public void save(Object
-	 * obj);
-	 * 
-	 * public void delete(Object obj);
-	 * 
-	 * public Object findById(Class className, Serializable id);
-	 */
 }

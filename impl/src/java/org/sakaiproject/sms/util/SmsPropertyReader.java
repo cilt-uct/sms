@@ -81,9 +81,6 @@ public abstract class SmsPropertyReader {
 		final InputStream inputStream = Thread.currentThread()
 				.getContextClassLoader().getResourceAsStream("sms.properties");
 
-		// InputStream is = SmsPropertyReader.class.getClass()
-		// .getResourceAsStream("/sms.properties");
-
 		if (inputStream == null) {
 			final FileInputStream fileInputStream = new FileInputStream(
 					"smpp.properties");

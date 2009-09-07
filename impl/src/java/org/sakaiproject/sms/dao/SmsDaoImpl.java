@@ -38,8 +38,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
-	private final static Log LOG = LogFactory.getLog(SmsDaoImpl.class);
-
 	private PlatformTransactionManager transactionManager;
 
 	private final DefaultTransactionDefinition defaultTransDefinition = new DefaultTransactionDefinition(
@@ -123,27 +121,4 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	}
 
-	/*
-	 * 
-	 * public Criteria createCriteria(Class className) { return
-	 * getSession().createCriteria(className); }
-	 * 
-	 * @Override public void save(final Object obj) { final TransactionStatus
-	 * transaction = transactionManager .getTransaction(defaultTransDefinition);
-	 * try { super.save(obj); transactionManager.commit(transaction); } catch
-	 * (HibernateException ex) { LOG.error(ex.getMessage(), ex);
-	 * rollback(transaction); } catch (Exception e) { LOG.error(e.getMessage(),
-	 * e); rollback(transaction); } }
-	 * 
-	 * @Override public Object findById(Class className, Serializable id) {
-	 * return super.findById(className, id); }
-	 * 
-	 * 
-	 * @Override public void delete(final Object obj) { final TransactionStatus
-	 * transaction = transactionManager .getTransaction(defaultTransDefinition);
-	 * try { super.delete(obj); transactionManager.commit(transaction); } catch
-	 * (HibernateException ex) { LOG.error(ex.getMessage(), ex);
-	 * rollback(transaction); } catch (Exception e) { LOG.error(e.getMessage(),
-	 * e); rollback(transaction); } }
-	 */
 }
