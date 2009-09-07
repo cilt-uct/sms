@@ -344,7 +344,7 @@ public class SmsCoreImpl implements SmsCore {
 				.isSendSmsEnabled()) {
 			throw new SmsSendDisabledException(smsTask);
 		}
-		if (smsTask.getMessageTypeId() != SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) {
+		if (!SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING.equals(smsTask.getMessageTypeId())) {
 			smsTask
 					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}

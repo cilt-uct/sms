@@ -123,7 +123,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					smsCore.processTimedOutDeliveryReports();
 					smsCore.checkAndSetTasksCompleted();
 					smsCore.processVeryLateDeliveryReports();
-					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000);
+					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000L);
 				} catch (InterruptedException e) {
 					// no need to log the error
 				} catch (Exception e) {

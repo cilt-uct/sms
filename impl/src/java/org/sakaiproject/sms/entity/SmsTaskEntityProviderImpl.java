@@ -439,7 +439,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			String paramsValue = pairs.getValue().toString();
 
 			if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		task.setSakaiSiteId(paramsValue.toString());
+	    		task.setSakaiSiteId(paramsValue);
 	    	}else 
 	    	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
 	    		task.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));

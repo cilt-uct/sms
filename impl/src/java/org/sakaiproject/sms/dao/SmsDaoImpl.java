@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
 import org.sakaiproject.sms.logic.hibernate.QueryParameter;
@@ -81,12 +79,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	}
 
 	public int executeUpdate(String hql, Collection<Object> values) {
-		int affected = 0;
-		if (values.toArray() != null) {
-			//LOG.debug("we got: " + values.toArray().length + " paramaters");
-		}
-		affected = getHibernateTemplate().bulkUpdate(hql, values.toArray());
-		return affected;
+		return getHibernateTemplate().bulkUpdate(hql, values.toArray());
 	}
 
 	private Query buildQuery(String hql, QueryParameter... queryParameters) {

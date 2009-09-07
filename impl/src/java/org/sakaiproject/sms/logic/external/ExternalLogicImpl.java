@@ -227,10 +227,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 		final String locationRef = locationId.startsWith(Entity.SEPARATOR) ? locationId
 				: siteService.siteReference(locationId);
 
-		Boolean allowed = true;
+		Boolean allowed;
+		
 		if (userId == null) {
 			allowed = securityService.unlock(permission, locationRef);
-
 		} else {
 			allowed = securityService.unlock(userId, permission, locationRef);
 		}

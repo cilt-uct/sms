@@ -234,7 +234,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		}
 
 		if (sakaiUserId != null && sakaiSiteId == null) {
-			account = getAccountBySakaiSiteId(sakaiSiteId);
+			account = getAccountBySakaiUserId(sakaiUserId);
 		}
 
 		// Resolve according to system preference
@@ -248,7 +248,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			} else {
 				account = getAccountBySakaiUserId(sakaiUserId);
 				if (account == null) {
-					account = getAccountBySakaiSiteId(sakaiUserId);					
+					account = getAccountBySakaiSiteId(sakaiSiteId);					
 				}
 			}
 		}

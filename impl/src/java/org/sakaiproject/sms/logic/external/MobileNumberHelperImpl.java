@@ -147,7 +147,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	        	SakaiPerson sp = pairs.getValue();
 	        	if (sp != null) {
 	        		String mobile = numberRoutingHelper.normalizeNumber(sp.getMobile());
-	                if (mobile != null && mobile != "" && numberRoutingHelper.isNumberRoutable(mobile)) {
+	                if (mobile != null && !"".equals(mobile) && numberRoutingHelper.isNumberRoutable(mobile)) {
 	        			result.add( sp.getUid() );
 	        		}
 	        	}

@@ -228,7 +228,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			return null;
 		}
 		// Just cut off extra characters
-		return StringUtils.left(reply.toString(), SmsConstants.MAX_SMS_LENGTH);
+		return StringUtils.left(reply, SmsConstants.MAX_SMS_LENGTH);
 	}
 
 	/**
@@ -346,13 +346,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				smsPatternSearchResult = new SmsPatternSearchResult(suppliedKey);
 			}
 
-			if (smsPatternSearchResult != null) {
-				return smsPatternSearchResult;
-			}
-
+			return smsPatternSearchResult;
 		}
-		// unreachable at the moment because match will always be found
-		return new SmsPatternSearchResult(SmsConstants.HELP);
 	}
 
 	// Tries to command on alias map (returns command if found)

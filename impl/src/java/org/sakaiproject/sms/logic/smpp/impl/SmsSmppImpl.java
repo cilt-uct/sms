@@ -874,9 +874,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 			} else {
 				properties.load(inputStream);
-				if (inputStream != null) {
-					inputStream.close();
-				}
+				inputStream.close();
 			}
 		} catch (FileNotFoundException e) {
 			LOG.error(e.getMessage(), e);

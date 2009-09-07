@@ -20,8 +20,6 @@ package org.sakaiproject.sms.tool.producers;
 import java.text.NumberFormat;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
@@ -42,8 +40,6 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	private SmsAccountLogic smsAccountLogic;
 	private NavBarRenderer navBarRenderer;
-
-	private static Log LOG = LogFactory.getLog(BillingAdminProducer.class);
 
 	/**
 	 * @see uk.org.ponder.rsf.view.ComponentProducer#fillComponents(uk.org.ponder.rsf.components.UIContainer,
@@ -102,8 +98,7 @@ public class BillingAdminProducer implements ViewComponentProducer {
 			Long overdraftLimit = account.getOverdraftLimit();
 			UIOutput.make(entry, "overdraft-limit", overdraftLimit == null ? ""
 					: nf.format(overdraftLimit));
-			UIOutput.make(entry, "credits", nf.format(account.getCredits())
-					.toString());
+			UIOutput.make(entry, "credits", nf.format(account.getCredits()));
 		}
 	}
 
