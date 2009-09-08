@@ -134,4 +134,20 @@ public interface SmsMessageLogic {
 	public SmsMessage getNewTestSmsMessageInstance(String mobileNumber,
 			String messageBody);
 
+	/**
+	 * Returns all the messages for the given smstask.
+	 * 
+	 * @param smsTaskID
+	 *            the smsTaskID id
+	 */
+	public List<SmsMessage> getSmsMessagesForTask(Long smsTaskId);
+
+	/**
+	 * Get a new session to be used for row locking to prevent concurrent
+	 * message status update
+	 * 
+	 * @return
+	 */
+	public Session getNewHibernateSession();
+
 }

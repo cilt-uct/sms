@@ -133,6 +133,20 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		assertEquals("newSakaiUserId", smsMessage.getSakaiUserId());
 	}
 
+	public void testGetallMessagesFormTask() {
+
+		assertTrue("Collection returned has no objects",
+				hibernateLogicLocator.getSmsMessageLogic()
+						.getSmsMessagesForTask(insertTask.getId()) != null);
+		assertTrue("Collection should not be null", hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessagesForTask(888888888l) != null);
+
+		assertTrue("Collection must be empty", hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessagesForTask(888888888l)
+				.isEmpty());
+
+	}
+
 	/**
 	 * Tests the getMessagesForCriteria method
 	 */
@@ -161,13 +175,15 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage.setSmscMessageId("criterai");
 		insertMessage.setSakaiUserId("criterai");
 		insertMessage.setDateDelivered(new Date(System.currentTimeMillis()));
-		insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-
+		insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 		insertMessage.setSmsTask(insertTask);
 		insertTask.getSmsMessages().add(insertMessage);
 
 		try {
+
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+					insertMessage);
 
 			SearchFilterBean bean = new SearchFilterBean();
 			bean.setStatus(insertMessage.getStatusCode());
@@ -191,12 +207,9 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				assertEquals(message, insertMessage);
 			}
 		} catch (SmsSearchException se) {
-			fail(se.getMessage());
-		} finally {
-			SmsTask task = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-					insertTask.getId());
-			hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(task);
+
 		}
+
 	}
 
 	public void testGetMessageWithNullDeliveryDate() {
@@ -229,6 +242,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.getSmsMessages().add(insertMessage);
 
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+				insertMessage);
 
 		SearchFilterBean bean = new SearchFilterBean();
 		bean.setStatus(insertMessage.getStatusCode());
@@ -247,8 +262,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			assertNull(messages.get(0).getDateDelivered());
 		} catch (SmsSearchException se) {
 			fail(se.getMessage());
-		} finally {
-			hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
 		}
 
 	}
@@ -293,6 +306,12 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		try {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 
+			for (SmsMessage sms : insertTask.getSmsMessages()) {
+
+				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+						sms);
+			}
+
 			SearchFilterBean bean = new SearchFilterBean();
 			bean.setStatus(SmsConst_DeliveryStatus.STATUS_ERROR);
 			bean.setDateFrom(new Date(System.currentTimeMillis() - 10000));
@@ -330,10 +349,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 		} catch (SmsSearchException se) {
 			fail(se.getMessage());
-		} finally {
-			SmsTask task = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-					insertTask.getId());
-			hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(task);
 		}
 	}
 
@@ -382,12 +397,15 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 		// Assert that messages exist for this task that have a status other
 		// than PENDING
-		SmsTask task = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-				insertTask.getId());
-		task.getSmsMessages().size();
+
 		boolean otherStatusFound = false;
-		for (SmsMessage message : task.getSmsMessages()) {
-			if (message.getStatusCode().equals(
+		for (SmsMessage message : hibernateLogicLocator.getSmsMessageLogic()
+				.getSmsMessagesWithStatus(insertTask.getId(),
+						SmsConst_DeliveryStatus.STATUS_PENDING,
+						SmsConst_DeliveryStatus.STATUS_SENT,
+						SmsConst_DeliveryStatus.STATUS_RETRY,
+						SmsConst_DeliveryStatus.STATUS_DELIVERED)) {
+			if (!message.getStatusCode().equals(
 					SmsConst_DeliveryStatus.STATUS_PENDING)) {
 				otherStatusFound = true;
 				break;
@@ -414,16 +432,4 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 							SmsConst_DeliveryStatus.STATUS_PENDING));
 		}
 	}
-
-	/**
-	 * Test delete sms message.
-	 */
-	public void testDeleteSmsMessage() {
-		// Delete the associated task too
-		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
-		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(insertTask.getId());
-		assertNull("Object not removed", getSmsTask);
-	}
-
 }

@@ -57,7 +57,7 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	 * Test many messages insert.
 	 */
 	public void testInsertManyMessages() {
-
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		for (int i = 0; i < MESSAGECOUNT; i++) {
 			final SmsMessage smsMessage = new SmsMessage();
 			smsMessage.setMobileNumber("0823450983");
@@ -66,8 +66,10 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 			smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 			smsMessage.setSmsTask(smsTask);
 			smsTask.getSmsMessages().add(smsMessage);
+			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+					smsMessage);
 		}
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
 		assertTrue("Not all messages returned",
 				smsTask.getSmsMessages().size() == MESSAGECOUNT);
 	}
@@ -83,25 +85,11 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 				.getSmsTask(smsTask.getId());
 
 		assertNotNull("theSmsTask may not be null", theSmsTask);
-		assertTrue("Message size not correct", theSmsTask.getSmsMessages()
+
+		;
+		assertTrue("Message size not correct", hibernateLogicLocator
+				.getSmsMessageLogic().getSmsMessagesForTask(theSmsTask.getId())
 				.size() == MESSAGECOUNT);
 
-	}
-
-	/**
-	 * Test delete tasks.
-	 */
-	public void testDeleteTasks() {
-		final SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(smsTask.getId());
-		Long firstMessageID = ((SmsMessage) theSmsTask.getSmsMessages()
-				.toArray()[0]).getId();
-		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
-		final SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(theSmsTask.getId());
-		assertNull("Task not removed", getSmsTask);
-		final SmsMessage theMessage = hibernateLogicLocator
-				.getSmsMessageLogic().getSmsMessage(firstMessageID);
-		assertNull("Messages not removed", theMessage);
 	}
 }

@@ -195,12 +195,10 @@ public class SmsCoreImpl implements SmsCore {
 	 * @param smsTask
 	 * @return
 	 */
-	private SmsTask calculateActualGroupSize(SmsTask smsTask) {
+	private Set<SmsMessage> calculateActualGroupSize(SmsTask smsTask) {
 		final Set<SmsMessage> messages = hibernateLogicLocator
 				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
-		smsTask.setSmsMessagesOnTask(messages);
-		smsTask.setGroupSizeActual(messages.size());
-		return smsTask;
+		return messages;
 	}
 
 	public SmsTask getNextSmsTask() {
@@ -454,11 +452,18 @@ public class SmsCoreImpl implements SmsCore {
 			throw validationException;
 		} else {
 			smsTask.setSmsMessages(smsMessages);
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
+			for (SmsMessage message : smsTask.getSmsMessages()) {
+				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
+						message);
+			}
+
 			// only try this if this node is designated to bind
 			if (externalLogic.isNodeBindToGateway()) {
 				tryProcessTaskRealTime(smsTask);
+			} else {
+				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			}
 		}
 
@@ -561,9 +566,10 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void processTask(SmsTask smsTask) {
 
+		Session session = null;
+		Transaction tx = null;
 		LOG.debug("Processing task:" + smsTask.getId());
-		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
 		try {
 			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 					.getOrCreateSystemSmsConfig();
@@ -589,19 +595,39 @@ public class SmsCoreImpl implements SmsCore {
 				if ((!smsTask.getMessageTypeId().equals(
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) && smsTask
 						.getAttemptCount() <= 1)) {
-					calculateActualGroupSize(smsTask);
+					Set<SmsMessage> messages = calculateActualGroupSize(smsTask);
+					smsTask.setGroupSizeActual(messages.size());
+					for (SmsMessage message : messages) {
+						hibernateLogicLocator.getSmsMessageLogic()
+								.persistSmsMessage(message);
+					}
 					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
 							smsTask);
+					smsTask.setSmsMessages(messages);
 				}
+
 				// ========================== Do the actual sending to the
 				// gateway
-
+				smsTask
+						.setSmsMessages(new HashSet<SmsMessage>(
+								hibernateLogicLocator
+										.getSmsMessageLogic()
+										.getSmsMessagesWithStatus(
+												smsTask.getId(),
+												SmsConst_DeliveryStatus.STATUS_PENDING)));
 				String submissionStatus = smsSmpp
 						.sendMessagesToGateway(smsTask
 								.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
 
-				smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
-						smsTask.getId());
+				session = getHibernateLogicLocator().getSmsTaskLogic()
+						.getNewHibernateSession();
+				tx = session.beginTransaction();
+
+				// SMS-128/113 : lock the task so that other schedulers wont
+				// pick it
+				// up causing duplicate settlements
+				smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
+						LockMode.UPGRADE);
 				smsTask.setStatusCode(submissionStatus);
 
 				if (smsTask.getStatusCode().equals(
@@ -628,9 +654,17 @@ public class SmsCoreImpl implements SmsCore {
 								.valueOf(systemConfig.getSmsRetryMaxCount())));
 				smsBilling.cancelPendingRequest(smsTask.getId());
 			}
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			session.update(smsTask);
+			tx.commit();
+			session.close();
 		} catch (Exception e) {
 			LOG.error(getExceptionStackTraceAsString(e), e);
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (session != null) {
+				session.close();
+			}
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask);
@@ -891,11 +925,34 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (!externalLogic.isNodeBindToGateway()) {
 			return;
-		}
-
+		}	
 		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
+			Session session = null;
+		Transaction tx = null;
+		try {
+			session = getHibernateLogicLocator().getSmsTaskLogic()
+					.getNewHibernateSession();
+			tx = session.beginTransaction();
+			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
+					LockMode.UPGRADE);
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+			session.update(smsTask);
+			tx.commit();
+			session.close();
+		} catch (HibernateException e) {
+			LOG.error("Error processing realtime task " + smsTask.getId()
+					+ ": ", e);
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (session != null) {
+				session.close();
+			}
+
+		}
 			processTaskInThread(smsTask, smsThreadGroup);
 		}
+
 	}
 
 	public void checkAndSetTasksCompleted() {
@@ -907,16 +964,17 @@ public class SmsCoreImpl implements SmsCore {
 
 			Session session = null;
 			Transaction tx = null;
-			
+
 			try {
 				session = getHibernateLogicLocator().getSmsTaskLogic()
 						.getNewHibernateSession();
 				tx = session.beginTransaction();
-				
-				// SMS-128/113 : lock the task so that other schedulers wont pick it
+
+				// SMS-128/113 : lock the task so that other schedulers wont
+				// pick it
 				// up causing duplicate settlements
-				SmsTask smsTask = (SmsTask) session.get(SmsTask.class,
-						task.getId(), LockMode.UPGRADE);
+				SmsTask smsTask = (SmsTask) session.get(SmsTask.class, task
+						.getId(), LockMode.UPGRADE);
 				LOG.debug(smsTask.getId() + " was in status : "
 						+ smsTask.getStatusCode());
 
@@ -924,8 +982,9 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED)
 						&& !smsTask.getStatusCode().equals(
 								SmsConst_DeliveryStatus.STATUS_FAIL)) {
-					LOG.debug("Marking task as completed: taskId = " + smsTask.getId()
-							+ " its status was " + smsTask.getStatusCode());
+					LOG.debug("Marking task as completed: taskId = "
+							+ smsTask.getId() + " its status was "
+							+ smsTask.getStatusCode());
 					smsTask
 							.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
 					session.update(smsTask);
@@ -937,7 +996,8 @@ public class SmsCoreImpl implements SmsCore {
 								SmsConstants.TASK_NOTIFICATION_COMPLETED);
 					} else {
 						if (smsTask.getSmsMessages() != null) {
-							for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
+							for (SmsMessage smsMessages : smsTask
+									.getSmsMessages()) {
 								if (smsMessages.getStatusCode().equals(
 										SmsConst_DeliveryStatus.STATUS_ERROR)
 										|| smsMessages
@@ -986,26 +1046,27 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConst_DeliveryStatus.STATUS_LATE);
 		for (SmsMessage smsMsg : messages) {
 			if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
-				
+
 				Session session = null;
 				Transaction tx = null;
-						
+
 				try {
-					session = getHibernateLogicLocator().getSmsTaskLogic()
+					session = getHibernateLogicLocator().getSmsMessageLogic()
 							.getNewHibernateSession();
 					tx = session.beginTransaction();
-					
+
 					// SMS-128/113 : lock the message row
 					SmsMessage smsMessage = (SmsMessage) session.get(
 							SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
-					// test again with the lock, this will prevent other schedulers
+					// test again with the lock, this will prevent other
+					// schedulers
 					// doing the same thing
 					if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
 						smsMessage
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-						hibernateLogicLocator
-								.getSmsTaskLogic()
-								.incrementMessagesDelivered(smsMessage.getSmsTask());
+						hibernateLogicLocator.getSmsTaskLogic()
+								.incrementMessagesDelivered(
+										smsMessage.getSmsTask());
 						smsBilling.debitLateMessage(smsMessage);
 					} else {
 						smsMessage
@@ -1015,7 +1076,9 @@ public class SmsCoreImpl implements SmsCore {
 					tx.commit();
 					session.close();
 				} catch (HibernateException e) {
-					LOG.error("Error processing late delivery report for message " + smsMsg.getId() + ": ", e);
+					LOG.error(
+							"Error processing late delivery report for message "
+									+ smsMsg.getId() + ": ", e);
 					if (tx != null) {
 						tx.rollback();
 					}
@@ -1058,10 +1121,46 @@ public class SmsCoreImpl implements SmsCore {
 
 		List<SmsTask> moTasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getAllMOTasks();
+		Session session = null;
+		Transaction tx = null;
 		if (moTasks != null) {
-			for (SmsTask smsTask : moTasks) {
-				processTaskInThread(smsTask, smsThreadGroup);
-			}
+			
+				for (SmsTask smsTask : moTasks) {
+				try {
+					session = getHibernateLogicLocator().getSmsTaskLogic()
+							.getNewHibernateSession();
+					tx = session.beginTransaction();
+
+					SmsTask smsTaskUpgade = (SmsTask) session.get(
+							SmsTask.class, smsTask.getId(), LockMode.UPGRADE);
+
+					if (smsTaskUpgade.getStatusCode().equals(
+							SmsConst_DeliveryStatus.STATUS_RETRY)
+							|| smsTaskUpgade.getStatusCode().equals(
+									SmsConst_DeliveryStatus.STATUS_PENDING)
+							|| smsTaskUpgade.getStatusCode().equals(
+									SmsConst_DeliveryStatus.STATUS_INCOMPLETE)) {
+						smsTaskUpgade
+								.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+
+					} else {
+						return;
+					}
+
+					session.update(smsTaskUpgade);
+					tx.commit();
+					session.close();
+					processTaskInThread(smsTask, smsThreadGroup);
+				
+			} catch (HibernateException e) {
+				LOG.error("Error processing MO Message " + ": ", e);
+				if (tx != null) {
+					tx.rollback();
+				}
+				if (session != null) {
+					session.close();
+				}
+			}}
 		}
 	}
 
@@ -1071,7 +1170,7 @@ public class SmsCoreImpl implements SmsCore {
 				+ threadGroup.activeCount());
 		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-		if ((threadGroup.activeCount() < maxThreadCount)) {
+		if ((threadGroup.activeCount() < maxThreadCount)) {	
 			new ProcessThread(smsTask, threadGroup);
 		} else {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);

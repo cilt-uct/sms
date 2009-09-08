@@ -27,7 +27,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.sakaiproject.genericdao.api.search.Order;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -93,11 +96,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *            sms task id
 	 * @return sms task
 	 */
-	public SmsTask getSmsTask(Long smsTaskId){
-		try{
+	public SmsTask getSmsTask(Long smsTaskId) {
+		try {
 			return (SmsTask) findById(SmsTask.class, smsTaskId);
-		}catch (NumberFormatException numEx){
-			throw new IllegalArgumentException("Supplied task parameter is invalid: " + smsTaskId);
+		} catch (NumberFormatException numEx) {
+			throw new IllegalArgumentException(
+					"Supplied task parameter is invalid: " + smsTaskId);
 		}
 	}
 
@@ -128,7 +132,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * 
 	 * @return next sms task
 	 */
-	
+
 	public SmsTask getNextSmsTask() {
 		final StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
@@ -148,8 +152,31 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 		LOG.debug("getNextSmsTask() HQL: " + hql);
 		if (tasks != null && !tasks.isEmpty()) {
+			Session session = null;
+			Transaction tx = null;
+			try {
+				session = getHibernateLogicLocator().getSmsTaskLogic()
+						.getNewHibernateSession();
+				tx = session.beginTransaction();
+				SmsTask smsTask = (SmsTask) session.get(SmsTask.class, tasks
+						.get(0).getId(), LockMode.UPGRADE);
+				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+				session.update(smsTask);
+				tx.commit();
+				session.close();
+				return smsTask;
+			} catch (HibernateException e) {
+				LOG.error("Error processing next task", e);
+				if (tx != null) {
+					tx.rollback();
+				}
+				if (session != null) {
+					session.close();
+				}
+
+			}
 			// Gets the oldest dateToSend. I.e the first to be processed.
-			return tasks.get(0);
+
 		}
 		return null;
 	}
@@ -364,7 +391,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		}
 		return null;
 	}
-	
+
 	public Session getNewHibernateSession() {
 		return smsDao.getTheHibernateTemplate().getSessionFactory()
 				.openSession();

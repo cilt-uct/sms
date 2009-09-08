@@ -224,6 +224,31 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		return null;
 	}
 
+	/**
+	 * Returns all the messages for the given smstask.
+	 * 
+	 * @param smsTaskID
+	 *            the smsTaskID id
+	 */
+	public List<SmsMessage> getSmsMessagesForTask(Long smsTaskId) {
+		StringBuilder hql = new StringBuilder();
+		hql.append(" from SmsMessage message where 1=1  ");
+		if (smsTaskId != null) {
+			hql.append(" and message.smsTask.id = :smsTaskId ");
+		}
+		LOG
+				.debug("getSmsTasksFilteredByMessageStatus() HQL: "
+						+ hql.toString());
+		QueryParameter[] queryParameters = { new QueryParameter("smsTaskId",
+				smsTaskId, Hibernate.LONG) };
+
+		List theMessages = smsDao.runQuery(hql.toString(), queryParameters);
+		if (theMessages != null && !theMessages.isEmpty()) {
+			return theMessages;
+		}
+		return new ArrayList<SmsMessage>();
+	}
+
 	private List<SmsMessage> getSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
 		Search search = new Search();
@@ -360,8 +385,12 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		if (smsMessage.getDateQueued() == null) {
 			smsMessage.setDateQueued(new Date());
 		}
-		
+
 		persist(smsMessage);
 	}
 
+	public Session getNewHibernateSession() {
+		return smsDao.getTheHibernateTemplate().getSessionFactory()
+				.openSession();
+	}
 }

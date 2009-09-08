@@ -17,17 +17,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**
@@ -38,20 +27,17 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  */
 public class SmppAPITest extends AbstractBaseTestCase {
 
-	private static SmsSmppImpl smsSmppImpl = null;
-
-	static {
-		if (!SmsConstants.isDbSchemaCreated) {
-			smsDao.createSchema();
-			SmsConstants.isDbSchemaCreated = true;
-		}
-		smsSmppImpl = new SmsSmppImpl();
-		smsSmppImpl.setHibernateLogicLocator(hibernateLogicLocator);
-		smsSmppImpl.init();
+	public SmppAPITest() {
 
 	}
 
-	public SmppAPITest() {
+	public void testme() {
+		for (int i = 0; i < 400; i++) {
+
+			System.out.println("0" + Math.round((Math.random() * 1000000000)));
+
+		}
+
 	}
 
 	public SmppAPITest(String name) {
@@ -68,153 +54,4 @@ public class SmppAPITest extends AbstractBaseTestCase {
 	 * @param attemptCount
 	 * @return
 	 */
-	public SmsTask insertNewTask(String sakaiID, String status,
-			Date dateToSend, int attemptCount) {
-		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId(sakaiID);
-		insertTask.setSmsAccountId(0l);
-		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
-		insertTask.setDateToSend(dateToSend);
-		insertTask.setStatusCode(status);
-		insertTask.setAttemptCount(0);
-		insertTask
-				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
-		insertTask.setSenderUserName("administrator");
-		insertTask.setMessageTypeId(0);
-		insertTask.setMaxTimeToLive(300);
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(insertTask.getDateToSend());
-		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
-		// TODO, DateToExpire must be set from the UI as well
-		insertTask.setDateToExpire(cal.getTime());
-
-		insertTask.setDelReportTimeoutDuration(300);
-		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
-		insertTask.setDateProcessed(new Date());
-		// insertTask.setMessageTypeId(SmsHibernateConstants.SMS_TASK_TYPE_PROCESS_NOW);
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
-		return insertTask;
-	}
-
-	/*
-	 * The tearDown method safely calls disconnectGateWay at the end of every
-	 * test.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		smsSmppImpl.disconnectGateWay();
-
-	}
-
-	/**
-	 * Testing the connect and disconnecting from the smsc. The test succeeds if
-	 * the correct connectionStatus is returned.
-	 */
-
-	public void testGetConnectionStatus() {
-
-		smsSmppImpl.disconnectGateWay();
-		assertEquals(true, (!smsSmppImpl.getConnectionStatus()));
-
-		smsSmppImpl.connectToGateway();
-		assertEquals(true, (smsSmppImpl.getConnectionStatus()));
-
-	}
-
-	/**
-	 * The gateway return some information to us.
-	 */
-	public void testGetGatewayInfo() {
-		smsSmppImpl.connectToGateway();
-		System.out.println(smsSmppImpl.getGatewayInfo());
-	}
-
-	/**
-	 * Test process outgoing message remotely.
-	 */
-	public void testProcessOutgoingMessageRemotely() {
-		SmsTask task = new SmsTask();
-
-		SmsMessage message = new SmsMessage();
-		message.setSmsTask(task);
-		message.setMobileNumber("0721998919");
-		message.setMessageBody("This is message body text");
-		boolean processed = smsSmppImpl.processOutgoingMessageRemotely(message);
-		// Disabled
-		assertFalse(processed);
-	}
-
-	/**
-	 * Test to send 10 smsMessages to the SMSC The test succeeds if the returned
-	 * status is STATUS_SENT and all the delivery reports are returned.
-	 */
-	public void testSendMessagesToGateway() {
-		smsSmppImpl.connectToGateway();
-		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
-
-		SmsTask insertTask = insertNewTask("testSendMessagesToGateway",
-				SmsConst_DeliveryStatus.STATUS_PENDING, new Date(System
-						.currentTimeMillis()), 0);
-
-		assertTrue("Task for message not created", insertTask.exists());
-
-		for (int i = 0; i < 10; i++) {
-			SmsMessage message = new SmsMessage();
-			message.setMobileNumber("072199891" + i);
-			message.setSakaiUserId("sakaiUserId");
-			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-			message.setSmsTask(insertTask);
-			smsMessages.add(message);
-
-		}
-		insertTask.setSmsMessagesOnTask(smsMessages);
-		// smsTaskLogicImpl.persistSmsTask(insertTask);
-		assertEquals(true, smsSmppImpl.sendMessagesToGateway(smsMessages)
-				.equals(SmsConst_DeliveryStatus.STATUS_SENT));
-		try {
-			Thread.sleep(25000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		SmsTask insertTask1update = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(insertTask.getId());
-		assertEquals(true, insertTask1update.getMessagesWithSmscStatus(
-				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
-
-	}
-
-	/**
-	 * Test to send an single smsMessage to the SMSC.The test succeeds if an
-	 * SmscID is populated on the message and a delivery report is returned.
-	 */
-
-	public void testSendMessageToGateway() {
-		smsSmppImpl.connectToGateway();
-		SmsTask insertTask1 = insertNewTask("testSendMessageToGateway2",
-				SmsConst_DeliveryStatus.STATUS_PENDING, new Date(System
-						.currentTimeMillis()), 0);
-		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
-		SmsMessage insertMessage1 = new SmsMessage();
-		insertMessage1.setMobileNumber("0731998919");
-		insertMessage1.setSakaiUserId("sakaiUserId");
-		insertMessage1.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		insertMessage1.setSmsTask(insertTask1);
-		smsMessages.add(insertMessage1);
-		insertTask1.setSmsMessagesOnTask(smsMessages);
-		// smsTaskLogicImpl.persistSmsTask(insertTask1);
-		assertEquals(true, smsSmppImpl.sendMessageToGateway(insertMessage1)
-				.getSmscMessageId() != null);
-		try {
-			Thread.sleep(15000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		SmsTask insertTask1update = hibernateLogicLocator.getSmsTaskLogic()
-				.getSmsTask(insertTask1.getId());
-		assertEquals(true, insertTask1update.getMessagesWithSmscStatus(
-				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
-		hibernateLogicLocator.getSmsTaskLogic()
-				.deleteSmsTask(insertTask1update);
-
-	}
 }

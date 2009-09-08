@@ -275,21 +275,22 @@ public class SmsSmppImpl implements SmsSmpp {
 
 					if (LOG.isDebugEnabled()) {
 						int qsize = receivedDeliveryReports.size();
-						if (qsize >= 10 && qsize % 10 == 0) 
-							LOG.debug("Delivery report queue has "
-								+ qsize + " message(s)");
+						if (qsize >= 10 && qsize % 10 == 0)
+							LOG.debug("Delivery report queue has " + qsize
+									+ " message(s)");
 					}
-						
+
 					DeliverSm deliverSm = receivedDeliveryReports.poll();
-					
+
 					if (deliverSm != null) {
 						handleDeliveryReport(deliverSm);
 					} else {
-						Thread.sleep(1000);	
+						Thread.sleep(1000);
 					}
-						
+
 				} catch (Exception e) {
-					LOG.error("DeliveryReportQueueThread encountered an error", e);
+					LOG.error("DeliveryReportQueueThread encountered an error",
+							e);
 				}
 			}
 		}
@@ -320,7 +321,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				LOG.debug("Queuing delivery receipt from: "
 						+ deliverSm.getSourceAddr());
-							
+
 				receivedDeliveryReports.add(deliverSm);
 
 			} else {
@@ -359,9 +360,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				notifyDeliveryReportRemotely(deliveryReceipt);
 				return;
 			}
-			LOG.info("Processing delivery receipt for message '"
+			LOG.info("Processing delivery receipt for sms message'"
 					+ deliveryReceipt.getId() + "' from "
-					+ deliverSm.getSourceAddr() +  " : " + deliveryReceipt);
+					+ deliverSm.getSourceAddr() + " : " + deliveryReceipt);
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
@@ -390,24 +391,25 @@ public class SmsSmppImpl implements SmsSmpp {
 						.error("Delivery report received for message not in database. MessageSMSCID="
 								+ deliveryReceipt.getId());
 			} else {
-				
+
 				Session session = null;
 				Transaction tx = null;
-				
+
 				// SMS-128/113 : lock the message row
 				SmsMessage smsMessage = null;
-				
+
 				try {
-					session = getHibernateLogicLocator().getSmsTaskLogic()
+					session = getHibernateLogicLocator().getSmsMessageLogic()
 							.getNewHibernateSession();
 					tx = session.beginTransaction();
 
-					smsMessage = (SmsMessage) session.get(
-							SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
+					smsMessage = (SmsMessage) session.get(SmsMessage.class,
+							smsMsg.getId(), LockMode.UPGRADE);
 					smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 							.get((deliveryReceipt.getFinalStatus())));
 					if (deliveryReceipt.getDoneDate() != null) {
-						// seeing this currently has only minute precision it may
+						// seeing this currently has only minute precision it
+						// may
 						// appear to be before the sent date
 						if (deliveryReceipt.getDoneDate().before(
 								smsMessage.getDateSent())) {
@@ -427,7 +429,8 @@ public class SmsSmppImpl implements SmsSmpp {
 						smsMessage
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_LATE);
 					} else {
-						if (smsDeliveryStatus.get(deliveryReceipt.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
+						if (smsDeliveryStatus.get(deliveryReceipt
+								.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
 							smsMessage
 									.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 						} else {
@@ -442,7 +445,9 @@ public class SmsSmppImpl implements SmsSmpp {
 					tx.commit();
 					session.close();
 				} catch (HibernateException e) {
-					LOG.error("Error handling delivery report: " + deliverSm, e);
+					LOG
+							.error("Error handling delivery report: "
+									+ deliverSm, e);
 					if (tx != null) {
 						tx.rollback();
 					}
@@ -453,11 +458,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				if (smsMessage != null) {
 					if (incrementMessagesDelivered) {
-						hibernateLogicLocator
-								.getSmsTaskLogic()
-								.incrementMessagesDelivered(smsMessage.getSmsTask());
+						hibernateLogicLocator.getSmsTaskLogic()
+								.incrementMessagesDelivered(
+										smsMessage.getSmsTask());
 					}
-					hibernateLogicLocator.getSmsTaskLogic()
+					hibernateLogicLocator
+							.getSmsTaskLogic()
 							.incrementMessagesProcessed(smsMessage.getSmsTask());
 				}
 			}
@@ -1012,6 +1018,12 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			return message;
 		}
+		Session hibernateSession = getHibernateLogicLocator().getSmsMessageLogic()
+				.getNewHibernateSession();
+		Transaction tx = hibernateSession.beginTransaction();
+
+		message = (SmsMessage) hibernateSession.get(SmsMessage.class, message.getId(),
+				LockMode.UPGRADE);
 		String messageText = message.getSmsTask().getMessageBody();
 
 		if (message.getSmsTask().getMessageTypeId().equals(
@@ -1025,6 +1037,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new IllegalArgumentException(
 						"SMS Message body text may not be empty.");
 			}
+
 			String messageId = session.submitShortMessage(smsSmppProperties
 					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
 					.getSourceAddressTON()), NumberingPlanIndicator
@@ -1053,8 +1066,18 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.info("Message submitted, smsc_id = " + messageId
 					+ " MessageID = " + message.getId() + " TaskID = "
 					+ message.getSmsTask().getId());
+			hibernateSession.update(message);
+			tx.commit();
+			hibernateSession.close();
+
 		} catch (PDUException e) {
 			// Invalid PDU parameter
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
@@ -1064,6 +1087,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		} catch (ResponseTimeoutException e) {
 			// Response timeout
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
@@ -1072,6 +1101,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		} catch (InvalidResponseException e) {
 			// Invalid response
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
@@ -1080,12 +1115,24 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		} catch (NegativeResponseException e) {
 			// Receiving negative response (non-zero command_status)
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
 					message.getSmsTask());
 
 		} catch (IOException e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
@@ -1093,12 +1140,17 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.error(e);
 
 		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback();
+			}
+			if (hibernateSession != null) {
+				hibernateSession.close();
+			}
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
 					message.getSmsTask());
 		}
-		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(message);
 		return message;
 	}
 
