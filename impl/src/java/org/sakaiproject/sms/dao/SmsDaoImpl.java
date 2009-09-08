@@ -68,12 +68,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 	private Map<String, Object> paramToMap(QueryParameter[] queryParameters) {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		for (QueryParameter queryParameter : queryParameters) {
-			if (queryParameter.val instanceof Object[]) {
-				ret.put(queryParameter.name, queryParameter.val);
-			} else {
-				ret.put(queryParameter.name, queryParameter.val);
-			}
-
+			ret.put(queryParameter.name, queryParameter.val);
 		}
 		return ret;
 	}

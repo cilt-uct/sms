@@ -56,8 +56,8 @@ public class ReceiveIncomingSmsDisabledException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public ReceiveIncomingSmsDisabledException(final SmsTask smsTask) {
-		super("The receiving of incoming sms messages is disabled for site :"
-				+ smsTask.getSakaiSiteId().toString());
+		super("The receiving of incoming sms messages is disabled for site: "
+				+ smsTask.getSakaiSiteId());
 	}
 
 }

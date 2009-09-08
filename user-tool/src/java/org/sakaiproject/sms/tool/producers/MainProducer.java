@@ -57,7 +57,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 	
 	public static final String VIEW_ID = "index";
 	
-	public static Log log = LogFactory.getLog(MainProducer.class);
+	public static final Log log = LogFactory.getLog(MainProducer.class);
 		
 	public String getViewID() {
 		return VIEW_ID;

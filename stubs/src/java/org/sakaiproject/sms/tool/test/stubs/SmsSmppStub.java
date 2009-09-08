@@ -17,12 +17,10 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.test.stubs;
 
-import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.smpp.SmsDeliveryReport;
 
 /**
  * The Class SmsSmppStub. Stub implementation of {@link SmsSmpp} with minimal
@@ -69,15 +67,6 @@ public class SmsSmppStub implements SmsSmpp {
 	 */
 	public boolean getConnectionStatus() {
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.sakaiproject.sms.api.SmsSmpp#getDeliveryNotifications()
-	 */
-	public List<SmsDeliveryReport> getDeliveryNotifications() {
-		return null;
 	}
 
 	/*
