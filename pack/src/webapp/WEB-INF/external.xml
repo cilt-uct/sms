@@ -8,6 +8,7 @@
 		<property name="smsTaskLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsTaskLogic"/>
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
+		<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"/>
 	</bean>
 
 	<bean id="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp" class="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp">

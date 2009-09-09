@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -49,43 +51,48 @@ public static final String VIEW_ID = "sms";
 		return VIEW_ID;
 	}
 
-	private ExternalLogic externalLogic;
+	private SmsMessageLogic smsMessageLogic = null;
+	public void setSmsMessageLogic(SmsMessageLogic smsMessageLogic) {
+		this.smsMessageLogic = smsMessageLogic;
+	}
+
+	private ExternalLogic externalLogic = null;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
 
-	private SmsTaskLogic smsTaskLogic;
+	private SmsTaskLogic smsTaskLogic = null;
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
 	}
 
-	private DateUtil dateUtil;
+	private DateUtil dateUtil = null;
 	public void setDateUtil(DateUtil dateUtil) {
 		this.dateUtil = dateUtil;
 	}
 
-	private StatusUtils statusUtils;
+	private StatusUtils statusUtils = null;
 	public void setStatusUtils(StatusUtils statusUtils) {
 		this.statusUtils = statusUtils;
 	}
 	
-	private CurrencyUtil currencyUtil;
+	private CurrencyUtil currencyUtil = null;
 	public void setCurrencyUtil(CurrencyUtil currencyUtil) {
 		this.currencyUtil = currencyUtil;
 	}
 
-	private SmsMessageRenderer smsMessageRenderer;
+	private SmsMessageRenderer smsMessageRenderer = null;
 	public void setSmsMessageRenderer(SmsMessageRenderer smsMessageRenderer) {
 		this.smsMessageRenderer = smsMessageRenderer;
 	}
 	
-	private HibernateLogicLocator hibernateLogicLocator;
+	private HibernateLogicLocator hibernateLogicLocator = null;
 	public void setHibernateLogicLocator(
 			HibernateLogicLocator hibernateLogicLocator) {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 	
-	private SavedSelectionsRenderer savedSelectionsRenderer;
+	private SavedSelectionsRenderer savedSelectionsRenderer = null;
 	public void setSavedSelectionsRenderer(
 			SavedSelectionsRenderer savedSelectionsRenderer) {
 		this.savedSelectionsRenderer = savedSelectionsRenderer;
@@ -251,7 +258,7 @@ public static final String VIEW_ID = "sms";
 						UIMessage.make(wrapper, "status-header",
 								"ui.sent.sms.header.status");
 						
-						Set<SmsMessage> smsMessages = smsTask.getSmsMessages();
+						List<SmsMessage> smsMessages = smsMessageLogic.getSmsMessagesForTask(smsTask.getId());
 						
 						Set<String> smsUserIds = externalLogic.getUserIdsFromSmsMessages(smsMessages);
 						Map<String, User> userMap = externalLogic.getSakaiUsers(smsUserIds);

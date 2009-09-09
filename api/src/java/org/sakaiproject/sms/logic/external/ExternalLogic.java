@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -328,6 +329,6 @@ public interface ExternalLogic {
 	 * @param messages Messaages to extract the user Ids from
 	 * @return Internal userIds
 	 */
-	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages);
+	public Set<String> getUserIdsFromSmsMessages(Collection<SmsMessage> messages);
 
 }

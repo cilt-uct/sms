@@ -55,6 +55,7 @@ import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
@@ -100,27 +101,33 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	/**
 	 * Inject services
 	 */
-	private SmsTaskLogic smsTaskLogic;
+	private SmsTaskLogic smsTaskLogic = null;
 	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
 		this.smsTaskLogic = smsTaskLogic;
 	}
 
-	private SmsService smsService;
+	private SmsService smsService = null;
 	public void setSmsService(SmsService smsService) {
 		this.smsService = smsService;
 	}
 
-	private DeveloperHelperService developerHelperService;
+	private DeveloperHelperService developerHelperService = null;
 	public void setDeveloperHelperService(
 			DeveloperHelperService developerHelperService) {
 		this.developerHelperService = developerHelperService;
 	}
 	
-	private ExternalLogic externalLogic;
+	private ExternalLogic externalLogic = null;
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
 	}
-	
+
+	private SmsMessageLogic smsMessageLogic = null;
+	public void setSmsMessageLogic(SmsMessageLogic smsMessageLogic) {
+		this.smsMessageLogic = smsMessageLogic;
+	}
+
+
 	/**
 	 * Implemented
 	 */
@@ -165,14 +172,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 
 	private SmsTask anonymiseTask(SmsTask task) {
-		Set<SmsMessage> messages = task.getSmsMessages();
-		if (messages == null)
+		
+		// SMS-159 Use a helper method to avoid lazy init exception
+		List<SmsMessage> messages = smsMessageLogic.getSmsMessagesForTask(task.getId());
+		if (messages == null || messages.isEmpty())
 			return task;
 		
 		Set<SmsMessage> redacted = new HashSet<SmsMessage>();
-		Iterator<SmsMessage> iterator = messages.iterator();
-		while (iterator.hasNext()) {
-			SmsMessage message = iterator.next();
+		
+		for (SmsMessage message : messages) {
 			SmsMessage redMessage = new SmsMessage();
 			redMessage.setStatusCode(message.getStatusCode());
 			if (message.getSakaiUserId() != null  && !"".equals(message.getSakaiUserId())) {

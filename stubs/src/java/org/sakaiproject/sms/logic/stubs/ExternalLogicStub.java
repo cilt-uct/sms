@@ -18,6 +18,7 @@
 package org.sakaiproject.sms.logic.stubs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -305,8 +306,7 @@ public class ExternalLogicStub implements ExternalLogic {
 		return;
 	}
 
-	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages) {
-		// TODO Auto-generated method stub
+	public Set<String> getUserIdsFromSmsMessages(Collection<SmsMessage> messages) {
 		return null;
 	}
 

@@ -869,7 +869,7 @@ public class ExternalLogicImpl implements ExternalLogic {
         }
     }
 
-	public Set<String> getUserIdsFromSmsMessages(Set<SmsMessage> messages) {
+	public Set<String> getUserIdsFromSmsMessages(Collection<SmsMessage> messages) {
 		Set<String> smsUserIds = new HashSet<String>();
 		for (SmsMessage message : messages){
 			String userId = message.getSakaiUserId();

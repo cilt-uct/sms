@@ -56,6 +56,7 @@
 	<property name="savedSelectionsRenderer" ref="savedSelectionsRenderer" />
 	<property name="currencyUtil" ref="currencyUtil" />
 	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+	<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic" />
   </bean>
   
   <bean class="org.sakaiproject.sms.tool.producers.SmsPermissions">
