@@ -50,9 +50,7 @@ public interface SmsCore {
 	public SmsTask getNextSmsTask();
 
 	/**
-	 * Add a new task to the sms task list, for eg. send message to all
-	 * administrators at 10:00, or get latest announcements and send to mobile
-	 * numbers of Sakai group x (phase II). Validation will be done to make sure
+	 * Add a new task to the sms task list Validation will be done to make sure
 	 * that the preliminary values are supplied.
 	 * 
 	 * @param smsTask

@@ -175,7 +175,6 @@ public class SmsCoreImpl implements SmsCore {
 			final Thread thread = new Thread(threadGroup, this);
 			thread.setDaemon(true);
 			thread.start();
-
 		}
 
 		public void run() {
@@ -364,13 +363,13 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 
-		// Set messageType, expiry date, TTL, report tiemout.
+		// Set messageType, expiry date, TTL, report timeout.
 		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 
-		// Set DateToExpire to getMaxTimeToLive if it aint set in the UI
+		// Set DateToExpire to getMaxTimeToLive if it's not set in the UI
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
 		if (smsTask.getDateToExpire() == null) {
 			Calendar cal = Calendar.getInstance();
@@ -397,13 +396,17 @@ public class SmsCoreImpl implements SmsCore {
 			throw validationException;
 		}
 
-		// we set the date again due to time laps between getPreliminaryTask
-		// and
-		// insertask
+		// we set the date again due to time lapse between getPreliminaryTask
+		// and insert task into the database
+		
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		errors.clear();
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
+		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE,
+				"/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
+		
 		if (!smsBilling.reserveCredits(smsTask)) {
 			ArrayList<String> insufficientCredit = new ArrayList<String>();
 			insufficientCredit.add(ValidationConstants.INSUFFICIENT_CREDIT
@@ -431,7 +434,6 @@ public class SmsCoreImpl implements SmsCore {
 				}
 			}
 			errors.addAll(insufficientCredit);
-
 		}
 
 		if (!errors.isEmpty()) {
@@ -458,17 +460,16 @@ public class SmsCoreImpl implements SmsCore {
 						message);
 			}
 
-			// only try this if this node is designated to bind
-			if (externalLogic.isNodeBindToGateway()) {
+			// Deliver in real time if possible, otherwise queue for the scheduler
+			
+			if (externalLogic.isNodeBindToGateway() &&
+			  smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
 				tryProcessTaskRealTime(smsTask);
 			} else {
 				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			}
 		}
-
-		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE,
-				"/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
 
 		return smsTask;
 	}
@@ -568,7 +569,12 @@ public class SmsCoreImpl implements SmsCore {
 
 		Session session = null;
 		Transaction tx = null;
-		LOG.debug("Processing task:" + smsTask.getId());
+
+		if (!SmsConst_DeliveryStatus.STATUS_BUSY.equals(smsTask.getStatusCode())) {
+			throw new IllegalStateException("Task " + smsTask.getId() + " handed to processTask() but is not in BUSY state");
+		}
+
+		LOG.debug("Processing task: " + smsTask.getId());
 
 		try {
 			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
@@ -606,8 +612,8 @@ public class SmsCoreImpl implements SmsCore {
 					smsTask.setSmsMessages(messages);
 				}
 
-				// ========================== Do the actual sending to the
-				// gateway
+				// Do the actual sending to the gateway
+				
 				smsTask
 						.setSmsMessages(new HashSet<SmsMessage>(
 								hibernateLogicLocator
@@ -623,9 +629,9 @@ public class SmsCoreImpl implements SmsCore {
 						.getNewHibernateSession();
 				tx = session.beginTransaction();
 
-				// SMS-128/113 : lock the task so that other schedulers wont
-				// pick it
-				// up causing duplicate settlements
+				// SMS-128/113 : lock the task so that other schedulers won't
+				// pick it up causing duplicate settlements
+				
 				smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
 						LockMode.UPGRADE);
 				smsTask.setStatusCode(submissionStatus);
@@ -923,36 +929,8 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
-		if (!externalLogic.isNodeBindToGateway()) {
-			return;
-		}	
-		if (smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
-			Session session = null;
-		Transaction tx = null;
-		try {
-			session = getHibernateLogicLocator().getSmsTaskLogic()
-					.getNewHibernateSession();
-			tx = session.beginTransaction();
-			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
-					LockMode.UPGRADE);
-			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-			session.update(smsTask);
-			tx.commit();
-			session.close();
-		} catch (HibernateException e) {
-			LOG.error("Error processing realtime task " + smsTask.getId()
-					+ ": ", e);
-			if (tx != null) {
-				tx.rollback();
-			}
-			if (session != null) {
-				session.close();
-			}
-
-		}
-			processTaskInThread(smsTask, smsThreadGroup);
-		}
-
+		LOG.debug("Processing task in realtime: task id = " + smsTask.getId());			
+		processTaskInThread(smsTask, smsThreadGroup);
 	}
 
 	public void checkAndSetTasksCompleted() {
@@ -1131,29 +1109,31 @@ public class SmsCoreImpl implements SmsCore {
 							.getNewHibernateSession();
 					tx = session.beginTransaction();
 
-					SmsTask smsTaskUpgade = (SmsTask) session.get(
+					SmsTask smsTaskUpgrade = (SmsTask) session.get(
 							SmsTask.class, smsTask.getId(), LockMode.UPGRADE);
 
-					if (smsTaskUpgade.getStatusCode().equals(
+					if (smsTaskUpgrade.getStatusCode().equals(
 							SmsConst_DeliveryStatus.STATUS_RETRY)
-							|| smsTaskUpgade.getStatusCode().equals(
+							|| smsTaskUpgrade.getStatusCode().equals(
 									SmsConst_DeliveryStatus.STATUS_PENDING)
-							|| smsTaskUpgade.getStatusCode().equals(
+							|| smsTaskUpgrade.getStatusCode().equals(
 									SmsConst_DeliveryStatus.STATUS_INCOMPLETE)) {
-						smsTaskUpgade
+						smsTaskUpgrade
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
 
 					} else {
+						tx.rollback();
+						session.close();
 						return;
 					}
 
-					session.update(smsTaskUpgade);
+					session.update(smsTaskUpgrade);
 					tx.commit();
 					session.close();
 					processTaskInThread(smsTask, smsThreadGroup);
 				
 			} catch (HibernateException e) {
-				LOG.error("Error processing MO Message " + ": ", e);
+				LOG.error("Error processing MO Message: ", e);
 				if (tx != null) {
 					tx.rollback();
 				}

@@ -128,12 +128,14 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	}
 
 	/**
-	 * Gets the next sms task to be processed.
+	 * Gets the next sms task to be processed, and changes its status to BUSY.
 	 * 
-	 * @return next sms task
+	 * @return next sms task, or null if there is no next task to be processed.
 	 */
-
 	public SmsTask getNextSmsTask() {
+
+		// Gets the oldest dateToSend, i.e. the first to be processed
+		
 		final StringBuilder hql = new StringBuilder();
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.messageTypeId = (:messageTypeId) ");
@@ -151,33 +153,48 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						Hibernate.STRING));
 
 		LOG.debug("getNextSmsTask() HQL: " + hql);
+		
 		if (tasks != null && !tasks.isEmpty()) {
-			Session session = null;
-			Transaction tx = null;
-			try {
-				session = getHibernateLogicLocator().getSmsTaskLogic()
-						.getNewHibernateSession();
-				tx = session.beginTransaction();
-				SmsTask smsTask = (SmsTask) session.get(SmsTask.class, tasks
-						.get(0).getId(), LockMode.UPGRADE);
-				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
-				session.update(smsTask);
-				tx.commit();
-				session.close();
-				return smsTask;
-			} catch (HibernateException e) {
-				LOG.error("Error processing next task", e);
-				if (tx != null) {
-					tx.rollback();
+			
+			// Find the first task which can be locked and changed to STATUS_BUSY
+			
+			for (SmsTask nextSmsTask : tasks) {
+					
+				Session session = null;
+				Transaction tx = null;
+				try {
+					session = getHibernateLogicLocator().getSmsTaskLogic()
+							.getNewHibernateSession();
+					tx = session.beginTransaction();
+					SmsTask smsTask = (SmsTask) session.get(SmsTask.class, nextSmsTask.getId(),
+							LockMode.UPGRADE);
+					
+					if (!SmsConst_DeliveryStatus.STATUS_PENDING.equals(smsTask.getStatusCode()) &&
+						!SmsConst_DeliveryStatus.STATUS_INCOMPLETE.equals(smsTask.getStatusCode()) &&
+						!SmsConst_DeliveryStatus.STATUS_RETRY.equals(smsTask.getStatusCode())) {
+						// Another thread or app server has changed this task's status, so we ignore it
+						tx.rollback();
+						session.close();
+					} else {
+						smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
+						session.update(smsTask);
+						tx.commit();
+						session.close();
+						return smsTask;
+					}
+				} catch (HibernateException e) {
+					LOG.error("Error processing next task", e);
+					if (tx != null) {
+						tx.rollback();
+					}
+					if (session != null) {
+						session.close();
+					}
 				}
-				if (session != null) {
-					session.close();
-				}
-
 			}
-			// Gets the oldest dateToSend. I.e the first to be processed.
-
 		}
+		
+		// Didn't find a task
 		return null;
 	}
 
