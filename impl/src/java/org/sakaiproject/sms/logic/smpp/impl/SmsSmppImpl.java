@@ -360,8 +360,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				notifyDeliveryReportRemotely(deliveryReceipt);
 				return;
 			}
-			LOG.info("Processing delivery receipt for sms message'"
-					+ deliveryReceipt.getId() + "' from "
+			LOG.info("Processing delivery receipt from "
 					+ deliverSm.getSourceAddr() + " : " + deliveryReceipt);
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
@@ -1064,8 +1063,9 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setDateSent(new Date());
 
 			LOG.info("Message submitted, smsc_id = " + messageId
-					+ " MessageID = " + message.getId() + " TaskID = "
-					+ message.getSmsTask().getId());
+					+ " MessageID = " + message.getId()
+					+ " Number = " + message.getMobileNumber()
+					+ " TaskID = " + message.getSmsTask().getId());
 			hibernateSession.update(message);
 			tx.commit();
 			hibernateSession.close();
