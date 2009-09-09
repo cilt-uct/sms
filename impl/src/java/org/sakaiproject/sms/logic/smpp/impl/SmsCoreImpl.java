@@ -1023,22 +1023,23 @@ public class SmsCoreImpl implements SmsCore {
 				.getSmsMessagesWithStatus(null,
 						SmsConst_DeliveryStatus.STATUS_LATE);
 		for (SmsMessage smsMsg : messages) {
-			if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
 
-				Session session = null;
-				Transaction tx = null;
+			Session session = null;
+			Transaction tx = null;
 
-				try {
-					session = getHibernateLogicLocator().getSmsMessageLogic()
-							.getNewHibernateSession();
-					tx = session.beginTransaction();
+			try {
+				session = getHibernateLogicLocator().getSmsMessageLogic()
+						.getNewHibernateSession();
+				tx = session.beginTransaction();
 
-					// SMS-128/113 : lock the message row
-					SmsMessage smsMessage = (SmsMessage) session.get(
-							SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
-					// test again with the lock, this will prevent other
-					// schedulers
-					// doing the same thing
+				// SMS-128/113 : lock the message row
+				SmsMessage smsMessage = (SmsMessage) session.get(
+						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
+				
+				// test again with the lock, this will prevent other
+				// schedulers doing the same thing
+				
+				if (SmsConst_DeliveryStatus.STATUS_LATE.equals(smsMsg.getStatusCode())) {
 					if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
 						smsMessage
 								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
@@ -1052,17 +1053,20 @@ public class SmsCoreImpl implements SmsCore {
 					}
 					session.update(smsMessage);
 					tx.commit();
+				} else {
+					// another process has updated this message, ignore it
+					tx.rollback();
+				}
+				session.close();
+			} catch (HibernateException e) {
+				LOG.error(
+						"Error processing late delivery report for message "
+								+ smsMsg.getId() + ": ", e);
+				if (tx != null) {
+					tx.rollback();
+				}
+				if (session != null) {
 					session.close();
-				} catch (HibernateException e) {
-					LOG.error(
-							"Error processing late delivery report for message "
-									+ smsMsg.getId() + ": ", e);
-					if (tx != null) {
-						tx.rollback();
-					}
-					if (session != null) {
-						session.close();
-					}
 				}
 			}
 		}
