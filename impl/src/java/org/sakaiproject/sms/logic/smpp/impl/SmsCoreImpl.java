@@ -337,9 +337,9 @@ public class SmsCoreImpl implements SmsCore {
 			throw new SmsSendDisabledException(smsTask);
 		}
 		if (!SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING.equals(smsTask.getMessageTypeId())) {
-			smsTask
-					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
+			smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
+		
 		final Set<SmsMessage> smsMessages = (Set<SmsMessage>) ((HashSet<SmsMessage>) smsTask
 				.getSmsMessages()).clone();
 
@@ -379,6 +379,9 @@ public class SmsCoreImpl implements SmsCore {
 
 		smsTask.setAttemptCount(0);
 
+		// Sanitize the character set in the message body
+		smsTask.setMessageBody(sanitizeBody(smsTask.getMessageBody()));
+		
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
 		if (!errors.isEmpty()) {
@@ -439,8 +442,7 @@ public class SmsCoreImpl implements SmsCore {
 					MessageCatalog
 							.getMessage("messages.sms.errors.task.validationFailed"));
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-			smsTask
-					.setFailReason(validationException
+			smsTask.setFailReason(validationException
 							.getErrorMessagesAsBlock());
 
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
@@ -471,6 +473,19 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
+	/** Return sanitized message body, stripped of unprintable characters.
+	 * 
+	 * @param smsMessageBody
+	 * @return The sanitized message body.
+	 */
+	private String sanitizeBody(String smsMessageBody) {
+		
+		if (smsMessageBody == null)
+			return null;
+		
+		return smsMessageBody.replaceAll("\n", " ").replaceAll("\\p{Cntrl}", "").trim();
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
