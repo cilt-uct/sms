@@ -55,7 +55,6 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, key_cross);
 		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, key_cross);
 		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, key_phone);
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, key_tick);
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, key_time);
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, key_time);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_tick);
@@ -73,7 +72,6 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_EXPIRE, "status.expire");
 		lib.put(SmsConst_DeliveryStatus.STATUS_FAIL, "status.fail");
 		lib.put(SmsConst_DeliveryStatus.STATUS_INCOMPLETE, "status.incomplete");
-		lib.put(SmsConst_DeliveryStatus.STATUS_LATE, "status.late");
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, "status.pending");
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, "status.retry");
 		lib.put(SmsConst_DeliveryStatus.STATUS_SENT, "status.sent");

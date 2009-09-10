@@ -132,11 +132,11 @@ public interface SmsCore {
 
 	/**
 	 * Some delivery report might arrive after the predefined timeout period of
-	 * the task. Wee still need to handle these reports because the messages are
-	 * now billable. We need to receive them, update SMS_MESSAGE and make a
-	 * account entry of type TRANS_CREDIT_LATE_MESSAGE.
+	 * the task. We still need to handle these reports because the messages are
+	 * now billable. Create an account entry for any delivery reports received
+	 * when the task is in COMPLETE state, since the last accounting adjustment.
 	 */
-	public void processVeryLateDeliveryReports();
+	public void adjustLateDeliveryBilling();
 
 	/**
 	 * 
@@ -154,8 +154,9 @@ public interface SmsCore {
 	/**
 	 * If we did not receive gateway delivery reports for messages that was sent
 	 * out, then we mark those messages as time out after a predefined period as
-	 * determined by DEL_REPORT_TIMEOUT_DURATION on the task. These messages are
-	 * not billable. But they will be billable if the report comes in very late.
+	 * determined by the global DEL_REPORT_TIMEOUT_DURATION setting. These
+	 * messages are not billable. But they will be billable if the report comes
+	 * in very late.
 	 */
 	public void processTimedOutDeliveryReports();
 

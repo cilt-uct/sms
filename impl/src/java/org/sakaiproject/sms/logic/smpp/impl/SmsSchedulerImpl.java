@@ -113,23 +113,27 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 		public void work() {
 
-			while (true) {
+			while (!stopScheduler) {
+
+				// Run scheduled processes
 				try {
-					if (stopScheduler) {
-						return;
-					}
 					smsCore.processMOTasks();
 					smsCore.processNextTask();
 					smsCore.processTimedOutDeliveryReports();
 					smsCore.checkAndSetTasksCompleted();
-					smsCore.processVeryLateDeliveryReports();
-					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000L);
-				} catch (InterruptedException e) {
-					// no need to log the error
+					smsCore.adjustLateDeliveryBilling();
 				} catch (Exception e) {
 					LOG.error("SoScheduler encountered an error : "
 							+ e.getMessage());
 				}
+				
+				// Pause a while
+				try {
+					Thread.sleep(getSmsConfig().getSchedulerInterval() * 1000L);
+				} catch (InterruptedException e) {
+					; // ignore
+				}
+				
 			}
 		}
 	}

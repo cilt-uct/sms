@@ -133,4 +133,9 @@ public class SmsCoreStub implements SmsCore {
 
 	}
 
+	public void adjustLateDeliveryBilling() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

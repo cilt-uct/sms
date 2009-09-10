@@ -120,11 +120,16 @@ public interface SmsTaskLogic {
 	public List<SmsTask> getTasksToMarkAsCompleted();
 
 	/**
-	 * Increments the total messages delivered on a task by one.
+	 * Checks for tasks that are complete but require billing adjustments.
+	 */
+	public List<SmsTask> getTasksWithLateBilling();
+
+	/**
+	 * Increments the total messages processed and/or delivered on a task by one.
 	 * 
 	 * @param smsTask
 	 */
-	public void incrementMessagesDelivered(SmsTask smsTask);
+	public void incrementMessageCounts(SmsTask smsTask, boolean incrementProcessed, boolean incrementDelivered);
 
 	/**
 	 * Get a new session to be used for row locking to prevent concurrent task

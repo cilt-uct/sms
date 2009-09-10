@@ -326,14 +326,32 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * 
 	 * @param smsTask
 	 */
-	public void incrementMessagesProcessed(SmsTask smsTask) {
+	public void incrementMessageCounts(SmsTask smsTask, boolean incrementProcessed, boolean incrementDelivered) {
 
 		// The < test because very late delivery reports can change a message
 		// status from Timed out to Delivered, causing another increase of
 		// MESSAGES_PROCESSED called from MessageReceiverListenerImpl
-		String hql = "update SmsTask set MESSAGES_PROCESSED = MESSAGES_PROCESSED + 1  where TASK_ID = ? and MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL";
-		smsDao.executeUpdate(hql, smsTask.getId());
-
+		
+		if (!(incrementProcessed || incrementDelivered))
+			return;
+		
+		StringBuilder hql = new StringBuilder("update SmsTask set ");
+	
+		if (incrementProcessed) {
+			hql.append("MESSAGES_PROCESSED = MESSAGES_PROCESSED + 1");
+		}
+		
+		if (incrementProcessed && incrementDelivered) {
+			hql.append(", ");
+		}
+		
+		if (incrementDelivered) {
+			hql.append("MESSAGES_DELIVERED = MESSAGES_DELIVERED + 1");
+		}
+		
+		hql.append(" where TASK_ID = ?");
+		
+		smsDao.executeUpdate(hql.toString(), smsTask.getId());
 	}
 
 	/**
@@ -341,10 +359,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * 
 	 * @param smsTask
 	 */
-	public void incrementMessagesDelivered(SmsTask smsTask) {
-
-		String hql = "update SmsTask set MESSAGES_DELIVERED = MESSAGES_DELIVERED+1  where TASK_ID = ?";
-		smsDao.executeUpdate(hql, smsTask.getId());
+	public void incrementMessagesProcessed(SmsTask smsTask) {
+		incrementMessageCounts(smsTask, true, false);
 	}
 
 	/**
@@ -360,29 +376,37 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
 		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
 		return smsTasks;
-		/*
-		 * String inSql = "";
-		 * 
-		 * ArrayList<Object> parms = new ArrayList<Object>();
-		 * parms.add(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED); for (int i
-		 * = 0; i < smsTasks.size(); i++) { inSql += "?"; if (i <
-		 * smsTasks.size() - 1) { inSql += ","; }
-		 * parms.add(smsTasks.get(i).getId()); } if (!inSql.equals("")) {
-		 * LOG.info("--------------------> marking SMS tasks as complete: " +
-		 * smsTasks.size()); // SMS-89: The original sql below caused a table
-		 * lock on SMS_TASK // due to the nature of the WHERE clause, for more
-		 * info see //
-		 * http://dev.mysql.com/doc/refman/5.0/en/innodb-locks-set.html //
-		 * String hql = //
-		 * "update SmsTask set STATUS_CODE = ? where MESSAGES_PROCESSED = GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)"
-		 * ; String hql = "update SmsTask set STATUS_CODE = ? where id IN (" +
-		 * inSql + ")"; smsDao.executeUpdate(hql, parms);
-		 * 
-		 * }
-		 * 
-		 * return smsTasks;
-		 */
 	}
+
+	/**
+	 * Checks for tasks that can be marked as complete. If the total messages
+	 * processed equals the actual group size the task is marked as complete.
+	 * Limit to batch size of 100.
+	 */
+	public List<SmsTask> getTasksWithLateBilling() {
+
+		String sql = "from SmsTask where STATUS_CODE = ? and MESSAGES_DELIVERED > BILLED_CREDITS";
+		Object[] params1 = new Object[1];
+		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
+		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
+		return smsTasks;
+	}
+
+
+	/**
+	 * Checks for tasks that are candidates for complete because the outstanding messages
+	 * have timed out waiting for delivery reports.
+	 */
+	public List<SmsTask> getTasksNotComplete() {
+
+		String sql = "from SmsTask where MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
+		Object[] params1 = new Object[2];
+		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
+		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
+		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
+		return smsTasks;
+	}
+
 
 	public List<SmsTask> getAllMOTasks() {
 		StringBuilder hql = new StringBuilder();

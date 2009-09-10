@@ -35,9 +35,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
@@ -369,6 +371,12 @@ public class SmsCoreImpl implements SmsCore {
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 
+		// Set DateToSend to now if not set
+		if (smsTask.getDateToSend() == null) {
+			Calendar cal = Calendar.getInstance();
+			smsTask.setDateToSend(cal.getTime());
+		}
+		
 		// Set DateToExpire to getMaxTimeToLive if it's not set in the UI
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
 		if (smsTask.getDateToExpire() == null) {
@@ -571,7 +579,8 @@ public class SmsCoreImpl implements SmsCore {
 		Transaction tx = null;
 
 		if (!SmsConst_DeliveryStatus.STATUS_BUSY.equals(smsTask.getStatusCode())) {
-			throw new IllegalStateException("Task " + smsTask.getId() + " handed to processTask() but is not in BUSY state");
+			throw new IllegalStateException("Task " + smsTask.getId() + 
+					" handed to processTask() but is not in BUSY state");
 		}
 
 		LOG.debug("Processing task: " + smsTask.getId());
@@ -596,13 +605,14 @@ public class SmsCoreImpl implements SmsCore {
 				return;
 			}
 
-			// /hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
 				if ((!smsTask.getMessageTypeId().equals(
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) && smsTask
 						.getAttemptCount() <= 1)) {
 					Set<SmsMessage> messages = calculateActualGroupSize(smsTask);
 					smsTask.setGroupSizeActual(messages.size());
+					
+					// Persist message set
 					for (SmsMessage message : messages) {
 						hibernateLogicLocator.getSmsMessageLogic()
 								.persistSmsMessage(message);
@@ -634,6 +644,8 @@ public class SmsCoreImpl implements SmsCore {
 				
 				smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
 						LockMode.UPGRADE);
+				
+				// FIXME check status code 
 				smsTask.setStatusCode(submissionStatus);
 
 				if (smsTask.getStatusCode().equals(
@@ -673,7 +685,7 @@ public class SmsCoreImpl implements SmsCore {
 			}
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
-			smsBilling.settleCreditDifference(smsTask);
+			smsBilling.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), 0);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			sendEmailNotification(smsTask,
 					SmsConstants.TASK_NOTIFICATION_EXCEPTION,
@@ -688,35 +700,63 @@ public class SmsCoreImpl implements SmsCore {
 		exception.printStackTrace(new PrintWriter(stringWriter));
 		return stringWriter.toString();
 	}
-
+	
 	public void processTimedOutDeliveryReports() {
+		
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
+			.getOrCreateSystemSmsConfig();
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.SECOND, -1 * systemConfig.getDelReportTimeoutDuration());
+
+		LOG.debug("Timing out SENT messages older than " + cal.getTime());
+		
 		List<SmsMessage> smsMessages = hibernateLogicLocator
-				.getSmsMessageLogic().getSmsMessagesWithStatus(null,
-						SmsConst_DeliveryStatus.STATUS_SENT);
+				.getSmsMessageLogic().getSmsMessagesForTimeout(cal.getTime());
 
-		if (smsMessages != null) {
-			Calendar currentTime = Calendar.getInstance();
+		if (smsMessages != null && !smsMessages.isEmpty()) {
+
+			LOG.debug("Updating " + smsMessages.size() + " messages from SENT to TIMEOUT");
+
+			Session session = getHibernateLogicLocator().getSmsMessageLogic()
+				.getNewHibernateSession();
+
 			for (SmsMessage message : smsMessages) {
-				SmsTask task = message.getSmsTask();
-				if (task.getDateProcessed() != null) {
-					Calendar cal = Calendar.getInstance();
-					cal.setTime(task.getDateProcessed());
-					cal
-							.add(Calendar.SECOND, task
-									.getDelReportTimeoutDuration());
-					if (cal.getTime().before(currentTime.getTime())) {
-						message
-								.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
-						hibernateLogicLocator.getSmsMessageLogic()
-								.persistSmsMessage(message);
-						hibernateLogicLocator.getSmsTaskLogic()
-								.incrementMessagesProcessed(
-										message.getSmsTask());
-					}
 
-				}
-			}
-		}
+				// Change message from SENT to TIMEOUT
+				Transaction tx = null;
+
+				try {
+					tx = session.beginTransaction();
+
+					// Lock the message row
+					SmsMessage smsMessage = (SmsMessage) session.get(
+							SmsMessage.class, message.getId(), LockMode.UPGRADE);
+
+					if (SmsConst_DeliveryStatus.STATUS_SENT.equals(smsMessage.getStatusCode())) {
+						smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
+						session.update(smsMessage);
+						tx.commit();
+						
+						hibernateLogicLocator.getSmsTaskLogic()
+							.incrementMessagesProcessed(message.getSmsTask());
+					} else {
+						// another process has updated this message, ignore it
+						tx.rollback();
+					}
+				} catch (HibernateException e) {
+					LOG.error("Error processing late delivery report for message "
+									+ message.getId() + ": ", e);
+					if (tx != null && tx.isActive()) {
+						tx.rollback();
+					}
+				}	
+				
+			} // for
+					
+			session.close();
+			
+		} // if
 
 	}
 
@@ -948,59 +988,119 @@ public class SmsCoreImpl implements SmsCore {
 						.getNewHibernateSession();
 				tx = session.beginTransaction();
 
-				// SMS-128/113 : lock the task so that other schedulers wont
-				// pick it
-				// up causing duplicate settlements
+				// SMS-128/113 : lock the task so that other schedulers won't
+				// pick it up causing duplicate settlements
+
 				SmsTask smsTask = (SmsTask) session.get(SmsTask.class, task
 						.getId(), LockMode.UPGRADE);
 				LOG.debug(smsTask.getId() + " was in status : "
 						+ smsTask.getStatusCode());
 
-				if (!smsTask.getStatusCode().equals(
-						SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED)
-						&& !smsTask.getStatusCode().equals(
-								SmsConst_DeliveryStatus.STATUS_FAIL)) {
+				if (smsTask.getStatusCode().equals(
+						SmsConst_DeliveryStatus.STATUS_SENT)) {
+					
 					LOG.debug("Marking task as completed: taskId = "
 							+ smsTask.getId() + " its status was "
 							+ smsTask.getStatusCode());
-					smsTask
-							.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+					
+					// We need to get these values inside the transaction
+					int creditEstimate = smsTask.getCreditEstimateInt();
+					int actualCreditsUsed = smsTask.getMessagesDelivered();
+						
+					smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
+					smsTask.setBilledCredits(actualCreditsUsed);
 					session.update(smsTask);
-					smsBilling.settleCreditDifference(smsTask);
+					tx.commit();
+					
+					smsBilling.settleCreditDifference(smsTask, creditEstimate, actualCreditsUsed);
 					checkOverdraft(smsTask);
+					
 					if (smsTask.getMessageTypeId().equals(
 							SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
 						sendEmailNotification(smsTask,
 								SmsConstants.TASK_NOTIFICATION_COMPLETED);
 					} else {
+						// TODO what is this for?
 						if (smsTask.getSmsMessages() != null) {
-							for (SmsMessage smsMessages : smsTask
-									.getSmsMessages()) {
+							for (SmsMessage smsMessages : smsTask.getSmsMessages()) {
 								if (smsMessages.getStatusCode().equals(
 										SmsConst_DeliveryStatus.STATUS_ERROR)
-										|| smsMessages
-												.getStatusCode()
-												.equals(
-														SmsConst_DeliveryStatus.STATUS_FAIL)) {
-									smsTask
-											.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-									smsTask.setFailReason(smsMessages
-											.getFailReason());
+									|| smsMessages.getStatusCode().equals(
+											SmsConst_DeliveryStatus.STATUS_FAIL)) {
+									smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+									smsTask.setFailReason(smsMessages.getFailReason());
 									session.update(smsTask);
 								}
 							}
 						}
 					}
+					
+				} else {
+					tx.rollback();
 				}
-				tx.commit();
-				session.close();
+
 			} catch (HibernateException e) {
 				LOG.error("Error checking task " + task.getId() + ": ", e);
 				if (tx != null) {
 					tx.rollback();
 				}
+			} finally {
 				if (session != null) {
 					session.close();
+				}				
+			}
+		}
+	}
+
+	public void adjustLateDeliveryBilling() {
+	
+		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
+		.getTasksWithLateBilling();
+
+		if (smsTasks != null && !smsTasks.isEmpty()) {
+
+			LOG.debug("Adjusting billing for late deliveries for " + smsTasks.size() + " tasks");
+			
+			for (SmsTask task : smsTasks) {
+
+				Session session = null;
+				Transaction tx = null;
+
+				try {
+					session = getHibernateLogicLocator().getSmsTaskLogic()
+					.getNewHibernateSession();
+					tx = session.beginTransaction();
+
+					// SMS-128/113 : lock the task so that other schedulers won't
+					// pick it up causing duplicate settlements
+
+					SmsTask smsTask = (SmsTask) session.get(SmsTask.class, task
+							.getId(), LockMode.UPGRADE);
+
+					if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED) &&
+							smsTask.getBilledCredits() < smsTask.getMessagesDelivered()) {
+
+						// We need to get these values inside the transaction
+						int adjustment = smsTask.getMessagesDelivered() - smsTask.getBilledCredits();
+
+						smsTask.setBilledCredits(smsTask.getMessagesDelivered());
+						session.update(smsTask);
+						tx.commit();
+
+						smsBilling.debitLateMessages(smsTask, adjustment);
+					} else {
+						tx.rollback();
+					}
+
+				} catch (HibernateException e) {
+					LOG.error("Error updating billing for task " + task.getId() + ": ", e);
+					if (tx != null) {
+						tx.rollback();
+					}
+				} finally {
+					if (session != null) {
+						session.close();
+					}				
 				}
 			}
 		}
@@ -1015,60 +1115,6 @@ public class SmsCoreImpl implements SmsCore {
 			sendEmailNotification(smsTask,
 					SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);
 
-		}
-	}
-
-	public void processVeryLateDeliveryReports() {
-		List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic()
-				.getSmsMessagesWithStatus(null,
-						SmsConst_DeliveryStatus.STATUS_LATE);
-		for (SmsMessage smsMsg : messages) {
-
-			Session session = null;
-			Transaction tx = null;
-
-			try {
-				session = getHibernateLogicLocator().getSmsMessageLogic()
-						.getNewHibernateSession();
-				tx = session.beginTransaction();
-
-				// SMS-128/113 : lock the message row
-				SmsMessage smsMessage = (SmsMessage) session.get(
-						SmsMessage.class, smsMsg.getId(), LockMode.UPGRADE);
-				
-				// test again with the lock, this will prevent other
-				// schedulers doing the same thing
-				
-				if (SmsConst_DeliveryStatus.STATUS_LATE.equals(smsMsg.getStatusCode())) {
-					if (smsMsg.getSmscDeliveryStatusCode() == SmsConst_SmscDeliveryStatus.DELIVERED) {
-						smsMessage
-								.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-						hibernateLogicLocator.getSmsTaskLogic()
-								.incrementMessagesDelivered(
-										smsMessage.getSmsTask());
-						smsBilling.debitLateMessage(smsMessage);
-					} else {
-						smsMessage
-								.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-					}
-					session.update(smsMessage);
-					tx.commit();
-				} else {
-					// another process has updated this message, ignore it
-					tx.rollback();
-				}
-				session.close();
-			} catch (HibernateException e) {
-				LOG.error(
-						"Error processing late delivery report for message "
-								+ smsMsg.getId() + ": ", e);
-				if (tx != null) {
-					tx.rollback();
-				}
-				if (session != null) {
-					session.close();
-				}
-			}
 		}
 	}
 

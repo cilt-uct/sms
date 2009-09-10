@@ -136,6 +136,11 @@ public class SmsTask extends BaseModel {
 	private int messagesDelivered;
 
 	/**
+	 * The number of credits billed for this task. Used when task is COMPLETE.
+	 */
+	private int billedCredits;
+	
+	/**
 	 * The total number of smsMessages processed. This is the meesages that was
 	 * send to the SMPP gateway.
 	 */
@@ -426,6 +431,7 @@ public class SmsTask extends BaseModel {
 	 * NB: This is in minutes
 	 * 
 	 * @return the del report timeout duration
+	 * @deprecated may remove this.
 	 */
 	public Integer getDelReportTimeoutDuration() {
 		return delReportTimeoutDuration;
@@ -696,6 +702,7 @@ public class SmsTask extends BaseModel {
 	 * 
 	 * @param delReportTimeoutDuration
 	 *            the new del report timeout duration
+	 * @deprecated may remove this.
 	 */
 	public void setDelReportTimeoutDuration(Integer delReportTimeoutDuration) {
 		this.delReportTimeoutDuration = delReportTimeoutDuration;
@@ -1052,5 +1059,13 @@ public class SmsTask extends BaseModel {
 
 	public void setMessageReplyBody(String messageReplyBody) {
 		this.messageReplyBody = messageReplyBody;
+	}
+
+	public void setBilledCredits(int billedCredits) {
+		this.billedCredits = billedCredits;
+	}
+
+	public int getBilledCredits() {
+		return billedCredits;
 	}
 }

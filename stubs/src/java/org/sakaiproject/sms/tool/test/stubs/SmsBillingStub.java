@@ -147,4 +147,15 @@ public class SmsBillingStub implements SmsBilling {
 		return sufficientCredits;
 	}
 
+	public boolean debitLateMessages(SmsTask smsTask, int credits) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean settleCreditDifference(SmsTask smsTask, int creditEstimate,
+			int actualCreditsUsed) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -370,6 +370,34 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	}
 
 	/**
+	 * Gets a list of SmsMessage objects for the specified and specified status
+	 * code(s).
+	 * 
+	 * It will ignore the smsTaskId if it is passed as null and return all
+	 * smsMessages with the specified status code(s).
+	 * 
+	 * @param sms
+	 *            task id
+	 * @param statusCode
+	 *            (s)
+	 * @return List<SmsMessage> - sms messages
+	 */
+	public List<SmsMessage> getSmsMessagesForTimeout(Date cutoffTime) {
+
+		String hql = " from SmsMessage message where message.statusCode = :statusCode and message.dateSent < :cutoffTime";
+	
+		QueryParameter[] queryParameters = new QueryParameter[2];
+
+		queryParameters[0] = new QueryParameter("statusCode", 
+				SmsConst_DeliveryStatus.STATUS_SENT, Hibernate.STRING);
+
+		queryParameters[1] = new QueryParameter("cutoffTime", 
+				cutoffTime, Hibernate.DATE);
+
+		return smsDao.runQuery(hql, queryParameters);
+	}
+	
+	/**
 	 * This method will persists the given object.
 	 * 
 	 * If the object is a new entity then it will be created on the DB. If it is

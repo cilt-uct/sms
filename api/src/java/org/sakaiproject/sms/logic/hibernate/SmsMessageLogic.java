@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sms.logic.hibernate;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -105,6 +106,13 @@ public interface SmsMessageLogic {
 	public List<SmsMessage> getAllSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException;
 
+	/**
+	 * Gets a list of messages in SENT status which were sent before the given time
+	 * @param cutoffTime The cutoff time
+	 * @return List of messages meeting the criteria
+	 */
+	public List<SmsMessage> getSmsMessagesForTimeout(Date cutoffTime);
+	
 	/**
 	 * Gets a search results container housing the result set for a particular
 	 * displayed page

@@ -329,7 +329,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		// Account was credited
 		assertTrue(smsAccount.getCredits() < origionalAccBalance);
 
-		smsBillingImpl.settleCreditDifference(smsTask);
+		smsBillingImpl.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), smsTask.getMessagesDelivered());
 
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
@@ -431,15 +431,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setDateToExpire(cal.getTime());
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
-		SmsMessage smsMessage = new SmsMessage();
-		smsMessage.setMobileNumber("0721998919");
-		smsMessage.setSmscMessageId("criterai");
-		smsMessage.setSakaiUserId("criterai");
-		smsMessage.setDateDelivered(new Date(System.currentTimeMillis()));
-		smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
-		smsMessage.setSmsTask(smsTask);
-
-		smsBillingImpl.debitLateMessage(smsMessage);
+		smsBillingImpl.debitLateMessages(smsTask, 1);
 		// Check the account balance was deducted from
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());

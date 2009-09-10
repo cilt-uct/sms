@@ -166,15 +166,16 @@ public interface SmsBilling {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean settleCreditDifference(SmsTask smsTask);
+	public boolean settleCreditDifference(SmsTask smsTask, int creditEstimate, int actualCreditsUsed);
 
 	/**
-	 * Debit account for a message that came in late.
+	 * Debit account for messages that came in late.
 	 * 
-	 * @param smsMessage
+	 * @param smsTask The task for which to debit the credits
+	 * @param credits The number of credits to debit
 	 * @return
 	 */
-	public boolean debitLateMessage(SmsMessage smsMessage);
+	public boolean debitLateMessages(SmsTask smsTask, int credits);
 
 	/**
 	 * Retrieve code for reserving credits (default if none specified)

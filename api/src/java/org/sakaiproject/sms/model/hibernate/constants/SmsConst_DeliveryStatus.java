@@ -80,21 +80,10 @@ public class SmsConst_DeliveryStatus {
 	 * could not be delivered (for example if the mobile phone was switched off
 	 * or not active on the network). <br/>
 	 * <br/>
-	 * <i>Transient</i>: STATUS_TIMEOUT messages may be changed to STATUS_LATE
-	 * and then STATUS_DELIVERED should a delivery report arrive for them.
+	 * STATUS_TIMEOUT messages may be changed to STATUS_DELIVERED should a 
+	 * delivery report arrive for them.
 	 */
 	public final static String STATUS_TIMEOUT = "T";
-
-	/**
-	 * <b>SMS Message</b>: The gateway reported that the message was
-	 * successfully delivered (although the message was delivered after the task
-	 * for this message changed status from STATUS_SENT to
-	 * STATUS_TASK_COMPLETED). <br/>
-	 * <br/>
-	 * <i>Transient</i>: STATUS_LATE messages are changed to STATUS_DELIVERED
-	 * once billing adjustments have been paid.
-	 */
-	public final static String STATUS_LATE = "L";
 
 	/**
 	 * <b>SMS Message</b>: The task for this message was aborted, and the
