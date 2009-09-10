@@ -19,23 +19,19 @@ public class SakaiPersonStub implements SakaiPerson {
 	}
 
 	public Boolean getFerpaEnabled() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.valueOf(false);
 	}
 
 	public Boolean getHidePrivateInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.valueOf(false);
 	}
 
 	public Boolean getHidePublicInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.valueOf(false);
 	}
 
 	public Boolean getLocked() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.valueOf(false);
 	}
 
 	public String getNotes() {
@@ -49,8 +45,7 @@ public class SakaiPersonStub implements SakaiPerson {
 	}
 
 	public Boolean isSystemPicturePreferred() {
-		// TODO Auto-generated method stub
-		return null;
+		return Boolean.valueOf(false);
 	}
 
 	public void setCampus(String arg0) {
