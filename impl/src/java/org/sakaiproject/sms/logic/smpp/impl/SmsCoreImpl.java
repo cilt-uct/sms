@@ -572,7 +572,7 @@ public class SmsCoreImpl implements SmsCore {
 					" handed to processTask() but is not in BUSY state");
 		}
 
-		LOG.debug("Processing task: " + smsTask.getId());
+		LOG.info("Processing task: " + smsTask.getId());
 
 		try {
 			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
