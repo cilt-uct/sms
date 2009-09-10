@@ -23,30 +23,37 @@
        <dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-api</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-pack</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-tool</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-user-tool</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 				<type>war</type>
 			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+  				<artifactId>sms-help</artifactId>
+				<scope>compile</scope>
+				<version>${project.version}</version>
+			</dependency>
+			
     </dependencies>
 
     <build>

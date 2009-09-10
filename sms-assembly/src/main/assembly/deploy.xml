@@ -14,6 +14,7 @@
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <includes>
                 <include>org.sakaiproject.sms-api:*:jar:*</include>
+                <include>org.sakaiproject.sms-help:*:jar:*</include>
             </includes>
         </dependencySet>
         <!-- stuff that goes into components -->
