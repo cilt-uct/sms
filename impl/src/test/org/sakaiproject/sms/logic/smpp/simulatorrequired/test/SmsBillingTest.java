@@ -132,7 +132,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.getSmsMessages().add(msg);
 		smsTask.setCreditEstimate(creditsRequired);
 		msg.setSmsTask(smsTask);
@@ -165,7 +164,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.getSmsMessages().add(msg);
 		smsTask.setCreditEstimate(creditsRequired);
 		msg.setSmsTask(smsTask);
@@ -262,7 +260,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		Calendar cal = Calendar.getInstance();
@@ -310,7 +307,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		smsTask.setGroupSizeActual(0);
 		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
@@ -370,7 +366,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
 		smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
@@ -423,7 +418,6 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setCreditEstimate(creditEstimate);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());

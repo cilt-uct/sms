@@ -43,7 +43,6 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		smsTask.setDateToExpire(cal.getTime());
-		smsTask.setDelReportTimeoutDuration(1);
 	}
 
 	/**

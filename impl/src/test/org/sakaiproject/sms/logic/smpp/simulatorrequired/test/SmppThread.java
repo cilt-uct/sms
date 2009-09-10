@@ -48,7 +48,6 @@ public class SmppThread extends TestRunnable {
 
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmppThread.class);
-	private final int delay_between_messages;
 	/** some private stuff for each thread. */
 	public int reportsRemainingAfterSleep, sent_count, message_count;
 
@@ -122,7 +121,6 @@ public class SmppThread extends TestRunnable {
 		smsSmppImpl.init();
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 		this.message_count = messageCount;
-		this.delay_between_messages = messageDelay;
 	}
 
 	/**
@@ -145,7 +143,6 @@ public class SmppThread extends TestRunnable {
 		insertTask.setSenderUserName("administrator");
 		insertTask.setMessageTypeId(0);
 		insertTask.setMaxTimeToLive(300);
-		insertTask.setDelReportTimeoutDuration(300);
 		insertTask.setDateProcessed(new Date());
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());

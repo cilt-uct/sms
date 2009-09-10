@@ -35,11 +35,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
@@ -58,7 +56,6 @@ import org.sakaiproject.sms.model.hibernate.SmsConfig;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
@@ -251,8 +248,6 @@ public class SmsCoreImpl implements SmsCore {
 			List<String> deliveryEntityList) {
 		final SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		final SmsConfig systemConfig = hibernateLogicLocator
-				.getSmsConfigLogic().getOrCreateSystemSmsConfig();
 
 		final SmsTask smsTask = new SmsTask();
 		try {
@@ -281,10 +276,7 @@ public class SmsCoreImpl implements SmsCore {
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(smsTask.getDateToSend());
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
-		// TODO, DateToExpire must be set from the UI as well
 		smsTask.setDateToExpire(cal.getTime());
-		smsTask.setDelReportTimeoutDuration(systemConfig
-				.getDelReportTimeoutDuration());
 		smsTask.setDeliveryMobileNumbersSet(mobileNumbers);
 		smsTask.setDeliveryEntityList(deliveryEntityList);
 		smsTask.setSakaiUserIdsList(sakaiUserIds);
@@ -329,6 +321,7 @@ public class SmsCoreImpl implements SmsCore {
 		LOG.info("SmsCoreImpl online");
 	}
 
+	@SuppressWarnings("unchecked")
 	public SmsTask insertTask(SmsTask smsTask)
 			throws SmsTaskValidationException, SmsSendDeniedException,
 			SmsSendDisabledException {
@@ -365,10 +358,8 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 
-		// Set messageType, expiry date, TTL, report timeout.
+		// Set messageType, expiry date
 		SmsConfig siteConfig = hibernateLogicLocator.getSmsConfigLogic()
-				.getOrCreateSystemSmsConfig();
-		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 
 		// Set DateToSend to now if not set
@@ -385,8 +376,6 @@ public class SmsCoreImpl implements SmsCore {
 			cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 			smsTask.setDateToExpire(cal.getTime());
 		}
-		smsTask.setDelReportTimeoutDuration(systemConfig
-				.getDelReportTimeoutDuration());
 
 		smsTask.setAttemptCount(0);
 

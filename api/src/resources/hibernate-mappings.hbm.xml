@@ -65,8 +65,6 @@
 			not-null="false" />
 		<property name="creditCost" type="double" column="CREDIT_COST"
 			not-null="true" />
-		<property name="delReportTimeoutDuration" type="integer"
-			column="DEL_REPORT_TIMEOUT_DURATION" not-null="true" />
 		<property name="deliveryMobileNumbers" type="string"
 			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="10000" />
 		<property name="deliveryEntities" type="string" column="DELIVERY_ENTITY_LIST"

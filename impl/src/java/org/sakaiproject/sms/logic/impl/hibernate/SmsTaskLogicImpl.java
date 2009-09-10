@@ -378,11 +378,6 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		return smsTasks;
 	}
 
-	/**
-	 * Checks for tasks that can be marked as complete. If the total messages
-	 * processed equals the actual group size the task is marked as complete.
-	 * Limit to batch size of 100.
-	 */
 	public List<SmsTask> getTasksWithLateBilling() {
 
 		String sql = "from SmsTask where STATUS_CODE = ? and MESSAGES_DELIVERED > BILLED_CREDITS";

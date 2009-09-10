@@ -128,6 +128,7 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 				errors.add(ValidationConstants.MESSAGE_BODY_TOO_LONG);
 			}
 		}
+		
 		// TODO also check character set on message body
 
 		// Check sender user name
@@ -142,13 +143,6 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 			errors.add(ValidationConstants.TASK_MAX_TIME_TO_LIVE_INVALID);
 		}
 
-		// Check delivery report timeout
-		if (smsTask.getDelReportTimeoutDuration() == null
-				|| smsTask.getDelReportTimeoutDuration() < 1) {
-			errors
-					.add(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID);
-		}
-		
 		// Check that date to send comes after expiry date
 		if ( smsTask.getDateToSend() != null && smsTask.getDateToExpire() != null && smsTask.getDateToExpire().before(smsTask.getDateToSend()) ){
 			errors.add(ValidationConstants.TASK_DATE_TO_SEND_AFTER_EXPIRY);

@@ -31,7 +31,6 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -44,6 +43,11 @@ import org.sakaiproject.sms.util.DateUtil;
  * @created 19-Nov-2008
  */
 public class SmsTask extends BaseModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** Maximum length of FAIL_REASON field in database */
 	private int MAX_FAIL_LEN = 200;
@@ -250,12 +254,6 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * The maximum amount of minutes to wait for a delivery report for each
-	 * message. If a message exeeds this time, it will be marked as failed.
-	 */
-	private Integer delReportTimeoutDuration;
-
-	/**
 	 * A comma separated list of mobile numbers the internal representation
 	 */
 	private String deliveryMobileNumbers;
@@ -273,37 +271,6 @@ public class SmsTask extends BaseModel {
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
 	}
 
-	/**
-	 * Instantiates a new sms task.
-	 * 
-	 * @param sakaiSiteID
-	 *            the sakai site id
-	 * @param deliveryUserID
-	 *            the delivery user id
-	 * @param deliveryGroupID
-	 *            the delivery group id
-	 * @param accountID
-	 *            the account id
-	 * @param messageBody
-	 *            the message body
-	 * @Depricated Use default constructor and setter methods instead
-	 * 
-	 */
-	private SmsTask(String sakaiSiteID, String deliveryUserID,
-			String deliveryGroupID, Long accountID, String messageBody) {
-		this();
-		this.sakaiSiteId = sakaiSiteID;
-		this.deliveryUserId = deliveryUserID;
-		this.deliveryGroupId = deliveryGroupID;
-		this.smsAccountId = accountID;
-		this.messageBody = messageBody;
-		this.attemptCount = 0;
-		this.statusCode = "";
-		this.creditEstimate = 0;
-		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
-		this.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -423,18 +390,6 @@ public class SmsTask extends BaseModel {
 	 */
 	public String getDeliveryUserId() {
 		return deliveryUserId;
-	}
-
-	/**
-	 * Gets the delivery report timeout duration.
-	 * <p>
-	 * NB: This is in minutes
-	 * 
-	 * @return the del report timeout duration
-	 * @deprecated may remove this.
-	 */
-	public Integer getDelReportTimeoutDuration() {
-		return delReportTimeoutDuration;
 	}
 
 	/**
@@ -693,19 +648,6 @@ public class SmsTask extends BaseModel {
 	 */
 	public void setDeliveryUserId(String deliveryUserId) {
 		this.deliveryUserId = deliveryUserId;
-	}
-
-	/**
-	 * Sets the delivery report timeout duration.
-	 * <p>
-	 * NB: This is in minutes
-	 * 
-	 * @param delReportTimeoutDuration
-	 *            the new del report timeout duration
-	 * @deprecated may remove this.
-	 */
-	public void setDelReportTimeoutDuration(Integer delReportTimeoutDuration) {
-		this.delReportTimeoutDuration = delReportTimeoutDuration;
 	}
 
 	/**

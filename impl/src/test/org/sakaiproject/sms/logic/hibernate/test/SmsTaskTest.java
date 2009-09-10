@@ -79,7 +79,6 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		testTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		testTask.setSenderUserName("senderUserName");
 		testTask.setMaxTimeToLive(1);
-		testTask.setDelReportTimeoutDuration(1);
 		testTask.setSmsMessagesOnTask(null);
 
 		Calendar cal = Calendar.getInstance();
@@ -213,7 +212,6 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("taskCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
-		insertTask.setDelReportTimeoutDuration(1);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
@@ -267,7 +265,6 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			insertTask.setSenderUserName("taskCrit");
 			insertTask.setSakaiToolName("sakaiToolName");
 			insertTask.setMaxTimeToLive(1);
-			insertTask.setDelReportTimeoutDuration(i);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(insertTask.getDateToSend());
 			cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());

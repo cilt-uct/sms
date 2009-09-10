@@ -135,7 +135,6 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName("senderUserName");
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.setGroupSizeEstimate(1);
 		smsTask.setGroupSizeActual(1);
 		smsTask.setDeliveryUserId("sakaiUserID");
@@ -369,19 +368,6 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		return messages;
 	}
 
-	/**
-	 * Gets a list of SmsMessage objects for the specified and specified status
-	 * code(s).
-	 * 
-	 * It will ignore the smsTaskId if it is passed as null and return all
-	 * smsMessages with the specified status code(s).
-	 * 
-	 * @param sms
-	 *            task id
-	 * @param statusCode
-	 *            (s)
-	 * @return List<SmsMessage> - sms messages
-	 */
 	public List<SmsMessage> getSmsMessagesForTimeout(Date cutoffTime) {
 
 		String hql = " from SmsMessage message where message.statusCode = :statusCode and message.dateSent < :cutoffTime";

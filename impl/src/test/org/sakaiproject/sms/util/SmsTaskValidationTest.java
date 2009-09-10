@@ -111,7 +111,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		smsTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		smsTask.setSenderUserName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
 		smsTask.setMaxTimeToLive(1);
-		smsTask.setDelReportTimeoutDuration(1);
 		smsTask.getSmsMessages().add(msg);
 		smsTask.setCreditEstimate(5);
 		smsTask.setDeliveryGroupId("delGrpId");
@@ -158,26 +157,6 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		errors = validator.validateInsertTask(smsTask);
 		assertTrue(errors.size() > 0);
 		assertEquals(ValidationConstants.TASK_DATE_TO_SEND_EMPTY, errors.get(0));
-	}
-
-	/**
-	 * Test delivery report timeout duration.
-	 */
-	public void testDelReportTimeoutDuration() {
-		// null
-		smsTask.setDelReportTimeoutDuration(null);
-		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID,
-				errors.get(0));
-
-		// invalid
-		smsTask.setDelReportTimeoutDuration(0);
-		errors = validator.validateInsertTask(smsTask);
-		assertTrue(errors.size() > 0);
-		assertEquals(ValidationConstants.TASK_DELIVERY_REPORT_TIMEOUT_INVALID,
-				errors.get(0));
-
 	}
 
 	/**

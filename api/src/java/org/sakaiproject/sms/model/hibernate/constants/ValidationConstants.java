@@ -20,7 +20,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.model.hibernate.constants;
 
-// TODO: Auto-generated Javadoc
 /**
  * Constant class to hold key values for validation methods.
  * 
@@ -80,9 +79,6 @@ public class ValidationConstants {
 
 	/** Max time to live invalid. */
 	public final static String TASK_MAX_TIME_TO_LIVE_INVALID = "sms.errors.task.maxTimeToLive.invalid";
-
-	/** Delivery report timeout invalid. */
-	public final static String TASK_DELIVERY_REPORT_TIMEOUT_INVALID = "sms.errors.task.deliveryReportTimeout.invalid";
 
 	/** Delivery group id empty. */
 	public final static String TASK_DELIVERY_GROUP_ID_EMPTY = "sms.errors.task.deliveryGroupId.empty";

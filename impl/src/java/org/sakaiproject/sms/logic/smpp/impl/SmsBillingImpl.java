@@ -37,7 +37,6 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundExceptio
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -464,8 +463,6 @@ public class SmsBillingImpl implements SmsBilling {
 		SmsTransaction smsTransaction = new SmsTransaction();
 
 		// The juicy bits
-	//	int creditEstimate = smsTask.getCreditEstimateInt();
-	//	int actualCreditsUsed = smsTask.getMessagesDelivered();
 		int transactionCredits = creditEstimate - actualCreditsUsed;
 		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
 		smsTransaction.setTransactionCredits(transactionCredits);

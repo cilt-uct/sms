@@ -445,7 +445,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(60);
-		insertTask.setDelReportTimeoutDuration(60);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
@@ -494,7 +493,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask.setMaxTimeToLive(60);
 		insertTask
 				.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
-		insertTask.setDelReportTimeoutDuration(60);
 		insertTask.setDeliveryGroupId("delgrpid");
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
@@ -537,7 +535,6 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		insertTask
 				.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		insertTask.setMaxTimeToLive(60);
-		insertTask.setDelReportTimeoutDuration(60);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());

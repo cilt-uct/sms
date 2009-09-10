@@ -45,7 +45,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(1);
-		insertTask.setDelReportTimeoutDuration(1);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
@@ -164,7 +163,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("messageCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
-		insertTask.setDelReportTimeoutDuration(1);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
@@ -225,7 +223,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setSenderUserName("messageCrit");
 		insertTask.setSakaiToolName("sakaiToolName");
 		insertTask.setMaxTimeToLive(1);
-		insertTask.setDelReportTimeoutDuration(1);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
@@ -288,7 +285,6 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		cal.setTime(insertTask.getDateToSend());
 		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
 		insertTask.setDateToExpire(cal.getTime());
-		insertTask.setDelReportTimeoutDuration(1);
 
 		for (int i = 0; i < recordsToInsert; i++) {
 			SmsMessage insertMessage = new SmsMessage();

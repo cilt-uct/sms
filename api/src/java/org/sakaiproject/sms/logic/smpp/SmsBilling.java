@@ -22,7 +22,6 @@
 package org.sakaiproject.sms.logic.smpp;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**

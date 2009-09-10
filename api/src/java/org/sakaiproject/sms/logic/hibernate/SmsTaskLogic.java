@@ -114,13 +114,13 @@ public interface SmsTaskLogic {
 	public void incrementMessagesProcessed(SmsTask smsTask);
 
 	/**
-	 * Checks for tasks that can be marked as complete. If the total messages
+	 * Get list of tasks that can be marked as complete. If the total messages
 	 * processed equals the actual group size the task is marked as complete.
 	 */
 	public List<SmsTask> getTasksToMarkAsCompleted();
 
 	/**
-	 * Checks for tasks that are complete but require billing adjustments.
+	 * Get list of tasks that are in state COMPLETE but require billing adjustments.
 	 */
 	public List<SmsTask> getTasksWithLateBilling();
 
