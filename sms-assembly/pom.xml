@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>Sakai SMS service Assembly</name>
+    <groupId>org.sakaiproject.sms</groupId>
+    <artifactId>sms-assembly</artifactId>
+    <organization>
+        <name>Sakai Project</name>
+        <url>http://sakaiproject.org/</url>
+    </organization>
+    <inceptionYear>2007</inceptionYear>
+    <packaging>pom</packaging>
+
+    <!-- the base is parent -->
+    <parent>
+        <artifactId>sms</artifactId>
+        <groupId>org.sakaiproject.sms</groupId>
+        <version>0.12-SNAPSHOT</version><!--entitybroker.version-->
+    </parent>
+
+    <dependencies>
+       <dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-api</artifactId>
+				<version>0.12-SNAPSHOT</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-pack</artifactId>
+				<version>0.12-SNAPSHOT</version>
+				<scope>compile</scope>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-tool</artifactId>
+				<version>0.12-SNAPSHOT</version>
+				<scope>compile</scope>
+				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-user-tool</artifactId>
+				<version>0.12-SNAPSHOT</version>
+				<scope>compile</scope>
+				<type>war</type>
+			</dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/deploy.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>install</phase> <!-- append to the install phase. -->
+                        <goals>
+                            <goal>assembly</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
