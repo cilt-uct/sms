@@ -37,6 +37,7 @@
 				<module>tool</module>
 				<module>user-tool</module>
 				<module>help</module>
+				<module>sms-assembly</module>
 			</modules>
 		</profile>
 		<profile>
