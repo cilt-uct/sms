@@ -51,6 +51,7 @@ import org.jsmpp.bean.Address;
 import org.jsmpp.bean.AlertNotification;
 import org.jsmpp.bean.Alphabet;
 import org.jsmpp.bean.BindType;
+import org.jsmpp.bean.DataCoding;
 import org.jsmpp.bean.DataSm;
 import org.jsmpp.bean.DeliverSm;
 import org.jsmpp.bean.DeliveryReceipt;
@@ -1062,6 +1063,12 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			*/
 			
+			//TODO This should be settable by properites
+			DataCoding messageEncoding = new GeneralDataCoding(Alphabet.ALPHA_8_BIT,
+					MessageClass.CLASS1, false);
+			LOG.debug("Encoding is " + messageEncoding.toString());
+			
+			
 			String messageId = session.submitShortMessage(smsSmppProperties
 					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
 					.getSourceAddressTON()), NumberingPlanIndicator
@@ -1075,8 +1082,7 @@ public class SmsSmppImpl implements SmsSmpp {
 							.format(new Date()), null, new RegisteredDelivery(
 							SMSCDeliveryReceipt.SUCCESS_FAILURE),
 					smsSmppProperties.getReplaceIfPresentFlag(),
-					new GeneralDataCoding(Alphabet.ALPHA_DEFAULT,
-							MessageClass.CLASS1, false), smsSmppProperties
+					messageEncoding, smsSmppProperties
 							.getSmDefaultMsgId(), messageText.getBytes());
 			message.setSmscMessageId(messageId);
 
