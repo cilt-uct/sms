@@ -1077,7 +1077,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			
 			DataCoding messageEncoding = new GeneralDataCoding(alphabet,
-					MessageClass.CLASS1, false);
+					null, false);
 			LOG.debug("Encoding is " + messageEncoding.toString());
 			
 			
