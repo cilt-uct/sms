@@ -278,6 +278,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
 
+        // Assumes entities are only updated while they're still pending
+        current.setSmsMessages(null);
+        
         developerHelperService.copyBean(task, current, 0, new String[] {"id", "creationDate"}, true);
         //TODO validate the task
         smsTaskLogic.persistSmsTask(task);
