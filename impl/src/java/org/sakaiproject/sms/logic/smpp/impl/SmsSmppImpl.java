@@ -1066,12 +1066,12 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			*/
 			
-			//TODO This should be settable by properites
+			
 			
 			Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
 			
 			if ("8-bit".equals(smsSmppProperties.getMessageEncoding())) {
-				alphabet = Alphabet.ALPHA_8_BIT
+				alphabet = Alphabet.ALPHA_8_BIT;
 			} else if ("UCS2".equals(smsSmppProperties.getMessageEncoding())) {
 				alphabet = Alphabet.ALPHA_UCS2;
 			}
