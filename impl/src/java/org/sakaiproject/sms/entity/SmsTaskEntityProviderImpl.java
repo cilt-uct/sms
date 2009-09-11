@@ -68,6 +68,7 @@ import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
+import org.sakaiproject.sms.util.SmsMessageUtil;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
@@ -282,7 +283,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         current.setSmsMessages(null);
         
         developerHelperService.copyBean(task, current, 0, new String[] {"id", "creationDate"}, true);
-        //TODO validate the task
+
+		// Sanitize the character set in the message body
+		task.setMessageBody(SmsMessageUtil.sanitizeMessageBody(task.getMessageBody()));
+
+        // TODO validate the task
+
         smsTaskLogic.persistSmsTask(task);
         
         externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_REVISE, "/sms-task/" + task.getId(), task.getSakaiSiteId());

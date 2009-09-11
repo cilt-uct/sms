@@ -59,6 +59,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
+import org.sakaiproject.sms.util.SmsMessageUtil;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
@@ -380,7 +381,7 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setAttemptCount(0);
 
 		// Sanitize the character set in the message body
-		smsTask.setMessageBody(sanitizeBody(smsTask.getMessageBody()));
+		smsTask.setMessageBody(SmsMessageUtil.sanitizeMessageBody(smsTask.getMessageBody()));
 		
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
@@ -473,19 +474,6 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
-	/** Return sanitized message body, stripped of unprintable characters.
-	 * 
-	 * @param smsMessageBody
-	 * @return The sanitized message body.
-	 */
-	private String sanitizeBody(String smsMessageBody) {
-		
-		if (smsMessageBody == null)
-			return null;
-		
-		return smsMessageBody.replaceAll("\n", " ").replaceAll("\\p{Cntrl}", "").trim();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
