@@ -218,7 +218,7 @@ public class SmsTask extends BaseModel {
 	 * The sms messages for this task. This will be generated when the task is
 	 * processed.
 	 */
-	private Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
+	private transient Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 
 	/** Current status of this task. See SmsConst_TaskDeliveryStatus */
 	private String statusCode;
@@ -290,25 +290,6 @@ public class SmsTask extends BaseModel {
 	 */
 	public Integer getAttemptCount() {
 		return attemptCount;
-	}
-
-	/**
-	 * Count billable messages.
-	 * <p>
-	 * Only the messages that were reported as delivered are billable. Messages
-	 * that are marked as invalid, failed or timed out will not be billed to the
-	 * account.
-	 */
-	public Integer getBillableMessagesCount() {
-		int count = 0;
-		for (SmsMessage message : smsMessages) {
-			if (message.getStatusCode() != null
-					&& message.getStatusCode().equals(
-							SmsConst_DeliveryStatus.STATUS_DELIVERED)) {
-				count++;
-			}
-		}
-		return count;
 	}
 
 	public Double getCostEstimate() {
