@@ -684,6 +684,9 @@ public class SmsSmppImpl implements SmsSmpp {
 		if (smsSmppProperties == null) {
 			smsSmppProperties = new SmsSmppProperties();
 
+			smsSmppProperties.setMessageEncoding(properties.getProperty(
+					"MessageEncoding").trim());
+			
 			smsSmppProperties.setSMSCAddress(properties.getProperty(
 					"SMSCAddress").trim());
 			try {
@@ -1064,7 +1067,16 @@ public class SmsSmppImpl implements SmsSmpp {
 			*/
 			
 			//TODO This should be settable by properites
-			DataCoding messageEncoding = new GeneralDataCoding(Alphabet.ALPHA_8_BIT,
+			
+			Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
+			
+			if ("8-bit".equals(smsSmppProperties.getMessageEncoding())) {
+				alphabet = Alphabet.ALPHA_8_BIT
+			} else if ("UCS2".equals(smsSmppProperties.getMessageEncoding())) {
+				alphabet = Alphabet.ALPHA_UCS2;
+			}
+			
+			DataCoding messageEncoding = new GeneralDataCoding(alphabet,
 					MessageClass.CLASS1, false);
 			LOG.debug("Encoding is " + messageEncoding.toString());
 			

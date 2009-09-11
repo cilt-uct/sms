@@ -36,6 +36,7 @@ public class SmsSmppProperties {
 	public static final int DEFAULT_BINDTHREAD_TIMER = 5;
 
 	public static final int DEFAULT_SENDING_DELAY = 10;
+	
 
 	private byte destAddressNPI;
 	private byte destAddressTON;
@@ -58,6 +59,16 @@ public class SmsSmppProperties {
 	private int sendingDelay;
 	private int bindThreadTimer;
 	private boolean bindThisNode = false;
+	private String messageEncoding;
+	
+	//The encoding to use for Messages
+	public String getMessageEncoding() {
+		return messageEncoding;
+	}
+
+	public void setMessageEncoding(String messageEncoding) {
+		this.messageEncoding = messageEncoding;
+	}
 
 	public boolean isBindThisNode() {
 		return bindThisNode;

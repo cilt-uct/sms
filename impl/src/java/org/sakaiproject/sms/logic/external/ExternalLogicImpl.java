@@ -588,7 +588,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		String smscAddress = serverConfigurationService.getString(
 		"sms.SMSCAddress").trim();
-		if (smscAddress == null || smscAddress.equals("")) {
+		if (smscAddress == null || "".equals(smscAddress)) {
 			LOG.debug("sms.SMSCAddress not found");
 		} else {
 			smsSmppProperties.setSMSCAddress(smscAddress);
@@ -597,7 +597,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String smscPort = serverConfigurationService.getString(
 		"sms.SMSCPort").trim();
 
-		if (smscPort == null || smscPort.equals("")) {
+		if (smscPort == null || "".equals(smscPort)) {
 			LOG.debug("sms.SMSCPort not found");
 		} else {
 			try {
@@ -612,7 +612,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String smscUserName = serverConfigurationService.getString(
 		"sms.SMSCUserName").trim();
 
-		if (smscUserName == null || smscUserName.equals("")) {
+		if (smscUserName == null || "".equals(smscUserName)) {
 			LOG.debug("sms.SMSCUserName not found");
 		} else {
 			smsSmppProperties.setSMSCUsername(smscUserName);
@@ -621,7 +621,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String smscPassword = serverConfigurationService.getString(
 		"sms.SMSCPassword").trim();
 
-		if (smscPassword == null || smscPassword.equals("")) {
+		if (smscPassword == null || "".equals(smscPassword)) {
 			LOG.debug("sms.SMSCPassword not found");
 		} else {
 			smsSmppProperties.setSMSCPassword(smscPassword);
@@ -636,10 +636,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		
 		String systemType = serverConfigurationService.getString("sms.systemType").trim();
-		if (systemType == null || systemType.equals("")) {
+		if (systemType == null || "".equals(systemType)) {
 			LOG.debug("systemType not found");
 		} else {
 			smsSmppProperties.setSystemType(systemType);
+		}
+		
+		String messageEncoding =  serverConfigurationService.getString("sms.messageEncoding").trim();
+		if (messageEncoding != null && !"".equals(messageEncoding)) {
+			smsSmppProperties.setMessageEncoding(messageEncoding);
 		}
 		
 		LOG.debug("Read properties from ServerConfigurationService");
