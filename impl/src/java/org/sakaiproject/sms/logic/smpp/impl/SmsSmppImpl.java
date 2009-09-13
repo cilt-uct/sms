@@ -343,7 +343,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 		}
 
-		public DataSmResult onAcceptDataSm(DataSm arg0)
+		public DataSmResult onAcceptDataSm(DataSm dataSm,
+				org.jsmpp.session.Session source)
 				throws ProcessRequestException {
 			// not implemented
 			return null;
@@ -914,9 +915,8 @@ public class SmsSmppImpl implements SmsSmpp {
 							SMSCDeliveryReceipt.SUCCESS_FAILURE),
 					new ReplaceIfPresentFlag(smsSmppProperties
 							.getReplaceIfPresentFlag()),
-					new GeneralDataCoding(Alphabet.ALPHA_DEFAULT,
-							MessageClass.CLASS1, false), smsSmppProperties
-							.getSmDefaultMsgId(), messageBody.getBytes(), null);
+					new GeneralDataCoding(false, false, MessageClass.CLASS0, Alphabet.ALPHA_DEFAULT),
+							smsSmppProperties.getSmDefaultMsgId(), messageBody.getBytes(), null);
 
 		} catch (PDUException e) {
 			LOG.error(e);
@@ -1066,7 +1066,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			*/
 			
-			
+			// Set the encoding
 			
 			Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
 			
@@ -1076,10 +1076,10 @@ public class SmsSmppImpl implements SmsSmpp {
 				alphabet = Alphabet.ALPHA_UCS2;
 			}
 			
-			DataCoding messageEncoding = new GeneralDataCoding(alphabet,
-					null, false);
-			LOG.debug("Encoding is " + messageEncoding.toString());
+			DataCoding messageEncoding = new GeneralDataCoding(false, false, MessageClass.CLASS0, alphabet);
+			LOG.debug("Encoding is " + messageEncoding);
 			
+			// Send the message
 			
 			String messageId = session.submitShortMessage(smsSmppProperties
 					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
