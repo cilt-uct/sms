@@ -145,8 +145,7 @@ public class CsvExportBean {
 				"groupSizeActual", "groupSizeEstimate", "costEstimate",
 				"messageBody", "messageTypeId", "attemptCount", "sakaiSiteId",
 				"sakaiToolId", "sakaiToolName", "senderUserName",
-				"smsAccountId", "statusCode", "maxTimeToLive",
-				"delReportTimeoutDuration" };
+				"smsAccountId", "statusCode", "maxTimeToLive");
 
 		@Override
 		public String[] getCsvColumns() {
