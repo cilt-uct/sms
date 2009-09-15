@@ -885,59 +885,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	/**
-	 * Send a list of Bulk messages to the gateway. This method is not
-	 * implemented because it does not return a list of message id's. The
-	 * optional parameters are causing an exception.
-	 * @deprecated not working
-	 */
-	public SmsMessage[] sendBulkMessagesToGateway(SmsMessage[] messages) {
-
-		String messageBody = "";
-		Address[] addresses = new Address[messages.length];
-		String[] mobileNumbers = new String[messages.length];
-		for (int i = 0; i < messages.length; i++) {
-			messageBody = messages[i].getMessageBody();
-			mobileNumbers[i] = messages[i].getMobileNumber();
-			addresses[i] = new Address(TypeOfNumber.valueOf(smsSmppProperties
-					.getDestAddressTON()), NumberingPlanIndicator
-					.valueOf(smsSmppProperties.getDestAddressNPI()),
-					messages[i].getMobileNumber());
-		}
-		try {
-			session.submitMultiple(smsSmppProperties.getServiceType(),
-					TypeOfNumber.valueOf(smsSmppProperties
-							.getSourceAddressTON()), NumberingPlanIndicator
-							.valueOf(smsSmppProperties.getSourceAddressNPI()),
-					smsSmppProperties.getSourceAddress(), addresses,
-					new ESMClass(), smsSmppProperties.getProtocolId(),
-					smsSmppProperties.getPriorityFlag(), timeFormatter
-							.format(new Date()), null, new RegisteredDelivery(
-							SMSCDeliveryReceipt.SUCCESS_FAILURE),
-					new ReplaceIfPresentFlag(smsSmppProperties
-							.getReplaceIfPresentFlag()),
-					new GeneralDataCoding(false, false, MessageClass.CLASS0, Alphabet.ALPHA_DEFAULT),
-							smsSmppProperties.getSmDefaultMsgId(), messageBody.getBytes(), null);
-
-		} catch (PDUException e) {
-			LOG.error(e);
-
-		} catch (ResponseTimeoutException e) {
-			LOG.error(e);
-
-		} catch (InvalidResponseException e) {
-			LOG.error(e);
-
-		} catch (NegativeResponseException e) {
-			LOG.error(e);
-
-		} catch (IOException e) {
-			LOG.error(e);
-
-		}
-		return messages;
-	}
-
-	/**
 	 * Send a list of messages one-by-one to the gateway. Abort if the gateway
 	 * connection is down or when gateway returns an error and mark relevant
 	 * messages as failed. Return message statuses (not reports) back to caller.
