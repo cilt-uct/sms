@@ -208,7 +208,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			while (!allDone) {
 				try {
 
-					final ArrayList<SmsMOMessage> currentMOmessages = receivedMOmessages;
+					final List<SmsMOMessage> currentMOmessages = receivedMOmessages;
 					for (int i = 0; i < currentMOmessages.size(); i++) {
 
 						if (moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT) {
