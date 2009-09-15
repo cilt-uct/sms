@@ -1105,6 +1105,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			// Receiving negative response (non-zero command_status)
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+			message.setSmscDeliveryStatusCode(e.getCommandStatus());
 			hibernateSession.update(message);
 			tx.commit();
 

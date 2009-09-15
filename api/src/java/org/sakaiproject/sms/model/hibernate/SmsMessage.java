@@ -86,7 +86,13 @@ public class SmsMessage extends BaseModel {
 	private boolean submitResult;
 
 	/**
-	 * The status code as received in the sms delivery report from the gateway.
+	 * The status code returned by the SMPP gateway. For messages with
+	 * delivery status STATUS_ERROR, this is the error code returned by 
+	 * the gateway on submission. As per the SMPP 3.4 spec, error codes
+	 * 0x400 to 0x4FF may be vendor-specific.
+	 * 
+	 * For messages with delivery status STATUS_DELIVERED or STATUS_FAIL, 
+	 * this is the delivery status code from the SMPP gateway. 
 	 * See SmsConst_SmscDeliveryStatus.java for a list of possible codes.
 	 */
 	private Integer smscDeliveryStatusCode;
