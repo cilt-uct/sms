@@ -538,13 +538,11 @@ public class SmsCoreImpl implements SmsCore {
 		try {
 			insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
-
+			LOG.error("Task validation failed: ", e);
 		} catch (SmsSendDeniedException e) {
 			LOG.error(getExceptionStackTraceAsString(e), e);
-
 		} catch (SmsSendDisabledException e) {
 			LOG.error(getExceptionStackTraceAsString(e), e);
-
 		}
 
 	}

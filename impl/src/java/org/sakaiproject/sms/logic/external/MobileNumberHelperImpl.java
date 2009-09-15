@@ -187,8 +187,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			if (u == null)
 				return true;
 			ResourceProperties rp = u.getProperties();
-			boolean getSMS = rp.getBooleanProperty(PREF_SMS_NOTIFICATIONS);
-			return getSMS;
+			return rp.getBooleanProperty(PREF_SMS_NOTIFICATIONS);
 		} catch (UserNotDefinedException e) {
 			LOG.info("user: " + userId + " does not exist");
 		} catch (EntityPropertyNotDefinedException e) {

@@ -241,9 +241,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 				throw new SecurityException("Only admin users may manage accounts");	
 			}
 
-			List<SmsAccount> accounts = smsAccountLogic.getAllSmsAccounts();
-			return accounts;
-
+			return smsAccountLogic.getAllSmsAccounts();
 		}
 
 		// Site - if the user has send permission in this site

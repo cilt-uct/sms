@@ -60,7 +60,7 @@ public class BeanToCSVReflector {
 
 		StringBuffer buffer = new StringBuffer();
 
-		if (list.size() == 0) {
+		if (list.isEmpty()) {
 			return "There is no data for this report";
 		}
 

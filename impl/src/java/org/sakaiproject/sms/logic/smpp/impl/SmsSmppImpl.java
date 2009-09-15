@@ -35,7 +35,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -47,7 +50,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.jsmpp.InvalidResponseException;
 import org.jsmpp.PDUException;
-import org.jsmpp.bean.Address;
 import org.jsmpp.bean.AlertNotification;
 import org.jsmpp.bean.Alphabet;
 import org.jsmpp.bean.BindType;
@@ -61,7 +63,6 @@ import org.jsmpp.bean.MessageClass;
 import org.jsmpp.bean.MessageType;
 import org.jsmpp.bean.NumberingPlanIndicator;
 import org.jsmpp.bean.RegisteredDelivery;
-import org.jsmpp.bean.ReplaceIfPresentFlag;
 import org.jsmpp.bean.SMSCDeliveryReceipt;
 import org.jsmpp.bean.TypeOfNumber;
 import org.jsmpp.extra.NegativeResponseException;
@@ -91,15 +92,15 @@ import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 public class SmsSmppImpl implements SmsSmpp {
 
 	private final static Log LOG = LogFactory.getLog(SmsSmppImpl.class);
-	private HashMap<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
+	private Map<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 
 	private final ThreadGroup moReceivingThread = new ThreadGroup(
 			SmsConstants.SMS_MO_RECEIVING_THREAD_GROUP);
 
-	private ArrayList<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
-	private ConcurrentLinkedQueue<DeliverSm> receivedDeliveryReports = new ConcurrentLinkedQueue<DeliverSm>();
+	private List<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
+	private Queue<DeliverSm> receivedDeliveryReports = new ConcurrentLinkedQueue<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled;
 	private BindThread reBindThread;
@@ -967,6 +968,13 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 		Session hibernateSession = getHibernateLogicLocator().getSmsMessageLogic()
 				.getNewHibernateSession();
+		
+		if (hibernateSession == null) {
+			message.setFailReason("Cannot open database session");
+			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);
+			return message;
+		}
+			
 		Transaction tx = hibernateSession.beginTransaction();
 
 		message = (SmsMessage) hibernateSession.get(SmsMessage.class, message.getId(),
@@ -1129,10 +1137,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			LOG.error("Unknown error delivering message to gateway: ", e);
 
 		} finally {
-			
-			if (hibernateSession != null) {
-				hibernateSession.close();
-			}			
+			hibernateSession.close();
 		}
 		return message;
 	}

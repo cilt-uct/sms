@@ -36,6 +36,9 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsMessage extends BaseModel {
 
+	/** Version */
+	private static final long serialVersionUID = 1L;
+
 	/** Maximum length of FAIL_REASON field in database */
 	private int MAX_FAIL_LEN = 200;
 	

@@ -36,7 +36,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
-	private PlatformTransactionManager transactionManager;
+	private PlatformTransactionManager transactionManager = null;
 
 	private final DefaultTransactionDefinition defaultTransDefinition = new DefaultTransactionDefinition(
 			TransactionDefinition.PROPAGATION_REQUIRED);

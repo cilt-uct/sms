@@ -20,7 +20,6 @@
  **********************************************************************************/
 package org.sakaiproject.sms.model.hibernate;
 
-// TODO: Auto-generated Javadoc
 /**
  * Some site specific configuration info for the sms tool. Configuration info
  * could also be set up for a specific tool in a specific site or sytem whide by
@@ -31,6 +30,9 @@ package org.sakaiproject.sms.model.hibernate;
  * @created 19-Nov-2008
  */
 public class SmsConfig extends BaseModel {
+
+	/** Version */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Person(s) who will receive notifications regarding transactions and sms

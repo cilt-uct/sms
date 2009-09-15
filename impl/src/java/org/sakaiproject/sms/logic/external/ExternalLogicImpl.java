@@ -808,17 +808,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Set<String> activeUserIds = new HashSet<String>();
 
 			// Only record user id if member is flagged as active
-	        if( allMembers.size() >0){
-				for (Member member : allMembers) {
-					if ( member.isActive() ) {
-						activeUserIds.add(member.getUserId());
-					}
+			for (Member member : allMembers) {
+				if ( member.isActive() ) {
+					activeUserIds.add(member.getUserId());
 				}
-	        }
-			if( activeUserIds.size() > 0 ){
+			}
+			if( !activeUserIds.isEmpty() ){
 				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
 			}
-			if( userIds.size() > 0 ){
+			if( !userIds.isEmpty() ){
 				users = userDirectoryService.getUsers(userIds);
 			}
 		} catch (IdUnusedException e) {
@@ -834,7 +832,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public Map<String, User> getSakaiUsers(Set<String> userIds) {
 		Map<String, User> userMap = new HashMap<String, User>();
-		if (userIds != null && userIds.size() > 0) {
+		if (userIds != null && !userIds.isEmpty()) {
 			List<User> users = userDirectoryService.getUsers(userIds);
 			for (User user : users) {
 				userMap.put(user.getId(), user);
@@ -849,7 +847,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
 		Map<String, String> usernames = new HashMap<String, String>();
-		if (sakaiUserIds != null && sakaiUserIds.size() > 0) {
+		if (sakaiUserIds != null && !sakaiUserIds.isEmpty()) {
 			List<User> users = userDirectoryService.getUsers(sakaiUserIds);
 			for (User user : users) {
 				usernames.put(user.getId(), user.getSortName());

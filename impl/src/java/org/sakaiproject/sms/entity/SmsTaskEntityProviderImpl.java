@@ -147,7 +147,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		if (id == null)
 				return new SmsTask();
 
-		SmsTask task = smsTaskLogic.getSmsTask(new Long(id));
+		SmsTask task = smsTaskLogic.getSmsTask(Long.valueOf(id));
 		 if (task == null) {
 				throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_NOEXIST )); 
 	        }
@@ -264,7 +264,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         }
 
 
-        SmsTask current = smsTaskLogic.getSmsTask(new Long(id));
+        SmsTask current = smsTaskLogic.getSmsTask(Long.valueOf(id));
         if (current == null) {
 			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_NOEXIST )); 
         }
@@ -344,7 +344,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
                 throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), " --- "} ));
 
         	}
-
         }
         try {
         	List<SmsTask> tasks = smsTaskLogic.getAllSmsTasksForCriteria(new SearchFilterBean());
@@ -353,10 +352,9 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
                 roundOffTaskCosts(smsTask);
         	}
 			return tasks;
-		} catch (SmsSearchException e) {}
-
-
-		return null;
+		} catch (SmsSearchException e) {
+			throw new IllegalArgumentException("invalid search parameters: " + e);
+		}
 	}
 	
 	//Custom action to handle /sms-task/calculate
@@ -429,7 +427,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		
         List<SimpleUser> users = new ArrayList<SimpleUser>();
 		List<User> usersFull = externalLogic.getUsersWithMobileNumbersOnly(siteId);
-		if (usersFull.size() > 0){
+		if (!usersFull.isEmpty()){
 			for ( User user : usersFull ){
 				//trim down user object to only show essential non-sensitive properties
 				SimpleUser fakeUser = new SimpleUser( user.getId(), user.getDisplayId(), user.getSortName() );

@@ -54,7 +54,7 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsTransactionLogicImpl extends SmsLogic implements
 		SmsTransactionLogic {
 
-	private HibernateLogicLocator hibernateLogicLocator;
+	private HibernateLogicLocator hibernateLogicLocator = null;
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
 		return hibernateLogicLocator;
@@ -65,7 +65,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
-	private SmsBilling smsBilling;
+	private SmsBilling smsBilling = null;
 
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;

@@ -17,9 +17,9 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.util;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.MethodUtils;
@@ -27,7 +27,7 @@ import org.sakaiproject.sms.tool.constants.SortDirection;
 
 public class ReflectionBasedSorter {
 
-	public static <T> ArrayList<T> sortByName(ArrayList<T> list, final String fieldToSort, final SortDirection sortDirection){
+	public static <T> List<T> sortByName(List<T> list, final String fieldToSort, final SortDirection sortDirection){
 
 		Collections.sort(list, new Comparator<T>(){
 
@@ -45,7 +45,7 @@ public class ReflectionBasedSorter {
 				Integer compare;
 				try {
 					
-					if(sortDirection == sortDirection.ASC)
+					if(sortDirection == SortDirection.ASC)
 						compare = (Integer) MethodUtils.invokeExactMethod(valueLeft, "compareTo", valueRight);
 					else
 						compare = (Integer) MethodUtils.invokeExactMethod(valueRight, "compareTo", valueLeft);

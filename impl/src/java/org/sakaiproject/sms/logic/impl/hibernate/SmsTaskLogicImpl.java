@@ -374,8 +374,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		Object[] params1 = new Object[2];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
 		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
-		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
-		return smsTasks;
+		return smsDao.executeQuery(sql, params1, 0, 100);
 	}
 
 	public List<SmsTask> getTasksWithLateBilling() {
@@ -383,8 +382,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		String sql = "from SmsTask where STATUS_CODE = ? and MESSAGES_DELIVERED > BILLED_CREDITS";
 		Object[] params1 = new Object[1];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
-		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
-		return smsTasks;
+		return smsDao.executeQuery(sql, params1, 0, 100);
 	}
 
 
@@ -398,8 +396,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		Object[] params1 = new Object[2];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
 		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
-		List<SmsTask> smsTasks = smsDao.executeQuery(sql, params1, 0, 100);
-		return smsTasks;
+		return smsDao.executeQuery(sql, params1, 0, 100);
 	}
 
 

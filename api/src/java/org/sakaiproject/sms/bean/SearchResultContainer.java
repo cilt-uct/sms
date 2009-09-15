@@ -44,10 +44,10 @@ public class SearchResultContainer<T extends BaseModel> {
 	private int pageSize = 10;
 
 	/** The total result set size. */
-	private Long totalResultSetSize;
+	private Long totalResultSetSize = Long.valueOf(0);
 
 	/** The page results. */
-	private List<T> pageResults;
+	private List<T> pageResults = null;
 
 	public SearchResultContainer(int pageSize) {
 		super();

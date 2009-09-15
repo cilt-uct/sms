@@ -60,7 +60,7 @@ public class SmsAccount extends BaseModel {
 	private String sakaiUserId;
 
 	/** The sms transactions. */
-	private Set<SmsTransaction> smsTransactions = new HashSet<SmsTransaction>();
+	private transient Set<SmsTransaction> smsTransactions = new HashSet<SmsTransaction>();
 
 	/** The account name. */
 	private String accountName;

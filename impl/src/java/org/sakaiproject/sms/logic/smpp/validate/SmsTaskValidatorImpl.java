@@ -38,7 +38,7 @@ import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
  */
 public class SmsTaskValidatorImpl implements SmsTaskValidator {
 
-	private SmsBilling smsBilling;
+	private SmsBilling smsBilling = null;
 
 	public SmsBilling getSmsBilling() {
 		return smsBilling;

@@ -50,7 +50,7 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 		StringBuilder newNum = new StringBuilder();
 		
 		// Get rid of everything except leading + and 0-9
-		if (mobileNumber.trim().startsWith("+")) {
+		if (mobileNumber.trim().charAt(0) == '+') {
 			newNum.append('+');
 		}
 		

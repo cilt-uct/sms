@@ -50,9 +50,9 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 @SuppressWarnings("unchecked")
 public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
-	private HibernateLogicLocator hibernateLogicLocator;
+	private HibernateLogicLocator hibernateLogicLocator = null;
 
-	private ExternalLogic externalLogic;
+	private ExternalLogic externalLogic = null;
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
@@ -67,7 +67,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
-	private SmsBilling smsBilling;
+	private SmsBilling smsBilling = null;
 
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
@@ -187,7 +187,6 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					smsAccount);
 		} catch (Exception e) {
-
 		}
 		return smsAccount;
 	}
