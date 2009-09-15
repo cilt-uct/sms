@@ -59,7 +59,7 @@ public class TaskListProducer extends AbstractSearchListProducer implements
 		UIInitBlock.make(branch, "init-add-task-btn", "initTaskBtn", new Object[] {button, link});
 	}
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.RESET,
 				new SimpleViewParameters(TaskListProducer.VIEW_ID)));

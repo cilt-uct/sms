@@ -53,11 +53,13 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		this.transactionManager = transactionManager;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List executeQuery(String hql, Object[] params, int start, int limit) {
 		return executeHqlQuery(hql, params, start, limit);
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List runQuery(final String hql, QueryParameter... queryParameters) {
 
 		Map<String, Object> paramsMap = paramToMap(queryParameters);
@@ -77,6 +79,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		return getHibernateTemplate().bulkUpdate(hql, values.toArray());
 	}
 
+	@SuppressWarnings("unused")
 	private Query buildQuery(String hql, QueryParameter... queryParameters) {
 		Query query = getSession().createQuery(hql);
 
@@ -93,6 +96,7 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 		return query;
 	}
 
+	@SuppressWarnings("unused")
 	private void rollback(TransactionStatus transaction) {
 		if (!transaction.isCompleted()) {
 			transactionManager.rollback(transaction);

@@ -408,6 +408,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return "Invalid site (" + site + ") supplied";
 	}
 
+	@SuppressWarnings("unused")
 	private String generateInvalidMobileNrMessage(String mobileNr) {
 		return "Invalid mobile number (" + mobileNr + ") used";
 	}

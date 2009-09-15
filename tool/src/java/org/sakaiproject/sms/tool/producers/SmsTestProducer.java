@@ -131,7 +131,7 @@ public class SmsTestProducer implements ViewComponentProducer,
 	/**
 	 * @see NavigationCaseReporter#reportNavigationCases()
 	 */
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.SUCCESS,
 				new SimpleViewParameters(SmsTestProducer.VIEW_ID),

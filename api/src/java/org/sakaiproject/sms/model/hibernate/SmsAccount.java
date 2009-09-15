@@ -235,6 +235,7 @@ public class SmsAccount extends BaseModel {
 	 *
 	 * @return the sms transactions
 	 */
+	@SuppressWarnings("unused")
 	private Set<SmsTransaction> getSmsTransactions() {
 		return smsTransactions;
 	}
@@ -245,6 +246,7 @@ public class SmsAccount extends BaseModel {
 	 * @param smsTransactions
 	 *            the new sms transactions
 	 */
+	@SuppressWarnings("unused")
 	private void setSmsTransactions(Set<SmsTransaction> smsTransactions) {
 		this.smsTransactions = smsTransactions;
 	}

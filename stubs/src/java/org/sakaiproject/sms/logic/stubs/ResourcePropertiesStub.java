@@ -15,6 +15,8 @@ import org.xml.sax.ContentHandler;
 
 public class ResourcePropertiesStub implements ResourceProperties {
 
+	private static final long serialVersionUID = 1L;
+
 	public void addAll(ResourceProperties arg0) {
 		// TODO Auto-generated method stub
 
@@ -204,11 +206,13 @@ public class ResourcePropertiesStub implements ResourceProperties {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List getPropertyList(String arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Iterator getPropertyNames() {
 		// TODO Auto-generated method stub
 		return null;

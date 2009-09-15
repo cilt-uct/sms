@@ -49,6 +49,7 @@ public class SmsAccountValidator implements Validator {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean supports(Class clazz) {
 		if (SmsAccount.class.equals(clazz.getClass())) {
 			return true;

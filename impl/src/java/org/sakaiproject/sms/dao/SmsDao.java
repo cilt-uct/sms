@@ -29,9 +29,11 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public interface SmsDao extends GeneralGenericDao {
 
+	@SuppressWarnings("unchecked")
 	public List executeQuery(String hql, Object[] params, int start,
 			int limit);
 
+	@SuppressWarnings("unchecked")
 	public List runQuery(String hql, QueryParameter... queryParameters);
 
 	public int executeUpdate(String hql, Collection<Object> values);

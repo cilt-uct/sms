@@ -76,6 +76,7 @@ public class NullableFieldDateTransit extends LocaleHolder implements
 
 	private String invalidTimeKey;
 
+	@SuppressWarnings("unchecked")
 	private final List operations = new ArrayList();
 
 	public Date getDate() {
@@ -153,6 +154,7 @@ public class NullableFieldDateTransit extends LocaleHolder implements
 		date = new Date();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parse(SimpleDateFormat format, String datestring,
 			int fieldsCode) {
 		operations.add(new Operation(datestring, format, fieldsCode));

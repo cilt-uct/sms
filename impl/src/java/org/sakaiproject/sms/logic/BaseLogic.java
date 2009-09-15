@@ -71,6 +71,7 @@ abstract public class BaseLogic {
 	 * 
 	 * @return the object
 	 */
+	@SuppressWarnings("unchecked")
 	protected Object findById(Class className, Long id) {
 		return smsDao.findById(className, id);
 	}

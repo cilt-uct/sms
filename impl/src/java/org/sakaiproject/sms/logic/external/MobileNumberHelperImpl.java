@@ -200,7 +200,6 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Set<String> filterUserListForPreference(Set<String> userids) {
 		List<User> users = userDirectoryService.getUsers(userids);
 		Set<String> ret = new HashSet<String>();

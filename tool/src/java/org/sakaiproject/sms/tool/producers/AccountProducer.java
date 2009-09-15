@@ -182,7 +182,7 @@ public class AccountProducer implements ViewComponentProducer,
 		messageFixupHelper.fixupMessages("overdraft-limit", "credits");
 	}
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.CANCEL,
 				new SimpleViewParameters(BillingAdminProducer.VIEW_ID)));

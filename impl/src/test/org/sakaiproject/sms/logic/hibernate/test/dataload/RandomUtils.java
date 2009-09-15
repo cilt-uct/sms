@@ -15,6 +15,7 @@ public class RandomUtils {
 		return random.nextFloat() * random.nextInt(maxSize);
 	}
 
+	@SuppressWarnings("deprecation")
 	public Date getBoundRandomDate(int year) {
 
 		int month = random.nextInt(11) + 1;
@@ -30,12 +31,5 @@ public class RandomUtils {
 		return random.nextInt(maxSize);
 	}
 
-	private String padNumber(int numToPad) {
-		if (numToPad < 10)
-			return "0" + numToPad;
-
-		return "" + numToPad;
-
-	}
 
 }

@@ -157,6 +157,7 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @return the sms enabled
 	 */
+	@SuppressWarnings("unused")
 	private String getSmsEnabled() {
 		return smsEnabled;
 	}
@@ -199,6 +200,7 @@ public class SmsConfig extends BaseModel {
 	 * @param smsEnabled
 	 *            the new sms enabled/disabled
 	 */
+	@SuppressWarnings("unused")
 	private void setSmsEnabled(String smsEnabled) {
 		this.smsEnabled = smsEnabled;
 	}

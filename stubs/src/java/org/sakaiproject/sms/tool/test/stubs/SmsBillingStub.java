@@ -37,6 +37,7 @@ public class SmsBillingStub implements SmsBilling {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set getAccTransactions(Long arg0, Date arg1, Date arg2) {
 		// TODO Auto-generated method stub
 		return null;
@@ -58,6 +59,7 @@ public class SmsBillingStub implements SmsBilling {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set getAllSiteAccounts(String arg0) {
 		// TODO Auto-generated method stub
 		return null;

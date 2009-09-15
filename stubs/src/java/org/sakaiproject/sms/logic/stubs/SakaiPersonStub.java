@@ -677,4 +677,24 @@ public class SakaiPersonStub implements SakaiPerson {
 
 	}
 
+	public String getEducationCourse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getEducationSubjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setEducationCourse(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEducationSubjects(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

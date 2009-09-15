@@ -42,7 +42,6 @@ public class SmsAccountValidatorTest extends TestCase {
 	private static String ACCOUNT_NAME_FIELD = "accountName";
 	private static String SAKAI_SITE_ID_FIELD = "sakaiSiteId";
 	private static String SAKAI_USER_ID_FIELD = "sakaiUserId";
-	private static String OVERDRAFT_LIMIT_FIELD = "overdraftLimit";
 	private static String CREDITS_FIELD = "credits";
 
 	private static int VALID_MAX_FIELD_SIZE = 99;

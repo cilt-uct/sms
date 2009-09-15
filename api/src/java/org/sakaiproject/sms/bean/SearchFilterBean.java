@@ -23,11 +23,9 @@ package org.sakaiproject.sms.bean;
 
 import java.util.Date;
 
-import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * Generic search filter bean object. Will be used for the search screens as a
  * criteria object to house the search parameters

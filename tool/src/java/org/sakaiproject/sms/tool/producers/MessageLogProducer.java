@@ -45,7 +45,7 @@ public class MessageLogProducer extends AbstractSearchListProducer {
 		return "dateDelivered";
 	}
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.RESET,
 				new SimpleViewParameters(MessageLogProducer.VIEW_ID)));

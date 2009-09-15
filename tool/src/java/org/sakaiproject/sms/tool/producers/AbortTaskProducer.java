@@ -94,7 +94,7 @@ public class AbortTaskProducer implements ViewComponentProducer,
 		return VIEW_ID;
 	}
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.CANCEL,
 				new SimpleViewParameters(TaskListProducer.VIEW_ID)));

@@ -16,7 +16,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
-// TODO: Auto-generated Javadoc
 /**
  * A task consists of a series of rules and must be executed on the scheduled
  * date-time. For example: Send message x to group y at time z. When the task is
@@ -34,9 +33,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	private static SmsTask insertTask;
 
 	/** The insert message1. */
+	@SuppressWarnings("unused")
 	private static SmsMessage insertMessage1;
 
 	/** The insert message2. */
+	@SuppressWarnings("unused")
 	private static SmsMessage insertMessage2;
 
 	static {

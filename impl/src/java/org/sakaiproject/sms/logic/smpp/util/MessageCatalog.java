@@ -24,8 +24,6 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
@@ -37,8 +35,6 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  */
 public abstract class MessageCatalog {
 
-	private final static Log LOG = LogFactory.getLog(MessageCatalog.class);
-
 	/**
 	 * Gets the message.
 	 * 
@@ -48,7 +44,7 @@ public abstract class MessageCatalog {
 	 * @return the message
 	 */
 	public static String getMessage(String messageKey) {
-		return getMessage(messageKey, null);
+		return getMessage(messageKey, (String[]) null);
 	}
 
 	/**

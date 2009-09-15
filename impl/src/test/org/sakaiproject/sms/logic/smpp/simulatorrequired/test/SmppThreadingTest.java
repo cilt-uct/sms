@@ -105,7 +105,7 @@ public class SmppThreadingTest extends AbstractBaseTestCase {
 		mttr.runTestRunnables();
 		int message_count = session1_message_count + session2_message_count;
 
-		System.out.println("Done");
+		System.out.println("Done " + message_count);
 
 	}
 }

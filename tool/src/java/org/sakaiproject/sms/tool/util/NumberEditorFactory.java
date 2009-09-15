@@ -46,6 +46,7 @@ public class NumberEditorFactory implements PropertyEditorFactory {
 	 * 
 	 * @param numberClass
 	 */
+	@SuppressWarnings("unchecked")
 	public void setNumberClass(String numberClass) {
 		try {
 			this.numberClass = (Class<? extends Number>) Class

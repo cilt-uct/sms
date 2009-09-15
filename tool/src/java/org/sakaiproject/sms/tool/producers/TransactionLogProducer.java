@@ -44,7 +44,7 @@ public class TransactionLogProducer extends AbstractSearchListProducer {
 		return "transactionDate";
 	}
 
-	public List reportNavigationCases() {
+	public List<NavigationCase> reportNavigationCases() {
 		List<NavigationCase> list = new ArrayList<NavigationCase>();
 		list.add(new NavigationCase(ActionResults.RESET,
 				new SimpleViewParameters(TransactionLogProducer.VIEW_ID)));

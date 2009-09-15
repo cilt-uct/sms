@@ -34,6 +34,7 @@ public class SmsCoreStub implements SmsCore {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set generateSmsMessages(SmsTask arg0) {
 		// TODO Auto-generated method stub
 		return null;

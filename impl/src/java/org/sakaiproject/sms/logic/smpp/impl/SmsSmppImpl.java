@@ -1176,8 +1176,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			// status code.
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn
 					.getInputStream()));
-			String line;
-			while ((line = rd.readLine()) != null) {
+			while (rd.readLine() != null) {
 				// Process line...
 			}
 			wr.close();

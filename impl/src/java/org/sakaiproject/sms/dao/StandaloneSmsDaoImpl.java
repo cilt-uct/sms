@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -88,9 +86,6 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 	 * Location of hibernate.cfg.xml file.
 	 */
 	private final static String CONFIG_FILE_LOCATION = "hibernate.cfg.xml";
-
-	private final static Log LOG = LogFactory
-			.getLog(StandaloneSmsDaoImpl.class);
 
 	/**
 	 * Loads the given properties file from the classpath.
