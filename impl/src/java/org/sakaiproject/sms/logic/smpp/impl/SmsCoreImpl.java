@@ -565,107 +565,132 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void processTask(SmsTask smsTask) {
 
-		Session session = null;
-		Transaction tx = null;
-
 		if (!SmsConst_DeliveryStatus.STATUS_BUSY.equals(smsTask.getStatusCode())) {
 			throw new IllegalStateException("Task " + smsTask.getId() + 
 					" handed to processTask() but is not in BUSY state");
 		}
 
+		// Has the task expired ?
+		
+		if (smsTask.getDateToExpire().before(new Date())) {
+
+			LOG.info("Task expired: id = " + 
+					smsTask.getId() + " expiry time " + smsTask.getDateToExpire());
+			
+			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
+					smsTask.getId(),
+					SmsConst_DeliveryStatus.STATUS_PENDING,
+					SmsConst_DeliveryStatus.STATUS_EXPIRE);
+
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_EXPIRE);
+			smsTask.setFailReason(MessageCatalog.getMessage("messages.taskExpired"));
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
+			smsBilling.cancelPendingRequest(smsTask.getId());
+			sendEmailNotification(smsTask,
+					SmsConstants.TASK_NOTIFICATION_EXPIRED);
+
+			return;
+		}
+
+		// Has the task exceeded its retry count?
+
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
+			.getOrCreateSystemSmsConfig();
+
+		if (smsTask.getAttemptCount() >= systemConfig.getSmsRetryMaxCount()) {
+
+			LOG.info("Task exceeded retry count: id = " + 
+					smsTask.getId() + " attempts = " + smsTask.getAttemptCount());
+
+			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
+					smsTask.getId(),
+					SmsConst_DeliveryStatus.STATUS_PENDING,
+					SmsConst_DeliveryStatus.STATUS_EXPIRE);
+
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
+			smsTask.setFailReason(MessageCatalog.getMessage(
+					"messages.taskRetryFailure", String
+							.valueOf(systemConfig.getSmsRetryMaxCount())));
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);				
+			smsBilling.cancelPendingRequest(smsTask.getId());
+			sendEmailNotification(smsTask,
+					SmsConstants.TASK_NOTIFICATION_FAILED);
+			
+			return;
+		}
+			
+		// Send the task's messages
+
 		LOG.info("Processing task: " + smsTask.getId());
 
+		Session session = null;
+		Transaction tx = null;
+
 		try {
-			SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
-					.getOrCreateSystemSmsConfig();
-			smsTask.setDateProcessed(new Date());
-			smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
-
-			if (smsTask.getDateToExpire().before(new Date())) {
-				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_EXPIRE);
-				smsTask.setStatusForMessages(
-						SmsConst_DeliveryStatus.STATUS_PENDING,
-						SmsConst_DeliveryStatus.STATUS_EXPIRE);
-				sendEmailNotification(smsTask,
-						SmsConstants.TASK_NOTIFICATION_FAILED);
-				smsBilling.cancelPendingRequest(smsTask.getId());
-				smsTask.setFailReason(MessageCatalog
-						.getMessage("messages.taskExpired"));
+			
+			// Expand and persist the message set if this is the first time round
+			
+			if ((!smsTask.getMessageTypeId().equals(
+					SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) 
+					&& smsTask.getGroupSizeActual() == null)) {
+				Set<SmsMessage> messages = calculateActualGroupSize(smsTask);
+				
+				// Persist message set
+				for (SmsMessage message : messages) {
+					hibernateLogicLocator.getSmsMessageLogic()
+							.persistSmsMessage(message);
+				}
+				
+				smsTask.setGroupSizeActual(messages.size());
 				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-				return;
+				
+				smsTask.setSmsMessages(messages);
 			}
 
-			if (smsTask.getAttemptCount() < systemConfig.getSmsRetryMaxCount()) {
-				if ((!smsTask.getMessageTypeId().equals(
-						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) && smsTask
-						.getAttemptCount() <= 1)) {
-					Set<SmsMessage> messages = calculateActualGroupSize(smsTask);
-					smsTask.setGroupSizeActual(messages.size());
-					
-					// Persist message set
-					for (SmsMessage message : messages) {
-						hibernateLogicLocator.getSmsMessageLogic()
-								.persistSmsMessage(message);
-					}
-					hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
-							smsTask);
-					smsTask.setSmsMessages(messages);
-				}
+			// Do the actual sending to the gateway
+			
+			smsTask.setSmsMessages(new HashSet<SmsMessage>(
+							hibernateLogicLocator
+									.getSmsMessageLogic()
+									.getSmsMessagesWithStatus(
+											smsTask.getId(),
+											SmsConst_DeliveryStatus.STATUS_PENDING)));
+			String submissionStatus = smsSmpp
+					.sendMessagesToGateway(smsTask
+							.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
 
-				// Do the actual sending to the gateway
-				
-				smsTask
-						.setSmsMessages(new HashSet<SmsMessage>(
-								hibernateLogicLocator
-										.getSmsMessageLogic()
-										.getSmsMessagesWithStatus(
-												smsTask.getId(),
-												SmsConst_DeliveryStatus.STATUS_PENDING)));
-				String submissionStatus = smsSmpp
-						.sendMessagesToGateway(smsTask
-								.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
+			session = getHibernateLogicLocator().getSmsTaskLogic()
+					.getNewHibernateSession();
+			tx = session.beginTransaction();
 
-				session = getHibernateLogicLocator().getSmsTaskLogic()
-						.getNewHibernateSession();
-				tx = session.beginTransaction();
+			// SMS-128/113 : lock the task so that other schedulers won't
+			// pick it up causing duplicate settlements
+			
+			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
+					LockMode.UPGRADE);
+			
+			// FIXME check status code 
 
-				// SMS-128/113 : lock the task so that other schedulers won't
-				// pick it up causing duplicate settlements
-				
-				smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
-						LockMode.UPGRADE);
-				
-				// FIXME check status code 
-				smsTask.setStatusCode(submissionStatus);
+			smsTask.setStatusCode(submissionStatus);
+			smsTask.setDateProcessed(new Date());
 
-				if (smsTask.getStatusCode().equals(
-						SmsConst_DeliveryStatus.STATUS_INCOMPLETE)
-						|| smsTask.getStatusCode().equals(
-								SmsConst_DeliveryStatus.STATUS_RETRY)) {
-					Calendar now = Calendar.getInstance();
-					now.add(Calendar.SECOND, +(systemConfig
-							.getSmsRetryScheduleInterval()));
-					smsTask
-							.rescheduleDateToSend(new Date(now
-									.getTimeInMillis()));
-				}
-
-			} else {
-				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
-				smsTask.setStatusForMessages(
-						SmsConst_DeliveryStatus.STATUS_PENDING,
-						SmsConst_DeliveryStatus.STATUS_FAIL);
-				sendEmailNotification(smsTask,
-						SmsConstants.TASK_NOTIFICATION_FAILED);
-				smsTask.setFailReason(MessageCatalog.getMessage(
-						"messages.taskRetryFailure", String
-								.valueOf(systemConfig.getSmsRetryMaxCount())));
-				smsBilling.cancelPendingRequest(smsTask.getId());
+			if (smsTask.getStatusCode().equals(
+					SmsConst_DeliveryStatus.STATUS_INCOMPLETE)
+					|| smsTask.getStatusCode().equals(
+							SmsConst_DeliveryStatus.STATUS_RETRY)) {
+				Calendar now = Calendar.getInstance();
+				now.add(Calendar.SECOND, systemConfig.getSmsRetryScheduleInterval());
+				smsTask.rescheduleDateToSend(new Date(now.getTimeInMillis()));
+				smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
 			}
+			
 			session.update(smsTask);
 			tx.commit();
 			session.close();
+			
 		} catch (Exception e) {
+			
 			LOG.error(getExceptionStackTraceAsString(e), e);
 			if (tx != null) {
 				tx.rollback();
@@ -673,10 +698,12 @@ public class SmsCoreImpl implements SmsCore {
 			if (session != null) {
 				session.close();
 			}
+			
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), 0);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+			
 			sendEmailNotification(smsTask,
 					SmsConstants.TASK_NOTIFICATION_EXCEPTION,
 					getExceptionStackTraceAsString(e));
@@ -1114,22 +1141,28 @@ public class SmsCoreImpl implements SmsCore {
 				smsTaskID);
 		if (smsTask == null) {
 			throw new SmsTaskNotFoundException();
-		} else {
-			if (smsTask.getStatusCode().equals(
-					SmsConst_DeliveryStatus.STATUS_PENDING)) {
-				smsBilling.cancelPendingRequest(smsTaskID);
-				smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
-				smsTask.setStatusForMessages(
-						SmsConst_DeliveryStatus.STATUS_PENDING,
-						SmsConst_DeliveryStatus.STATUS_ABORT);
-				smsTask.setFailReason(MessageCatalog
-						.getMessage("messages.taskAborted"));
-				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-				sendEmailNotification(smsTask,
-						SmsConstants.TASK_NOTIFICATION_ABORTED);
-			}
 		}
+		
+		if (smsTask.getStatusCode().equals(
+				SmsConst_DeliveryStatus.STATUS_PENDING)) {
 
+			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_ABORT);
+			smsTask.setFailReason(MessageCatalog
+					.getMessage("messages.taskAborted"));
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+
+			smsBilling.cancelPendingRequest(smsTaskID);
+			
+			// If it really is pending, there won't be any messages, but
+			// keep this for future ref for more general abort code.
+			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
+					smsTask.getId(),
+					SmsConst_DeliveryStatus.STATUS_PENDING,
+					SmsConst_DeliveryStatus.STATUS_ABORT);
+			sendEmailNotification(smsTask,
+					SmsConstants.TASK_NOTIFICATION_ABORTED);
+		}
+	
 	}
 
 	public void processMOTasks() {

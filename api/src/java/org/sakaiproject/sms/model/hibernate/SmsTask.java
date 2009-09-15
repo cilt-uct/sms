@@ -85,7 +85,7 @@ public class SmsTask extends BaseModel {
 	private String deliveryUserId;
 
 	/** The actual Sakai group size. Calculated when the task is processed. */
-	private Integer groupSizeActual;
+	private Integer groupSizeActual = null;
 
 	/** The estimated Sakai group size. Calculated when the task is created. */
 	private Integer groupSizeEstimate;
@@ -374,9 +374,9 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * Gets the group size actual.
+	 * Gets the actual group size (set when delivery first starts).
 	 * 
-	 * @return the group size actual
+	 * @return the number of recipients, or null if delivery has not yet started.
 	 */
 	public Integer getGroupSizeActual() {
 		return groupSizeActual;
@@ -765,47 +765,6 @@ public class SmsTask extends BaseModel {
 	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
-	}
-
-	/**
-	 * Sets the status for messages.
-	 * 
-	 * @param oldStatus
-	 *            the old status
-	 * @param newStatus
-	 *            the new status
-	 */
-	public void setStatusForMessages(String oldStatus, String newStatus) {
-		if (smsMessages != null) {
-			for (SmsMessage message : smsMessages) {
-				if (message.getStatusCode().equals(oldStatus)) {
-					message.setStatusCode(newStatus);
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Sets the timeout status for messages that did not received delivery
-	 * reports .
-	 * 
-	 * @param oldStatus
-	 *            the old status
-	 * @param newStatus
-	 *            the new status
-	 */
-	public void setStatusForTimedOutMessages() {
-		if (smsMessages != null) {
-			for (SmsMessage message : smsMessages) {
-				if (message.getStatusCode().equals(
-						SmsConst_DeliveryStatus.STATUS_SENT)) {
-					message
-							.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
-				}
-			}
-		}
-
 	}
 
 	/**

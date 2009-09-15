@@ -72,6 +72,14 @@ public interface SmsMessageLogic {
 	public void persistSmsMessage(SmsMessage smsMessage);
 
 	/**
+	 * Updates messages for the given task from oldStatus to newStatus
+	 * @param smsTaskId The task ID
+	 * @param oldStatus The old message status
+	 * @param newStatus The new message status
+	 */
+	public void updateStatusForMessages(Long smsTaskId, String oldStatus, String newStatus);
+
+	/**
 	 * Returns a message for the given smsc message id and smscID or null if
 	 * nothing found.
 	 * 

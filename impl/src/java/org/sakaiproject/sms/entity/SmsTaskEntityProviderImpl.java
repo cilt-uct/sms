@@ -67,6 +67,7 @@ import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
 import org.sakaiproject.sms.util.SmsMessageUtil;
 import org.sakaiproject.user.api.User;
@@ -87,8 +88,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	//Used by the MessageCatalogue class to fetch the messages bundle from the pom.xml defined location
 	private static String MESSAGE_BUNDLE = "messages.";
 	
-	private static String STATUS_SCHEDULED = "scheduled";
-
 	// Statisticable for event visibility in SiteStats
 	public final static String		TOOL_ID			= "sakai.sms.user";
 	public final static String		EVENT_NEW		= "sms.task.new";
@@ -310,16 +309,19 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), userReference} ));
         }
 
-        if ( params.containsValue(STATUS_SCHEDULED)){
-        	try {
-    			log.debug("Starting abort and delete process for task:" + task.getId());
-    			smsService.abortPendingTask(task.getId());
-    		} catch (SmsTaskNotFoundException e) {
-    			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_INVALID, new String[] {ref.getId()} )); 
-    		}
+        if (!task.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_PENDING)) {
+        	// TODO better error code
+        	throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_INVALID));    	
         }
         
-        smsTaskLogic.deleteSmsTask(task);
+    	try {
+			log.debug("Starting abort and delete process for task:" + task.getId());
+			smsService.abortPendingTask(task.getId());
+    	} catch (SmsTaskNotFoundException e) {
+			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_INVALID, new String[] {ref.getId()} )); 
+		}
+
+    	smsTaskLogic.deleteSmsTask(task);
 	}
 
     public String[] getHandledOutputFormats() {

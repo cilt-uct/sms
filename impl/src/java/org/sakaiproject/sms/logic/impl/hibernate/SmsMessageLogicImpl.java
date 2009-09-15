@@ -408,4 +408,18 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		return smsDao.getTheHibernateTemplate().getSessionFactory()
 				.openSession();
 	}
+
+	public void updateStatusForMessages(Long smsTaskId, String oldStatus, String newStatus) {
+		
+		if (smsTaskId == null || oldStatus == null || newStatus == null)
+			return;
+		
+		String hql = "update SmsMessage set statusCode = ? where TASK_ID = ? and statusCode = ?";
+		ArrayList<Object> parms = new ArrayList<Object>();
+		parms.add(newStatus);
+		parms.add(smsTaskId);
+		parms.add(oldStatus);
+
+		smsDao.executeUpdate(hql, parms);
+	}
 }
