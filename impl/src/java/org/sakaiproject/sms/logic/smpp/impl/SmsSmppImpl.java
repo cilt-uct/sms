@@ -102,9 +102,11 @@ public class SmsSmppImpl implements SmsSmpp {
 	private List<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
 	private Queue<DeliverSm> receivedDeliveryReports = new ConcurrentLinkedQueue<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
-	private boolean disconnectGateWayCalled;
-	private BindThread reBindThread;
+	private boolean disconnectGateWayCalled = false;
+	private BindThread reBindThread = null;
 
+	private Object rebindLock = new Object();
+	
 	private boolean gatewayBound = false;
 
 	private boolean appserverShuttingDown = false;
@@ -172,6 +174,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		public void work() {
 			while (true) {
 				if (allDone) {
+					LOG.debug("This thread is done.");
 					return;
 				}
 				try {
@@ -183,7 +186,6 @@ public class SmsSmppImpl implements SmsSmpp {
 				} catch (Exception e) {
 					LOG.error("BindThread encountered an error:");
 					LOG.error(e.getMessage());
-
 				}
 
 			}
@@ -195,13 +197,13 @@ public class SmsSmppImpl implements SmsSmpp {
 		boolean allDone = false;
 
 		MOmessageQueueThread() {
-
 			final Thread thread = new Thread(this);
 			thread.start();
 		}
 
 		public void run() {
 			work();
+			LOG.debug("Finished.");
 		}
 
 		public void work() {
@@ -499,10 +501,14 @@ public class SmsSmppImpl implements SmsSmpp {
 										.valueOf(smsSmppProperties
 												.getDestAddressNPI()),
 								smsSmppProperties.getAddressRange()));
-				if (reBindThread != null) {
-					reBindThread.allDone = true;
-					reBindThread = null;
+				
+				synchronized (rebindLock) {
+					if (reBindThread != null) {
+						reBindThread.allDone = true;
+						reBindThread = null;
+					}
 				}
+				
 				gatewayBound = true;
 				LOG.info("EnquireLinkTimer is set to "
 						+ smsSmppProperties.getEnquireLinkTimeOut()
@@ -533,8 +539,9 @@ public class SmsSmppImpl implements SmsSmpp {
 									&& !appserverShuttingDown
 									&& reBindThread == null) {
 
-								reBindThread = new BindThread();
-
+								synchronized (rebindLock) {
+									reBindThread = new BindThread();
+								}
 							}
 						}
 					}
@@ -544,11 +551,12 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.error("Bind operation failed. " + e);
 				gatewayBound = false;
 				session.unbindAndClose();
-				if (!appserverShuttingDown && reBindThread == null) {
-					LOG.info("Starting Binding thread");
-					reBindThread = new BindThread();
+				synchronized (rebindLock) {
+					if (!appserverShuttingDown && reBindThread == null) {
+						LOG.info("Starting Binding thread");
+						reBindThread = new BindThread();
+					}
 				}
-
 			}
 		}
 		return gatewayBound;
@@ -564,7 +572,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	public boolean connectToGateway() {
 		disconnectGateWayCalled = false;
 		return bind();
-
 	}
 
 	/**
@@ -611,12 +618,8 @@ public class SmsSmppImpl implements SmsSmpp {
 		LOG.info("init()");
 		loadPropertiesFile();
 		loadSmsSmppProperties();
-		// if (smsSmppProperties.isBindThisNode()) {
 		connectToGateway();
 		setupStatusBridge();
-		/*
-		 * } else { LOG.warn("this node won't bind to the gateway"); }
-		 */
 		LOG.debug("SmsSmpp implementation is started");
 	}
 
