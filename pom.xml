@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Sakai Sms</name>
-	<groupId>org.sakaiproject.sms</groupId>
+	<groupId>org.sakaiproject</groupId>
 	<artifactId>sms</artifactId>
 	<organization>
 		<name>Sakai Project</name>
@@ -171,10 +171,25 @@
 	</licenses>
 	<scm>
 		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
+	<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
+	<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
 	</scm>
-        <distributionManagement> 
+        <distributionManagement>
+        <downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>sakai-maven-snapshots</id>
+			<name>Sakai snapshot Repo</name>
+			<url>dav:http://source.sakaiproject.org/maven2-snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>sakai-maven2</id>
+			<name>Sakai maven2 repository</name>
+			<url>dav:https://source.sakaiproject.org/maven2</url>
+			<layout>default</layout>
+		</repository> 
 	  <site>
 	    <id>cet-site</id>
 	    <name>Sakai release Site</name>

@@ -17,7 +17,7 @@
 
     <!-- the base is parent -->
         <parent>
-        <groupId>org.sakaiproject.sms</groupId>
+        <groupId>org.sakaiproject</groupId>
         <artifactId>sms</artifactId>
         <version>0.12-SNAPSHOT</version><!--Sms.version-->
     </parent>
