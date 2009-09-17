@@ -307,8 +307,12 @@ public class SmsTask extends BaseModel {
 		return attemptCount;
 	}
 
+	/**
+	 * Return an estimate of the cost for this task, rounded to 2 decimal places
+	 * @return Estimated cost
+	 */
 	public double getCostEstimate() {
-		return creditCost * creditEstimate;
+		return Math.round(creditCost * creditEstimate * 100) * 0.01;
 	}
 
 	/**

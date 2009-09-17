@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,6 +98,11 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
+		
+		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+		
 		// view variables
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -166,10 +172,10 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 					.getGroupSizeEstimate() == null) ? 0 + "" : smsTask
 					.getGroupSizeEstimate()
 					+ "");
-			UIOutput.make(tofill, "console-credits", Double.valueOf(smsTask.getCreditEstimate()).toString());
+			UIOutput.make(tofill, "console-credits", nf.format(smsTask.getCreditEstimate()));
 			UIOutput.make(tofill, "console-cost", currencyUtil.toServerLocale((smsTask.getCostEstimate())));
 			if (smsAccount != null) {
-				UIOutput.make(tofill, "console-total", Double.valueOf(smsAccount.getCredits()).toString());
+				UIOutput.make(tofill, "console-total", nf.format(smsAccount.getCredits()));
 			}
 
 			if (smsTask.getId() != null) {

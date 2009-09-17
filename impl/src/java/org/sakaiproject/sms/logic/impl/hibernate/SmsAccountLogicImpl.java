@@ -371,7 +371,6 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	}
 
 	public double getAccountBalance(double credits) {
-	
 		return smsBilling.convertCreditsToAmount(credits);
 	}
 }

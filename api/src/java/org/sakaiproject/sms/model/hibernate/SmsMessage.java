@@ -22,6 +22,7 @@ package org.sakaiproject.sms.model.hibernate;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.util.DateUtil;
 
@@ -61,7 +62,7 @@ public class SmsMessage extends BaseModel {
 	private String mobileNumber;
 	
 	/** Number of credits charged by gateway to deliver this message */
-	private Double credits;
+	private double credits;
 
 	/**
 	 * The sakai user that will receive the message. May be empty in the case of
@@ -77,7 +78,7 @@ public class SmsMessage extends BaseModel {
 	private String smscMessageId;
 
 	/** The sms task linked to this message. */
-	private SmsTask smsTask;
+	private transient SmsTask smsTask;
 
 	/** Current delivery status of this message. */
 	private String statusCode;
@@ -398,28 +399,8 @@ public class SmsMessage extends BaseModel {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		// int result = super.hashCode();
-		int result = 43;
-		result = prime * result
-				+ ((debugInfo == null) ? 0 : debugInfo.hashCode());
-		result = prime * result
-				+ ((dateDelivered == null) ? 0 : dateDelivered.hashCode());
-		result = prime * result
-				+ ((mobileNumber == null) ? 0 : mobileNumber.hashCode());
-		result = prime * result
-				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
-		result = prime
-				* result
-				+ ((smscDeliveryStatusCode == null) ? 0
-						: smscDeliveryStatusCode.hashCode());
-		result = prime * result + ((smscId == null) ? 0 : smscId.hashCode());
-		result = prime * result
-				+ ((smscMessageId == null) ? 0 : smscMessageId.hashCode());
-		result = prime * result
-				+ ((statusCode == null) ? 0 : statusCode.hashCode());
-		result = prime * result + (submitResult ? 1231 : 1237);
-		return result;
+		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
+				SmsMessage.class);
 	}
 
 	@Override
@@ -474,11 +455,11 @@ public class SmsMessage extends BaseModel {
 		return true;
 	}
 
-	public void setCredits(Double credits) {
+	public void setCredits(double credits) {
 		this.credits = credits;
 	}
 
-	public Double getCredits() {
+	public double getCredits() {
 		return credits;
 	}
 

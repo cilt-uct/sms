@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,6 +103,10 @@ public static final String VIEW_ID = "sms";
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 		
+		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+		
 		if (viewparams != null) {
 			SmsParams statusParams = (SmsParams) viewparams;
 			if (statusParams != null && statusParams.id != null) {
@@ -149,9 +154,9 @@ public static final String VIEW_ID = "sms";
 						savedSelectionsRenderer.renderSelections(smsTask, wrapper, "savedSelections:");
 						
 						UIMessage.make(wrapper, "cost", "ui.inprogress.sms.cost.title");
-						UIOutput.make(wrapper, "cost-credits", Double.valueOf(smsTask.getCreditEstimate()).toString());
+						UIOutput.make(wrapper, "cost-credits", nf.format(smsTask.getCreditEstimate()));
 						
-						UIOutput.make(wrapper, "cost-cost", currencyUtil.toServerLocale(( smsTask.getCostEstimate() )) );
+						UIOutput.make(wrapper, "cost-cost", currencyUtil.toServerLocale(smsTask.getCostEstimate()) );
 						
 						UIForm form = UIForm.make(wrapper, "form", new SmsParams(SendSMSProducer.VIEW_ID, smsId.toString(), StatusUtils.key_time.equals(statusToShow)? StatusUtils.statusType_EDIT : StatusUtils.statusType_REUSE));
 						form.type = EarlyRequestParser.RENDER_REQUEST;

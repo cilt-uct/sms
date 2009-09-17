@@ -25,13 +25,13 @@
 		<property name="dateToSend" type="timestamp" column="DATE_TO_SEND"
 			not-null="true" />
 		<property name="creditEstimate" type="double" column="CREDIT_ESTIMATE"
-			not-null="false" />
+			not-null="true"  />
         <property name="creditsActual" type="double" column="CREDITS_ACTUAL"
-            not-null="false" />
+            not-null="true"  />
 		<property name="statusCode" type="string" column="STATUS_CODE"
 			not-null="true" length="2" />
 		<property name="attemptCount" type="integer" column="ATTEMPT_COUNT"
-			not-null="true" />
+			not-null="true"  />
 		<property name="messageBody" type="string" column="MESSAGE_BODY"
 			not-null="true" length="200" />
 		<property name="messageReplyBody" type="string" column="MESSAGE_REPLY_BODY"
@@ -62,9 +62,9 @@
 		<property name="messagesDelivered" type="integer" column="MESSAGES_DELIVERED"
 			not-null="true" />
         <property name="billedCredits" type="double" column="BILLED_CREDITS"
-            not-null="true" />
+            not-null="true"  />
 		<property name="creditCost" type="double" column="CREDIT_COST"
-			not-null="true" />
+			not-null="true"  />
 		<property name="deliveryMobileNumbers" type="string"
 			column="DELIVERY_MOBILE_NUMBERS" not-null="false" length="10000" />
 		<property name="deliveryEntities" type="string" column="DELIVERY_ENTITY_LIST"
@@ -105,7 +105,8 @@
 
 		<property name="dateSent" type="timestamp" column="DATE_SENT" not-null="false"/>
  
-        <property name="credits" type="double" column="CREDITS" not-null="false"/>
+        <property name="credits" type="double" column="CREDITS" 
+            not-null="true" />
 		
 		 <property name="failReason" type="string" column="FAIL_REASON"
 			not-null="false" length="200" />
@@ -127,9 +128,9 @@
 		<property name="messageTypeCode" type="string" column="MESSAGE_TYPE_CODE"
 			not-null="true" length="5" />
 		<property name="overdraftLimit" type="double" column="OVERDRAFT_LIMIT"
-			not-null="false" />
+			not-null="true"  />
 		<property name="credits" type="double" column="CREDITS"
-			not-null="true" />
+			not-null="true"  />
 		<property name="accountName" type="string" column="ACCOUNT_NAME"
 			not-null="true" length="99" />
 		<property name="notificationEmail" type="string" column="NOTIFICATION_EMAIL"
@@ -161,9 +162,9 @@
 		<property name="transactionDate" type="timestamp" column="TRANSACTION_DATE"
 			not-null="false" />
 		<property name="transactionCredits" type="double"
-			column="TRANSACTION_CREDITS" not-null="true" />
+			column="TRANSACTION_CREDITS" not-null="true"  />
 		<property name="creditBalance" type="double" column="CREDIT_BALANCE"
-			not-null="true" />
+			not-null="true"  />
 		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
 			not-null="true" />
 		<many-to-one name="smsAccount"
@@ -192,7 +193,7 @@
 		<property name="schedulerInterval" type="integer" column="SCHEDULER_INTERVAL"
 			not-null="false" />
 		<property name="overdraftLimit" type="double" column="OVERDRAFT_LIMIT"
-			not-null="true" />
+			not-null="true"  />
 		<property name="smsRetryMaxCount" type="integer" column="SMS_RETRY_MAX_COUNT"
 			not-null="false" />
 		<property name="maxActiveThreads" type="integer" column="MAX_ACTIVE_THREADS"
@@ -208,7 +209,7 @@
 		<property name="pagingSize" type="integer" column="PAGING_SIZE"
 			not-null="false" />
 		<property name="creditCost" type="double" column="CREDIT_COST"
-			not-null="true" />
+			not-null="true"  />
 		<property name="useSiteAccount" type="string" column="USE_SITE_ACCOUNT"
 			not-null="false" length="1" />
 

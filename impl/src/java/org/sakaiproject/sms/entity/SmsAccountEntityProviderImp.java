@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.entity;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -308,7 +309,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 				throw new IllegalArgumentException("No credit value given");
 			}
 			
-			Long cred = Long.valueOf(credit);
+			double cred = Double.valueOf(credit).doubleValue();
 			
 			String description = (String) params.get("description");
 			
@@ -322,7 +323,12 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
  		account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
  		
 		// return new balance of account
-		return Double.valueOf(account.getCredits()).toString();
+
+ 		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+
+		return nf.format(account.getCredits());
 	}
 	
 	

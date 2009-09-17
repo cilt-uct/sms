@@ -45,5 +45,10 @@ public class SmsAccountLogicStub implements SmsAccountLogic {
 
 	}
 
+	public double getAccountBalance(double credits) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

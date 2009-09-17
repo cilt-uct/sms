@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -116,6 +117,10 @@ public class SendSMSProducer implements ViewComponentProducer,
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 
+		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+		
 		// view variables
 		String currentSiteId = externalLogic.getCurrentSiteId();
 		String currentUserId = externalLogic.getCurrentUserId();
@@ -204,8 +209,7 @@ public class SendSMSProducer implements ViewComponentProducer,
 						UIOutput.make(tofill, "console-selected", (smsTask
 								.getGroupSizeEstimate() == null) ? 0 + ""
 								: smsTask.getGroupSizeEstimate() + "");
-						UIOutput.make(tofill, "console-credits", Double.valueOf(smsTask
-								.getCreditEstimate()).toString());
+						UIOutput.make(tofill, "console-credits", nf.format(smsTask.getCreditEstimate()));
 						UIOutput.make(tofill, "console-cost", currencyUtil.toServerLocale((smsTask
 								.getCostEstimate())));
 					}

@@ -96,5 +96,12 @@ public interface SmsAccountLogic {
 	 *            the account
 	 */
 	public void recalculateAccountBalance(Long accountId, SmsAccount account);
-	
+
+	/**
+	 * Get currency value of a credit amount
+	 * @param credits
+	 * @return Credit value in currency value
+	 */
+	public double getAccountBalance(double credits);
+
 }

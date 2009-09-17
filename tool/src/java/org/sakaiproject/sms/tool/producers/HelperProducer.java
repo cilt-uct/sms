@@ -17,6 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.producers;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +56,10 @@ public class HelperProducer implements ViewComponentProducer,
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
+
+		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
 
 		String smsTaskOTP = SmsTaskLocator.LOCATOR_NAME + "."
 				+ SmsTaskLocator.NEW_1;
@@ -106,7 +111,7 @@ public class HelperProducer implements ViewComponentProducer,
 			SmsAccount account = accountHelper.retrieveAccount(smsTaskOTP
 					+ ".smsAccountId");
 			UIInput accountCredits = UIInput.make(form, "account-credits", null,
-					Double.valueOf(account.getCredits()).toString() );
+					nf.format(account.getCredits()) );
 			accountCredits.decorate(new UIDisabledDecorator());
 			accountCredits.fossilize = false;
 

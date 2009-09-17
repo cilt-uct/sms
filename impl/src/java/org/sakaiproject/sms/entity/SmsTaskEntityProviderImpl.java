@@ -401,8 +401,10 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	
 	private SmsTask roundOffTaskCosts(final SmsTask smsTask) {
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-	//	smsTask.setCostEstimate( Double.parseDouble(decimalFormat.format(smsTask.getCostEstimate())) );
+		
 		smsTask.setCreditCost( Double.parseDouble(decimalFormat.format(smsTask.getCreditCost())) );
+		smsTask.setCreditEstimate(Double.parseDouble(decimalFormat.format(smsTask.getCreditEstimate())) );
+
 		return smsTask;
 	}
 

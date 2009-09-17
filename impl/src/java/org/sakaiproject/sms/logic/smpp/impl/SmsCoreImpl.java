@@ -22,6 +22,7 @@ package org.sakaiproject.sms.logic.smpp.impl;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -889,9 +890,13 @@ public class SmsCoreImpl implements SmsCore {
 			credits += account.getOverdraftLimit();
 		}
 
-		String creditsAvailable = Double.valueOf(credits).toString();
+		// get number format for default locale
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(1);
+		
+		String creditsAvailable = nf.format(credits);
 		String creditsRequired = "";
-		creditsRequired = Double.valueOf(smsTask.getCreditEstimate()).toString();
+		creditsRequired = nf.format(smsTask.getCreditEstimate());
 
 		// Email address for the task owner
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()

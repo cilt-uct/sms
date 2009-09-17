@@ -284,7 +284,7 @@ public class SmsAccount extends BaseModel {
 	public int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
 				SmsAccount.class);
-		}
+	}
 
 	@Override
 	public boolean equals(Object obj) {
