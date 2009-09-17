@@ -45,9 +45,5 @@ public class SmsAccountLogicStub implements SmsAccountLogic {
 
 	}
 
-	public float getAccountBalance(Long accountId) {
-		// TODO Auto-generated method stub
-		return 0f;
-	}
 
 }

@@ -22,14 +22,14 @@ public class SmsBillingStub implements SmsBilling {
 		return sufficientCredits;
 	}
 
-	public Long convertAmountToCredits(Float arg0) {
+	public double convertAmountToCredits(double arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
-	public Float convertCreditsToAmount(long arg0) {
+	public double convertCreditsToAmount(double arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	public void creditAccount(Long arg0, long arg1, String arg2) {
@@ -143,12 +143,6 @@ public class SmsBillingStub implements SmsBilling {
 		return sufficientCredits;
 	}
 
-	public boolean checkSufficientCredits(Long accountID,
-			Integer creditsRequired, boolean overDraftCheck) {
-		// TODO Auto-generated method stub
-		return sufficientCredits;
-	}
-
 	public boolean debitLateMessages(SmsTask smsTask, int credits) {
 		// TODO Auto-generated method stub
 		return false;
@@ -156,6 +150,29 @@ public class SmsBillingStub implements SmsBilling {
 
 	public boolean settleCreditDifference(SmsTask smsTask, int creditEstimate,
 			int actualCreditsUsed) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean checkSufficientCredits(Long accountID,
+			double creditsRequired, boolean overDraftCheck) {
+		// TODO Auto-generated method stub
+		return sufficientCredits;
+	}
+
+	public void creditAccount(Long accountId, double creditsToCredit,
+			String Description) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean debitLateMessages(SmsTask smsTask, double credits) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean settleCreditDifference(SmsTask smsTask,
+			double creditEstimate, double actualCreditsUsed) {
 		// TODO Auto-generated method stub
 		return false;
 	}

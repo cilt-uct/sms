@@ -78,6 +78,7 @@ import org.jsmpp.util.AbsoluteTimeFormatter;
 import org.jsmpp.util.DeliveryReceiptState;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
 import org.jsmpp.util.TimeFormatter;
+import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -118,6 +119,12 @@ public class SmsSmppImpl implements SmsSmpp {
 	private SmsSmppProperties smsSmppProperties = null;
 
 	private static final boolean ALLOW_PROCESS_REMOTELY = false;
+
+	private NumberRoutingHelper numberRoutingHelper;
+
+	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
+		this.numberRoutingHelper = numberRoutingHelper;
+	}
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -335,7 +342,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				String messageBody = "";
 				if (deliverSm.getShortMessage() == null) {
-					// persone sended a blank sms
+					// person sent a blank sms
 					messageBody = SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
 
 				} else {
@@ -357,7 +364,6 @@ public class SmsSmppImpl implements SmsSmpp {
 	private void handleDeliveryReport(DeliverSm deliverSm) {
 		try {
 			boolean incrementMessagesDelivered = false;
-			boolean incrementMessagesProcessed = false;
 
 			DeliveryReceipt deliveryReceipt = deliverSm
 					.getShortMessageAsDeliveryReceipt();
@@ -414,11 +420,6 @@ public class SmsSmppImpl implements SmsSmpp {
 					smsMessage.setSmscDeliveryStatusCode(smsDeliveryStatus
 							.get((deliveryReceipt.getFinalStatus())));
 
-					// Check if transition from SENT > DELIVERED (otherwise TIMEOUT > DELIVERED)
-					if (SmsConst_DeliveryStatus.STATUS_SENT.equals(smsMessage.getStatusCode())) {
-						incrementMessagesProcessed = true;
-					}
-						
 					// Set the delivery time
 					if (deliveryReceipt.getDoneDate() != null) {
 						// seeing this currently has only minute precision it
@@ -433,6 +434,9 @@ public class SmsSmppImpl implements SmsSmpp {
 						smsMessage.setDateDelivered(new Date(System.currentTimeMillis()));
 					}
 
+					// TODO - if we could identify a 'routing error' return code from Clickatell
+					// here, then we'd reverse the credit cost for the message.
+					
 					// Set the delivery status
 					if (smsDeliveryStatus.get(deliveryReceipt
 							.getFinalStatus()) != SmsConst_SmscDeliveryStatus.DELIVERED) {
@@ -459,7 +463,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				if (smsMessage != null) {
 					hibernateLogicLocator.getSmsTaskLogic().incrementMessageCounts(
-						smsMessage.getSmsTask(), incrementMessagesProcessed, incrementMessagesDelivered);
+						smsMessage.getSmsTask(), false, incrementMessagesDelivered);
 				}
 			}
 		} catch (InvalidDeliveryReceiptException e) {
@@ -897,19 +901,20 @@ public class SmsSmppImpl implements SmsSmpp {
 	 */
 	public String sendMessagesToGateway(Set<SmsMessage> messages) {
 
-		String status = null;
-
+		boolean retries = false;
+		
 		if (!gatewayBound) {
 			return SmsConst_DeliveryStatus.STATUS_RETRY;
 		}
 
 		for (SmsMessage message : messages) {
 			
-			if (!gatewayBound) {
-				return (SmsConst_DeliveryStatus.STATUS_INCOMPLETE);
-			}
+			SmsMessage deliverMessage = sendMessageToGateway(message);
 			
-			message = sendMessageToGateway(message);
+			// Because we get back a different object, copy across the fields we need
+			
+			message.setStatusCode(deliverMessage.getStatusCode());
+			message.setCredits(deliverMessage.getCredits());
 			
 			// If we get back a status code that would be a retry, then
 			// set task status to incomplete
@@ -917,10 +922,15 @@ public class SmsSmppImpl implements SmsSmpp {
 			if (!message.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_SENT) &&
 				!message.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_ERROR)) {
 				
-				// Transient error in message delivery
-				status = SmsConst_DeliveryStatus.STATUS_INCOMPLETE;
+				// Transient error in message delivery for at least one message
+				retries = true;
 			}
-		
+
+			if (!gatewayBound) {
+				// Can't send any more, so bail out now
+				return SmsConst_DeliveryStatus.STATUS_INCOMPLETE;
+			}
+			
 			try {
 				Thread.sleep(smsSmppProperties.getSendingDelay());
 			} catch (InterruptedException e) {
@@ -929,7 +939,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			
 		}
 		
-		return (status == null) ? SmsConst_DeliveryStatus.STATUS_SENT : status;
+		return retries ? SmsConst_DeliveryStatus.STATUS_INCOMPLETE : SmsConst_DeliveryStatus.STATUS_SENT;
 	}
 
 	/**
@@ -978,6 +988,8 @@ public class SmsSmppImpl implements SmsSmpp {
 			return message;
 		}
 			
+		// Lock the message in the db
+		
 		Transaction tx = hibernateSession.beginTransaction();
 
 		message = (SmsMessage) hibernateSession.get(SmsMessage.class, message.getId(),
@@ -990,6 +1002,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		// Continue to send message to gateway.
+		
 		try {
 			if (messageText == null) {
 				throw new IllegalArgumentException(
@@ -1023,49 +1036,58 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new ResponseTimeoutException("io excep test");
 			}
 			*/
+
+			// Record which gateway this message is being sent to
+
+			if (numberRoutingHelper.getRoutingInfo(message)) {
+
+				// Set the encoding
+				
+				Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
+				
+				if ("8-bit".equals(smsSmppProperties.getMessageEncoding())) {
+					alphabet = Alphabet.ALPHA_8_BIT;
+				} else if ("UCS2".equals(smsSmppProperties.getMessageEncoding())) {
+					alphabet = Alphabet.ALPHA_UCS2;
+				}
+				
+				DataCoding messageEncoding = new GeneralDataCoding(false, false, MessageClass.CLASS0, alphabet);
+				LOG.debug("Encoding is " + messageEncoding);
+				
+				// Send the message
+				
+				String messageId = session.submitShortMessage(smsSmppProperties
+						.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
+						.getSourceAddressTON()), NumberingPlanIndicator
+						.valueOf(smsSmppProperties.getSourceAddressNPI()),
+						smsSmppProperties.getSourceAddress(), TypeOfNumber
+								.valueOf(smsSmppProperties.getSourceAddressTON()),
+						NumberingPlanIndicator.valueOf(smsSmppProperties
+								.getSourceAddressNPI()), message.getMobileNumber(),
+						new ESMClass(), smsSmppProperties.getProtocolId(),
+						smsSmppProperties.getPriorityFlag(), timeFormatter
+								.format(new Date()), null, new RegisteredDelivery(
+								SMSCDeliveryReceipt.SUCCESS_FAILURE),
+						smsSmppProperties.getReplaceIfPresentFlag(),
+						messageEncoding, smsSmppProperties
+								.getSmDefaultMsgId(), messageText.getBytes());
+
+				message.setSmscMessageId(messageId);
+				message.setSubmitResult(true);
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
+				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
+				message.setDateSent(new Date());
+
+				LOG.info("Message submitted, smsc_id = " + messageId
+						+ " MessageID = " + message.getId()
+						+ " Number = " + message.getMobileNumber()
+						+ " TaskID = " + message.getSmsTask().getId());
 			
-			// Set the encoding
-			
-			Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
-			
-			if ("8-bit".equals(smsSmppProperties.getMessageEncoding())) {
-				alphabet = Alphabet.ALPHA_8_BIT;
-			} else if ("UCS2".equals(smsSmppProperties.getMessageEncoding())) {
-				alphabet = Alphabet.ALPHA_UCS2;
+			} else {
+				// number is unroutable
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+				message.setFailReason("Number is unroutable");
 			}
-			
-			DataCoding messageEncoding = new GeneralDataCoding(false, false, MessageClass.CLASS0, alphabet);
-			LOG.debug("Encoding is " + messageEncoding);
-			
-			// Send the message
-			
-			String messageId = session.submitShortMessage(smsSmppProperties
-					.getServiceType(), TypeOfNumber.valueOf(smsSmppProperties
-					.getSourceAddressTON()), NumberingPlanIndicator
-					.valueOf(smsSmppProperties.getSourceAddressNPI()),
-					smsSmppProperties.getSourceAddress(), TypeOfNumber
-							.valueOf(smsSmppProperties.getSourceAddressTON()),
-					NumberingPlanIndicator.valueOf(smsSmppProperties
-							.getSourceAddressNPI()), message.getMobileNumber(),
-					new ESMClass(), smsSmppProperties.getProtocolId(),
-					smsSmppProperties.getPriorityFlag(), timeFormatter
-							.format(new Date()), null, new RegisteredDelivery(
-							SMSCDeliveryReceipt.SUCCESS_FAILURE),
-					smsSmppProperties.getReplaceIfPresentFlag(),
-					messageEncoding, smsSmppProperties
-							.getSmDefaultMsgId(), messageText.getBytes());
-			message.setSmscMessageId(messageId);
-
-			message.setSubmitResult(true);
-			message.setSmscId(SmsConstants.SMSC_ID);
-			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
-			message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
-			message.setDateSent(new Date());
-
-			LOG.info("Message submitted, smsc_id = " + messageId
-					+ " MessageID = " + message.getId()
-					+ " Number = " + message.getMobileNumber()
-					+ " TaskID = " + message.getSmsTask().getId());
 
 			hibernateSession.update(message);
 			tx.commit();
@@ -1077,9 +1099,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			hibernateSession.update(message);
 			tx.commit();
 
-			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
-					message.getSmsTask());
-
 			LOG.error(e);
 
 		} catch (ResponseTimeoutException e) {
@@ -1089,8 +1108,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			hibernateSession.update(message);
 			tx.commit();
 			
-			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
-					message.getSmsTask());
 			LOG.error(e);
 
 		} catch (InvalidResponseException e) {
@@ -1100,8 +1117,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			hibernateSession.update(message);
 			tx.commit();
 			
-			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
-					message.getSmsTask());
 			LOG.error(e);
 
 		} catch (NegativeResponseException e) {
@@ -1111,9 +1126,6 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setSmscDeliveryStatusCode(e.getCommandStatus());
 			hibernateSession.update(message);
 			tx.commit();
-
-			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
-					message.getSmsTask());
 
 		} catch (IOException e) {
 			
@@ -1134,15 +1146,13 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			hibernateSession.update(message);
 			tx.commit();
-
-			hibernateLogicLocator.getSmsTaskLogic().incrementMessagesProcessed(
-					message.getSmsTask());
 			
 			LOG.error("Unknown error delivering message to gateway: ", e);
 
 		} finally {
 			hibernateSession.close();
 		}
+		
 		return message;
 	}
 

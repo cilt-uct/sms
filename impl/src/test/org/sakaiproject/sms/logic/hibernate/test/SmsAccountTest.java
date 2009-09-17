@@ -38,14 +38,14 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsAccount
 				.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		insertSmsAccount.setMessageTypeCode("12345");
-		insertSmsAccount.setOverdraftLimit(1000l);
-		insertSmsAccount.setCredits(5000l);
+		insertSmsAccount.setOverdraftLimit(1000);
+		insertSmsAccount.setCredits(5000);
 		insertSmsAccount.setAccountName("accountName");
 		insertSmsAccount.setAccountEnabled(true);
 		insertSmsAccount.setMessageTypeCode("SO");
 
 		insertSmsTransaction1 = new SmsTransaction();
-		insertSmsTransaction1.setCreditBalance(100l);
+		insertSmsTransaction1.setCreditBalance(100);
 		insertSmsTransaction1.setSakaiUserId("5");
 		insertSmsTransaction1.setTransactionCredits(100);
 		insertSmsTransaction1.setTransactionDate(new Date(System
@@ -54,7 +54,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsTransaction1.setSmsTaskId(1L);
 
 		insertSmsTransaction2 = new SmsTransaction();
-		insertSmsTransaction2.setCreditBalance(100l);
+		insertSmsTransaction2.setCreditBalance(100);
 		insertSmsTransaction2.setSakaiUserId("SakaiUserId2");
 		insertSmsTransaction2.setTransactionCredits(100);
 		insertSmsTransaction2.setTransactionDate(new Date(System
@@ -202,8 +202,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(1000l);
-		account.setCredits(5000l);
+		account.setOverdraftLimit(1000);
+		account.setCredits(5000);
 		account.setAccountName("accountName");
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
@@ -221,8 +221,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		account.setSakaiUserId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
 		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 1);
 		account.setMessageTypeCode("12345");
-		account.setOverdraftLimit(1000l);
-		account.setCredits(5000l);
+		account.setOverdraftLimit(1000);
+		account.setCredits(5000);
 		account.setAccountName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME);
 		account.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);

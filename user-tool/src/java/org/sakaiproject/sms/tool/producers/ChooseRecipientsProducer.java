@@ -166,18 +166,10 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 					.getGroupSizeEstimate() == null) ? 0 + "" : smsTask
 					.getGroupSizeEstimate()
 					+ "");
-			UIOutput.make(tofill, "console-credits", (smsTask
-					.getCreditEstimate() == null) ? 0 + "" : smsTask
-					.getCreditEstimate()
-					+ "");
-			UIOutput.make(tofill, "console-cost",
-					(smsTask.getCostEstimate() == null) ? currencyUtil
-							.toServerLocale(0)
-							+ "" : currencyUtil.toServerLocale((smsTask
-							.getCostEstimate())));
+			UIOutput.make(tofill, "console-credits", Double.valueOf(smsTask.getCreditEstimate()).toString());
+			UIOutput.make(tofill, "console-cost", currencyUtil.toServerLocale((smsTask.getCostEstimate())));
 			if (smsAccount != null) {
-				UIOutput.make(tofill, "console-total", smsAccount.getCredits()
-						.toString());
+				UIOutput.make(tofill, "console-total", Double.valueOf(smsAccount.getCredits()).toString());
 			}
 
 			if (smsTask.getId() != null) {

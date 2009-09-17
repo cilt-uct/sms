@@ -36,6 +36,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
@@ -87,6 +88,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void setLastSendMoOverdraftEmail(Calendar lastSendMoOverdraftEmail) {
 		this.lastSendMoOverdraftEmail = lastSendMoOverdraftEmail;
+	}
+
+	private NumberRoutingHelper numberRoutingHelper = null;
+	
+	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
+		this.numberRoutingHelper = numberRoutingHelper;
 	}
 
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
@@ -141,14 +148,23 @@ public class SmsCoreImpl implements SmsCore {
 	public SmsTask calculateEstimatedGroupSize(final SmsTask smsTask) {
 		final Set<SmsMessage> messages = hibernateLogicLocator
 				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
-		final int groupSize = messages.size();
-		smsTask.setGroupSizeEstimate(groupSize);
-		// one sms always costs one credit
-		smsTask.setCreditEstimate(groupSize);
-		smsTask.setCostEstimate(smsBilling.convertCreditsToAmount(groupSize)
-				.doubleValue());
+
+		// iterate through messages and calculate total cost
+		double credits = 0;
+		int routable = 0;
+		
+		for (SmsMessage message : messages) {
+			if (numberRoutingHelper.getRoutingInfo(message)) {
+				credits += message.getCredits();
+				routable++;
+			}
+		}
+
+		smsTask.setGroupSizeEstimate(routable);
+		smsTask.setCreditEstimate(credits);
 		smsTask.setCreditCost(hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getCreditCost());
+		
 		return smsTask;
 	}
 
@@ -650,35 +666,48 @@ public class SmsCoreImpl implements SmsCore {
 
 			// Do the actual sending to the gateway
 			
-			smsTask.setSmsMessages(new HashSet<SmsMessage>(
+			Set<SmsMessage> messageList = new HashSet<SmsMessage>(
 							hibernateLogicLocator
 									.getSmsMessageLogic()
 									.getSmsMessagesWithStatus(
 											smsTask.getId(),
-											SmsConst_DeliveryStatus.STATUS_PENDING)));
-			String submissionStatus = smsSmpp
-					.sendMessagesToGateway(smsTask
-							.getMessagesWithStatus(SmsConst_DeliveryStatus.STATUS_PENDING));
+											SmsConst_DeliveryStatus.STATUS_PENDING));
 
-			session = getHibernateLogicLocator().getSmsTaskLogic()
-					.getNewHibernateSession();
+			String submissionStatus = smsSmpp.sendMessagesToGateway(messageList);
+
+			// Calculate number of messages actually sent and the total cost
+			double credits = 0;
+			int sent = 0;
+			int errors = 0;
+			
+			for (SmsMessage sentMessage : messageList) {
+				if (SmsConst_DeliveryStatus.STATUS_SENT.equals(sentMessage.getStatusCode())) {
+					credits += sentMessage.getCredits();
+					sent++;
+				}
+
+				if (SmsConst_DeliveryStatus.STATUS_ERROR.equals(sentMessage.getStatusCode())) {
+					errors++;
+				}
+			}
+			
+			// Lock and update the task 
+			
+			session = getHibernateLogicLocator().getSmsTaskLogic().getNewHibernateSession();
 			tx = session.beginTransaction();
 
-			// SMS-128/113 : lock the task so that other schedulers won't
-			// pick it up causing duplicate settlements
+			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(), LockMode.UPGRADE);
 			
-			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(),
-					LockMode.UPGRADE);
-			
-			// FIXME check status code 
-
 			smsTask.setStatusCode(submissionStatus);
 			smsTask.setDateProcessed(new Date());
+			
+			smsTask.setCreditsActual(smsTask.getCreditsActual() + credits);
+			smsTask.setMessagesProcessed(smsTask.getMessagesProcessed() + sent + errors);
 
-			if (smsTask.getStatusCode().equals(
-					SmsConst_DeliveryStatus.STATUS_INCOMPLETE)
-					|| smsTask.getStatusCode().equals(
-							SmsConst_DeliveryStatus.STATUS_RETRY)) {
+			if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_INCOMPLETE) ||
+				smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_RETRY)) {
+				
+				// Reschedule for later delivery if necessary
 				Calendar now = Calendar.getInstance();
 				now.add(Calendar.SECOND, systemConfig.getSmsRetryScheduleInterval());
 				smsTask.rescheduleDateToSend(new Date(now.getTimeInMillis()));
@@ -692,6 +721,7 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (Exception e) {
 			
 			LOG.error(getExceptionStackTraceAsString(e), e);
+			
 			if (tx != null) {
 				tx.rollback();
 			}
@@ -719,6 +749,10 @@ public class SmsCoreImpl implements SmsCore {
 	}
 	
 	public void processTimedOutDeliveryReports() {
+		
+		// TODO - SENT messages are billed upfront. If there's no billing
+		// change from the lack of a delivery report, then this state
+		// transition is not really meaningful.
 		
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 			.getOrCreateSystemSmsConfig();
@@ -754,9 +788,6 @@ public class SmsCoreImpl implements SmsCore {
 						smsMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
 						session.update(smsMessage);
 						tx.commit();
-						
-						hibernateLogicLocator.getSmsTaskLogic()
-							.incrementMessagesProcessed(message.getSmsTask());
 					} else {
 						// another process has updated this message, ignore it
 						tx.rollback();
@@ -849,20 +880,18 @@ public class SmsCoreImpl implements SmsCore {
 							+ smsTask.getId());
 			return false;
 		}
-		Long credits = account.getCredits();
+		double credits = account.getCredits();
 
 		if (!account.getAccountEnabled()) {
-			credits = 0L;
-		} else if (account.getOverdraftLimit() != null) {
+			credits = 0;
+		} else {
 			// Add the overdraft to the available balance
 			credits += account.getOverdraftLimit();
 		}
 
-		String creditsAvailable = Long.toString(credits);
+		String creditsAvailable = Double.valueOf(credits).toString();
 		String creditsRequired = "";
-		if (smsTask.getCreditEstimate() != null) {
-			creditsRequired = Long.toString(smsTask.getCreditEstimate());
-		}
+		creditsRequired = Double.valueOf(smsTask.getCreditEstimate()).toString();
 
 		// Email address for the task owner
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
@@ -1021,8 +1050,8 @@ public class SmsCoreImpl implements SmsCore {
 							+ smsTask.getStatusCode());
 					
 					// We need to get these values inside the transaction
-					int creditEstimate = smsTask.getCreditEstimateInt();
-					int actualCreditsUsed = smsTask.getMessagesDelivered();
+					double creditEstimate = smsTask.getCreditEstimate();
+					double actualCreditsUsed = smsTask.getCreditsActual();
 						
 					smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
 					smsTask.setBilledCredits(actualCreditsUsed);
@@ -1095,12 +1124,12 @@ public class SmsCoreImpl implements SmsCore {
 							.getId(), LockMode.UPGRADE);
 
 					if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED) &&
-							smsTask.getBilledCredits() < smsTask.getMessagesDelivered()) {
+							smsTask.getBilledCredits() < smsTask.getCreditsActual()) {
 
 						// We need to get these values inside the transaction
-						int adjustment = smsTask.getMessagesDelivered() - smsTask.getBilledCredits();
+						double adjustment = smsTask.getCreditsActual() - smsTask.getBilledCredits();
 
-						smsTask.setBilledCredits(smsTask.getMessagesDelivered());
+						smsTask.setBilledCredits(smsTask.getCreditsActual());
 						session.update(smsTask);
 						tx.commit();
 
@@ -1126,8 +1155,7 @@ public class SmsCoreImpl implements SmsCore {
 	private void checkOverdraft(SmsTask smsTask) {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
-		if (account.getOverdraftLimit() != null
-				&& (account.getCredits() < (-1 * account.getOverdraftLimit()))) {
+		if (account.getCredits() < (-1 * account.getOverdraftLimit())) {
 
 			sendEmailNotification(smsTask,
 					SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED);

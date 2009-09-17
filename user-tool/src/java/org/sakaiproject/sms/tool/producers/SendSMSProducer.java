@@ -204,13 +204,9 @@ public class SendSMSProducer implements ViewComponentProducer,
 						UIOutput.make(tofill, "console-selected", (smsTask
 								.getGroupSizeEstimate() == null) ? 0 + ""
 								: smsTask.getGroupSizeEstimate() + "");
-						UIOutput.make(tofill, "console-credits", (smsTask
-								.getCreditEstimate() == null) ? 0 + ""
-								: smsTask.getCreditEstimate() + "");
-						UIOutput.make(tofill, "console-cost", (smsTask
-								.getCostEstimate() == null) ? currencyUtil
-								.toServerLocale(0)
-								+ "" : currencyUtil.toServerLocale((smsTask
+						UIOutput.make(tofill, "console-credits", Double.valueOf(smsTask
+								.getCreditEstimate()).toString());
+						UIOutput.make(tofill, "console-cost", currencyUtil.toServerLocale((smsTask
 								.getCostEstimate())));
 					}
 

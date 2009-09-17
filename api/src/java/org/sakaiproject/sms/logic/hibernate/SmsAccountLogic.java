@@ -97,11 +97,4 @@ public interface SmsAccountLogic {
 	 */
 	public void recalculateAccountBalance(Long accountId, SmsAccount account);
 	
-	/**
-	 * Get the currency balance of the account rounded off to 2 decimal places
-	 * @param credits
-	 * 			the credits
-	 * @return currency balance
-	 */
-	public float getAccountBalance(Long credits);
 }

@@ -23,6 +23,7 @@ package org.sakaiproject.sms.model.hibernate;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**
@@ -45,13 +46,13 @@ public class SmsTransaction extends BaseModel {
 	/**
 	 * The amount of credits available in the account. 1 sms= 1 credit.
 	 */
-	private Long creditBalance;
+	private double creditBalance;
 
 	/** The sakai user id. This is the user who request the sms task. */
 	private String sakaiUserId;
 
 	/** The transaction credits. */
-	private Integer transactionCredits;
+	private double transactionCredits;
 
 	/** The transaction date. */
 	private Date transactionDate;
@@ -64,7 +65,6 @@ public class SmsTransaction extends BaseModel {
 
 	/** The sms task id. */
 	private Long smsTaskId;
-
 	
 	/** The transaction description */
 	private String description;
@@ -80,8 +80,8 @@ public class SmsTransaction extends BaseModel {
 	/**
 	 * Instantiates a new sms transaction.
 	 */
-	public SmsTransaction(long credits, String sakaiUserId,
-			Integer transactionCredits, Date transactionDate,
+	public SmsTransaction(double credits, String sakaiUserId,
+			double transactionCredits, Date transactionDate,
 			String transactionTypeCode) {
 		super();
 		this.creditBalance = credits;
@@ -107,7 +107,7 @@ public class SmsTransaction extends BaseModel {
 	 * 
 	 * @return the transaction credits
 	 */
-	public Integer getTransactionCredits() {
+	public double getTransactionCredits() {
 		return transactionCredits;
 	}
 
@@ -145,7 +145,7 @@ public class SmsTransaction extends BaseModel {
 	 * @param transactionCredits
 	 *            the new transaction credits
 	 */
-	public void setTransactionCredits(Integer transactionCredits) {
+	public void setTransactionCredits(double transactionCredits) {
 		this.transactionCredits = transactionCredits;
 	}
 
@@ -226,25 +226,8 @@ public class SmsTransaction extends BaseModel {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((creditBalance == null) ? 0 : creditBalance.hashCode());
-		result = prime * result
-				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
-		result = prime * result
-				+ ((smsTaskId == null) ? 0 : smsTaskId.hashCode());
-		result = prime
-				* result
-				+ ((transactionCredits == null) ? 0 : transactionCredits
-						.hashCode());
-		result = prime * result
-				+ ((transactionDate == null) ? 0 : transactionDate.hashCode());
-		result = prime
-				* result
-				+ ((transactionTypeCode == null) ? 0 : transactionTypeCode
-						.hashCode());
-		return result;
+		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
+				SmsTransaction.class);		
 	}
 
 	@Override
@@ -254,11 +237,10 @@ public class SmsTransaction extends BaseModel {
 		if (obj == null)
 			return false;
 		SmsTransaction other = (SmsTransaction) obj;
-		if (creditBalance == null) {
-			if (other.creditBalance != null)
+		if (creditBalance != other.creditBalance) {
 				return false;
-		} else if (!creditBalance.equals(other.creditBalance))
-			return false;
+		}
+	
 		if (sakaiUserId == null) {
 			if (other.sakaiUserId != null)
 				return false;
@@ -269,11 +251,9 @@ public class SmsTransaction extends BaseModel {
 				return false;
 		} else if (!smsTaskId.equals(other.smsTaskId))
 			return false;
-		if (transactionCredits == null) {
-			if (other.transactionCredits != null)
+		if (transactionCredits != other.transactionCredits) {
 				return false;
-		} else if (!transactionCredits.equals(other.transactionCredits))
-			return false;
+		} 
 		if (transactionDate == null) {
 			if (other.transactionDate != null)
 				return false;
@@ -287,11 +267,11 @@ public class SmsTransaction extends BaseModel {
 		return true;
 	}
 
-	public Long getCreditBalance() {
+	public double getCreditBalance() {
 		return creditBalance;
 	}
 
-	public void setCreditBalance(Long creditBalance) {
+	public void setCreditBalance(double creditBalance) {
 		this.creditBalance = creditBalance;
 	}
 

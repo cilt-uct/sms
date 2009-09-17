@@ -41,7 +41,7 @@ public interface SmsBilling {
 	 * @param creditsToCredit
 	 * @param description 
 	 */
-	public void creditAccount(Long accountId, long creditsToCredit, String Description);
+	public void creditAccount(Long accountId, double creditsToCredit, String Description);
 
 	/**
 	 * Return true of the account has the required credits available. Take into
@@ -57,7 +57,7 @@ public interface SmsBilling {
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(Long accountID,
-			Integer creditsRequired, boolean overDraftCheck);
+			double creditsRequired, boolean overDraftCheck);
 
 	/**
 	 * 
@@ -89,7 +89,7 @@ public interface SmsBilling {
 	 * 
 	 * @return the double
 	 */
-	public Long convertAmountToCredits(Float amount);
+	public double convertAmountToCredits(double amount);
 
 	/**
 	 * Convert the given credits to currency base on the defined conversion
@@ -100,7 +100,7 @@ public interface SmsBilling {
 	 * 
 	 * @return the credit amount
 	 */
-	public Float convertCreditsToAmount(long creditCount);
+	public double convertCreditsToAmount(double creditCount);
 
 	/**
 	 * Use Sakai siteID, Sakai userID and account type to get a valid account
@@ -165,7 +165,7 @@ public interface SmsBilling {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean settleCreditDifference(SmsTask smsTask, int creditEstimate, int actualCreditsUsed);
+	public boolean settleCreditDifference(SmsTask smsTask, double creditEstimate, double actualCreditsUsed);
 
 	/**
 	 * Debit account for messages that came in late.
@@ -174,7 +174,7 @@ public interface SmsBilling {
 	 * @param credits The number of credits to debit
 	 * @return
 	 */
-	public boolean debitLateMessages(SmsTask smsTask, int credits);
+	public boolean debitLateMessages(SmsTask smsTask, double credits);
 
 	/**
 	 * Retrieve code for reserving credits (default if none specified)

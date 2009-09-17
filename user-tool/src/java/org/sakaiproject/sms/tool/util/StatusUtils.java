@@ -58,7 +58,7 @@ public class StatusUtils {
 		lib.put(SmsConst_DeliveryStatus.STATUS_PENDING, key_time);
 		lib.put(SmsConst_DeliveryStatus.STATUS_RETRY, key_time);
 		lib.put(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED, key_tick);
-		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_cross);
+		lib.put(SmsConst_DeliveryStatus.STATUS_TIMEOUT, key_phone);
 		return lib;	
 	}
 	

@@ -1,6 +1,8 @@
 package org.sakaiproject.sms.logic.external;
 
 import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 
@@ -23,8 +25,41 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 		return serverConfigurationService.getString(ExternalLogic.PREF_LOCAL_PREFIX, ExternalLogic.PREF_LOCAL_PREFIX_DEFAULT);
 	}
 	
+	/** 
+	 * Set routing and cost information for this message.
+	 * @param message The message to route
+	 * @return true if the message is routable, otherwise false.
+	 */
+	public boolean getRoutingInfo(SmsMessage message) {
+		
+		if (message == null || !isNumberRoutable(message.getMobileNumber())) {
+			return false;
+		}
+		
+		// TODO - generalize with a routing table which maps prefix to gateway and cost. 
+		// For now, hardcode some assumptions for a single gateway / Clickatell / South Africa
+		
+		message.setSmscId(SmsConstants.SMSC_ID);
+		
+		// Clickatell test number range = 0.3 credits, otherwise 1
+		
+		if (message.getMobileNumber().startsWith("2799")) {
+			message.setCredits(0.3);
+		} else {
+			message.setCredits(1.0);
+		}
+		
+		return true;
+	}
+	
 	public boolean isNumberRoutable(String mobileNumber) {
 		if (mobileNumber == null || "".equals(mobileNumber)) {
+			return false;
+		}
+		
+		// We know mobile numbers in South Africa are 11 digits (international form)
+		// TODO - generalize this, so country / length mappings can be set in a properties file.
+		if (mobileNumber.startsWith("27") && mobileNumber.length() != 11) {
 			return false;
 		}
 		

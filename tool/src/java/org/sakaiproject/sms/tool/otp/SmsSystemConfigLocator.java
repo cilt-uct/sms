@@ -52,12 +52,11 @@ public class SmsSystemConfigLocator implements BeanLocator {
 
 	public void save() {
 		for (SmsConfig systemConfig : delivered.values()) {
+			
 			// round by 2 decimal places, if logic is placed in SMSConfig a
 			// InvocationTargetException occurs
-			if (systemConfig.getCreditCost() != null) {
-				systemConfig.setCreditCost(Math.round(systemConfig
-						.getCreditCost() * 100) * 0.01f);
-			}
+			systemConfig.setCreditCost(Math.floor(systemConfig
+						.getCreditCost() * 100) * 0.01);
 			smsConfigLogic.persistSmsConfig(systemConfig);
 		}
 	}

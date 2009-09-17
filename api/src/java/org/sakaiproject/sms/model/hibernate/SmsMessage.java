@@ -59,6 +59,9 @@ public class SmsMessage extends BaseModel {
 
 	/** Unique mobile number to send the message to. */
 	private String mobileNumber;
+	
+	/** Number of credits charged by gateway to deliver this message */
+	private Double credits;
 
 	/**
 	 * The sakai user that will receive the message. May be empty in the case of
@@ -109,8 +112,6 @@ public class SmsMessage extends BaseModel {
 	public SmsMessage() {
 		super();
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
-		
-
 	}
 
 	/**
@@ -127,7 +128,6 @@ public class SmsMessage extends BaseModel {
 		this.mobileNumber = mobileNumber;
 		this.statusCode = SmsConst_DeliveryStatus.STATUS_PENDING;
 		this.setDateQueued(new Date());
-
 	}
 
 	/**
@@ -472,6 +472,14 @@ public class SmsMessage extends BaseModel {
 		if (submitResult != other.submitResult)
 			return false;
 		return true;
+	}
+
+	public void setCredits(Double credits) {
+		this.credits = credits;
+	}
+
+	public Double getCredits() {
+		return credits;
 	}
 
 }

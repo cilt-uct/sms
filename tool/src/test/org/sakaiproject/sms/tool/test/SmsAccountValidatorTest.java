@@ -42,7 +42,6 @@ public class SmsAccountValidatorTest extends TestCase {
 	private static String ACCOUNT_NAME_FIELD = "accountName";
 	private static String SAKAI_SITE_ID_FIELD = "sakaiSiteId";
 	private static String SAKAI_USER_ID_FIELD = "sakaiUserId";
-	private static String CREDITS_FIELD = "credits";
 
 	private static int VALID_MAX_FIELD_SIZE = 99;
 
@@ -133,26 +132,15 @@ public class SmsAccountValidatorTest extends TestCase {
 	}
 
 	/**
-	 * Test null balance
-	 */
-	public void testBalance_null() {
-		account.setCredits(null);
-		validator.validate(account, errors);
-		assertTrue(errors.hasFieldErrors(CREDITS_FIELD));
-		assertEquals("sms.errors.credits.invalid", errors.getFieldError()
-				.getCode());
-	}
-
-	/**
 	 * If MessageTypeCode is null, none of the validation should run We are
 	 * actually dependant on this behaviour for the datepicker + cancel button
 	 * to work on the Account page
 	 */
 	public void testMessageTypeCode_null() {
 		account.setMessageTypeCode(null);
-		account.setCredits(null);
+		account.setCredits(0);
 		account.setAccountName(null);
-		account.setOverdraftLimit(null);
+		account.setOverdraftLimit(0);
 		account.setSakaiSiteId(null);
 		validator.validate(account, errors);
 		assertFalse(errors.hasErrors());

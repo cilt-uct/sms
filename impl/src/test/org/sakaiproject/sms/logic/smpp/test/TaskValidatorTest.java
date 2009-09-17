@@ -53,7 +53,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		account.setSakaiSiteId("TaskValidatorTest"
 				+ SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		account.setMessageTypeCode("");
-		account.setCredits(10L);
+		account.setCredits(10);
 		account.setAccountName("TaskValidatorTest account name");
 		account.setStartdate(new Date());
 		account.setAccountEnabled(true);

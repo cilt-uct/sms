@@ -44,21 +44,64 @@ import org.sakaiproject.sms.util.DateUtil;
  */
 public class SmsTask extends BaseModel {
 
-	/**
-	 * 
-	 */
+	/** Serial number */
 	private static final long serialVersionUID = 1L;
 
 	/** Maximum length of FAIL_REASON field in database */
-	private int MAX_FAIL_LEN = 200;
+	private static final int MAX_FAIL_LEN = 200;
 	
 	/**
-	 * Approximate credit cost for this task as calculated when the task is
+	 * Type of task, SO (system originating) and MO (mobile originating).
+	 */
+	private Integer messageTypeId;
+
+	// Fields relate to size estimates, credit usage and billing
+	
+	/** The sms account (cost centre) that will pay for the messages. */
+	private Long smsAccountId;
+
+	/** The estimated Sakai group size. Calculated when the task is created. */
+	private Integer groupSizeEstimate;
+
+	/** The actual Sakai group size. Calculated when the task is processed. */
+	private Integer groupSizeActual = null;
+
+	/**
+	 * Cost of a credit at time of task creation
+	 */
+	private double creditCost;
+
+	/**
+	 * Approximate number of credits for this task as calculated when the task is
 	 * created. The exact credits can only be calculated when the task is
 	 * processed and this might happen in the future.
 	 */
-	private Integer creditEstimate;
+	private double creditEstimate;
 
+	/**
+	 * The number of credits billed to the account for this task. Used when task is COMPLETE.
+	 */
+	private double creditsBilled;
+
+	/**
+	 * Actual number of credits used for this task.
+	 */
+	private double creditsActual;
+
+	/**
+	 * The total number of smsMessages delivered. That is the messages that was
+	 * reported as DELIVERED by the SMPP gateway.
+	 */
+	private int messagesDelivered;
+
+	/**
+	 * The total number of smsMessages processed. This is the meesages that was
+	 * send to the SMPP gateway.
+	 */
+	private int messagesProcessed;
+	
+	// Date/time fields
+	
 	/** The date-time when the task was successfully create. */
 	private Date dateCreated;
 
@@ -75,38 +118,15 @@ public class SmsTask extends BaseModel {
 	 */
 	private Date dateToSend;
 
-	/** The Sakai group who will receive the message, empty if not applicable. */
-	private String deliveryGroupId;
-
-	/** The friendly name of the Sakai group. */
-	private String deliveryGroupName;
-
-	/** Will be used for incoming messages. For phase II. */
-	private String deliveryUserId;
-
-	/** The actual Sakai group size. Calculated when the task is processed. */
-	private Integer groupSizeActual = null;
-
-	/** The estimated Sakai group size. Calculated when the task is created. */
-	private Integer groupSizeEstimate;
-
 	/**
-	 * The estimated currency cost of this sms task. Based on the cost per
-	 * credit at the time of calculation.
+	 * The date the task will expire on.It is calculated using maxTimeToLive.
 	 */
-	private Double costEstimate;
+	private Date dateToExpire;
 
-	/** The message body. Already validated for character set, length etc. */
-	private String messageBody;
+	// Status information
 
-	/** The message body. Already validated for character set, length etc. */
-	private String messageReplyBody;
-
-	/**
-	 * Type of task, SO (system originating) and MO (mobile originating) for
-	 * now.
-	 */
-	private Integer messageTypeId;
+	/** Current status of this task. See SmsConst_TaskDeliveryStatus */
+	private String statusCode;
 
 	/**
 	 * Number of delivery attempts until the task is marked as failed. The
@@ -114,6 +134,18 @@ public class SmsTask extends BaseModel {
 	 * down.
 	 */
 	private Integer attemptCount;
+
+	/**
+	 * The maximum amount of minutes to allow this task to be pending since it
+	 * date-to-deliver. Some tasks like announcements are time critical and is
+	 * not relevant when it is sent out too late.
+	 */
+	private Integer maxTimeToLive;
+
+	/** The reason for a task failing */
+	private String failReason;
+
+	// Sender info
 
 	/** The sakai site from where the sms task originated. */
 	private String sakaiSiteId;
@@ -127,38 +159,52 @@ public class SmsTask extends BaseModel {
 	/** The Sakai user name of the sender. */
 	private String senderUserName;
 
-	/** The sms account (cost centre) that will pay for the messages. */
-	private Long smsAccountId;
-
 	/** The sender user id. */
 	private String senderUserId;
 
-	/**
-	 * The total number of smsMessages delivered. That is the messages that was
-	 * reported as DELIVERED by the SMPP gateway.
-	 */
-	private int messagesDelivered;
-
-	/**
-	 * The number of credits billed for this task. Used when task is COMPLETE.
-	 */
-	private int billedCredits;
+	// Recipient info
 	
-	/**
-	 * The total number of smsMessages processed. This is the meesages that was
-	 * send to the SMPP gateway.
-	 */
-	private int messagesProcessed;
+	/** The Sakai group who will receive the message, empty if not applicable. */
+	private String deliveryGroupId;
 
-	/** The reason for a task failing */
-	private String failReason;
+	/** The friendly name of the Sakai group. */
+	private String deliveryGroupName;
 
-	private double creditCost;
+	/** Used for incoming messages. */
+	private String deliveryUserId;
 
+	/** List of recipient user ids */
 	private Set<String> sakaiUserIdsList = new HashSet<String>();
 
+	/** Comma-separated list of recipient ids in a string */
 	private String sakaiUserIds;
 
+	/**
+	 * A comma separated list of mobile numbers the internal representation
+	 */
+	private String deliveryMobileNumbers;
+
+	/**
+	 * A comma separated list of delivery group ids
+	 */
+	private String deliveryEntities;
+
+	/**
+	 * The sms messages for this task. This will be generated when the task is
+	 * processed.
+	 */
+	private transient Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
+
+	// Message content
+
+	/** The message body. Already validated for character set, length etc. */
+	private String messageBody;
+
+	/** The message reply body. Already validated for character set, length etc. */
+	private String messageReplyBody;
+
+	// Methods
+	
 	public Set<String> getSakaiUserIdsList() {
 
 		if (sakaiUserIds == null) {
@@ -215,27 +261,6 @@ public class SmsTask extends BaseModel {
 	}
 
 	/**
-	 * The sms messages for this task. This will be generated when the task is
-	 * processed.
-	 */
-	private transient Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
-
-	/** Current status of this task. See SmsConst_TaskDeliveryStatus */
-	private String statusCode;
-
-	/**
-	 * The maximum amount of minutes to allow this task to be pending since it
-	 * date-to-deliver. Some tasks like announcements are time critical and is
-	 * not relevant when it is sent out too late.
-	 */
-	private Integer maxTimeToLive;
-
-	/**
-	 * The date the task will expire on.It is calculated using maxTimeToLive.
-	 */
-	private Date dateToExpire;
-
-	/**
 	 * Gets the date the task will expire on.
 	 * 
 	 * @return
@@ -252,16 +277,6 @@ public class SmsTask extends BaseModel {
 	public void setDateToExpire(Date dateToExpire) {
 		this.dateToExpire = dateToExpire;
 	}
-
-	/**
-	 * A comma separated list of mobile numbers the internal representation
-	 */
-	private String deliveryMobileNumbers;
-
-	/**
-	 * A comma separated list of delivery group ids
-	 */
-	private String deliveryEntities;
 
 	/**
 	 * Instantiates a new sms task.
@@ -292,8 +307,8 @@ public class SmsTask extends BaseModel {
 		return attemptCount;
 	}
 
-	public Double getCostEstimate() {
-		return costEstimate;
+	public double getCostEstimate() {
+		return creditCost * creditEstimate;
 	}
 
 	/**
@@ -301,21 +316,8 @@ public class SmsTask extends BaseModel {
 	 * 
 	 * @return the credit estimate
 	 */
-	public Integer getCreditEstimate() {
+	public double getCreditEstimate() {
 		return creditEstimate;
-	}
-
-	/**
-	 * Gets the credit estimate.
-	 * 
-	 * @return the credit estimate
-	 */
-	public Integer getCreditEstimateInt() {
-		if (creditEstimate == null) {
-			return 0;
-		} else {
-			return creditEstimate;
-		}
 	}
 
 	/**
@@ -557,17 +559,13 @@ public class SmsTask extends BaseModel {
 		this.attemptCount = attemptCount;
 	}
 
-	public void setCostEstimate(Double costEstimate) {
-		this.costEstimate = costEstimate;
-	}
-
 	/**
 	 * Sets the credit estimate.
 	 * 
 	 * @param creditEstimate
 	 *            the new credit estimate
 	 */
-	public void setCreditEstimate(Integer creditEstimate) {
+	public void setCreditEstimate(double creditEstimate) {
 		this.creditEstimate = creditEstimate;
 	}
 
@@ -943,11 +941,19 @@ public class SmsTask extends BaseModel {
 		this.messageReplyBody = messageReplyBody;
 	}
 
-	public void setBilledCredits(int billedCredits) {
-		this.billedCredits = billedCredits;
+	public void setBilledCredits(double billedCredits) {
+		this.creditsBilled = billedCredits;
 	}
 
-	public int getBilledCredits() {
-		return billedCredits;
+	public double getBilledCredits() {
+		return creditsBilled;
+	}
+
+	public void setCreditsActual(double creditsActual) {
+		this.creditsActual = creditsActual;
+	}
+
+	public double getCreditsActual() {
+		return creditsActual;
 	}
 }

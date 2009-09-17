@@ -149,7 +149,7 @@ public static final String VIEW_ID = "sms";
 						savedSelectionsRenderer.renderSelections(smsTask, wrapper, "savedSelections:");
 						
 						UIMessage.make(wrapper, "cost", "ui.inprogress.sms.cost.title");
-						UIOutput.make(wrapper, "cost-credits", (smsTask.getCreditEstimate() == null) ? 0 + "" : smsTask.getCreditEstimate() + "");
+						UIOutput.make(wrapper, "cost-credits", Double.valueOf(smsTask.getCreditEstimate()).toString());
 						
 						UIOutput.make(wrapper, "cost-cost", currencyUtil.toServerLocale(( smsTask.getCostEstimate() )) );
 						

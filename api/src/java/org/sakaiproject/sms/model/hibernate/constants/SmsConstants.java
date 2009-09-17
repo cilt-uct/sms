@@ -93,12 +93,12 @@ public class SmsConstants {
 	/**
 	 * The default overdraft limit
 	 */
-	public static final Long OVERDRAFT_LIMIT = 1000L;
+	public static final double OVERDRAFT_LIMIT = 1000;
 
 	/**
 	 * The default initial balance for an account
 	 */
-	public static final Long INITIAL_CREDITS = 0L;
+	public static final double INITIAL_CREDITS = 0;
 
 	/** Max sms length */
 	public static final int MAX_SMS_LENGTH = 160;

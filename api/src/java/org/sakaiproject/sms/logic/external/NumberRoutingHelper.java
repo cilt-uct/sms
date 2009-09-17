@@ -20,6 +20,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
+import org.sakaiproject.sms.model.hibernate.SmsMessage;
+
 /**
  * Helper methods to give information about the routing of numbers
  * @author dhorwitz
@@ -69,5 +71,13 @@ public interface NumberRoutingHelper {
 	 * @return The normalized number in international form
 	 */
 	public String normalizeNumber(String mobileNumber);
+
+	/** 
+	 * Set routing (SMSC ID) and cost information (credits) for this message, in the
+	 * respective message fields.
+	 * @param message The message to route
+	 * @return true if the message is routable, otherwise false.
+	 */
+	public boolean getRoutingInfo(SmsMessage message);
 
 }

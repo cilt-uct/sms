@@ -362,7 +362,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		});
 
 		// Calculate balance
-		Long credits = 0l;
+		double credits = 0;
 		for (SmsTransaction transaction : transactions) {
 			credits += transaction.getTransactionCredits();
 		}
@@ -370,11 +370,8 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		persistSmsAccount(account);
 	}
 
-	public float getAccountBalance(Long credits) {
-		float balance = 0F;
-		if (credits != null) {
-			balance = smsBilling.convertCreditsToAmount(credits);
-		}
-		return balance;
+	public double getAccountBalance(double credits) {
+	
+		return smsBilling.convertCreditsToAmount(credits);
 	}
 }

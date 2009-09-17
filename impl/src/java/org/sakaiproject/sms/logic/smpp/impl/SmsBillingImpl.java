@@ -106,14 +106,13 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param creditsToDebit
 	 */
 	public synchronized void creditAccount(final Long accountId,
-			final long creditsToDebit, String description) {
+			final double creditsToDebit, String description) {
 
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountId);
 
 		SmsTransaction smsTransaction = new SmsTransaction();
-		smsTransaction.setTransactionCredits(Long.valueOf(creditsToDebit)
-				.intValue());
+		smsTransaction.setTransactionCredits(creditsToDebit);
 		smsTransaction.setCreditBalance(creditsToDebit);
 		smsTransaction.setSakaiUserId(account.getSakaiUserId());
 		smsTransaction.setSmsAccount(account);
@@ -170,7 +169,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @return true, if sufficient credits
 	 */
 	public synchronized boolean checkSufficientCredits(Long accountID,
-			Integer creditsRequired) {
+			double creditsRequired) {
 
 		return this.checkSufficientCredits(accountID, creditsRequired, false);
 	}
@@ -188,14 +187,13 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @return true, if sufficient credits
 	 */
 	public synchronized boolean checkSufficientCredits(Long accountID,
-			Integer creditsRequired, boolean overDraftCheck) {
+			double creditsRequired, boolean overDraftCheck) {
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountID);
 
 		// Account is null or disabled
 		if (account == null
 				|| !account.getAccountEnabled()
-				|| creditsRequired == null
 				|| creditsRequired < 0
 				|| (account.getEnddate() != null && account.getEnddate()
 						.before(new Date()))) {
@@ -204,13 +202,13 @@ public class SmsBillingImpl implements SmsBilling {
 
 		boolean sufficientCredit = false;
 
-		Long avalibleCredits = account.getCredits();
+		double availableCredits = account.getCredits();
 
-		if (overDraftCheck && account.getOverdraftLimit() != null) {
-			avalibleCredits += account.getOverdraftLimit();
+		if (overDraftCheck) {
+			availableCredits += account.getOverdraftLimit();
 		}
 
-		if (avalibleCredits >= creditsRequired) {
+		if (availableCredits >= creditsRequired) {
 			sufficientCredit = true;
 		}
 
@@ -225,11 +223,10 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the double
 	 */
-	public Long convertAmountToCredits(Float amount) {
+	public double convertAmountToCredits(double amount) {
 		final SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
-		final Float result = (amount / config.getCreditCost());
-		return result.longValue();
+		return (amount / config.getCreditCost());
 	}
 
 	/**
@@ -241,7 +238,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return the credit amount
 	 */
-	public Float convertCreditsToAmount(long creditCount) {
+	public double convertCreditsToAmount(double creditCount) {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig();
 		return config.getCreditCost() * creditCount;
@@ -310,8 +307,8 @@ public class SmsBillingImpl implements SmsBilling {
 
 		// Set transaction credit and Credits to negative number because we are
 		// reserving.
-		int credits = smsTask.getCreditEstimate() * -1;
-		smsTransaction.setCreditBalance(Long.valueOf(credits));
+		double credits = smsTask.getCreditEstimate() * -1;
+		smsTransaction.setCreditBalance(credits);
 		smsTransaction.setTransactionCredits(credits);
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(account);
@@ -330,7 +327,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param smsTask
 	 * @return true, if successful
 	 */
-	public synchronized boolean debitLateMessages(SmsTask smsTask, int credits) {
+	public synchronized boolean debitLateMessages(SmsTask smsTask, double credits) {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
@@ -425,10 +422,10 @@ public class SmsBillingImpl implements SmsBilling {
 		}
 
 		// The juicy bits
-		int transactionCredits = origionalTransaction.getTransactionCredits()
+		double transactionCredits = origionalTransaction.getTransactionCredits()
 				* -1;// Reverse the sign cause we are deducting from the account
 		smsTransaction.setTransactionCredits(transactionCredits);
-		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
+		smsTransaction.setCreditBalance(transactionCredits);
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());
 		smsTransaction.setSmsAccount(smsAccount);
@@ -450,7 +447,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean settleCreditDifference(SmsTask smsTask, int creditEstimate, int actualCreditsUsed) {
+	public boolean settleCreditDifference(SmsTask smsTask, double creditEstimate, double actualCreditsUsed) {
 		// we might want to use a separate account to pay when the overdraft is
 		// exceeded.
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
@@ -463,8 +460,8 @@ public class SmsBillingImpl implements SmsBilling {
 		SmsTransaction smsTransaction = new SmsTransaction();
 
 		// The juicy bits
-		int transactionCredits = creditEstimate - actualCreditsUsed;
-		smsTransaction.setCreditBalance(Long.valueOf(transactionCredits));
+		double transactionCredits = creditEstimate - actualCreditsUsed;
+		smsTransaction.setCreditBalance(transactionCredits);
 		smsTransaction.setTransactionCredits(transactionCredits);
 
 		smsTransaction.setSakaiUserId(smsTask.getSenderUserId());

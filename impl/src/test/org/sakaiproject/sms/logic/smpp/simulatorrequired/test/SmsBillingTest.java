@@ -183,8 +183,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 * Test convert amount to credits.
 	 */
 	public void testConvertAmountToCredits() {
-		float amount = smsBillingImpl.convertCreditsToAmount(testCredits);
-		Long credits = smsBillingImpl.convertAmountToCredits(amount);
+		double amount = smsBillingImpl.convertCreditsToAmount(testCredits);
+		double credits = smsBillingImpl.convertAmountToCredits(amount);
 		assertTrue(credits == testCredits);
 	}
 
@@ -283,14 +283,14 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 */
 	public void testSettleCreditDifference() {
 		int creditEstimate = 50;
-		Long origionalAccBalance = 150l;
+		Long originalAccBalance = 150l;
 
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("3");
 		smsAccount.setSakaiSiteId("3");
 		smsAccount.setMessageTypeCode("3");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(origionalAccBalance);
+		smsAccount.setCredits(originalAccBalance);
 		smsAccount.setAccountName("accountname");
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()
@@ -323,16 +323,16 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		assertNotNull(smsAccount);
 
 		// Account was credited
-		assertTrue(smsAccount.getCredits() < origionalAccBalance);
+		assertTrue(smsAccount.getCredits() < originalAccBalance);
 
-		smsBillingImpl.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), smsTask.getMessagesDelivered());
+		smsBillingImpl.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), smsTask.getCreditsActual());
 
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 
 		// Account balance was returnd to origional state since the actual
 		// groups size on the task was zero
-		assertTrue(smsAccount.getCredits().equals(origionalAccBalance));
+		assertTrue(smsAccount.getCredits() == originalAccBalance);
 
 	}
 
@@ -340,7 +340,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	 * Test cancel pending request.
 	 */
 	public void testCancelPendingRequest() {
-		Long origionalCreditBalance = 100L;
+		Long originalCreditBalance = 100L;
 		int creditEstimate = 50;
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -348,7 +348,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiSiteId("4");
 		smsAccount.setMessageTypeCode("12345");
 		smsAccount.setOverdraftLimit(1000L);
-		smsAccount.setCredits(origionalCreditBalance);
+		smsAccount.setCredits(originalCreditBalance);
 		smsAccount.setAccountName("accountName");
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()
@@ -379,14 +379,14 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits() < origionalCreditBalance);
+		assertTrue(retAccount.getCredits() < originalCreditBalance);
 
 		smsBillingImpl.cancelPendingRequest(smsTask.getId());
 		// Check the credits have been reserved.
 		retAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
 		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits().equals(origionalCreditBalance));
+		assertTrue(retAccount.getCredits() == originalCreditBalance);
 	}
 
 	/**

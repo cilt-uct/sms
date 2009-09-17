@@ -20,6 +20,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.model.hibernate;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Some site specific configuration info for the sms tool. Configuration info
  * could also be set up for a specific tool in a specific site or sytem whide by
@@ -82,7 +84,7 @@ public class SmsConfig extends BaseModel {
 	private Integer maxActiveThreads;
 
 	/** Some accounts will be allowed to have a overdraft limit. */
-	private Long overdraftLimit;
+	private double overdraftLimit;
 
 	/**
 	 * The maximum amount of minutes to wait for a delivery report for each
@@ -91,7 +93,7 @@ public class SmsConfig extends BaseModel {
 	private Integer delReportTimeoutDuration;
 
 	/** The cost of one credit */
-	private Float creditCost;
+	private double creditCost;
 
 	// use the site account for all transactions rather than the user's own
 	// account
@@ -351,57 +353,9 @@ public class SmsConfig extends BaseModel {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((creditCost == null) ? 0 : creditCost.hashCode());
-		result = prime
-				* result
-				+ ((delReportTimeoutDuration == null) ? 0
-						: delReportTimeoutDuration.hashCode());
-		result = prime * result
-				+ ((incomingEnabled == null) ? 0 : incomingEnabled.hashCode());
-		result = prime
-				* result
-				+ ((notificationEmail == null) ? 0 : notificationEmail
-						.hashCode());
-		result = prime
-				* result
-				+ ((notificationEmailBilling == null) ? 0
-						: notificationEmailBilling.hashCode());
-		result = prime
-				* result
-				+ ((notificationEmailSent == null) ? 0 : notificationEmailSent
-						.hashCode());
-		result = prime * result
-				+ ((overdraftLimit == null) ? 0 : overdraftLimit.hashCode());
-		result = prime * result
-				+ ((pagingSize == null) ? 0 : pagingSize.hashCode());
-		result = prime * result
-				+ ((sakaiSiteId == null) ? 0 : sakaiSiteId.hashCode());
-		result = prime * result
-				+ ((sakaiToolId == null) ? 0 : sakaiToolId.hashCode());
-		result = prime
-				* result
-				+ ((schedulerInterval == null) ? 0 : schedulerInterval
-						.hashCode());
-		result = prime * result
-				+ ((smsEnabled == null) ? 0 : smsEnabled.hashCode());
-		result = prime
-				* result
-				+ ((smsRetryMaxCount == null) ? 0 : smsRetryMaxCount.hashCode());
-		result = prime
-				* result
-				+ ((smsRetryScheduleInterval == null) ? 0
-						: smsRetryScheduleInterval.hashCode());
-		result = prime
-				* result
-				+ ((smsTaskMaxLifeTime == null) ? 0 : smsTaskMaxLifeTime
-						.hashCode());
-		result = prime * result
-				+ ((useSiteAccount == null) ? 0 : useSiteAccount.hashCode());
-		return result;
-	}
+		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
+				SmsConfig.class);
+		}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -412,11 +366,9 @@ public class SmsConfig extends BaseModel {
 		if (getClass() != obj.getClass())
 			return false;
 		SmsConfig other = (SmsConfig) obj;
-		if (creditCost == null) {
-			if (other.creditCost != null)
+		if (creditCost != other.creditCost) {
 				return false;
-		} else if (!creditCost.equals(other.creditCost))
-			return false;
+		}
 		if (delReportTimeoutDuration == null) {
 			if (other.delReportTimeoutDuration != null)
 				return false;
@@ -444,11 +396,9 @@ public class SmsConfig extends BaseModel {
 				return false;
 		} else if (!notificationEmailSent.equals(other.notificationEmailSent))
 			return false;
-		if (overdraftLimit == null) {
-			if (other.overdraftLimit != null)
+		if (overdraftLimit != other.overdraftLimit) {
 				return false;
-		} else if (!overdraftLimit.equals(other.overdraftLimit))
-			return false;
+		}
 		if (pagingSize == null) {
 			if (other.pagingSize != null)
 				return false;
@@ -511,7 +461,7 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @return the credit cost
 	 */
-	public Float getCreditCost() {
+	public double getCreditCost() {
 		return creditCost;
 	}
 
@@ -521,7 +471,7 @@ public class SmsConfig extends BaseModel {
 	 * @param creditCost
 	 *            the new credit cost
 	 */
-	public void setCreditCost(Float creditCost) {
+	public void setCreditCost(double creditCost) {
 		this.creditCost = creditCost;
 	}
 
@@ -530,7 +480,7 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @return
 	 */
-	public Long getOverdraftLimit() {
+	public double getOverdraftLimit() {
 		return overdraftLimit;
 	}
 
@@ -539,7 +489,7 @@ public class SmsConfig extends BaseModel {
 	 * 
 	 * @param overdraftLimit
 	 */
-	public void setOverdraftLimit(Long overdraftLimit) {
+	public void setOverdraftLimit(double overdraftLimit) {
 		this.overdraftLimit = overdraftLimit;
 	}
 

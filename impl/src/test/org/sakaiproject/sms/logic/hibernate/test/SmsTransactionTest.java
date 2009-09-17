@@ -52,8 +52,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		smsAccount.setSakaiUserId("testGetSmsTransactionById");
 		smsAccount.setSakaiSiteId("testGetSmsTransactionById");
 		smsAccount.setMessageTypeCode("12345");
-		smsAccount.setOverdraftLimit(100L);
-		smsAccount.setCredits(0l);
+		smsAccount.setOverdraftLimit(100);
+		smsAccount.setCredits(0);
 		smsAccount.setAccountName("testGetSmsTransactionById accountname");
 		smsAccount.setAccountEnabled(true);
 		hibernateLogicLocator.getSmsAccountLogic()

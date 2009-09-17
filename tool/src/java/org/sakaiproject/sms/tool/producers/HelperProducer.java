@@ -106,8 +106,7 @@ public class HelperProducer implements ViewComponentProducer,
 			SmsAccount account = accountHelper.retrieveAccount(smsTaskOTP
 					+ ".smsAccountId");
 			UIInput accountCredits = UIInput.make(form, "account-credits", null,
-					(account.getCredits() != null) ? account.getCredits()
-							.toString() : "0");
+					Double.valueOf(account.getCredits()).toString() );
 			accountCredits.decorate(new UIDisabledDecorator());
 			accountCredits.fossilize = false;
 

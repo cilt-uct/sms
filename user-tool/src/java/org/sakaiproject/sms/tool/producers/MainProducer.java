@@ -111,7 +111,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 			hasAccountEnabled = smsAccount.getAccountEnabled().booleanValue();
 		}
 		boolean hasCredits = hasAccount && smsAccount.getCredits() != 0;
-		Long credits = hasAccount ? smsAccount.getCredits() : 0l;
+		double credits = hasAccount ? smsAccount.getCredits() : 0;
 		boolean hasSendPermission = externalLogic.isUserAllowedInLocation(currentUserId, ExternalLogic.SMS_SEND, currentSiteId );
 		//Do search with no date restrictions
 		SearchFilterBean searchFilterBean = new SearchFilterBean(null, null, "dateToSend", SmsConstants.SORT_DESC);
@@ -141,8 +141,8 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 					UIOutput.make(tofill, "send");
 					UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));
 					UIOutput.make(tofill, "reportConsole");
-					UIOutput.make(tofill, "console-credits", credits.toString() );
-					UIOutput.make(tofill, "console-value", currencyUtil.toServerLocale(smsAccountLogic.getAccountBalance(credits)) );
+					UIOutput.make(tofill, "console-credits", Double.valueOf(credits).toString() );
+					UIOutput.make(tofill, "console-value", currencyUtil.toServerLocale(credits) );
 				}
 			}else{
 				UIMessage.make(tofill, "error-credits", "ui.error.cannot.create");

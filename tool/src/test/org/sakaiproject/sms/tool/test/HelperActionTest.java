@@ -97,7 +97,6 @@ public class HelperActionTest extends TestCase {
 	public void testDoContinue_valid() {
 		SmsTask smsTask = (SmsTask) smsTaskLocator
 				.locateBean(SmsTaskLocator.NEW_1);
-		assertNull(smsTask.getCreditEstimate());
 		String result = helperAction.doContinue();
 		assertEquals(ActionResults.CONTINUE, result);
 		assertTrue(smsService.calculateCalled);

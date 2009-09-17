@@ -103,7 +103,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		}
 		
 		// 0 credits for opening balance
-		smsAccount.setCredits(0L);
+		smsAccount.setCredits(0);
 		
 		smsAccount.setAccountEnabled(true);
 		
@@ -322,7 +322,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
  		account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
  		
 		// return new balance of account
-		return account.getCredits().toString();
+		return Double.valueOf(account.getCredits()).toString();
 	}
 	
 	

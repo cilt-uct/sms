@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * Each Sakai site will have its own set of accounts for billing outgoing
  * messages. A specific user may also have a account.
@@ -40,9 +42,9 @@ public class SmsAccount extends BaseModel {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The amount of credits available in the account. 1 sms= 1 credit.
+	 * The number of credits (possible fractional) available in the account.
 	 */
-	private Long credits;
+	private double credits;
 
 	/**
 	 * The message type, will be incoming (MO) or outgoing (SO), currently only
@@ -51,7 +53,7 @@ public class SmsAccount extends BaseModel {
 	private String messageTypeCode;
 
 	/** Some accounts will be allowed to have a overdraft limit. */
-	private Long overdraftLimit;
+	private double overdraftLimit;
 
 	/** The account must be linked to either an Sakai site or a Sakai user. */
 	private String sakaiSiteId;
@@ -125,7 +127,7 @@ public class SmsAccount extends BaseModel {
 	/**
 	 * Instantiates a new sms account.
 	 */
-	public SmsAccount(Long credits, String messageTypeCode,
+	public SmsAccount(double credits, String messageTypeCode,
 			Long overdraftLimit, String sakaiSiteId, String sakaiUserId,
 			String accountName) {
 		super();
@@ -168,7 +170,7 @@ public class SmsAccount extends BaseModel {
 	 *
 	 * @return the overdraft limit
 	 */
-	public Long getOverdraftLimit() {
+	public double getOverdraftLimit() {
 		return overdraftLimit;
 	}
 
@@ -206,7 +208,7 @@ public class SmsAccount extends BaseModel {
 	 * @param overdraftLimit
 	 *            the new overdraft limit
 	 */
-	public void setOverdraftLimit(Long overdraftLimit) {
+	public void setOverdraftLimit(double overdraftLimit) {
 		this.overdraftLimit = overdraftLimit;
 	}
 
@@ -270,30 +272,19 @@ public class SmsAccount extends BaseModel {
 		this.accountName = accountName;
 	}
 
-	public Long getCredits() {
+	public double getCredits() {
 		return credits;
 	}
 
-	public void setCredits(Long credits) {
+	public void setCredits(double credits) {
 		this.credits = credits;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((accountName == null) ? 0 : accountName.hashCode());
-		result = prime * result
-				+ ((messageTypeCode == null) ? 0 : messageTypeCode.hashCode());
-		result = prime * result
-				+ ((overdraftLimit == null) ? 0 : overdraftLimit.hashCode());
-		result = prime * result
-				+ ((sakaiSiteId == null) ? 0 : sakaiSiteId.hashCode());
-		result = prime * result
-				+ ((sakaiUserId == null) ? 0 : sakaiUserId.hashCode());
-		return result;
-	}
+		return HashCodeBuilder.reflectionHashCode(17, 37, this, false,
+				SmsAccount.class);
+		}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -312,11 +303,9 @@ public class SmsAccount extends BaseModel {
 				return false;
 		} else if (!messageTypeCode.equals(other.messageTypeCode))
 			return false;
-		if (overdraftLimit == null) {
-			if (other.overdraftLimit != null)
+		if (overdraftLimit != other.overdraftLimit) {
 				return false;
-		} else if (!overdraftLimit.equals(other.overdraftLimit))
-			return false;
+		}
 		if (sakaiSiteId == null) {
 			if (other.sakaiSiteId != null)
 				return false;

@@ -379,7 +379,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 	public List<SmsTask> getTasksWithLateBilling() {
 
-		String sql = "from SmsTask where STATUS_CODE = ? and MESSAGES_DELIVERED > BILLED_CREDITS";
+		String sql = "from SmsTask where STATUS_CODE = ? and CREDITS_ACTUAL <> BILLED_CREDITS";
 		Object[] params1 = new Object[1];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
 		return smsDao.executeQuery(sql, params1, 0, 100);

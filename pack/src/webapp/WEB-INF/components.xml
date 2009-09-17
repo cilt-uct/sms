@@ -80,6 +80,7 @@
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
 		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
+        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsCore" class="org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl"
@@ -95,7 +96,7 @@
 		<property name="smsIncomingLogicManager"
 			ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
-
+       <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 	</bean>
 	<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser"
 		class="org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl">
