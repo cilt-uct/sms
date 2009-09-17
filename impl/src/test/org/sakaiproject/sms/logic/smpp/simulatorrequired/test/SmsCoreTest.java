@@ -36,6 +36,7 @@ import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -412,10 +413,10 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	public void testProcessIncomingMessage() {
 		smsSmppImpl.connectToGateway();
-		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
-				.getNewTestSmsMessageInstance("Mobile number", "Message body");
-		smsCoreImpl.processIncomingMessage(smsMessage.getMessageBody(),
-				smsMessage.getMobileNumber());
+		SmsMOMessage inMsg = new SmsMOMessage();
+		inMsg.setSmsMessagebody("Message body");
+		inMsg.setMobileNumber("Mobile number");
+		smsCoreImpl.processIncomingMessage(inMsg);
 	}
 
 

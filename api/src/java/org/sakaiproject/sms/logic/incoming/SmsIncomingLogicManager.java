@@ -58,7 +58,6 @@ public interface SmsIncomingLogicManager {
 	 * single command is found then we may send back a list of possible commands
 	 * to the user.
 	 * 
-	 * 
 	 * @param message
 	 *            the incoming message received
 	 */

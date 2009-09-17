@@ -29,6 +29,7 @@ import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
+import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
@@ -148,9 +149,8 @@ public interface SmsCore {
 	 * @param smsMessagebody
 	 * @param mobileNumber
 	 */
-	public void processIncomingMessage(String smsMessagebody,
-			String mobileNumber);
-
+	public void processIncomingMessage(SmsMOMessage message);
+	
 	/**
 	 * If we did not receive gateway delivery reports for messages that was sent
 	 * out, then we mark those messages as time out after a predefined period as

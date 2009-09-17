@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -175,6 +176,16 @@ public class SmsBillingStub implements SmsBilling {
 			double creditEstimate, double actualCreditsUsed) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public boolean debitIncomingMessage(SmsAccount account, double credits) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public String getIncomingMessageCode() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

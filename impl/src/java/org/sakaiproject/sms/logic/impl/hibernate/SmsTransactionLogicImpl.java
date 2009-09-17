@@ -322,6 +322,10 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		insertTransaction(smsTransaction, smsBilling.getDebitLateMessageCode());
 	}
 
+	public void insertIncomingMessageTransaction(SmsTransaction smsTransaction) {
+		insertTransaction(smsTransaction, smsBilling.getIncomingMessageCode());
+	}
+	
 	/**
 	 * Insert transaction to credit an account
 	 * <p>

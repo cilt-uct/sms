@@ -353,6 +353,35 @@ public class SmsBillingImpl implements SmsBilling {
 	}
 
 	/**
+	 * Credits account for a message that came in late.
+	 * 
+	 * @param smsTask
+	 * @return true, if successful
+	 */
+	public boolean debitIncomingMessage(SmsAccount account, double credits) {
+		
+		if (account == null) {
+			// Account does not exist
+			return false;
+		}
+
+		SmsTransaction smsTransaction = new SmsTransaction();
+
+		// The juicy bits
+
+		smsTransaction.setCreditBalance((-1L));
+		smsTransaction.setTransactionCredits(-1 * credits);
+		smsTransaction.setSakaiUserId(null);
+		smsTransaction.setSmsAccount(account);
+		smsTransaction.setSmsTaskId(null);
+
+		hibernateLogicLocator.getSmsTransactionLogic()
+				.insertIncomingMessageTransaction(smsTransaction);
+
+		return true;
+	}
+
+	/**
 	 * Recalculate balance for a specific account.
 	 * 
 	 * @param accountId
@@ -502,6 +531,11 @@ public class SmsBillingImpl implements SmsBilling {
 	public String getSettleDifferenceCode() {
 		return StringUtils.left(PROPERTIES.getProperty(
 				"TRANS_SETTLE_DIFFERENCE", "RSET"), 5);
+	}
+
+	public String getIncomingMessageCode() {
+		return StringUtils.left(PROPERTIES.getProperty(
+				"TRANS_INCOMING", "IN"), 5);
 	}
 
 }

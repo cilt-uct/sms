@@ -123,4 +123,10 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 		
 		return mobileNumber;
 	}
+
+	public double getIncomingMessageCost(String smscId) {
+
+		// TODO - currently hardcoded for Clickatell
+		return (1/3d);
+	}
 }

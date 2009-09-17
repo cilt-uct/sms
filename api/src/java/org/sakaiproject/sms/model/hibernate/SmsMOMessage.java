@@ -26,6 +26,11 @@ public class SmsMOMessage {
 	private String smsMessagebody;
 	private String mobileNumber;
 
+	/**
+	 * A unique id for the specific gateway from which this message originated.
+	 */
+	private String smscId;
+	
 	public String getSmsMessagebody() {
 		return smsMessagebody;
 	}
@@ -40,6 +45,14 @@ public class SmsMOMessage {
 
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
+	}
+
+	public void setSmscId(String smscId) {
+		this.smscId = smscId;
+	}
+
+	public String getSmscId() {
+		return smscId;
 	}
 
 }

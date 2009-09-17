@@ -32,10 +32,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
@@ -100,7 +98,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	private final ThreadGroup moReceivingThread = new ThreadGroup(
 			SmsConstants.SMS_MO_RECEIVING_THREAD_GROUP);
 
-	private List<SmsMOMessage> receivedMOmessages = new ArrayList<SmsMOMessage>();
+	private Queue<SmsMOMessage> receivedMOmessages = new ConcurrentLinkedQueue<SmsMOMessage>();
 	private Queue<DeliverSm> receivedDeliveryReports = new ConcurrentLinkedQueue<DeliverSm>();
 	private SMPPSession session = new SMPPSession();
 	private boolean disconnectGateWayCalled = false;
@@ -215,27 +213,32 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		public void work() {
 			while (!allDone) {
+				
 				try {
 
-					final List<SmsMOMessage> currentMOmessages = receivedMOmessages;
-					for (int i = 0; i < currentMOmessages.size(); i++) {
-
-						if (moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT) {
-							final SmsMOMessage smsMOmessage = currentMOmessages
-									.get(i);
-							receivedMOmessages.remove(smsMOmessage);
-
-							new MOProcessThread(smsMOmessage, moReceivingThread);
+					if (LOG.isDebugEnabled()) {
+						int qsize = receivedMOmessages.size();
+						if (qsize > 0) {
+							LOG.debug("Processing MO-Message queue of "
+									+ qsize + " messages with "
+									+ moReceivingThread.activeCount() + " threads running");
 						}
-
 					}
-
-					Thread.sleep(1000);
+					
+					SmsMOMessage smsMOmessage = receivedMOmessages.poll();
+					
+					if (smsMOmessage != null &&
+						(moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT)) {
+						new MOProcessThread(smsMOmessage, moReceivingThread);
+					} else {
+						Thread.sleep(1000);						
+					}
 
 				} catch (Exception e) {
 					LOG.error("MOmessageQueueThread encountered an error:");
 					LOG.error(e.getMessage());
 				}
+				
 			}
 		}
 	}
@@ -257,12 +260,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		public void work() {
-
-			LOG.info("Processing MO-Message queue of "
-					+ receivedMOmessages.size() + " messages there is "
-					+ moReceivingThread.activeCount() + " threads running");
-			smsCore.processIncomingMessage(smsMOmessage.getSmsMessagebody(),
-					smsMOmessage.getMobileNumber());
+			smsCore.processIncomingMessage(smsMOmessage);
 		}
 	}
 
@@ -300,8 +298,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					}
 
 				} catch (Exception e) {
-					LOG.error("DeliveryReportQueueThread encountered an error",
-							e);
+					LOG.error("DeliveryReportQueueThread encountered an error", e);
 				}
 			}
 		}
@@ -339,6 +336,10 @@ public class SmsSmppImpl implements SmsSmpp {
 				LOG.info("Queuing MO message from: "
 						+ deliverSm.getSourceAddr());
 				SmsMOMessage moMessage = new SmsMOMessage();
+				
+				// TODO - when/if we have multiple listeners, record this connection's SMSC ID
+				moMessage.setSmscId(SmsConstants.SMSC_ID);
+
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				String messageBody = "";
 				if (deliverSm.getShortMessage() == null) {

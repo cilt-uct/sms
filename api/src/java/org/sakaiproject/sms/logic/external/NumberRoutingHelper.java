@@ -80,4 +80,11 @@ public interface NumberRoutingHelper {
 	 */
 	public boolean getRoutingInfo(SmsMessage message);
 
+	/**
+	 * Get routing cost per incoming message for the given SMSC
+	 * @param smscId
+	 * @return
+	 */
+	public double getIncomingMessageCost(String smscId);
+	
 }

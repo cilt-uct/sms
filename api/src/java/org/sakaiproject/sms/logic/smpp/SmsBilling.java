@@ -22,6 +22,7 @@
 package org.sakaiproject.sms.logic.smpp;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
 /**
@@ -217,5 +218,14 @@ public interface SmsBilling {
 	 * @return code as {@link String}
 	 */
 	public String getDebitLateMessageCode();
+
+	/**
+	 * Retrieve code for incoming message (default if none specified)
+	 * 
+	 * @return code as {@link String}
+	 */
+	public String getIncomingMessageCode();
+	
+	public boolean debitIncomingMessage(SmsAccount account, double credits);
 
 }

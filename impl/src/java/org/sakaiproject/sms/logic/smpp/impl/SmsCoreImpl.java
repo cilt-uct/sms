@@ -55,6 +55,7 @@ import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -494,24 +495,40 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void processIncomingMessage(String smsMessagebody,
-			String mobileNumber) {
+	public void processIncomingMessage(SmsMOMessage inMessage) {
 
+		String smsMessagebody = inMessage.getSmsMessagebody();
+		String mobileNumber = inMessage.getMobileNumber();
+		
+		// Allocate the cost of incoming messages
+
+		double routingCredits = numberRoutingHelper.getIncomingMessageCost(inMessage.getSmscId());
+		
+		if (routingCredits > 0) {
+			String siteIdToDebit = SmsConstants.SAKAI_ADMIN_ACCOUNT;		
+			SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
+				.getSmsAccount(siteIdToDebit, null);
+			smsBilling.debitIncomingMessage(account, routingCredits);
+		}
+		
 		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
+		
 		try {
 			parsedMessage = getSmsIncomingLogicManager().process(
 					smsMessagebody, mobileNumber);
-		} catch (MoDisabledForSiteException exeption) {
-			LOG.error(exeption.getMessage());
+		} catch (MoDisabledForSiteException exception) {
+			LOG.warn(exception.getMessage());
 			return;
-
 		}
+		
 		if (parsedMessage != null) {
 			if (parsedMessage.getBodyReply() != null
 					&& !parsedMessage.getBodyReply().equals(
 							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
+
 				smsMessageReplyBody = parsedMessage.getBodyReply();
+				
 				LOG.debug((parsedMessage.getCommand() != null ? "Command "
 						+ parsedMessage.getCommand() : "System")
 						+ " answered back with: " + smsMessageReplyBody);
@@ -526,15 +543,18 @@ public class SmsCoreImpl implements SmsCore {
 		} else {
 			return;
 		}
+
 		final SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(parsedMessage.getSite());
+
 		if (!configSite.isReceiveIncomingEnabled()) {
-			LOG
-					.info("Receiving of Mobile Originating messages is disabled for site:"
+			LOG.info("Receiving of Mobile Originating messages is disabled for site:"
 							+ configSite.getSakaiSiteId());
 			return;
 		}
+		
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);
+
 		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				new Date(), parsedMessage.getSite(), null,
@@ -543,8 +563,10 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			return;
 		}
+
 		smsMessage.setSmsTask(smsTask);
-		// TODO: who must te sakai user Id be for the reply?
+
+		// TODO: who must the sakai user Id be for the reply?
 		smsMessage.setSakaiUserId(SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
@@ -552,6 +574,8 @@ public class SmsCoreImpl implements SmsCore {
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
+		// Send reply
+		
 		try {
 			insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {

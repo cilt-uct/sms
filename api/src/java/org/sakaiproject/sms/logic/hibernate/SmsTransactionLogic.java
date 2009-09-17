@@ -133,6 +133,17 @@ public interface SmsTransactionLogic {
 	public void insertLateMessageTransaction(SmsTransaction smsTransaction);
 
 	/**
+	 * Insert transaction for a late message.
+	 * <p>
+	 * This will also update the related account balance.
+	 * 
+	 * @param smsTransaction
+	 *            the sms transaction
+	 */
+	public void insertIncomingMessageTransaction(SmsTransaction smsTransaction);
+
+
+	/**
 	 * Insert transaction to credit an account
 	 * <p>
 	 * This will also update the related account balance.

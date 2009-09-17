@@ -116,13 +116,12 @@ public class SmsMessage extends BaseModel {
 	}
 
 	/**
-	 * Instantiates a new sms message. For testing of SMPP service.
+	 * Instantiates a new sms message.
 	 * 
 	 * @param mobileNumber
 	 *            the mobile number
 	 * @param messageBody
 	 *            the message body
-	 * @depricated Do not use
 	 */
 	public SmsMessage(String mobileNumber) {
 		super();
