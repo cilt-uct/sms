@@ -164,12 +164,22 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
 		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber);
 		final SakaiPerson example = sakaiPersonManager.getPrototype();
-		example.setMobile(mobileNumber);
+		example.setNormalizedMobile(numberRoutingHelper.normalizeNumber(mobileNumber));
 
 		final List<SakaiPerson> list = sakaiPersonManager
 				.findSakaiPerson(example);
 		final List<String> toReturn = new ArrayList<String>();
 		for (SakaiPerson person : list) {
+			toReturn.add(person.getUid());
+		}
+		//Incases where this is not set also check 
+		final SakaiPerson example1 = sakaiPersonManager.getPrototype();
+		example1.setMobile(mobileNumber);
+
+		final List<SakaiPerson> list1 = sakaiPersonManager
+				.findSakaiPerson(example1);
+		
+		for (SakaiPerson person : list1) {
 			toReturn.add(person.getUid());
 		}
 
