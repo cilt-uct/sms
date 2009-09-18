@@ -166,7 +166,7 @@
 		<property name="creditBalance" type="double" column="CREDIT_BALANCE"
 			not-null="true"  />
 		<property name="smsTaskId" type="long" column="SMS_TASK_ID"
-			not-null="true" />
+			not-null="false" />
 		<many-to-one name="smsAccount"
 			class="org.sakaiproject.sms.model.hibernate.SmsAccount" column="SMS_ACCOUNT_ID"
 			not-null="true" />

@@ -371,7 +371,7 @@ public class SmsBillingImpl implements SmsBilling {
 
 		smsTransaction.setCreditBalance((-1L));
 		smsTransaction.setTransactionCredits(-1 * credits);
-		smsTransaction.setSakaiUserId(null);
+		smsTransaction.setSakaiUserId(SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 		smsTransaction.setSmsAccount(account);
 		smsTransaction.setSmsTaskId(null);
 
