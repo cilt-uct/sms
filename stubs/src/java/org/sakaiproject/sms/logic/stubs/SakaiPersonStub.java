@@ -697,4 +697,14 @@ public class SakaiPersonStub implements SakaiPerson {
 		
 	}
 
+	public String getNormalizedMobile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setNormalizedMobile(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
