@@ -1087,7 +1087,9 @@ public class SmsCoreImpl implements SmsCore {
 					session.update(smsTask);
 					tx.commit();
 					
-					smsBilling.settleCreditDifference(smsTask, creditEstimate, actualCreditsUsed);
+					if (creditEstimate != actualCreditsUsed) {
+						smsBilling.settleCreditDifference(smsTask, creditEstimate, actualCreditsUsed);
+					}
 					checkOverdraft(smsTask);
 					
 					if (smsTask.getMessageTypeId().equals(

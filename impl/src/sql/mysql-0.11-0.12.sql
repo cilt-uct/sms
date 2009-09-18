@@ -1,7 +1,12 @@
 -- Conversion script from tag 0.11 to tag 0.12
 
-alter table SMS_CONFIG modify CREDIT_COST double not null;
+update SMS_CONFIG SET OVERDRAFT_LIMIT=0 WHERE OVERDRAFT_LIMIT IS NULL;
+update SMS_CONFIG SET CREDIT_COST=0 WHERE CREDIT_COST IS NULL;
 
+alter table SMS_CONFIG modify CREDIT_COST double not null;
+alter table SMS_CONFIG modify OVERDRAFT_LIMIT double not null;
+
+update SMS_ACCOUNT SET OVERDRAFT_LIMIT=0 WHERE OVERDRAFT_LIMIT IS NULL;
 alter table SMS_ACCOUNT MODIFY OVERDRAFT_LIMIT double not null;
 alter table SMS_ACCOUNT MODIFY CREDITS double not null;
 

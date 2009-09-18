@@ -1,0 +1,15 @@
+<projectDescription>
+  <name>sms-stubs</name>
+  <comment>Sms test stubs</comment>
+  <projects>
+    <project>sms-api</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

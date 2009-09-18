@@ -81,7 +81,7 @@ public interface NumberRoutingHelper {
 	public boolean getRoutingInfo(SmsMessage message);
 
 	/**
-	 * Get routing cost per incoming message for the given SMSC
+	 * Get routing cost in credits per incoming message for the given SMSC
 	 * @param smscId
 	 * @return
 	 */

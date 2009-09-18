@@ -1,0 +1,18 @@
+<classpath>
+  <classpathentry kind="src" path="src/java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.0.2/activation-1.0.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sourceforge/groboutils/groboutils-core/5/groboutils-core-5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/com/google/code/jsmpp/2.0/jsmpp-2.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.8/log4j-1.2.8.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.3.1/mail-1.3.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-common-edu-person-api/2.6.0RC1-SNAPSHOT/sakai-common-edu-person-api-2.6.0RC1-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-common-manager-api/2.6.0RC1-SNAPSHOT/sakai-common-manager-api-2.6.0RC1-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-profile-api/2.6.0RC1-SNAPSHOT/sakai-profile-api-2.6.0RC1-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3.jar"/>
+  <classpathentry kind="src" path="/sms-api"/>
+</classpath>
