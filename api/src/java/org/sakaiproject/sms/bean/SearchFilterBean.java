@@ -60,6 +60,9 @@ public class SearchFilterBean {
 	/** The tool name. */
 	private String toolName;
 
+	/** The tool ID. */
+	private String toolId;
+
 	/** The sender. */
 	private String sender;
 
@@ -453,6 +456,14 @@ public class SearchFilterBean {
 		retStr.append("senderUserId: ").append(senderUserId).append("\n");
 		retStr.append("----------\n");
 		return retStr.toString();
+	}
+
+	public void setToolId(String toolId) {
+		this.toolId = toolId;
+	}
+
+	public String getToolId() {
+		return toolId;
 	}
 
 }

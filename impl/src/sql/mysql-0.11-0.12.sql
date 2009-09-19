@@ -21,3 +21,4 @@ ALTER table SMS_TASK drop COST_ESTIMATE;
 ALTER table SMS_TASK add CREDITS_ACTUAL double not null;
 ALTER table SMS_TASK MODIFY BILLED_CREDITS double not null;
 
+update SMS_TASK SET SAKAI_TOOL_ID='sakai.sms.user' where SAKAI_TOOL_ID is null and MESSAGE_TYPE_ID=0;

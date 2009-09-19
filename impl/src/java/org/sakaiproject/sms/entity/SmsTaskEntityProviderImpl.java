@@ -234,6 +234,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
 		}
 
+		// Set the tool ID to the user tool if not set
+		
+		if (smsTask.getSakaiToolId() == null) {
+			smsTask.setSakaiToolId(TOOL_ID);
+		}
+		
 		try {
 			smsService.insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {

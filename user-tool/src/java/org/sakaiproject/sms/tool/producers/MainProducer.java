@@ -126,6 +126,10 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		if ( ! hasSendPermission ){
 			searchFilterBean.setSenderUserId(currentUserId);
 		}
+		
+		// Restrict to this tool
+		searchFilterBean.setToolId("sakai.sms.user");
+		
 		List<SmsTask> smsTasks = new ArrayList<SmsTask>();
 		try {
 			smsTasks = smsTaskLogic.getAllSmsTasksForCriteria(searchFilterBean);

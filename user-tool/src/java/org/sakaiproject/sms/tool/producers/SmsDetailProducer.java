@@ -122,11 +122,24 @@ public static final String VIEW_ID = "sms";
 				if(smsTask == null){
 					//TODO: show message
 					log.warn("SMS not found with id: " + statusParams.id);
-					
-				}else{
-					
+				} else {
+
 					String currentUserId = externalLogic.getCurrentUserId();
 					String currentSiteId = externalLogic.getCurrentSiteId();
+
+					// Check this tool
+					
+					if (!"sakai.sms.user".equals(smsTask.getSakaiToolId())) {
+						log.warn("SMS requested from another tool: " + statusParams.id);
+						return;
+					}
+					
+					// Check this site
+					if (!currentSiteId.equals(smsTask.getSakaiSiteId())) {
+						log.warn("SMS requested from another site: " + statusParams.id);
+						return;
+					}
+											
 					//Get status of the task to determine which UI to render
 					String statusCode = smsTask.getStatusCode();
 					String statusToShow = statusUtils.getStatusUIKey(statusCode);

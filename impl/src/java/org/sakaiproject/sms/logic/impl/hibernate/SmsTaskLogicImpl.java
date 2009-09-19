@@ -266,6 +266,13 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 						searchBean.getToolName()));
 			}
 
+			// Sakai tool ID
+			if (searchBean.getToolId() != null
+					&& !searchBean.getToolId().trim().equals("")) {
+				search.addRestriction(new Restriction("sakaiToolId",
+						searchBean.getToolId()));
+			}
+
 			// Date to send start
 			if (searchBean.getDateFrom() != null) {
 				Date date = DateUtil.getDateFromStartDateString(searchBean
