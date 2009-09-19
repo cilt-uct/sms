@@ -513,7 +513,7 @@ public class SmsCoreImpl implements SmsCore {
 		
 		String smsMessageReplyBody = "";
 		ParsedMessage parsedMessage = null;
-		
+				
 		try {
 			parsedMessage = getSmsIncomingLogicManager().process(
 					smsMessagebody, mobileNumber);

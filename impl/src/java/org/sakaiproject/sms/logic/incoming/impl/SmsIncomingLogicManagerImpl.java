@@ -31,6 +31,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
@@ -130,24 +133,18 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 							if (cmd.isVisible()) {
 								reply = cmd.getHelpMessage();
 							}
-						} else { // VALID command
+						} else { 
+							
+							// VALID command
 							if (sakaiSite == null) {
 								reply = generateInvalidSiteMessage(parsedMessage
 										.getSite());
 							} else {
 								parsedMessage.setSite(sakaiSite);
-								// SmsConfig configSite = hibernateLogicLocator
-								// .getSmsConfigLogic()
-								// .getOrCreateSmsConfigBySakaiSiteId(
-								// sakaiSite);
-								//
-								// if (!configSite.isIncomingEnabled()) {
-								// throw new
-								// MoDisabledForSiteException(sakaiSite);
-								// }
 
 								final List<String> userIds = externalLogic
 										.getUserIdsFromMobileNumber(mobileNr);
+								
 								if (!userIds.isEmpty()) {
 									incomingUserID = userIds.get(0);
 								}
@@ -160,11 +157,39 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 									String[] bodyParameters = smsMessageParser
 											.parseBody(
 													parsedMessage.getBody(),
-													command
-															.getBodyParameterCount());
-									reply = command.execute(sakaiSite,
-											incomingUserID, mobileNr,
-											bodyParameters);
+													command.getBodyParameterCount());
+									
+									// Execute the message
+									
+									final String sakaiSiteId = sakaiSite;
+									
+									// Set up a security advisor for the case where the user is anonymous
+									// (unmatched mobile number). In this case the command handler is
+									// responsible for enforcing appropriate security (i.e. deciding whether
+									// anonymous access is allowed, and if so to what).
+									
+									// TODO - set user session for known user.
+									
+									try {
+										SecurityService.pushAdvisor(new SecurityAdvisor() {
+													public SecurityAdvice isAllowed(String userId, String function, String reference) {
+														if (reference != null && sakaiSiteId != null 
+																&& SiteService.SITE_VISIT.equals(function) 
+																&& reference.equals(SiteService.siteReference(sakaiSiteId))) {
+															return SecurityAdvice.ALLOWED;
+														}
+														return SecurityAdvice.PASS;
+													}
+												});
+
+										reply = command.execute(sakaiSite, incomingUserID, mobileNr, bodyParameters);
+										
+									} catch (Exception e) {
+										log.warn("Error executing incoming SMS command: ", e);
+									} finally {
+										SecurityService.popAdvisor();
+									}
+									
 								} catch (ParseException pe) {
 									if (command.isVisible()) {
 										// Body parameter count wrong
@@ -184,6 +209,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				: defaultBillingSite);
 		parsedMessage.setBodyReply(formatReply(reply));
 		parsedMessage.setIncomingUserId(incomingUserID);
+		
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());
 
