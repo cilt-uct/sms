@@ -47,9 +47,7 @@ import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.api.Role;
-import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
@@ -551,6 +549,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see ExternalLogic#isValidSite(String)
 	 */
 	private String getSiteId(String siteRef) {
+		
+		// TODO - possible recognize mailarchive aliases here
+		
 		String siteprefix = SiteService.REFERENCE_ROOT + Entity.SEPARATOR;
 		
 		if (!siteRef.startsWith(siteprefix))
@@ -667,6 +668,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSiteFromAlias(String alias) {
+		
+		// TODO - support an SMS-specific aliasing scheme as well
+		
 		try {
 			String target = getSiteId(aliasService.getTarget(alias));
 			
@@ -685,14 +689,21 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	public String[] getAllAliasesAsArray() {
-		List<Alias> aliases = aliasService.getAliases(1, aliasService
-				.countAliases());
-		String[] toReturn = new String[aliases.size()];
-		for (int i = 0; i < aliases.size(); i++) {
-			toReturn[i] = aliases.get(i).getId();
+	public List<String> getAllSiteAliases() {
+		
+		List<String> siteAliases = new ArrayList<String>();
+		
+		List<Alias> aliases = aliasService.getAliases(1, aliasService.countAliases());
+		
+		// TODO - add an sms-specific aliasing scheme which can be set somewhere in the UI
+		
+		for (Alias alias : aliases) {
+			if (alias.getTarget().startsWith(SiteService.REFERENCE_ROOT + Entity.SEPARATOR)) {
+				siteAliases.add(alias.getId());
+			}
 		}
-		return toReturn;
+		
+		return siteAliases;
 	}
 
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {

@@ -99,6 +99,6 @@ public interface SmsIncomingLogicManager {
 	 * @return
 	 */
 	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
-			String[] values);
+			List<String> values);
 
 }

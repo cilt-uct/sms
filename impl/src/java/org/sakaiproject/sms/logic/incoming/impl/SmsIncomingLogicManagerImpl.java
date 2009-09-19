@@ -121,7 +121,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						reply = generateAssistMessage(validCommandMatch
 								.getPossibleMatches());
 					} else if (validCommandMatch.getMatchResult().equals(
-							SmsPatternSearchResult.MORE_THEN_ONE_MATCH)) {
+							SmsPatternSearchResult.MORE_THAN_ONE_MATCH)) {
 						reply = generateAssistMessage(validCommandMatch
 								.getPossibleMatches());
 					} else { // Command is valid
@@ -225,26 +225,30 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * @return
 	 */
 	private String getValidSite(String suppliedSiteId) {
+
 		if (suppliedSiteId == null) {
 			return null;
 		}
+
+		// Lookup by site id
 		if (externalLogic.isValidSite(suppliedSiteId)) {
 			return suppliedSiteId;
-		} else {
-			String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
-			if (siteId == null) {
-				SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
-						externalLogic.getAllAliasesAsArray());
-				if (result.getMatchResult().equals(
-						SmsPatternSearchResult.ONE_MATCH)) {
-					return externalLogic.getSiteFromAlias(result.getPattern());
-				} else {
-					return null;
-				}
-			} else {
-				return siteId;
+		}
+		
+		// Lookup by site alias
+		String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
+		if (siteId != null) {
+			return siteId;
+		}
 
-			}
+		// Match on site alias
+		SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
+				externalLogic.getAllSiteAliases());
+		if (result.getMatchResult().equals(
+				SmsPatternSearchResult.ONE_MATCH)) {
+			return externalLogic.getSiteFromAlias(result.getPattern());
+		} else {
+			return null;
 		}
 
 	}
@@ -268,35 +272,42 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * @param values
 	 * @return
 	 */
-	private ArrayList<String> getPossibleMatches(String valueToMatch,
-			String[] values) {
+	private List<String> getPossibleMatches(String valueToMatch,
+			List<String> values) {
+		
+		List<String> returnVals = new ArrayList<String>();
 		valueToMatch = valueToMatch.toUpperCase();
-		ArrayList<String> returnVals = new ArrayList<String>();
+
 		String returnVal = null;
+
 		// We first check for matching parts.
-		ArrayList<String> matchedValues = new ArrayList<String>();
+		List<String> matchedValues = new ArrayList<String>();
+
 		for (String str : values) {
 			if (str.toUpperCase().indexOf(valueToMatch) != -1) {
 				matchedValues.add(str);
 			}
 		}
-		if (!matchedValues.isEmpty()) {
-			values = matchedValues.toArray(new String[matchedValues.size()]);
+		
+		if (matchedValues.isEmpty()) {
+			// no matching substrings, so look through the whole list
+			matchedValues = values;
 		}
+		
 		// We calculate the largest string's length to be used as weights.
 		int largestString = 0;
-		for (String str : values) {
+		for (String str : matchedValues) {
 			if (str.length() > largestString) {
 				largestString = str.length();
 			}
-
 		}
+		
 		// We loop through each command and pattern. Left hand matching
-		// chars score more points.If the first chars dont match we break the
+		// chars score more points. If the first chars don't match we break the
 		// loop.
 		int maxStringScore = 0;
 
-		for (String str : values) {
+		for (String str : matchedValues) {
 			boolean skipCommand = false;
 			int patternScore = 0;
 			char[] commandChars = str.toUpperCase().toCharArray();
@@ -315,12 +326,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						startChar = e + 1;
 						patternScore += (largestString - (e));
 						break;
-
 					}
-
 				}
-
 			}
+			
 			if (patternScore != 0 && patternScore == maxStringScore) {
 				returnVals.add(str);
 			}
@@ -354,19 +363,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		if (SmsConstants.HELP.equalsIgnoreCase(suppliedKey)) {
 			return new SmsPatternSearchResult(SmsConstants.HELP);
 		} else {
-			if (commands.getCommand(suppliedKey) == null) { // None found in
-				// command keys
-				Set<String> commandKeys = commands.getCommandKeys();
-				String[] validCommands = commandKeys
-						.toArray(new String[commandKeys.size()]);
-				// HELP must must not be used for closest search
-				// String[] validCommands =
-				// SmsStringArrayUtil.copyOf(commandKeys
-				// .toArray(new String[commandKeys.size()]), commandKeys
-				// .size() + 1);
-				// validCommands[validCommands.length - 1] = SmsConstants.HELP;
-				smsPatternSearchResult = getClosestMatch(suppliedKey,
-						validCommands);
+			if (commands.getCommand(suppliedKey) == null) { 
+				// None found in command keys
+				List<String> validCommands = new ArrayList<String>(commands.getCommandKeys());
+				smsPatternSearchResult = getClosestMatch(suppliedKey,validCommands);
 			} else {
 				smsPatternSearchResult = new SmsPatternSearchResult(suppliedKey);
 			}
@@ -522,31 +522,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 * @return
 	 */
 	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
-			String[] values) {
+			List<String> values) {
 		
-		log.debug("Looking for match for " + valueToMatch + " from " + Arrays.asList(values));
+		log.debug("Looking for match for " + valueToMatch + " from " + values);
 		
 		SmsPatternSearchResult SmsPatternSearchResult = new SmsPatternSearchResult();
-		ArrayList<String> possibleMatches = getPossibleMatches(valueToMatch,
+		List<String> possibleMatches = getPossibleMatches(valueToMatch,
 				values);
 
 		SmsPatternSearchResult.setPossibleMatches(possibleMatches);
 		return SmsPatternSearchResult;
 
 	}
-
-	// private Map<String, SmsCommand> getAllRegisteredCommands() {
-	// Set<String> toolKeys = toolCmdsMap.keySet();
-	// Map<String, SmsCommand> cmds = new HashMap<String, SmsCommand>();
-	// for (String key : toolKeys) {
-	// Map<String, SmsCommand> toolCmds = toolCmdsMap.get(key)
-	// .getCommands();
-	// Set<String> commandKeys = toolCmds.keySet();
-	// for (String commandKey : commandKeys) {
-	// SmsCommand command = toolCmds.get(commandKey);
-	// cmds.put(command.getCommandKey(), command);
-	// }
-	// }
-	// return cmds;
-	// }
 }

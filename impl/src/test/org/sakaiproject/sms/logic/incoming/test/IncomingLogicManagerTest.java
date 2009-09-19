@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -39,6 +40,8 @@ import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Unit test for registering of commands.This unit test must be run from
@@ -140,19 +143,20 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testPossibleMatches() {
-		String[] validCommands = parseCSVFile(loadPropertiesFile("ValidCommands.txt"));
-		String[] commandsToMatch = parseCSVFile(loadPropertiesFile("CommandsToMatch.txt"));
-		for (int i = 0; i < commandsToMatch.length; i++) {
-			String commandSplit[] = commandsToMatch[i].split("#");
+		List<String> validCommands = Arrays.asList(parseCSVFile(loadPropertiesFile("ValidCommands.txt")));
+		List<String> commandsToMatch = Arrays.asList(parseCSVFile(loadPropertiesFile("CommandsToMatch.txt")));
+		for (String commandToMatch : commandsToMatch) {
+			String commandSplit[] = commandToMatch.split("#");
 			String command = commandSplit[0].toUpperCase();
 			SmsPatternSearchResult smsPatternSearchResult = manager
 					.getClosestMatch(command, validCommands);
 			boolean result = smsPatternSearchResult.getPossibleMatches().size() == Integer
 					.parseInt(commandSplit[1]);
 			// System.out.println("Looking for " + command + " #"
-			// + commandSplit[1] + " " + result + " (found "
-			// + smsPatternSearchResult.getPossibleMatches().size() + ")");
+			//  + commandSplit[1] + " " + result + " (found "
+			//  + smsPatternSearchResult.getPossibleMatches().size() + ")");
 			assertTrue(result);
 		}
 	}

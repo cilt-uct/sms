@@ -230,7 +230,7 @@ public interface ExternalLogic {
 	 * 
 	 * @return
 	 */
-	public String[] getAllAliasesAsArray();
+	public List<String> getAllSiteAliases();
 
 	/**
 	 * Retrieve userIds with supplied mobile number

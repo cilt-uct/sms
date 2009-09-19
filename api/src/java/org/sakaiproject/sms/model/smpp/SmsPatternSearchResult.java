@@ -21,6 +21,7 @@
 package org.sakaiproject.sms.model.smpp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SmsPatternSearchResult {
 
@@ -28,9 +29,9 @@ public class SmsPatternSearchResult {
 
 	public static final String ONE_MATCH = "1";
 
-	public static final String MORE_THEN_ONE_MATCH = "2";
+	public static final String MORE_THAN_ONE_MATCH = "2";
 
-	private ArrayList<String> possibleMatches = new ArrayList<String>();
+	private List<String> possibleMatches = new ArrayList<String>();
 
 	private String pattern = null;
 
@@ -54,11 +55,11 @@ public class SmsPatternSearchResult {
 		this.possibleMatches.add(pattern);
 	}
 
-	public ArrayList<String> getPossibleMatches() {
+	public List<String> getPossibleMatches() {
 		return possibleMatches;
 	}
 
-	public void setPossibleMatches(ArrayList<String> possibleMatches) {
+	public void setPossibleMatches(List<String> possibleMatches) {
 		this.possibleMatches = possibleMatches;
 		if (possibleMatches.isEmpty()) {
 			setMatchResult(SmsPatternSearchResult.NO_MATCHES);
@@ -66,7 +67,7 @@ public class SmsPatternSearchResult {
 			setMatchResult(SmsPatternSearchResult.ONE_MATCH);
 			setPattern(possibleMatches.get(0));
 		} else {
-			setMatchResult(SmsPatternSearchResult.MORE_THEN_ONE_MATCH);
+			setMatchResult(SmsPatternSearchResult.MORE_THAN_ONE_MATCH);
 		}
 	}
 

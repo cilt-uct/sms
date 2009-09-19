@@ -310,4 +310,11 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public List<String> getAllSiteAliases() {
+		
+		List<String> siteAliases = new ArrayList<String>();
+		siteAliases.add(SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		return siteAliases;
+	}
+
 }
