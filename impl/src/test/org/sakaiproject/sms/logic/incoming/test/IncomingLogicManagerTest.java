@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -40,8 +41,6 @@ import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Unit test for registering of commands.This unit test must be run from
@@ -143,7 +142,6 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testPossibleMatches() {
 		List<String> validCommands = Arrays.asList(parseCSVFile(loadPropertiesFile("ValidCommands.txt")));
 		List<String> commandsToMatch = Arrays.asList(parseCSVFile(loadPropertiesFile("CommandsToMatch.txt")));
