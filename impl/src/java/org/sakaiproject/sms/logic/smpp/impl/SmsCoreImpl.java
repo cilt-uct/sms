@@ -566,11 +566,11 @@ public class SmsCoreImpl implements SmsCore {
 
 		smsMessage.setSmsTask(smsTask);
 
-		// TODO: who must the sakai user Id be for the reply?
-		smsMessage.setSakaiUserId(SmsConstants.DEFAULT_MO_SENDER_USERNAME);
-		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
+		smsMessage.setSakaiUserId(parsedMessage.getIncomingUserId());
 		smsMessage.setMessageReplyBody(smsMessageReplyBody);
 		smsMessage.setMessageBody(smsMessagebody);
+
+		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessages.add(smsMessage);
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
