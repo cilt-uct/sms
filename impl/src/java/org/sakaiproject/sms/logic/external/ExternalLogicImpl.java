@@ -47,7 +47,9 @@ import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
@@ -542,7 +544,19 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @see ExternalLogic#isValidSite(String)
 	 */
 	public boolean isValidSite(String siteId) {
-		return siteService.siteExists(siteId);
+		return (siteId == null) ? false : siteService.siteExists(siteId);
+	}
+
+	/**
+	 * @see ExternalLogic#isValidSite(String)
+	 */
+	private String getSiteId(String siteRef) {
+		String siteprefix = SiteService.REFERENCE_ROOT + Entity.SEPARATOR;
+		
+		if (!siteRef.startsWith(siteprefix))
+			return null;
+		
+		return siteRef.substring(siteprefix.length());
 	}
 
 	/**
@@ -555,11 +569,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		} catch (UserNotDefinedException e) {
 			return false;
 		}
-	}
-
-	public String getSakaiSiteContactEmail() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
@@ -658,14 +667,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getSiteFromAlias(String alias) {
-		String target;
 		try {
-			target = aliasService.getTarget(alias);
+			String target = getSiteId(aliasService.getTarget(alias));
+			
 			if (isValidSite(target)) {
+				LOG.debug("Found site from alias " + alias + ": " + target);
 				return target;
 			} else {
-				return null;
+				LOG.debug("Invalid site from alias " + alias + ": " + target);
+				return null;				
 			}
+			
 		} catch (IdUnusedException e) {
 			LOG.error("Undefined alias used: " + alias);
 			return null;

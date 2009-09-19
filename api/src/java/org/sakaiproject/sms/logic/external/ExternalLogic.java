@@ -191,12 +191,6 @@ public interface ExternalLogic {
 	 */
 	public boolean isValidUser(String userId);
 
-	/**
-	 * Get the sakai contacts email.
-	 * 
-	 * @return sakaiSiteContactEmail
-	 */
-	public String getSakaiSiteContactEmail();
 
 	/**
 	 * Send email.

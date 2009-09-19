@@ -21,6 +21,7 @@
 package org.sakaiproject.sms.logic.incoming.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -249,8 +250,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		// We first check for matching parts.
 		ArrayList<String> matchedValues = new ArrayList<String>();
 		for (String str : values) {
-			str = str.toUpperCase();
-			if (str.indexOf(valueToMatch) != -1) {
+			if (str.toUpperCase().indexOf(valueToMatch) != -1) {
 				matchedValues.add(str);
 			}
 		}
@@ -260,7 +260,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		// We calculate the largest string's length to be used as weights.
 		int largestString = 0;
 		for (String str : values) {
-			str = str.toUpperCase();
 			if (str.length() > largestString) {
 				largestString = str.length();
 			}
@@ -272,10 +271,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		int maxStringScore = 0;
 
 		for (String str : values) {
-			str = str.toUpperCase();
 			boolean skipCommand = false;
 			int patternScore = 0;
-			char[] commandChars = str.toCharArray();
+			char[] commandChars = str.toUpperCase().toCharArray();
 			char[] validCommands = valueToMatch.toCharArray();
 			int startChar = 0;
 			for (int i = 0; i < validCommands.length; i++) {
@@ -302,14 +300,15 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			}
 
 			if (patternScore > maxStringScore) {
-
 				maxStringScore = patternScore;
 				returnVal = str;
 			}
 		}
+		
 		if (returnVal != null) {
 			returnVals.add(returnVal);
 		}
+		
 		return returnVals;
 	}
 
@@ -498,6 +497,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 */
 	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
 			String[] values) {
+		
+		log.debug("Looking for match for " + valueToMatch + " from " + Arrays.asList(values));
+		
 		SmsPatternSearchResult SmsPatternSearchResult = new SmsPatternSearchResult();
 		ArrayList<String> possibleMatches = getPossibleMatches(valueToMatch,
 				values);
