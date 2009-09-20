@@ -554,8 +554,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		
 		String siteprefix = SiteService.REFERENCE_ROOT + Entity.SEPARATOR;
 		
-		if (!siteRef.startsWith(siteprefix))
+		if (siteRef == null) {
 			return null;
+		}
+		
+		if (!siteRef.startsWith(siteprefix)) {
+			return null;
+		}
 		
 		return siteRef.substring(siteprefix.length());
 	}
@@ -698,7 +703,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		// TODO - add an sms-specific aliasing scheme which can be set somewhere in the UI
 		
 		for (Alias alias : aliases) {
-			if (alias.getTarget().startsWith(SiteService.REFERENCE_ROOT + Entity.SEPARATOR)) {
+			if (alias.getTarget() != null &&
+				alias.getTarget().startsWith(SiteService.REFERENCE_ROOT + Entity.SEPARATOR)) {
 				siteAliases.add(alias.getId());
 			}
 		}
