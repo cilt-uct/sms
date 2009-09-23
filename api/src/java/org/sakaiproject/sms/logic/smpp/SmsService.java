@@ -138,7 +138,7 @@ public interface SmsService {
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(String sakaiSiteID,
-			String sakaiUserID, int creditsRequired, boolean overDraftCheck);
+			String sakaiUserID, double creditsRequired, boolean overDraftCheck);
 
 	/**
 	 * 
@@ -152,9 +152,7 @@ public interface SmsService {
 
 	/**
 	 * Calculate the estimated group size. If this is not set on the task, the
-	 * Persistence of the task will fail. Make sure to set ONLY ONE of
-	 * deliveryEntityList, deliveryMobileNumbers, sakaiGroupId or sakaiUserIds
-	 * before calling this.
+	 * Persistence of the task will fail.
 	 * 
 	 * @param smsTask
 	 * @return

@@ -168,7 +168,7 @@ public class SmsServiceImpl implements SmsService {
 	 * @return true, if check sufficient credits
 	 */
 	public boolean checkSufficientCredits(String sakaiSiteID,
-			String sakaiUserID, int creditsRequired, boolean overDraftCheck) {
+			String sakaiUserID, double creditsRequired, boolean overDraftCheck) {
 		Long smsAcountId;
 		try {
 			smsAcountId = smsBilling.getAccountID(sakaiSiteID, sakaiUserID);

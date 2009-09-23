@@ -230,7 +230,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
 		 smsService.calculateEstimatedGroupSize(smsTask);
 		
-		if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
+		if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getCreditEstimate(), false)) {
 			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
 		}
 
@@ -396,7 +396,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
          smsService.calculateEstimatedGroupSize(smsTask);
        
-         if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getGroupSizeEstimate(),false)) {
+         if (!smsService.checkSufficientCredits(smsTask.getSakaiSiteId(), smsTask.getSenderUserId(), smsTask.getCreditEstimate(), false)) {
  			throw new IllegalArgumentException( getMessage( ValidationConstants.INSUFFICIENT_CREDIT )); 
  		}
          
