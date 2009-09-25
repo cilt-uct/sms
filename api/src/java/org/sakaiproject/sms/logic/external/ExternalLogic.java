@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
@@ -358,4 +359,15 @@ public interface ExternalLogic {
 	 */
 	public String getLocalisedString(String key, Locale locale, Object[] replacementValues);
 	
+	/**
+	 * Execute a command in the appropriate security context for the user and site
+	 * @param command
+	 * @param siteId
+	 * @param userId
+	 * @param mobileNr
+	 * @param bodyParameters
+	 * @return Reply to send back to the user
+	 */
+	public String executeCommand(SmsCommand command, String siteId, String userId, String mobileNr, String[] bodyParameters);
+
 }

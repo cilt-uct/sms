@@ -31,7 +31,6 @@ import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.logic.stubs.SecurityServiceStubb;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
 import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
@@ -65,7 +64,6 @@ public class IncomingLogicManagerTest extends TestCase {
 		externalLogic = new ExternalLogicStub();
 		manager.setExternalLogic(externalLogic);
 		manager.setSmsMessageParser(new SmsMessageParserImpl());
-		manager.setSecurityService(new SecurityServiceStubb());
 		createCmd = new CreateSmsCommand();
 		updateCmd = new UpdateSmsCommand();
 		deleteCmd = new DeleteSmsCommand();

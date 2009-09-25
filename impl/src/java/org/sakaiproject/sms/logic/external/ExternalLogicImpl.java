@@ -48,6 +48,7 @@ import org.sakaiproject.authz.api.FunctionManager;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
@@ -62,6 +63,7 @@ import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -277,6 +279,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				LOG.error(e.getMessage(), e);
 			}
 		}
+		
 	}
 
 	private Set<Object> getMembersForEntityRef(String entityReference) {
@@ -987,6 +990,87 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public String getSiteReferenceFromId(String siteId) {
 		return siteService.siteReference(siteId);
+	}
+
+	/**
+	 * Execute the external command in the appropriate security context. As this may set a session for the user,
+	 * this should only ever be invoked in its own thread by the IncomingLogicManager. It should never be called
+	 * from a user's http request thread in a tool or other context.
+	 * @param command
+	 * @param siteId
+	 * @param userId
+	 * @param mobileNr
+	 * @param bodyParameters
+	 * @return the reply message
+	 */
+	public String executeCommand(SmsCommand command, String siteId, String userId, String mobileNr, String[] bodyParameters) {
+
+		String reply = null;
+
+		final String finalSiteId = siteId;
+		
+		if (userId == null) {
+			// Set up a security advisor for the case where the user is anonymous
+			// (unmatched mobile number). In this case the command handler is
+			// responsible for enforcing appropriate security (i.e. deciding whether
+			// anonymous access is allowed, and if so to what).
+		
+			try {
+				securityService.pushAdvisor(new SecurityAdvisor() {
+					public SecurityAdvice isAllowed(String userId, String function, String reference) {
+						if (reference != null && finalSiteId != null 
+								&& SiteService.SITE_VISIT.equals(function) 
+								&& reference.equals(getSiteReferenceFromId(finalSiteId))) {
+							return SecurityAdvice.ALLOWED;
+						}
+						return SecurityAdvice.PASS;
+					}
+				});
+	
+				reply = command.execute(siteId, userId, mobileNr, bodyParameters);
+	
+			} catch (Exception e) {
+				LOG.warn("Error executing incoming SMS command: ", e);
+			} finally {
+				securityService.popAdvisor();
+			}
+	
+			return reply;
+		}
+		
+		// Otherwise set up a session. Incoming delivery currently takes place in its own thread,
+		// but for safety we'll set up and restore the session when done. This should not ever be
+		// invoked from 
+
+		final Session session = sessionManager.getCurrentSession();
+
+		String oldId = session.getUserId();
+		String oldEid = session.getUserEid();
+
+		// If session is anonymous
+		session.setUserId(userId);
+
+		try {
+			session.setUserEid(userDirectoryService.getUser(userId).getEid());
+		} catch (UserNotDefinedException e) {
+			// Shouldn't ever happen as we should be passed a valid user
+			LOG.error(e.getMessage(), e);
+		}
+
+		try {
+			reply = command.execute(siteId, userId, mobileNr, bodyParameters);
+		} catch (Exception e) {
+			LOG.warn("Error executing incoming SMS command: ", e);
+		}
+		
+		if (oldId == null) {
+			session.clear();
+		} else {
+			session.setUserId(oldId);
+			session.setUserId(oldEid);
+		}
+
+		return reply;
 	}
 
 }

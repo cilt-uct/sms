@@ -30,9 +30,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
@@ -75,11 +72,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
 		this.smsMessageParser = smsMessageParser;
-	}
-
-	private SecurityService securityService;
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
 	}
 
 	public ParsedMessage process(String smsMessagebody, String mobileNr) {
@@ -159,41 +151,13 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 							} else {
 								try {
 
-									String[] bodyParameters = smsMessageParser
-									.parseBody(
+									String[] bodyParameters = smsMessageParser.parseBody(
 											parsedMessage.getBody(),
 											command.getBodyParameterCount());
 
-									// Execute the message
+									// Execute the message in the appropriate security context
 
-									final String sakaiSiteId = sakaiSite;
-
-									// Set up a security advisor for the case where the user is anonymous
-									// (unmatched mobile number). In this case the command handler is
-									// responsible for enforcing appropriate security (i.e. deciding whether
-									// anonymous access is allowed, and if so to what).
-
-									// TODO - set user session for known user.
-
-									try {
-										securityService.pushAdvisor(new SecurityAdvisor() {
-											public SecurityAdvice isAllowed(String userId, String function, String reference) {
-												if (reference != null && sakaiSiteId != null 
-														&& SiteService.SITE_VISIT.equals(function) 
-														&& reference.equals(externalLogic.getSiteReferenceFromId(sakaiSiteId))) {
-													return SecurityAdvice.ALLOWED;
-												}
-												return SecurityAdvice.PASS;
-											}
-										});
-
-										reply = command.execute(sakaiSite, incomingUserID, mobileNr, bodyParameters);
-
-									} catch (Exception e) {
-										log.warn("Error executing incoming SMS command: ", e);
-									} finally {
-										securityService.popAdvisor();
-									}
+									reply = externalLogic.executeCommand(command, sakaiSite, incomingUserID, mobileNr, bodyParameters);
 
 								} catch (ParseException pe) {
 									if (command.isVisible()) {
@@ -221,7 +185,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		return parsedMessage;
 	}
-
 
 	/**
 	 * Returns a valid site

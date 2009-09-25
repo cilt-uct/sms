@@ -133,7 +133,6 @@
 			ref="org.sakaiproject.sms.logic.incoming.SmsMessageParser" />
 			<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-			<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService"/>
 	</bean>
 	
 	<bean id="org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper"

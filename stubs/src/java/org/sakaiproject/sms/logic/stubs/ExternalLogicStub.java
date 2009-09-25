@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -336,6 +337,12 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public String getSiteReferenceFromId(String siteId) {
 		return "/site/" + siteId;
+	}
+
+	public String executeCommand(SmsCommand command, String siteId,
+			String userId, String mobileNr, String[] bodyParameters) {
+		
+		return command.execute(siteId, userId, mobileNr, bodyParameters);
 	}
 
 }
