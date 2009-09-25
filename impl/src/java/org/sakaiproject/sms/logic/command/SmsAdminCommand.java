@@ -105,4 +105,8 @@ public class SmsAdminCommand implements SmsCommand {
 		return false;
 	}
 
+	public boolean requiresSiteId() {
+		return false;
+	}
+
 }

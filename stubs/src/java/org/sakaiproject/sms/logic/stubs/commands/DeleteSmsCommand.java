@@ -46,4 +46,9 @@ public class DeleteSmsCommand implements SmsCommand {
 	public boolean isVisible() {
 		return true;
 	}
+
+	public boolean requiresSiteId() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

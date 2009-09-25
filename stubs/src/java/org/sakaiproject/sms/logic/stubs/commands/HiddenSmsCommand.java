@@ -47,4 +47,9 @@ public class HiddenSmsCommand implements SmsCommand {
 	public boolean isVisible() {
 		return false;
 	}
+
+	public boolean requiresSiteId() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

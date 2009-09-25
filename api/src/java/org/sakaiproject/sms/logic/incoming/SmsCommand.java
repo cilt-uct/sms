@@ -78,4 +78,10 @@ public interface SmsCommand {
 	 * @return
 	 */
 	boolean isVisible();
+	
+	/**
+	 * Does this command require a siteId to be specified?
+	 * @return
+	 */
+	boolean requiresSiteId();
 }

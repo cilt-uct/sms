@@ -31,9 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.cover.SecurityService;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -45,7 +44,6 @@ import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
-import org.sakaiproject.user.api.Preferences;
 
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
@@ -55,7 +53,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	private final RegisteredCommands allCommands = new RegisteredCommands();
 
 	private static final Log log = LogFactory
-			.getLog(SmsIncomingLogicManagerImpl.class);
+	.getLog(SmsIncomingLogicManagerImpl.class);
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -106,7 +104,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				parsedMessage.setBody("");
 			} else {
 				final String suppliedCommand = parsedMessage.getCommand()
-						.toUpperCase();
+				.toUpperCase();
 				validCommandMatch = findValidCommand(suppliedCommand,
 						allCommands);
 				if ((validCommandMatch.getPattern() != null)
@@ -129,69 +127,70 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						if (parsedMessage.getSite() == null
 								|| parsedMessage.getBody() == null) {
 							final SmsCommand cmd = allCommands
-									.getCommand(validCommandMatch.getPattern());
+							.getCommand(validCommandMatch.getPattern());
 							if (cmd.isVisible()) {
 								reply = cmd.getHelpMessage();
 							}
 						} else { 
 
 							final List<String> userIds = externalLogic
-									.getUserIdsFromMobileNumber(mobileNr);
-							
+							.getUserIdsFromMobileNumber(mobileNr);
+
 							if (!userIds.isEmpty()) {
 								incomingUserID = userIds.get(0);
 								//get the user locale
 								incomingUserLocale = externalLogic.getUserLocale(incomingUserID);
 							}							
 
+
+							parsedMessage.setSite(sakaiSite);
+
+							final SmsCommand command = allCommands
+							.getCommand(validCommandMatch
+									.getPattern());
 							// VALID command
-							if (sakaiSite == null) {
+							if (sakaiSite == null && command.requiresSiteId()) {
 								reply = generateInvalidSiteMessage(parsedMessage
 										.getSite(), incomingUserLocale);
 							} else {
-								parsedMessage.setSite(sakaiSite);
-
-								final SmsCommand command = allCommands
-										.getCommand(validCommandMatch
-												.getPattern());
 								try {
 
 									String[] bodyParameters = smsMessageParser
-											.parseBody(
-													parsedMessage.getBody(),
-													command.getBodyParameterCount());
-									
+									.parseBody(
+											parsedMessage.getBody(),
+											command.getBodyParameterCount());
+
 									// Execute the message
-									
+
 									final String sakaiSiteId = sakaiSite;
-									
+
 									// Set up a security advisor for the case where the user is anonymous
 									// (unmatched mobile number). In this case the command handler is
 									// responsible for enforcing appropriate security (i.e. deciding whether
 									// anonymous access is allowed, and if so to what).
-									
+
 									// TODO - set user session for known user.
-									
+
 									try {
 										SecurityService.pushAdvisor(new SecurityAdvisor() {
-													public SecurityAdvice isAllowed(String userId, String function, String reference) {
-														if (reference != null && sakaiSiteId != null 
-																&& SiteService.SITE_VISIT.equals(function) 
-																&& reference.equals(SiteService.siteReference(sakaiSiteId))) {
-															return SecurityAdvice.ALLOWED;
-														}
-														return SecurityAdvice.PASS;
-													}
-												});
+											public SecurityAdvice isAllowed(String userId, String function, String reference) {
+												if (reference != null && sakaiSiteId != null 
+														&& SiteService.SITE_VISIT.equals(function) 
+														&& reference.equals(SiteService.siteReference(sakaiSiteId))) {
+													return SecurityAdvice.ALLOWED;
+												}
+												return SecurityAdvice.PASS;
+											}
+										});
 
 										reply = command.execute(sakaiSite, incomingUserID, mobileNr, bodyParameters);
-										
+
 									} catch (Exception e) {
 										log.warn("Error executing incoming SMS command: ", e);
 									} finally {
 										SecurityService.popAdvisor();
 									}
-									
+
 								} catch (ParseException pe) {
 									if (command.isVisible()) {
 										// Body parameter count wrong
@@ -211,11 +210,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				: defaultBillingSite);
 		parsedMessage.setBodyReply(formatReply(reply));
 		parsedMessage.setIncomingUserId(incomingUserID);
-		
+
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());
 		}
-		
+
 		return parsedMessage;
 	}
 
@@ -237,7 +236,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		if (externalLogic.isValidSite(suppliedSiteId)) {
 			return suppliedSiteId;
 		}
-		
+
 		// Lookup by site alias
 		String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
 		if (siteId != null) {
@@ -277,7 +276,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 */
 	private List<String> getPossibleMatches(String valueToMatch,
 			List<String> values) {
-		
+
 		List<String> returnVals = new ArrayList<String>();
 		valueToMatch = valueToMatch.toUpperCase();
 
@@ -291,12 +290,12 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				matchedValues.add(str);
 			}
 		}
-		
+
 		if (matchedValues.isEmpty()) {
 			// no matching substrings, so look through the whole list
 			matchedValues = values;
 		}
-		
+
 		// We calculate the largest string's length to be used as weights.
 		int largestString = 0;
 		for (String str : matchedValues) {
@@ -304,7 +303,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				largestString = str.length();
 			}
 		}
-		
+
 		// We loop through each command and pattern. Left hand matching
 		// chars score more points. If the first chars don't match we break the
 		// loop.
@@ -332,7 +331,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					}
 				}
 			}
-			
+
 			if (patternScore != 0 && patternScore == maxStringScore) {
 				returnVals.add(str);
 			}
@@ -342,11 +341,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				returnVal = str;
 			}
 		}
-		
+
 		if (returnVal != null) {
 			returnVals.add(returnVal);
 		}
-		
+
 		return returnVals;
 	}
 
@@ -434,7 +433,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	private String generateInvalidSiteMessage(String site, Locale preferedLocale) {
 		return externalLogic.getLocalisedString("sms.incoming.unkownsite", preferedLocale, new Object[]{site});
-		
+
 	}
 
 	private String generateUnknownCommandMessage(ParsedMessage message, Locale preferedLocale) {
@@ -521,9 +520,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 */
 	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
 			List<String> values) {
-		
+
 		log.debug("Looking for match for " + valueToMatch + " from " + values);
-		
+
 		SmsPatternSearchResult SmsPatternSearchResult = new SmsPatternSearchResult();
 		List<String> possibleMatches = getPossibleMatches(valueToMatch,
 				values);
