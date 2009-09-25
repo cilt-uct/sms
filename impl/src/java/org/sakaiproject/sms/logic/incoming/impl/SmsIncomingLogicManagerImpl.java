@@ -31,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -98,9 +97,19 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		}
 
 		if (!toolCmdsMap.isEmpty()) { // No tools registered
+
+			final List<String> userIds = externalLogic
+			.getUserIdsFromMobileNumber(mobileNr);
+
+			if (!userIds.isEmpty()) {
+				incomingUserID = userIds.get(0);
+				//get the user locale
+				incomingUserLocale = externalLogic.getUserLocale(incomingUserID);
+			}
+			
 			if (parsedMessage.getCommand() == null) {
 				// an empty sms was received
-				reply = generateHelpMessage();
+				reply = generateHelpMessage(incomingUserLocale);
 				parsedMessage.setBody("");
 			} else {
 				final String suppliedCommand = parsedMessage.getCommand()
@@ -112,16 +121,16 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
 							.getPattern())) {
 						parsedMessage.setSite(defaultBillingSite);
-						reply = generateHelpMessage();
+						reply = generateHelpMessage(incomingUserLocale);
 
 					} else if (validCommandMatch.getMatchResult().equals(
 							SmsPatternSearchResult.NO_MATCHES)) {
 						reply = generateAssistMessage(validCommandMatch
-								.getPossibleMatches());
+								.getPossibleMatches(), incomingUserLocale);
 					} else if (validCommandMatch.getMatchResult().equals(
 							SmsPatternSearchResult.MORE_THAN_ONE_MATCH)) {
 						reply = generateAssistMessage(validCommandMatch
-								.getPossibleMatches());
+								.getPossibleMatches(), incomingUserLocale);
 					} else { // Command is valid
 						sakaiSite = getValidSite(parsedMessage.getSite());
 						if (parsedMessage.getSite() == null
@@ -132,16 +141,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 								reply = cmd.getHelpMessage();
 							}
 						} else { 
-
-							final List<String> userIds = externalLogic
-							.getUserIdsFromMobileNumber(mobileNr);
-
-							if (!userIds.isEmpty()) {
-								incomingUserID = userIds.get(0);
-								//get the user locale
-								incomingUserLocale = externalLogic.getUserLocale(incomingUserID);
-							}							
-
 
 							parsedMessage.setSite(sakaiSite);
 
@@ -442,12 +441,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			cmd = message.getCommand();
 		}
 		String ret = externalLogic.getLocalisedString("sms.incoming.unknowncommand", preferedLocale, new Object[]{cmd});
+		ret = ret + " " + generateHelpMessage(preferedLocale); 
+	
 		return ret;
 	}
 
-	private String generateHelpMessage() {
+	private String generateHelpMessage(Locale locale) {
 		StringBuilder body = new StringBuilder();
-		body.append("Valid commands: ");
+		body.append(externalLogic.getLocalisedString("sms.incoming.validCommands", locale) + " ");
 		
 		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
@@ -468,11 +469,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return body.toString();
 	}
 
-	public String generateAssistMessage(List<String> matches) {
+	public String generateAssistMessage(List<String> matches, Locale locale) {
 		Collection<String> commands = null;
 		StringBuilder body = new StringBuilder();
 
-		body.append("Possible matches: ");
+		body.append(externalLogic.getLocalisedString("sms.incoming.possmatches", locale));
 		if (matches == null || matches.isEmpty()
 				|| matches.contains(SmsConstants.HELP)) {
 			// TODO: not sure what to do here
@@ -492,12 +493,12 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return body.toString();
 	}
 
-	public String generateAssistMessage(String tool) {
+	public String generateAssistMessage(String tool, Locale locale) {
 		if (tool == null || !toolCmdsMap.containsKey(tool.toUpperCase())) {
-			return "Invalid tool";
+			return externalLogic.getLocalisedString("sms.incoming.invalidTool", locale);
 		} else {
 			StringBuilder body = new StringBuilder();
-			body.append("Possible matches: ");
+			body.append(externalLogic.getLocalisedString("sms.incoming.possmatches", locale));
 			RegisteredCommands commands = toolCmdsMap.get(tool.toUpperCase());
 			final Iterator<String> i = commands.getCommandKeys().iterator();
 			while (i.hasNext()) {

@@ -21,6 +21,7 @@
 package org.sakaiproject.sms.logic.incoming;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
@@ -76,17 +77,19 @@ public interface SmsIncomingLogicManager {
 	 * 
 	 * @param toolKey
 	 *            tool to generate message for
+	 * @param the locale
 	 * @return the assist message
 	 */
-	public String generateAssistMessage(List<String> matches);
+	public String generateAssistMessage(List<String> matches, Locale locale);
 
 	/**
 	 * Genereate help message for specific tool
 	 * 
 	 * @param tool
+	 * @param local for message
 	 * @return
 	 */
-	public String generateAssistMessage(String tool);
+	public String generateAssistMessage(String tool, Locale locale);
 
 	/**
 	 * Return the closest matching string in the values array. So the command
