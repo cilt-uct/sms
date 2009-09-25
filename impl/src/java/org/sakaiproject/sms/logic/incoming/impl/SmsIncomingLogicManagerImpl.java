@@ -43,7 +43,6 @@ import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
-import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 import org.sakaiproject.user.api.Preferences;

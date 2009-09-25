@@ -48,7 +48,6 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
