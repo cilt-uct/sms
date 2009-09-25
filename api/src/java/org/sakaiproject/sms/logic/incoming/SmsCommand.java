@@ -40,7 +40,10 @@ public interface SmsCommand {
 	String[] getAliases();
 
 	/**
-	 * Execute method to run when incoming SMS matches command
+	 * Execute method to run when incoming SMS matches command. The method will be called
+	 * within an appropriate security context: if the user is anonymous, with a security advisor
+	 * allowing "site.visit" for the site, if the user is identified, a session for the user.
+	 * Implementations should nevertheless be cautious as to which operations are permitted.
 	 * 
 	 * @param siteId
 	 * @param userId
