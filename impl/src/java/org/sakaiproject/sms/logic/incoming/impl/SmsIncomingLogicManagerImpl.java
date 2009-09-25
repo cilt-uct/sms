@@ -31,8 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.cover.SecurityService;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
@@ -75,6 +75,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
 		this.smsMessageParser = smsMessageParser;
+	}
+
+	private SecurityService securityService;
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
 	}
 
 	public ParsedMessage process(String smsMessagebody, String mobileNr) {
@@ -171,11 +176,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 									// TODO - set user session for known user.
 
 									try {
-										SecurityService.pushAdvisor(new SecurityAdvisor() {
+										securityService.pushAdvisor(new SecurityAdvisor() {
 											public SecurityAdvice isAllowed(String userId, String function, String reference) {
 												if (reference != null && sakaiSiteId != null 
 														&& SiteService.SITE_VISIT.equals(function) 
-														&& reference.equals(SiteService.siteReference(sakaiSiteId))) {
+														&& reference.equals(externalLogic.getSiteReferenceFromId(sakaiSiteId))) {
 													return SecurityAdvice.ALLOWED;
 												}
 												return SecurityAdvice.PASS;
@@ -187,7 +192,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 									} catch (Exception e) {
 										log.warn("Error executing incoming SMS command: ", e);
 									} finally {
-										SecurityService.popAdvisor();
+										securityService.popAdvisor();
 									}
 
 								} catch (ParseException pe) {

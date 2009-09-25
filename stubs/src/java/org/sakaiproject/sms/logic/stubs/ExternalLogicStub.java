@@ -334,4 +334,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public String getSiteReferenceFromId(String siteId) {
+		return "/site/" + siteId;
+	}
+
 }

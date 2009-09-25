@@ -985,4 +985,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return rb.getString(key);
 	}
 
+	public String getSiteReferenceFromId(String siteId) {
+		return siteService.siteReference(siteId);
+	}
+
 }
