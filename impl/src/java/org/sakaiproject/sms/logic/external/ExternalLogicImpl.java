@@ -89,7 +89,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public final static String NO_LOCATION = "noLocationAvailable";
 
-	private static final String SMS_BUNDLE = "org.sakaiproject.sms.impl.bundle.SMS";
+	private static final String SMS_BUNDLE = "messages";
 
 	private ServerConfigurationService serverConfigurationService = null;
 
@@ -985,7 +985,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (locale != null) {
 			rb.setContextLocale(locale);
 		}   	
-		return rb.getString(key);
+		return rb.getFormattedMessage(key, replacementValues);
 	}
 
 	public String getSiteReferenceFromId(String siteId) {

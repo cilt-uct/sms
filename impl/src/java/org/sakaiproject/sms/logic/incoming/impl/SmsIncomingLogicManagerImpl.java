@@ -408,7 +408,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		if (message != null && message.getCommand() != null) {
 			cmd = message.getCommand();
 		}
-		String ret = externalLogic.getLocalisedString("sms.incoming.unknowncommand", preferedLocale, new Object[]{cmd});
+		String ret = externalLogic.getLocalisedString("sms.incoming.unknown", preferedLocale, new Object[]{cmd});
 		ret = ret + " " + generateHelpMessage(preferedLocale); 
 	
 		return ret;
