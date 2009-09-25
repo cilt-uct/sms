@@ -432,7 +432,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	private String generateInvalidSiteMessage(String site, Locale preferedLocale) {
-		return externalLogic.getLocalisedString("sms.incoming.unkownsite", preferedLocale, new Object[]{site});
+		return externalLogic.getLocalisedString("sms.incoming.unknownsite", preferedLocale, new Object[]{site});
 
 	}
 
@@ -441,13 +441,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		if (message != null && message.getCommand() != null) {
 			cmd = message.getCommand();
 		}
-		String ret = externalLogic.getLocalisedString("sms.incoming.unkowncommand", preferedLocale, new Object[]{cmd});
+		String ret = externalLogic.getLocalisedString("sms.incoming.unknowncommand", preferedLocale, new Object[]{cmd});
 		return ret;
 	}
 
 	private String generateHelpMessage() {
 		StringBuilder body = new StringBuilder();
 		body.append("Valid commands: ");
+		
 		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
 			String command = i.next();
