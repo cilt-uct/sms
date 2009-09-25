@@ -499,61 +499,61 @@ public class SmsCoreImpl implements SmsCore {
 		String smsMessagebody = inMessage.getSmsMessagebody();
 		String mobileNumber = inMessage.getMobileNumber();
 		
-		// Allocate the cost of incoming messages
+		// Allocate the cost of incoming messages. By default to admin account
 
 		double routingCredits = numberRoutingHelper.getIncomingMessageCost(inMessage.getSmscId());
-		
-		if (routingCredits > 0) {
-			String siteIdToDebit = SmsConstants.SAKAI_ADMIN_ACCOUNT;		
-			SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
-				.getSmsAccount(siteIdToDebit, null);
-			smsBilling.debitIncomingMessage(account, routingCredits);
-		}
+		String defaultBillingAccount = SmsConstants.SAKAI_ADMIN_ACCOUNT;		
 		
 		String smsMessageReplyBody = "";
 				
 		ParsedMessage parsedMessage = getSmsIncomingLogicManager().process(smsMessagebody, mobileNumber);
 		
 		if (parsedMessage == null) {
-			LOG.debug("No reply to this incoming message.");
+			// We don't ever expect a null return value here
+			LOG.error("Error parsing incoming message from " + mobileNumber);
+
+			billIncomingMessage(routingCredits, defaultBillingAccount, null, null);
 			return;		
 		}
 		
-		if (parsedMessage.getBodyReply() != null
-				&& !parsedMessage.getBodyReply().equals(
+		// Check for empty reply body
+		if (parsedMessage.getBodyReply() == null
+			|| parsedMessage.getBodyReply().equals(
 						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
+			LOG.debug("No reply to this incoming message.");
 
-			smsMessageReplyBody = parsedMessage.getBodyReply();
+			billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(), null);
+			return;
+		}
+		
+		smsMessageReplyBody = parsedMessage.getBodyReply();
 			
-			LOG.debug((parsedMessage.getCommand() != null ? "Command "
+		LOG.debug((parsedMessage.getCommand() != null ? "Command "
 					+ parsedMessage.getCommand() : "System")
 					+ " answered back with: " + smsMessageReplyBody);
 
-		} else if ((parsedMessage.getBodyReply() == null)
-				|| parsedMessage.getBodyReply().equals(
-						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
-			return;
-		} else {
-			smsMessageReplyBody = "No tool found.";
-		}
-
+		// TODO what if we have no site?
 		final SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(parsedMessage.getSite());
 
 		if (!configSite.isReceiveIncomingEnabled()) {
 			LOG.info("Receiving of Mobile Originating messages is disabled for site:"
 							+ configSite.getSakaiSiteId());
+			
+			// Bill default site rather than this site
+			billIncomingMessage(routingCredits, defaultBillingAccount, null, null);
 			return;
 		}
 		
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);
 
-		// TODO Who will be the sakai user that will "send" the reply
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
 				new Date(), parsedMessage.getSite(), null,
 				SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 
 		if (smsTask == null) {
+			// TODO what failure cases?
+			billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(), null);
 			return;
 		}
 
@@ -569,8 +569,10 @@ public class SmsCoreImpl implements SmsCore {
 
 		// Send reply
 		
+		SmsTask outTask = null;
+		
 		try {
-			insertTask(smsTask);
+			outTask = insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
 			LOG.error("Task validation failed: ", e);
 		} catch (SmsSendDeniedException e) {
@@ -578,9 +580,34 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (SmsSendDisabledException e) {
 			LOG.error(getExceptionStackTraceAsString(e), e);
 		}
-
+		
+		billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(),
+				outTask != null ? outTask.getId() : null);
+		
+		return;
 	}
 
+	private void billIncomingMessage(double credits, String defaultSiteId, String parsedSiteId, Long taskId) {
+
+		if ((defaultSiteId == null && parsedSiteId == null) || (credits == 0)) {
+			// nothing to do 
+			return;
+		}
+
+		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(parsedSiteId, null);
+		
+		if (account != null) {
+			smsBilling.debitIncomingMessage(account, credits, taskId);	
+		} else {
+			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(defaultSiteId, null);
+			if (account != null) {
+				smsBilling.debitIncomingMessage(account, credits, taskId);
+			}
+		}
+		
+		return;
+	}
+	
 	public void processNextTask() {
 		synchronized (this) {
 			if (!externalLogic.isNodeBindToGateway()) {

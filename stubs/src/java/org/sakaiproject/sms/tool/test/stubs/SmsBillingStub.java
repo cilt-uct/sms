@@ -178,7 +178,7 @@ public class SmsBillingStub implements SmsBilling {
 		return false;
 	}
 
-	public boolean debitIncomingMessage(SmsAccount account, double credits) {
+	public boolean debitIncomingMessage(SmsAccount account, double credits, Long replyTaskId) {
 		// TODO Auto-generated method stub
 		return false;
 	}

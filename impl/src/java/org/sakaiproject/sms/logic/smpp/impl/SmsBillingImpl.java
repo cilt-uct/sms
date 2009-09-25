@@ -358,7 +358,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param smsTask
 	 * @return true, if successful
 	 */
-	public boolean debitIncomingMessage(SmsAccount account, double credits) {
+	public boolean debitIncomingMessage(SmsAccount account, double credits, Long replyTaskId) {
 		
 		if (account == null) {
 			// Account does not exist
@@ -373,7 +373,7 @@ public class SmsBillingImpl implements SmsBilling {
 		smsTransaction.setTransactionCredits(-1 * credits);
 		smsTransaction.setSakaiUserId(SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 		smsTransaction.setSmsAccount(account);
-		smsTransaction.setSmsTaskId(null);
+		smsTransaction.setSmsTaskId(replyTaskId);
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertIncomingMessageTransaction(smsTransaction);

@@ -95,8 +95,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		if (!toolCmdsMap.isEmpty()) { // No tools registered
 
-			final List<String> userIds = externalLogic
-			.getUserIdsFromMobileNumber(mobileNr);
+			final List<String> userIds = externalLogic.getUserIdsFromMobileNumber(mobileNr);
 
 			if (!userIds.isEmpty()) {
 				incomingUserID = userIds.get(0);
@@ -109,10 +108,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				reply = generateHelpMessage(incomingUserLocale);
 				parsedMessage.setBody("");
 			} else {
-				final String suppliedCommand = parsedMessage.getCommand()
-				.toUpperCase();
-				validCommandMatch = findValidCommand(suppliedCommand,
-						allCommands);
+				final String suppliedCommand = parsedMessage.getCommand().toUpperCase();
+				validCommandMatch = findValidCommand(suppliedCommand, allCommands);
+				
 				if ((validCommandMatch.getPattern() != null)
 						&& (validCommandMatch.getMatchResult() != null)) {
 					if (SmsConstants.HELP.equalsIgnoreCase(validCommandMatch
@@ -141,13 +139,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 							parsedMessage.setSite(sakaiSite);
 
-							final SmsCommand command = allCommands
-							.getCommand(validCommandMatch
-									.getPattern());
+							final SmsCommand command = allCommands.getCommand(validCommandMatch.getPattern());
+							
 							// VALID command
 							if (sakaiSite == null && command.requiresSiteId()) {
-								reply = generateInvalidSiteMessage(parsedMessage
-										.getSite(), incomingUserLocale);
+								reply = generateInvalidSiteMessage(parsedMessage.getSite(), incomingUserLocale);
 							} else {
 								try {
 

@@ -226,6 +226,6 @@ public interface SmsBilling {
 	 */
 	public String getIncomingMessageCode();
 	
-	public boolean debitIncomingMessage(SmsAccount account, double credits);
+	public boolean debitIncomingMessage(SmsAccount account, double credits, Long replyTaskId);
 
 }
