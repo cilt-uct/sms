@@ -42,6 +42,7 @@
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
+		<property name="preferencesService" ref="org.sakaiproject.user.api.PreferencesService"/>
 	</bean>
 
 </beans>
