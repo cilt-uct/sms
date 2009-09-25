@@ -173,7 +173,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		for (SakaiPerson person : list) {
 			toReturn.add(person.getUid());
 		}
-		//Incases where this is not set also check 
+		//In cases where this is not set also check 
 		final SakaiPerson example1 = sakaiPersonManager.getPrototype();
 		example1.setMobile(mobileNumber);
 		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
