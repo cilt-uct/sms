@@ -399,7 +399,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	}
 
 	private String generateInvalidSiteMessage(String site, Locale preferedLocale) {
-		return externalLogic.getLocalisedString("sms.incoming.unknownsite", preferedLocale, new Object[]{site});
+		return externalLogic.getLocalisedString("sms.incoming.unknownsite", preferedLocale);
 
 	}
 
