@@ -76,9 +76,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		this.smsMessageParser = smsMessageParser;
 	}
 
-	// TODO: Throw exception if no applicable found?
-	public ParsedMessage process(String smsMessagebody, String mobileNr)
-			throws MoDisabledForSiteException {
+	public ParsedMessage process(String smsMessagebody, String mobileNr) {
 
 		String reply = null;
 		ParsedMessage parsedMessage = null;
@@ -209,8 +207,8 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());
-
 		}
+		
 		return parsedMessage;
 	}
 

@@ -512,36 +512,30 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		
 		String smsMessageReplyBody = "";
-		ParsedMessage parsedMessage = null;
 				
-		try {
-			parsedMessage = getSmsIncomingLogicManager().process(
-					smsMessagebody, mobileNumber);
-		} catch (MoDisabledForSiteException exception) {
-			LOG.warn(exception.getMessage());
-			return;
+		ParsedMessage parsedMessage = getSmsIncomingLogicManager().process(smsMessagebody, mobileNumber);
+		
+		if (parsedMessage == null) {
+			LOG.debug("No reply to this incoming message.");
+			return;		
 		}
 		
-		if (parsedMessage != null) {
-			if (parsedMessage.getBodyReply() != null
-					&& !parsedMessage.getBodyReply().equals(
-							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
+		if (parsedMessage.getBodyReply() != null
+				&& !parsedMessage.getBodyReply().equals(
+						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 
-				smsMessageReplyBody = parsedMessage.getBodyReply();
-				
-				LOG.debug((parsedMessage.getCommand() != null ? "Command "
-						+ parsedMessage.getCommand() : "System")
-						+ " answered back with: " + smsMessageReplyBody);
+			smsMessageReplyBody = parsedMessage.getBodyReply();
+			
+			LOG.debug((parsedMessage.getCommand() != null ? "Command "
+					+ parsedMessage.getCommand() : "System")
+					+ " answered back with: " + smsMessageReplyBody);
 
-			} else if ((parsedMessage.getBodyReply() == null)
-					|| parsedMessage.getBodyReply().equals(
-							SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
-				return;
-			} else {
-				smsMessageReplyBody = "No tool found.";
-			}
-		} else {
+		} else if ((parsedMessage.getBodyReply() == null)
+				|| parsedMessage.getBodyReply().equals(
+						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 			return;
+		} else {
+			smsMessageReplyBody = "No tool found.";
 		}
 
 		final SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()

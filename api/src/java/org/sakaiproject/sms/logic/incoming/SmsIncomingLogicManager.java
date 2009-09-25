@@ -61,8 +61,7 @@ public interface SmsIncomingLogicManager {
 	 * @param message
 	 *            the incoming message received
 	 */
-	public ParsedMessage process(String smsMessagebody, String mobileNr)
-			throws MoDisabledForSiteException;
+	public ParsedMessage process(String smsMessagebody, String mobileNr);
 
 	/**
 	 * Check if command is valid for tool

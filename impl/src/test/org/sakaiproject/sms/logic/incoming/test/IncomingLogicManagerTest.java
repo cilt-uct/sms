@@ -31,7 +31,6 @@ import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
-import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.CreateSmsCommandCopy;
@@ -94,7 +93,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("something"));
 	}
 
-	public void testDuplicateNotReplace() throws MoDisabledForSiteException {
+	public void testDuplicateNotReplace() {
 		ParsedMessage msg = manager.process("create test body", TEST_MOBILE);
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertEquals("CREATE", msg.getCommand());
@@ -136,7 +135,7 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
-	public void testProcess() throws MoDisabledForSiteException {
+	public void testProcess() {
 		ParsedMessage msg = manager.process("updat test", TEST_MOBILE);
 		assertEquals("UPDATE", msg.getCommand());
 
@@ -159,7 +158,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		}
 	}
 
-	public void testHelpCommand() throws MoDisabledForSiteException {
+	public void testHelpCommand() {
 		assertTrue(manager.isValidCommand("help"));
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
 		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
@@ -187,7 +186,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("DELETE"));
 	}
 
-	public void testHelpMessage() throws MoDisabledForSiteException {
+	public void testHelpMessage() {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
 		assertEquals(createCmd.getHelpMessage(), msg.getBodyReply());
 
@@ -195,7 +194,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals(updateCmd.getHelpMessage(), msg.getBodyReply());
 	}
 
-	public void testMultipleBody() throws MoDisabledForSiteException {
+	public void testMultipleBody() {
 		ParsedMessage msg = manager.process("MULTIPLE " + TEST_SITE
 				+ " PARAM1 PARAM2", TEST_MOBILE);
 		assertEquals("MULTIPLE", msg.getBodyReply());
@@ -203,7 +202,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals("PARAM2", multipleCmd.param2);
 	}
 
-	public void testMultipleBodyInvalid() throws MoDisabledForSiteException {
+	public void testMultipleBodyInvalid() {
 		ParsedMessage msg = manager.process(
 				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
 		assertEquals("MULTIPLE HELP", msg.getBodyReply());
@@ -212,7 +211,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden command must not show up command list
 	 */
-	public void testHiddenSmsCommandHelp() throws MoDisabledForSiteException {
+	public void testHiddenSmsCommandHelp() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
 		assertEquals("Valid commands: CREATE, UPDATE, DELETE, MULTIPLE", msg
@@ -222,8 +221,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must not return help
 	 */
-	public void testHiddenSmsCommandNullBodyNoMessage()
-			throws MoDisabledForSiteException {
+	public void testHiddenSmsCommandNullBodyNoMessage() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE, TEST_MOBILE);
 		assertEquals(null, msg.getBodyReply());
@@ -232,8 +230,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must not return help
 	 */
-	public void testHiddenSmsCommandNotEnoughBodyNoMessage()
-			throws MoDisabledForSiteException {
+	public void testHiddenSmsCommandNotEnoughBodyNoMessage() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE + " param1",
 				TEST_MOBILE);
@@ -243,8 +240,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must be processed
 	 */
-	public void testHiddenSmsCommandValidProcess()
-			throws MoDisabledForSiteException {
+	public void testHiddenSmsCommandValidProcess() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE
 				+ " param1 param2", TEST_MOBILE);
@@ -254,7 +250,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests "" incomming commmands
 	 */
-	public void testBlankMessage() throws MoDisabledForSiteException {
+	public void testBlankMessage() {
 		ParsedMessage msg = manager.process("", TEST_MOBILE);
 		assertEquals(null, msg.getCommand());
 	}
@@ -262,7 +258,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests null incomming commmands
 	 */
-	public void testNullMessage() throws MoDisabledForSiteException {
+	public void testNullMessage() {
 		ParsedMessage msg = manager.process(null, TEST_MOBILE);
 		assertEquals(null, msg.getCommand());
 	}
@@ -270,7 +266,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests null incomming commmands
 	 */
-	public void testInvalidMessage() throws MoDisabledForSiteException {
+	public void testInvalidMessage() {
 		ParsedMessage msg = manager.process("ssdfsdfsdfsdfsdfsdfsdfSDF",
 				TEST_MOBILE);
 		assertEquals(null, msg.getCommand());
