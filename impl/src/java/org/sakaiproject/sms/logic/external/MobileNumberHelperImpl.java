@@ -165,6 +165,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber);
 		final SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setNormalizedMobile(numberRoutingHelper.normalizeNumber(mobileNumber));
+		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
 
 		final List<SakaiPerson> list = sakaiPersonManager
 				.findSakaiPerson(example);
@@ -175,6 +176,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		//Incases where this is not set also check 
 		final SakaiPerson example1 = sakaiPersonManager.getPrototype();
 		example1.setMobile(mobileNumber);
+		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
 
 		final List<SakaiPerson> list1 = sakaiPersonManager
 				.findSakaiPerson(example1);
@@ -210,6 +212,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Set<String> filterUserListForPreference(Set<String> userids) {
 		List<User> users = userDirectoryService.getUsers(userids);
 		Set<String> ret = new HashSet<String>();
