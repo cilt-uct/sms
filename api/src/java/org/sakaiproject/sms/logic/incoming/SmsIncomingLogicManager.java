@@ -22,7 +22,6 @@ package org.sakaiproject.sms.logic.incoming;
 
 import java.util.List;
 
-import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**
