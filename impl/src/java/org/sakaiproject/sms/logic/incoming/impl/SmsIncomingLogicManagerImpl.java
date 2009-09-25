@@ -25,11 +25,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -42,6 +46,7 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.logic.smpp.exception.MoDisabledForSiteException;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
+import org.sakaiproject.user.api.Preferences;
 
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
@@ -83,6 +88,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		String incomingUserID = null;
 		SmsPatternSearchResult validCommandMatch = null;
 		String sakaiSite = null;
+		Locale incomingUserLocale = null;
 
 		final String defaultBillingSite = SmsConstants.SAKAI_ADMIN_ACCOUNT;
 
@@ -90,7 +96,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			parsedMessage = smsMessageParser.parseMessage(smsMessagebody);
 		} catch (ParseException e) {
 			parsedMessage = new ParsedMessage();
-			reply = generateUnknownCommandMessage(parsedMessage);
+			reply = generateUnknownCommandMessage(parsedMessage, null);
 			parsedMessage.setSite(defaultBillingSite);
 		}
 
@@ -129,20 +135,22 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 								reply = cmd.getHelpMessage();
 							}
 						} else { 
+
+							final List<String> userIds = externalLogic
+									.getUserIdsFromMobileNumber(mobileNr);
 							
+							if (!userIds.isEmpty()) {
+								incomingUserID = userIds.get(0);
+								//get the user locale
+								incomingUserLocale = externalLogic.getUserLocale(incomingUserID);
+							}							
+
 							// VALID command
 							if (sakaiSite == null) {
 								reply = generateInvalidSiteMessage(parsedMessage
-										.getSite());
+										.getSite(), incomingUserLocale);
 							} else {
 								parsedMessage.setSite(sakaiSite);
-
-								final List<String> userIds = externalLogic
-										.getUserIdsFromMobileNumber(mobileNr);
-								
-								if (!userIds.isEmpty()) {
-									incomingUserID = userIds.get(0);
-								}
 
 								final SmsCommand command = allCommands
 										.getCommand(validCommandMatch
@@ -195,7 +203,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 						}
 					}
 				} else {
-					reply = generateUnknownCommandMessage(parsedMessage);
+					reply = generateUnknownCommandMessage(parsedMessage, incomingUserLocale);
 				}
 			}
 		}
@@ -211,6 +219,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		
 		return parsedMessage;
 	}
+
 
 	/**
 	 * Returns a valid site
@@ -424,23 +433,18 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	}
 
-	private String generateInvalidSiteMessage(String site) {
-		return "Invalid site (" + site + ") supplied";
+	private String generateInvalidSiteMessage(String site, Locale preferedLocale) {
+		return externalLogic.getLocalisedString("sms.incoming.unkownsite", preferedLocale, new Object[]{site});
+		
 	}
 
-	@SuppressWarnings("unused")
-	private String generateInvalidMobileNrMessage(String mobileNr) {
-		return "Invalid mobile number (" + mobileNr + ") used";
-	}
-
-	private String generateUnknownCommandMessage(ParsedMessage message) {
+	private String generateUnknownCommandMessage(ParsedMessage message, Locale preferedLocale) {
 		String cmd = "";
 		if (message != null && message.getCommand() != null) {
 			cmd = message.getCommand();
 		}
-
-		return "Unknown command " + cmd
-				+ ". Please sms help for valid commands.";
+		String ret = externalLogic.getLocalisedString("sms.incoming.unkowncommand", preferedLocale, new Object[]{cmd});
+		return ret;
 	}
 
 	private String generateHelpMessage() {

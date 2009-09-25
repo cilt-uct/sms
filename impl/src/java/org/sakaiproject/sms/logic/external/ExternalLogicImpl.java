@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -51,11 +52,13 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -68,9 +71,12 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.user.api.Preferences;
+import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.util.ResourceLoader;
 
 /**
  * Implementation of {@link ExternalLogic} for Sakai-specific code.
@@ -80,6 +86,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 	private static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
+
+	private static final String SMS_BUNDLE = "org.sakaiproject.sms.impl.bundle.SMS";
 
 	private ServerConfigurationService serverConfigurationService = null;
 
@@ -159,6 +167,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public void setTimeService(TimeService ts) {
 		timeService = ts;
+	}
+
+
+
+	private PreferencesService preferencesService;
+	public void setPreferencesService(PreferencesService ps) {
+		preferencesService = ps;
 	}
 
 	public void init() {
@@ -694,6 +709,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getAllSiteAliases() {
 		
 		List<String> siteAliases = new ArrayList<String>();
@@ -734,6 +750,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiGroupsForSite(String siteId) {
 		//Using a {@link LinkedHashMap} to preserve the sorting order we will do later
 		Map<String, String> groups = new LinkedHashMap<String, String>();
@@ -752,6 +769,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return groups;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiRolesForSite(String siteId) {
 		Map<String, String> roles = new HashMap<String, String>();
 		try {
@@ -829,6 +847,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
 		List<String> userIds = new ArrayList<String>();
 		List<User> users = new ArrayList<User>();
@@ -864,6 +883,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				locationId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, User> getSakaiUsers(Set<String> userIds) {
 		Map<String, User> userMap = new HashMap<String, User>();
 		if (userIds != null && !userIds.isEmpty()) {
@@ -879,6 +899,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return serverConfigurationService.getBoolean("sms.BindThisNode", true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
 		Map<String, String> usernames = new HashMap<String, String>();
 		if (sakaiUserIds != null && !sakaiUserIds.isEmpty()) {
@@ -915,6 +936,53 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 		return smsUserIds;
+	}
+
+	public Locale getUserLocale(String userId) {
+	      Locale loc = null;
+	      Preferences prefs = preferencesService.getPreferences(userId);
+	      ResourceProperties locProps = prefs.getProperties(InternationalizedMessages.APPLICATION_ID);
+	      String localeString = locProps.getProperty(InternationalizedMessages.LOCALE_KEY);
+
+	      if (localeString != null)
+	      {			String[] locValues = localeString.split("_");
+	      if (locValues.length > 1)
+	         loc = new Locale(locValues[0], locValues[1]); // language, country
+	      else if (locValues.length == 1) 
+	         loc = new Locale(locValues[0]); // just language
+	      }
+	      //the user has no preference set - get the system default
+	      if (loc == null ) {
+	         String lang = System.getProperty("user.language");
+	         String region = System.getProperty("user.region");
+
+	         if (region != null) {
+	            LOG.debug("getting system locale for: " + lang + "_" + region);
+	            loc = new Locale(lang,region);
+	         } else { 
+	            LOG.debug("getting system locale for: " + lang );
+	            loc = new Locale(lang);
+	         }
+	      }
+
+	      return loc;
+	}
+
+	public String getLocalisedString(String key, Locale locale) {
+		final ResourceLoader rb = new ResourceLoader(SMS_BUNDLE);
+		if (locale != null) {
+			rb.setContextLocale(locale);
+		}
+    	return rb.getString(key);
+	}
+
+	public String getLocalisedString(String key, Locale locale,
+			Object[] replacementValues) {
+		final ResourceLoader rb = new ResourceLoader(SMS_BUNDLE);
+		if (locale != null) {
+			rb.setContextLocale(locale);
+		}   	
+		return rb.getString(key);
 	}
 
 }

@@ -23,6 +23,7 @@ package org.sakaiproject.sms.logic.external;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -306,7 +307,7 @@ public interface ExternalLogic {
 	public boolean isNodeBindToGateway();
 	
 	/**
-	 * Get a list of sakai users sortnames with corresponding UUIds.
+	 * Get a list of Sakai users sortnames with corresponding UUIds.
 	 * @param sakaiUserIds
 	 * @return each map entry has a userId and corresponding sortname
 	 */
@@ -320,9 +321,34 @@ public interface ExternalLogic {
 
 	/**
 	 * Extract all the userIds associated with an {@link SmsTask}.
-	 * @param messages Messaages to extract the user Ids from
+	 * @param messages Messages to extract the user Ids from
 	 * @return Internal userIds
 	 */
 	public Set<String> getUserIdsFromSmsMessages(Collection<SmsMessage> messages);
 
+	/**
+	 * Get the users preferred locale
+	 * @param userId
+	 * @return the users preferred local or the system default if the user has none
+	 */
+	public Locale getUserLocale(String userId);
+	
+	
+	/**
+	 * Get a localised resource string for the given Locale
+	 * @param key - the message key
+	 * @param locale
+	 * @return
+	 */
+	public String getLocalisedString(String key, Locale locale);
+	
+	/**
+	 * Get the Localised mesaage for the key with the following values replaced
+	 * @param key - message key
+	 * @param locale
+	 * @param replacementValues
+	 * @return
+	 */
+	public String getLocalisedString(String key, Locale locale, Object[] replacementValues);
+	
 }

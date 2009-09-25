@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -315,6 +316,22 @@ public class ExternalLogicStub implements ExternalLogic {
 		List<String> siteAliases = new ArrayList<String>();
 		siteAliases.add(SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		return siteAliases;
+	}
+
+	public String getLocalisedString(String key, Locale locale) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getLocalisedString(String key, Locale locale,
+			Object[] replacementValues) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Locale getUserLocale(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
