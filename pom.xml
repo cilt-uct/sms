@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Sakai Sms</name>
 	<groupId>org.sakaiproject</groupId>
@@ -15,13 +16,12 @@
 		texting) capablities to Sakai.The module consists of 1) A SMPP service
 		to forward messages to an SMPP complient gateway. 2) An admin tool to
 		administer accounts 3) A user tool to send messages to users</description>
-   <!-- Sakai master pom is the parent -->
+	<!-- Sakai master pom is the parent -->
 	<parent>
 		<artifactId>master</artifactId>
 		<groupId>org.sakaiproject</groupId>
-	<!--<version>2.7.0-SNAPSHOT</version>-->
+		<!-- <version>2.7.0-SNAPSHOT</version> -->
 		<version>2.6-SNAPSHOT</version>
-		<relativePath>../master/pom.xml</relativePath>
 	</parent>
 	<profiles>
 		<profile>
@@ -60,7 +60,7 @@
 		</profile>
 	</profiles>
 
-    <!-- handles the management of all related dependencies -->
+	<!-- handles the management of all related dependencies -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -112,6 +112,22 @@
 				<version>3.8.1</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.common</groupId>
+				<artifactId>sakai-common-edu-person-api</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.sakaiproject.common</groupId>
+				<artifactId>sakai-common-manager-api</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.common</groupId>
+				<artifactId>sakai-common-type-api</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
@@ -137,26 +153,26 @@
 		</repository>
 	</repositories>
 	<pluginRepositories>
-	  <pluginRepository>
-	    <id>codehaus snapshot repository</id>
-	    <url>http://snapshots.repository.codehaus.org/</url>
-	    <releases>
-	      <enabled>true</enabled>
-	      </releases>
-	    </pluginRepository>
-	  <pluginRepository>
-	    <id>Sakai Plugin Repo</id>
-	    <url>http://source.sakaiproject.org/maven2</url>
-	    <releases>
-	      <enabled>true</enabled>
-	      </releases>
-	    </pluginRepository>
-	  <pluginRepository>
-	    <id>xebia-maven2</id>
-	    <name>Xebia Maven2 Repository</name>
-	    <url>http://mojo.os.xebia.com/repository</url>
-	    </pluginRepository>
-	  </pluginRepositories>
+		<pluginRepository>
+			<id>codehaus snapshot repository</id>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>Sakai Plugin Repo</id>
+			<url>http://source.sakaiproject.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>xebia-maven2</id>
+			<name>Xebia Maven2 Repository</name>
+			<url>http://mojo.os.xebia.com/repository</url>
+		</pluginRepository>
+	</pluginRepositories>
 	<issueManagement>
 		<system>JIRA</system>
 		<url>http://jira.sakaiproject.org/jira/browse/SMS</url>
@@ -171,11 +187,11 @@
 	</licenses>
 	<scm>
 		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</connection>
-	<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
-	<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
+		<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
 	</scm>
-        <distributionManagement>
-        <downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
+	<distributionManagement>
+		<downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
 		<snapshotRepository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>sakai-maven-snapshots</id>
@@ -189,13 +205,13 @@
 			<name>Sakai maven2 repository</name>
 			<url>dav:https://source.sakaiproject.org/maven2</url>
 			<layout>default</layout>
-		</repository> 
-	  <site>
-	    <id>cet-site</id>
-	    <name>Sakai release Site</name>
-	    <url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/project/sms/${project.version}</url>
-	    </site>
-	</distributionManagement> 
+		</repository>
+		<site>
+			<id>cet-site</id>
+			<name>Sakai release Site</name>
+			<url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/project/sms/${project.version}</url>
+		</site>
+	</distributionManagement>
 	<ciManagement>
 		<system>Continuum</system>
 		<url>http://arabica.cet.uct.ac.za:8080/continuum</url>
@@ -270,148 +286,150 @@
 			</roles>
 		</developer>
 	</developers>
-	
+
 	<reporting>
 		<plugins>
-		<plugin>
-			<groupId>com.xebia.mojo</groupId>
-			<artifactId>maven-dashboard-plugin</artifactId>
-			<configuration>
-				<reports>
-					<report>findbugs-maven-plugin</report>
-					<report>maven-cpd-plugin</report>
-					<report>taglist-maven-plugin</report>
-				</reports>
-			</configuration>
-		</plugin>
-		<plugin>
-			<artifactId>maven-jxr-plugin</artifactId>
-			<configuration>
-				<aggregate>true</aggregate>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>findbugs-maven-plugin</artifactId>
-			<version>2.0.1</version>
-			<configuration>
-				<findbugsXmlOutput>true</findbugsXmlOutput>
-				<xmlOutput>true</xmlOutput>
-				<effort>Max</effort>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-pmd-plugin</artifactId>
-			<configuration>
-				<xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation> 
-				<sourceEncoding>utf-8</sourceEncoding>
-				<minimumTokens>20</minimumTokens>
-				<targetJdk>1.5</targetJdk>
-				<rulesets>
-					<ruleset>/rulesets/basic.xml</ruleset>
-					<ruleset>/rulesets/braces.xml</ruleset>
-					<ruleset>/rulesets/unusedcode.xml</ruleset>
-					<ruleset>/rulesets/clone.xml</ruleset>
-					<ruleset>/rulesets/codesize.xml</ruleset>
-					<ruleset>/rulesets/coupling.xml</ruleset>
-					<ruleset>/rulesets/design.xml</ruleset>
-					<ruleset>/rulesets/strictexception.xml</ruleset>
-					<ruleset>/rulesets/migrating.xml</ruleset>
-					<ruleset>/rulesets/junit.xml</ruleset>
-					<ruleset>/rulesets/strings.xml</ruleset>
-					<ruleset>/rulesets/javabeans.xml</ruleset>
-					<ruleset>/rulesets/finalizers.xml</ruleset>
-					<ruleset>/rulesets/optimizations.xml</ruleset>
-					<ruleset>/rulesets/j2ee.xml</ruleset>
-				</rulesets>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>taglist-maven-plugin</artifactId>
-			<configuration>
-				<tags>
-					<tag>TODO</tag>
-					<tag>todo</tag>
-					<tag>FIXME</tag>
-					<tag>fixme</tag>
-					<tag>Ignore</tag>
-					<tag>Deprecated</tag>
-				</tags>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-checkstyle-plugin</artifactId>
-			<configuration>
-				<configLocation> src/site/checkstyle.xml </configLocation>
-			</configuration>
-			<!-- <xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation> -->
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>cobertura-maven-plugin</artifactId>
-			<version>2.2</version>
-			<configuration>
-				<formats>
-					<format>xml</format>
-					<format>html</format>
-				</formats>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-javadoc-plugin</artifactId>
-			<configuration>
-				<links>
-					<link> http://java.sun.com/j2se/1.5.0/docs/api </link>
-					<link> http://java.sun.com/products/servlet/2.3/javadoc/ </link>
-				</links>
-				<breakiterator>true</breakiterator>
-				<verbose>false</verbose>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>jxr-maven-plugin</artifactId>
-			<configuration>
-				<linkJavadoc>true</linkJavadoc>
-				<javadocDir>apidocs</javadocDir>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>jdepend-maven-plugin</artifactId>
-		</plugin>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-report-plugin</artifactId>
-		</plugin>
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>dashboard-maven-plugin</artifactId>
-		</plugin>
-		<plugin>
-			<artifactId>maven-changelog-plugin</artifactId>
-			<configuration>
-				<type>range</type>
-				<range>30</range>
-				<headingDateFormat>yyyy-MM-dd</headingDateFormat>
-				<aggregate>true</aggregate>
-			</configuration>
-		</plugin>		
+			<plugin>
+				<groupId>com.xebia.mojo</groupId>
+				<artifactId>maven-dashboard-plugin</artifactId>
+				<configuration>
+					<reports>
+						<report>findbugs-maven-plugin</report>
+						<report>maven-cpd-plugin</report>
+						<report>taglist-maven-plugin</report>
+					</reports>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<xmlOutput>true</xmlOutput>
+					<effort>Max</effort>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>20</minimumTokens>
+					<targetJdk>1.5</targetJdk>
+					<rulesets>
+						<ruleset>/rulesets/basic.xml</ruleset>
+						<ruleset>/rulesets/braces.xml</ruleset>
+						<ruleset>/rulesets/unusedcode.xml</ruleset>
+						<ruleset>/rulesets/clone.xml</ruleset>
+						<ruleset>/rulesets/codesize.xml</ruleset>
+						<ruleset>/rulesets/coupling.xml</ruleset>
+						<ruleset>/rulesets/design.xml</ruleset>
+						<ruleset>/rulesets/strictexception.xml</ruleset>
+						<ruleset>/rulesets/migrating.xml</ruleset>
+						<ruleset>/rulesets/junit.xml</ruleset>
+						<ruleset>/rulesets/strings.xml</ruleset>
+						<ruleset>/rulesets/javabeans.xml</ruleset>
+						<ruleset>/rulesets/finalizers.xml</ruleset>
+						<ruleset>/rulesets/optimizations.xml</ruleset>
+						<ruleset>/rulesets/j2ee.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<configuration>
+					<tags>
+						<tag>TODO</tag>
+						<tag>todo</tag>
+						<tag>FIXME</tag>
+						<tag>fixme</tag>
+						<tag>Ignore</tag>
+						<tag>Deprecated</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation> src/site/checkstyle.xml </configLocation>
+				</configuration>
+				<!--
+					<xrefLocation>${project.reporting.outputDirectory}/../xref</xrefLocation>
+				-->
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<links>
+						<link> http://java.sun.com/j2se/1.5.0/docs/api </link>
+						<link> http://java.sun.com/products/servlet/2.3/javadoc/ </link>
+					</links>
+					<breakiterator>true</breakiterator>
+					<verbose>false</verbose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+				<configuration>
+					<linkJavadoc>true</linkJavadoc>
+					<javadocDir>apidocs</javadocDir>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>dashboard-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<configuration>
+					<type>range</type>
+					<range>30</range>
+					<headingDateFormat>yyyy-MM-dd</headingDateFormat>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
 		</plugins>
 	</reporting>
-<build>
-<pluginManagement>
-<plugins>
-  <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-site-plugin</artifactId>
-    <version>2.0</version>
-    </plugin>
-</plugins>
-</pluginManagement>
-</build>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

@@ -68,7 +68,7 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.sakaiproject</groupId>
+			<groupId>org.sakaiproject.common</groupId>
 			<artifactId>sakai-common-edu-person-api</artifactId>
 		</dependency>
 		
