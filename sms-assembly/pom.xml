@@ -15,7 +15,7 @@
     <!-- the base is parent -->
     <parent>
         <artifactId>sms</artifactId>
-        <groupId>org.sakaiproject</groupId>
+        <groupId>org.sakaiproject.sms</groupId>
         <version>0.12-SNAPSHOT</version><!--entitybroker.version-->
     </parent>
 
