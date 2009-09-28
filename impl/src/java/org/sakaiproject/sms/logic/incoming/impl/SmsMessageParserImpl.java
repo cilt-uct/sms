@@ -27,7 +27,7 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 	private static final String DELIMITERS = " \t\r\n\f";
 
 	/**
-	 * Parses the message general. FORMAT: <command> <site> <body>
+	 * Parses the message general. FORMAT: <command> [<site>] <body>
 	 */
 	public ParsedMessage parseMessage(String msgText) throws ParseException {
 		if (msgText == null) {
@@ -47,7 +47,6 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		} else {
 			// command + site + body
 			return new ParsedMessage(params[0], params[1], params[2]);
-
 		}
 
 	}
@@ -76,6 +75,5 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		}
 
 		return bodyParams;
-
 	}
 }

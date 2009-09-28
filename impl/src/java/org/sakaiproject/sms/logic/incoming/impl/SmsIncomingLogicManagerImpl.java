@@ -78,8 +78,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		String reply = null;
 		ParsedMessage parsedMessage = null;
-		String incomingUserID = null;
-		SmsPatternSearchResult validCommandMatch = null;
+				SmsPatternSearchResult validCommandMatch = null;
 		String sakaiSite = null;
 		Locale incomingUserLocale = null;
 
@@ -98,7 +97,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			final List<String> userIds = externalLogic.getUserIdsFromMobileNumber(mobileNr);
 
 			if (!userIds.isEmpty()) {
-				incomingUserID = userIds.get(0);
+				// TODO better matching
+				String incomingUserID = userIds.get(0);
+				parsedMessage.setIncomingUserId(incomingUserID);
+
 				//get the user locale
 				incomingUserLocale = externalLogic.getUserLocale(incomingUserID);
 			}
@@ -151,9 +153,10 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 											parsedMessage.getBody(),
 											command.getBodyParameterCount());
 
-									// Execute the message in the appropriate security context
+									parsedMessage.setBodyParameters(bodyParameters);
 
-									reply = externalLogic.executeCommand(command, sakaiSite, incomingUserID, mobileNr, bodyParameters);
+									// Execute the message in the appropriate security context									
+									reply = externalLogic.executeCommand(command, parsedMessage, mobileNr);
 
 								} catch (ParseException pe) {
 									if (command.isVisible()) {
@@ -173,7 +176,6 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		parsedMessage.setSite(sakaiSite != null ? sakaiSite
 				: defaultBillingSite);
 		parsedMessage.setBodyReply(formatReply(reply));
-		parsedMessage.setIncomingUserId(incomingUserID);
 
 		if (validCommandMatch != null) {
 			parsedMessage.setCommand(validCommandMatch.getPattern());

@@ -51,8 +51,7 @@ public interface SmsCommand {
 	 * @param body
 	 * @return
 	 */
-	String execute(String siteId, String userId, String mobileNr,
-			String... body);
+	String execute(ParsedMessage message, String mobileNumber);
 
 	/**
 	 * Help message to use when no parameters are given

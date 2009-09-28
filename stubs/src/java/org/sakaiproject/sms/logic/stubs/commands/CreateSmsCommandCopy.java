@@ -2,6 +2,7 @@ package org.sakaiproject.sms.logic.stubs.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class CreateSmsCommandCopy implements SmsCommand {
@@ -9,10 +10,12 @@ public class CreateSmsCommandCopy implements SmsCommand {
 	private static final Log LOG = LogFactory
 			.getLog(CreateSmsCommandCopy.class);
 
-	public String execute(String siteId, String userId, String mobileNr,
-			String... body) {
+	public String execute(ParsedMessage msg, String mobileNr) {
+		
+		String[] body = msg.getBodyParameters();
+		
 		LOG.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + body[0] + ")");
+				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + body[0] + ")");
 		return getCommandKey() + " COPY";
 	}
 

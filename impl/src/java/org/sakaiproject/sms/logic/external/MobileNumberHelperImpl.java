@@ -162,7 +162,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
-		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber);
+		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber + ")");
 		final SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setNormalizedMobile(numberRoutingHelper.normalizeNumber(mobileNumber));
 		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());

@@ -2,15 +2,18 @@ package org.sakaiproject.sms.logic.stubs.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class DeleteSmsCommand implements SmsCommand {
 
 	private static final Log LOG = LogFactory.getLog(DeleteSmsCommand.class);
 
-	public String execute(String siteId, String userId, String mobileNr,
-			String... body) {
+	public String execute(ParsedMessage msg, String mobileNr) {
+
 		String concatBody = "";
+		String[] body = msg.getBodyParameters();
+
 		for (String arg : body) {
 			if (concatBody.equals("")) {
 				concatBody += arg;
@@ -19,7 +22,7 @@ public class DeleteSmsCommand implements SmsCommand {
 			}
 		}
 		LOG.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + concatBody + ")");
+				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + body[0] + ")");
 		return getCommandKey();
 	}
 

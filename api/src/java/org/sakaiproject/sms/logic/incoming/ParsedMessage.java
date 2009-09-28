@@ -20,6 +20,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
+import org.apache.commons.lang.StringUtils;
+
 public class ParsedMessage {
 
 	private String command = null;
@@ -27,30 +29,48 @@ public class ParsedMessage {
 	private String body = null;
 	private String bodyReply = null;
 	private String incomingUserId = null;
-
+	private String[] bodyParameters = null;
+	
 	public ParsedMessage() {
-
 	}
 
 	public ParsedMessage(String command) {
-
 		this.command = command;
-
 	}
 
 	public ParsedMessage(String command, String site) {
 		this.site = site;
 		this.command = command;
-
 	}
 
 	public ParsedMessage(String command, String site, String body) {
 		this.site = site;
 		this.command = command;
 		this.body = body;
-
 	}
 
+	/**
+	 * This constructor is primarily for unit testing.
+	 * @param user
+	 * @param command
+	 * @param site
+	 * @param body
+	 * @param paramcount
+	 */
+	public ParsedMessage(String user, String command, String site, String body, int paramcount) {
+		this.incomingUserId = user;
+		this.site = site;
+		this.command = command;
+		this.body = body;
+		
+		if (body == null || paramcount == 0) {
+			this.bodyParameters = new String[0];
+		} else {
+			this.bodyParameters = StringUtils.split(body, " ", paramcount);			
+		}
+	}
+
+	
 	public String getSite() {
 		return site;
 	}
@@ -93,5 +113,17 @@ public class ParsedMessage {
 
 	public void setSite(String site) {
 		this.site = site;
+	}
+
+	public void setBodyParameters(String[] bodyParameters) {
+		this.bodyParameters = bodyParameters;
+	}
+
+	public String[] getBodyParameters() {
+		return bodyParameters;
+	}
+	
+	public String toString() {
+		return "command: " + command + " user: " + incomingUserId + " site: " + site + " body: " + body;
 	}
 }

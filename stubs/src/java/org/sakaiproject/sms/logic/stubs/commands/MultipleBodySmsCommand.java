@@ -2,6 +2,7 @@ package org.sakaiproject.sms.logic.stubs.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class MultipleBodySmsCommand implements SmsCommand {
@@ -12,10 +13,12 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	public String param1;
 	public String param2;
 
-	public String execute(String siteId, String userId, String mobileNr,
-			String... body) {
+	public String execute(ParsedMessage msg, String mobileNr) {
+
+		String[] body = msg.getBodyParameters();
+
 		LOG.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + body[0] + ", " + body[1]
+				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + body[0] + ", " + body[1]
 				+ ")");
 		param1 = body[0];
 		param2 = body[1];

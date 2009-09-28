@@ -63,6 +63,7 @@ import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
@@ -1003,13 +1004,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @param bodyParameters
 	 * @return the reply message
 	 */
-	public String executeCommand(SmsCommand command, String siteId, String userId, String mobileNr, String[] bodyParameters) {
+	public String executeCommand(SmsCommand command, ParsedMessage message, String mobileNumber) {
 
 		String reply = null;
 
-		final String finalSiteId = siteId;
+		final String finalSiteId = message.getSite();
 		
-		if (userId == null) {
+		if (message.getIncomingUserId() == null) {
 			// Set up a security advisor for the case where the user is anonymous
 			// (unmatched mobile number). In this case the command handler is
 			// responsible for enforcing appropriate security (i.e. deciding whether
@@ -1027,7 +1028,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					}
 				});
 	
-				reply = command.execute(siteId, userId, mobileNr, bodyParameters);
+				reply = command.execute(message, mobileNumber);
 	
 			} catch (Exception e) {
 				LOG.warn("Error executing incoming SMS command: ", e);
@@ -1048,6 +1049,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String oldEid = session.getUserEid();
 
 		// If session is anonymous
+		String userId = message.getIncomingUserId();
 		session.setUserId(userId);
 
 		try {
@@ -1058,7 +1060,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 
 		try {
-			reply = command.execute(siteId, userId, mobileNr, bodyParameters);
+			reply = command.execute(message, mobileNumber);
 		} catch (Exception e) {
 			LOG.warn("Error executing incoming SMS command: ", e);
 		}

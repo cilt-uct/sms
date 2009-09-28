@@ -2,14 +2,16 @@ package org.sakaiproject.sms.logic.stubs.commands;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsCommand;
 
 public class CreateSmsCommand implements SmsCommand {
 
 	private static final Log LOG = LogFactory.getLog(CreateSmsCommand.class);
 
-	public String execute(String siteId, String userId, String mobileNr,
-			String... body) {
+	public String execute(ParsedMessage msg, String mobileNr) {
+	
+		String[] body = msg.getBodyParameters();
 		String concatBody = "";
 		for (String arg : body) {
 			if (concatBody.equals("")) {
@@ -19,7 +21,7 @@ public class CreateSmsCommand implements SmsCommand {
 			}
 		}
 		LOG.debug(getCommandKey() + " command called with parameters: ("
-				+ siteId + ", " + userId + ", " + concatBody + ")");
+				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + concatBody + ")");
 		return getCommandKey();
 	}
 
