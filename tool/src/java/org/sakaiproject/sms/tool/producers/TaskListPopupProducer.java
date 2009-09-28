@@ -48,7 +48,7 @@ public class TaskListPopupProducer implements ViewComponentProducer,
 		IdParams params = (IdParams) viewparams;
 		if (params.id != null) {
 
-			SmsTask smsTask = smsTaskLogic.getSmsTask(new Long(params.id));
+			SmsTask smsTask = smsTaskLogic.getSmsTask(Long.valueOf(params.id));
 			if (smsTask != null) {
 
 				UIMessage.make(tofill, "credit-estimate-label",

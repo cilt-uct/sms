@@ -116,7 +116,7 @@ public class SmsConfigLogicImpl extends SmsLogic implements SmsConfigLogic {
 		final SmsConfig config = new SmsConfig();
 
 		// Settings for the Sakai instance
-		if (sakaiSiteId != null && sakaiSiteId.equals("")) {
+		if (sakaiSiteId != null && "".equals(sakaiSiteId)) {
 			config.setSakaiToolId("");
 			config.setSmsRetryMaxCount(SmsConstants.MAXIMUM_RETRY_COUNT);
 			config.setMaxActiveThreads(SmsConstants.DEFAULT_MAX_ACTIVE_THREADS);

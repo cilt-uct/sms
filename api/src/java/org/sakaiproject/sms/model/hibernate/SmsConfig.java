@@ -109,7 +109,7 @@ public class SmsConfig extends BaseModel {
 
 	public boolean getUseSiteAcc() {
 		if (this.useSiteAccount != null) {
-			return this.useSiteAccount.equals("1") ? true : false;
+			return "1".equals(this.useSiteAccount) ? true : false;
 		}
 		return false;
 	}
@@ -224,7 +224,7 @@ public class SmsConfig extends BaseModel {
 	 */
 	public boolean isSendSmsEnabled() {
 		if (this.smsEnabled != null) {
-			return this.smsEnabled.equals("1") ? true : false;
+			return "1".equals(this.smsEnabled) ? true : false;
 		}
 		return false;
 	}
@@ -528,7 +528,7 @@ public class SmsConfig extends BaseModel {
 	 */
 	public boolean isReceiveIncomingEnabled() {
 		if (this.incomingEnabled != null) {
-			return this.incomingEnabled.equals("1") ? true : false;
+			return "1".equals(this.incomingEnabled) ? true : false;
 		}
 		return false;
 	}

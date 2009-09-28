@@ -24,9 +24,9 @@ public class SmsStringArrayUtilTest extends TestCase {
 	public void testToUppercase() {
 		String[] arr = new String[] {"aa", "bBB ", "cc-cc"};
 		String[] returned = SmsStringArrayUtil.upperCaseArray(arr);
-		assertTrue(returned[0].equals("AA"));
-		assertTrue(returned[1].equals("BBB "));
-		assertTrue(returned[2].equals("CC-CC"));
+		assertTrue("AA".equals(returned[0]));
+		assertTrue("BBB ".equals(returned[1]));
+		assertTrue("CC-CC".equals(returned[2]));
 	}
 	
 	public void testFindInArray() {

@@ -346,7 +346,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			if (getMobileNumbers) {
 				String mobileNumber = getSakaiMobileNumber(message
 						.getSakaiUserId());
-				if (mobileNumber == null || mobileNumber.equals("")) {
+				if (mobileNumber == null || "".equals(mobileNumber)) {
 					addMemberToDelList = false;
 					if (SmsConstants.SMS_DEV_MODE) {
 						mobileNumber = "0731876135"; // for testing
@@ -415,7 +415,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			LOG.debug("Adding numbers from list of user ids");
 			for (String userId : smsTask.getSakaiUserIdsList()) {
 				String mobileNr = getSakaiMobileNumber(userId);
-				if (mobileNr != null && !mobileNr.equals("")) {
+				if (mobileNr != null && !"".equals(mobileNr)) {
 					SmsMessage message = new SmsMessage();
 					message.setMobileNumber(mobileNr);
 					message.setSmsTask(smsTask);

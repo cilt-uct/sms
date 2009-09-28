@@ -15,7 +15,7 @@ public class DeleteSmsCommand implements SmsCommand {
 		String[] body = msg.getBodyParameters();
 
 		for (String arg : body) {
-			if (concatBody.equals("")) {
+			if ("".equals(concatBody)) {
 				concatBody += arg;
 			} else {
 				concatBody += "," + arg;

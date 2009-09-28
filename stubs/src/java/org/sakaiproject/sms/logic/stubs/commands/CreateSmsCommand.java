@@ -14,7 +14,7 @@ public class CreateSmsCommand implements SmsCommand {
 		String[] body = msg.getBodyParameters();
 		String concatBody = "";
 		for (String arg : body) {
-			if (concatBody.equals("")) {
+			if ("".equals(concatBody)) {
 				concatBody += arg;
 			} else {
 				concatBody += "," + arg;

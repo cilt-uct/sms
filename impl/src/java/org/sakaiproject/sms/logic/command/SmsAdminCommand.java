@@ -57,7 +57,7 @@ public class SmsAdminCommand implements SmsCommand {
 		
 		String concatBody = "";
 		for (String arg : body) {
-			if (concatBody.equals("")) {
+			if ("".equals(concatBody)) {
 				concatBody += arg;
 			} else {
 				concatBody += "," + arg;
