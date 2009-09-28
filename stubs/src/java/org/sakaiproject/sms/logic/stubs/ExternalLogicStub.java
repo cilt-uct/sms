@@ -344,4 +344,10 @@ public class ExternalLogicStub implements ExternalLogic {
 		return command.execute(msg, mobileNr);
 	}
 
+	public String getBestUserMatch(String siteId, List<String> userIds,
+			SmsCommand cmd) {
+
+		return userIds.isEmpty() ? null : userIds.get(0);
+	}
+
 }

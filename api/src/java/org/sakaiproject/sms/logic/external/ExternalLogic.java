@@ -368,4 +368,14 @@ public interface ExternalLogic {
 	 * @return Reply to send back to the user
 	 */
 	public String executeCommand(SmsCommand command, ParsedMessage message, String mobileNumber);
+	
+	/**
+	 * Get the best match of user to the site: find the user(s) who have access to the site,
+	 * if more than one, select the user by account type or role preference order.
+	 * @param siteId
+	 * @param userIds
+	 * @param cmd
+	 * @return
+	 */
+	public String getBestUserMatch(String siteId, List<String> userIds, SmsCommand cmd);
 }

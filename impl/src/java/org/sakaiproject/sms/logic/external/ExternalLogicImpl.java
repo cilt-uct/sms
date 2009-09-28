@@ -1075,4 +1075,33 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return reply;
 	}
 
+	public String getBestUserMatch(String siteId, List<String> userIds,
+			SmsCommand cmd) {
+
+		if (userIds.size() == 1) {
+			// If only 1, just return that. If the user doesn't have permission,
+			// the command will fail and give an appropriate error.
+			return userIds.get(0);
+		}
+		
+		List<String> usersWithAccess = new ArrayList<String>();
+		
+		for (String userId: userIds) {
+			if (securityService.unlock(SiteService.SITE_VISIT, siteService.siteReference(siteId))) {
+				usersWithAccess.add(userId);
+			}
+		}
+
+		// TODO resolve multiple users with access by a priority order (account or role),
+		// and/or a cmd.canExecute(String siteId, String userId) method.
+		
+		if (!usersWithAccess.isEmpty()) {
+			return usersWithAccess.get(0);
+		}
+		
+		// None of the target set had access
+		
+		return null;
+	}
+
 }

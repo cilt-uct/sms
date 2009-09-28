@@ -226,40 +226,49 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		String suppliedSiteId = message.getSite();
 		
 		if (suppliedSiteId == null && cmd.requiresSiteId()) {
+			// No site, but we need one.
 			return false;
 		}
 
-		// TODO - fix for the case where we select the user based on site membership
-		// and tool usage
-		if (!userIds.isEmpty()) {
-			message.setIncomingUserId(userIds.get(0));
-		}
-
 		if (!cmd.requiresSiteId()) {
+			// Don't need a site
 			return true;
 		}
 		
 		// Lookup by site id
 		if (externalLogic.isValidSite(suppliedSiteId)) {
 			message.setSite(suppliedSiteId);
-			return true;
 		}
 
 		// Lookup by site alias
 		String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
 		if (siteId != null) {
 			message.setSite(siteId);
-			return true;
 		}
-
+		
 		// Match on site alias
 		SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
 				externalLogic.getAllSiteAliases());
 		if (result.getMatchResult().equals(
 				SmsPatternSearchResult.ONE_MATCH)) {
 			message.setSite(externalLogic.getSiteFromAlias(result.getPattern()));
-			return true;
 		}
+
+		if (message.getSite() != null) {
+			// An exact match for a site or alias, now find the user
+			String userId = externalLogic.getBestUserMatch(message.getSite(), userIds, cmd);
+			if (userId != null) {
+				// Best user candidate
+				message.setIncomingUserId(userId);
+				return true;
+			} else {
+				// Could not match user to site (no access)
+				return false;
+			}
+		}
+		
+		// TODO - fix for the case where we select the user based on site membership
+		// and tool usage
 		
 		// Nothing found - no match or ambiguous
 		
