@@ -31,32 +31,112 @@ public class ParserTest extends TestCase {
 
 	private final SmsMessageParser parser = new SmsMessageParserImpl();
 
+
 	public void testParseStandard() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("command site body");
-		assertEquals("site", parsed.getSite());
+		
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command site body");
+		
+		parser.parseCommand(parsed);
 		assertEquals("command", parsed.getCommand());
-		assertEquals("body", parsed.getBody());
-		assertTrue(parsed.hasBody());
+
+		parser.parseSite(parsed);
+		assertEquals("site", parsed.getSite());
+
+		parser.parseBody(parsed, 1, true);
+		assertEquals("body", parsed.getBodyParameters()[0]);
 	}
+
+	public void testParseStandardNoSite() throws ParseException {
+		
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command body");
+		
+		parser.parseCommand(parsed);
+		assertEquals("command", parsed.getCommand());
+
+		parser.parseBody(parsed, 1, false);
+		assertEquals("body", parsed.getBodyParameters()[0]);
+	}
+
 
 	public void testParseMultipleBody() throws ParseException {
-		ParsedMessage parsed = parser
-				.parseMessage("command site  body has multiple");
-		assertEquals("body has multiple", parsed.getBody());
-		assertTrue(parsed.hasBody());
+
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command site  body has multiple");
+		parser.parseBody(parsed, 2, true);
+		assertEquals("body", parsed.getBodyParameters()[0]);
+		assertEquals("has multiple", parsed.getBodyParameters()[1]);
+		
+		parser.parseBody(parsed, 3, true);
+		assertEquals("body", parsed.getBodyParameters()[0]);
+		assertEquals("has", parsed.getBodyParameters()[1]);
+		assertEquals("multiple", parsed.getBodyParameters()[2]);
+		
 	}
 
+	public void testParseMultipleNoSite() throws ParseException {
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command body has multiple");
+		
+		parser.parseBody(parsed, 2, false);
+		assertEquals("body", parsed.getBodyParameters()[0]);
+		assertEquals("has multiple", parsed.getBodyParameters()[1]);
+		
+		parser.parseBody(parsed, 3, false);
+		assertEquals("body", parsed.getBodyParameters()[0]);
+		assertEquals("has", parsed.getBodyParameters()[1]);
+		assertEquals("multiple", parsed.getBodyParameters()[2]);		
+	}
+
+	public void testSingleCommand() throws ParseException {
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command");
+
+		parser.parseCommand(parsed);
+
+		assertEquals("command", parsed.getCommand());
+	}
+
+
 	public void testParseNoBody() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("command site");
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command site");
+
+		parser.parseCommand(parsed);
+		parser.parseSite(parsed);
+
 		assertEquals("site", parsed.getSite());
 		assertEquals("command", parsed.getCommand());
-		assertNull(parsed.getBody());
-		assertFalse(parsed.hasBody());
 	}
+
+
+	public void testMissingParams() throws ParseException {
+		ParsedMessage parsed = new ParsedMessage();
+		parsed.setBody("command site");
+
+		parser.parseCommand(parsed);
+		parser.parseSite(parsed);
+		assertEquals("site", parsed.getSite());
+		assertEquals("command", parsed.getCommand());
+		
+		try {
+			parser.parseBody(parsed, 1, true);			
+			fail("should throw exception");
+		} catch (ParseException e) {
+			assertNotNull(e);
+			return;
+		}
+		
+		assertTrue("should have failed", false);
+	}
+
 
 	public void testInvalidNull() {
 		try {
-			parser.parseMessage(null);
+			ParsedMessage parsed = new ParsedMessage();
+			parser.parseCommand(parsed);
+			parser.parseSite(parsed);			
 		} catch (ParseException e) {
 			assertNotNull(e);
 		}
@@ -64,7 +144,10 @@ public class ParserTest extends TestCase {
 
 	public void testInvalidEmpty() {
 		try {
-			parser.parseMessage("");
+			ParsedMessage parsed = new ParsedMessage();
+			parsed.setBody("");
+			parser.parseCommand(parsed);
+			parser.parseSite(parsed);			
 			fail("should throw exception");
 		} catch (ParseException e) {
 			assertNotNull(e);
@@ -72,55 +155,31 @@ public class ParserTest extends TestCase {
 	}
 
 	public void testHelpCommand() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("help");
+
+		ParsedMessage parsed = new ParsedMessage();
+		
+		parsed.setBody("help");
+		parser.parseCommand(parsed);
 		assertEquals("help", parsed.getCommand());
-		parsed = parser.parseMessage("HELP");
+
+		parsed.setBody("HELP");
+		parser.parseCommand(parsed);
 		assertEquals("HELP", parsed.getCommand());
 	}
 
-	public void testMultipleCommand() throws ParseException {
-		ParsedMessage parsed = parser.parseMessage("multiple site nr1 nr2");
-		assertEquals("multiple", parsed.getCommand());
-
-	}
-
-	public void testParseBody() throws ParseException {
-		String[] returned = parser.parseBody("t t", 1);
-		assertEquals(1, returned.length);
-		assertEquals("t t", returned[0]);
-
-		returned = parser.parseBody("t t", 2);
-		assertEquals(2, returned.length);
-		assertEquals("t", returned[0]);
-		assertEquals("t", returned[1]);
-
-		returned = parser.parseBody(" ", 0);
-		assertEquals(0, returned.length);
-
-		returned = parser.parseBody(null, 0);
-		assertEquals(0, returned.length);
-	}
 
 	public void testParseBodyInvalid() {
+
+		ParsedMessage parsed = new ParsedMessage();		
+		parsed.setBody("command site t t");
+	
 		try {
-			parser.parseBody("t t", 3);
+			parser.parseBody(parsed, 3, true);
 			fail("Should throw exception");
 		} catch (ParseException pe) {
 			assertNotNull(pe);
 		}
 
-		try {
-			parser.parseBody(null, 3);
-			fail("Should throw exception");
-		} catch (ParseException pe) {
-			assertNotNull(pe);
-		}
-
-		try {
-			parser.parseBody("t t", 3);
-			fail("Should throw exception");
-		} catch (ParseException pe) {
-			assertNotNull(pe);
-		}
 	}
+	
 }

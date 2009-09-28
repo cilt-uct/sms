@@ -186,8 +186,10 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("DELETE"));
 	}
 
-	public void testHelpMessage() {
+	public void testCommandHelpMessage() {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
+		System.out.println("expected help: " + createCmd.getHelpMessage());
+		System.out.println("actual reply: " + msg.getBodyReply());
 		assertEquals(createCmd.getHelpMessage(), msg.getBodyReply());
 
 		msg = manager.process("UPDATE", TEST_MOBILE);

@@ -26,54 +26,83 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 
 	private static final String DELIMITERS = " \t\r\n\f";
 
-	/**
-	 * Parses the message general. FORMAT: <command> [<site>] <body>
-	 */
-	public ParsedMessage parseMessage(String msgText) throws ParseException {
+	// 1st parameter
+	public void parseCommand(ParsedMessage message) throws ParseException {
+		
+		String msgText = message.getBody();
+		
 		if (msgText == null) {
 			throw new ParseException("null message supplied");
 		}
+		
 		if ("".equals(msgText.trim())) {
 			throw new ParseException("empty message supplied");
 		}
 
-		final String[] params = StringUtils.split(msgText, DELIMITERS, 3);
-
-		if (params.length == 1) {
-			return new ParsedMessage(params[0]);
-		} else if (params.length == 2) {
-			// command + site
-			return new ParsedMessage(params[0], params[1]);
-		} else {
-			// command + site + body
-			return new ParsedMessage(params[0], params[1], params[2]);
-		}
-
+		final String[] params = StringUtils.split(msgText, DELIMITERS, 2);
+		message.setCommand(params[0]);
+		
+		return;
 	}
 
-	public String[] parseBody(String text, int nrOfParameters)
+	// 2nd parameter (optional)
+	public void parseSite(ParsedMessage message) throws ParseException {
+		
+		final String[] params = StringUtils.split(message.getBody(), DELIMITERS, 3);
+
+		if (params.length >= 2) {
+			message.setSite(params[1]);
+		} else {
+			throw new ParseException("no site found");
+		}
+	}
+
+	// 2nd or 3rd parameter on, depending on presence of site
+	public void parseBody(ParsedMessage message, int parameterCount, boolean requiresSiteId)
 			throws ParseException {
-		if (text == null && nrOfParameters != 0) {
+
+		String text = message.getBody();
+		
+		if (text == null && parameterCount != 0) {
 			throw new ParseException("No body specified");
 		}
-		if (text == null && nrOfParameters == 0) {
-			return new String[0];
+		
+		if (text == null && parameterCount == 0) {
+			// no parameters expected
+			message.setBodyParameters(new String[0]);
+			return;
 		}
+		
 		if (text != null) {
 			text = text.trim();
 		}
-		if (nrOfParameters == 0 && !"".equals(text.trim())) {
+		
+		if (parameterCount == 0 && !"".equals(text.trim())) {
 			throw new ParseException("No parameters expected");
 		}
 
-		final String[] bodyParams = StringUtils.split(text, DELIMITERS,
-				nrOfParameters);
-		if (bodyParams.length < nrOfParameters) {
-			throw new ParseException(nrOfParameters
+		// Eliminate the command and site id if present
+		int partCount = requiresSiteId ? 3 : 2;
+		final String[] preParam = StringUtils.split(text, DELIMITERS, partCount);
+		
+		if (preParam.length != partCount) {
+			throw new ParseException(parameterCount
+					+ " parameters expected but none found");			
+		}
+		
+		String params = preParam[preParam.length-1];
+		
+		final String[] bodyParams = StringUtils.split(params, DELIMITERS, parameterCount);
+		
+		if (bodyParams.length < parameterCount) {
+			throw new ParseException(parameterCount
 					+ " parameters expected but " + bodyParams.length
 					+ " received");
 		}
 
-		return bodyParams;
+		message.setBodyParameters(bodyParams);
+
+		return;
 	}
+
 }

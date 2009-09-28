@@ -61,7 +61,7 @@ public interface SmsCommand {
 	String getHelpMessage();
 
 	/**
-	 * Return the number of paramaters expected in the body
+	 * Return the number of parameters expected in the body, excluding the command and site
 	 * 
 	 * @return
 	 */

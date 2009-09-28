@@ -50,7 +50,6 @@ public class UpdateSmsCommand implements SmsCommand {
 	}
 
 	public boolean requiresSiteId() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 }

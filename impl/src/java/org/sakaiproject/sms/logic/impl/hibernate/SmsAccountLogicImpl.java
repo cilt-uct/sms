@@ -252,8 +252,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			}
 		}
 
-		if (account == null
-				&& sakaiSiteId.equals(SmsConstants.SAKAI_ADMIN_ACCOUNT)) {
+		if (account == null && SmsConstants.SAKAI_SMS_ADMIN_SITE.equals(sakaiSiteId)) {
 			SmsAccount smsAccount = new SmsAccount();
 			smsAccount.setAccountEnabled(true);
 			smsAccount.setAccountName(SmsConstants.DEFAULT_MO_ACCOUNT_NAME);
@@ -261,7 +260,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			smsAccount.setOverdraftLimit(0l);
 			smsAccount.setMessageTypeCode(SmsConstants.MESSAGE_TYPE_CODE_SO);
 			smsAccount.setStartdate(new Date());
-			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_ADMIN_ACCOUNT);
+			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_SMS_ADMIN_SITE);
 			persistSmsAccount(smsAccount);
 
 			return getSmsAccount(sakaiSiteId, sakaiUserId);

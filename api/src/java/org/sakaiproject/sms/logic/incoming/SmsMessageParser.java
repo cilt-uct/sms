@@ -36,12 +36,16 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 public interface SmsMessageParser {
 
 	/**
-	 * Parses the text of the message. Try to figure out the sakai site and
-	 * user. Usually called from the Sakai Sms service itself.
+	 * Extract the command from the message. Uually called from the Sakai Sms service itself.
+	 * <br/>
+	 * FORMAT: command [site] body
 	 * 
-	 * FORMAT: <command> <site> <body>
+	 * @msgText the text to parse
+	 * @throws ParseException for null message or empty body
 	 */
-	public ParsedMessage parseMessage(String msgText) throws ParseException;
+	public void parseCommand(ParsedMessage message) throws ParseException;
+
+	public void parseSite(ParsedMessage message) throws ParseException;
 
 	/**
 	 * Parses body of text by number of paramters
@@ -50,6 +54,6 @@ public interface SmsMessageParser {
 	 * @param nrOfParameters
 	 * @return
 	 */
-	public String[] parseBody(String text, int nrOfParameters)
+	public void parseBody(ParsedMessage message, int parameterCount, boolean requiresSiteId)
 			throws ParseException;
 }

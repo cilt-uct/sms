@@ -50,8 +50,7 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	}
 
 	public boolean requiresSiteId() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

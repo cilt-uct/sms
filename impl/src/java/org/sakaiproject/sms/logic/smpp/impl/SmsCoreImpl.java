@@ -302,8 +302,15 @@ public class SmsCoreImpl implements SmsCore {
 		return smsTask;
 	}
 
-	// We answer back by creating a new sms task with one sms message attached
-	// to it. The task will then be handled like any other MO task.
+	/**
+	 * 	Create a new sms task with one sms message attached to it. The task will then be handled like any other MO task.
+	 * @param mobilenumber
+	 * @param dateToSend
+	 * @param sakaiSiteID
+	 * @param sakaiToolId
+	 * @param sakaiSenderID
+	 * @return
+	 */
 	private SmsTask getPreliminaryMOTask(String mobilenumber, Date dateToSend,
 			String sakaiSiteID, String sakaiToolId, String sakaiSenderID) {
 		final Set<String> number = new HashSet<String>();
@@ -311,11 +318,10 @@ public class SmsCoreImpl implements SmsCore {
 		final SmsTask smsTask = getPreliminaryTask(dateToSend, "", sakaiSiteID,
 				sakaiToolId, sakaiSenderID, number);
 		if (smsTask != null) {
-			smsTask
-					.setMessageTypeId(SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING);
+			smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING);
 			smsTask.setGroupSizeEstimate(1);
 			smsTask.setGroupSizeActual(1);
-			smsTask.setCreditEstimate(1);
+			calculateEstimatedGroupSize(smsTask);
 			try {
 				smsTask.setSmsAccountId(smsBilling
 						.getAccountID(sakaiSiteID, ""));
@@ -499,10 +505,10 @@ public class SmsCoreImpl implements SmsCore {
 		String smsMessagebody = inMessage.getSmsMessagebody();
 		String mobileNumber = inMessage.getMobileNumber();
 		
-		// Allocate the cost of incoming messages. By default to admin account
+		// Allocate the cost of incoming messages, default to admin account
 
 		double routingCredits = numberRoutingHelper.getIncomingMessageCost(inMessage.getSmscId());
-		String defaultBillingAccount = SmsConstants.SAKAI_ADMIN_ACCOUNT;		
+		String defaultBillingSite = SmsConstants.SAKAI_SMS_ADMIN_SITE;		
 		
 		String smsMessageReplyBody = "";
 				
@@ -512,7 +518,7 @@ public class SmsCoreImpl implements SmsCore {
 			// We don't ever expect a null return value here
 			LOG.error("Error parsing incoming message from " + mobileNumber);
 
-			billIncomingMessage(routingCredits, defaultBillingAccount, null, null);
+			billIncomingMessage(routingCredits, defaultBillingSite, null, null);
 			return;		
 		}
 		
@@ -522,7 +528,7 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 			LOG.debug("No reply to this incoming message.");
 
-			billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(), null);
+			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null);
 			return;
 		}
 		
@@ -532,6 +538,7 @@ public class SmsCoreImpl implements SmsCore {
 					+ parsedMessage.getCommand() : "System")
 					+ " answered back with: " + smsMessageReplyBody);
 
+		/*
 		// TODO what if we have no site?
 		final SmsConfig configSite = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(parsedMessage.getSite());
@@ -544,16 +551,18 @@ public class SmsCoreImpl implements SmsCore {
 			billIncomingMessage(routingCredits, defaultBillingAccount, null, null);
 			return;
 		}
+		*/
 		
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);
 
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				new Date(), parsedMessage.getSite(), null,
-				SmsConstants.DEFAULT_MO_SENDER_USERNAME);
+				new Date(), parsedMessage.getSite() == null ? defaultBillingSite : parsedMessage.getSite(), 
+				null, SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 
 		if (smsTask == null) {
-			// TODO what failure cases?
-			billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(), null);
+			// Only failure case here is account not found but should never happen because it will
+			// use the default MO billing account if necessary
+			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null);
 			return;
 		}
 
@@ -581,7 +590,7 @@ public class SmsCoreImpl implements SmsCore {
 			LOG.error(getExceptionStackTraceAsString(e), e);
 		}
 		
-		billIncomingMessage(routingCredits, defaultBillingAccount, parsedMessage.getSite(),
+		billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(),
 				outTask != null ? outTask.getId() : null);
 		
 		return;
@@ -594,7 +603,8 @@ public class SmsCoreImpl implements SmsCore {
 			return;
 		}
 
-		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(parsedSiteId, null);
+		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
+				parsedSiteId != null ? parsedSiteId : defaultSiteId, null);
 		
 		if (account != null) {
 			smsBilling.debitIncomingMessage(account, credits, taskId);	
@@ -602,6 +612,8 @@ public class SmsCoreImpl implements SmsCore {
 			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(defaultSiteId, null);
 			if (account != null) {
 				smsBilling.debitIncomingMessage(account, credits, taskId);
+			} else {
+				LOG.warn("Unable to debit cost of incoming message");
 			}
 		}
 		

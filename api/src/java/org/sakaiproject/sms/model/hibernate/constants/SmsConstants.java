@@ -179,9 +179,9 @@ public class SmsConstants {
 	public static final String DEFAULT_MO_SENDER_USERNAME = "admin";
 
 	/**
-	 * The default sakai admin account name
+	 * The default Sakai admin site id (used for the default MO account)
 	 */
-	public static final String SAKAI_ADMIN_ACCOUNT = "!admin";
+	public static final String SAKAI_SMS_ADMIN_SITE = "!admin";
 	/**
 	 * The default sms account name to create if none exists.
 	 */
