@@ -8,7 +8,6 @@ $(document).ready(function() {
         history.go(-1);
         return false;
     });
-    $.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
 
     //Counter for the SMS Textarea
         $("#messageBody")
@@ -28,9 +27,21 @@ $(document).ready(function() {
             $(this).keypress();
         })
                 .keypress(function(e) {
-            var limit = 160;
-            var len = $(this).val().length;
+            var limit = 160,
+            boxValue = $(this).val(),
+            len = boxValue.length,
+            nonASCIIcount = 0;
             if (len <= limit && len >= 0) {
+                // Detect and count non-ASCII chars as 2 chararcters. SMS-170
+                for(var i = 0; i < len; i++){
+                   if( boxValue.charCodeAt(i) > 127 ){ // non-ASCII chars have  char code >= 128
+                      nonASCIIcount++;
+                   }
+                }
+                if(nonASCIIcount > 0 ){
+                    len = len + nonASCIIcount;
+                }
+
                 $('#smsBoxCounter').text(len);
             } else {
                 $(this).val($(this).val().substr(0, limit));
@@ -149,21 +160,9 @@ $(document).ready(function() {
             $.fn.SMS.set.disableTab('peopleTabsGroups', 'error-no-groups');
            }
 
-        $("#peopleListNamesSuggest").autoCompletefb({
-                urlLookup  : $.fn.SMS.get.peopleByName('array'),
-                acOptions  : {
-                    minChars: 1,
-                    matchContains:  true,
-                    selectFirst:    false,
-                    width:  300,
-                    formatItem: function(row) {
-                        return row[0] + ' (' + row[2] + ')';
-                    }
-                },
-                foundClass : ".acfb-data",
-                inputClass : ".acfb-input",
-                deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
-        });
+        //Start membership loading event action
+        $.fn.SMS.get.peopleByName(); //trigger event to populate the people lists ie:individuals
+
         $("#calculateCmd").bind('click', function(){
             var domElements = ["sakaiUserIds", "sakaiSiteId","deliveryEntityList", "deliveryMobileNumbersSet"];
             $.fn.SMS.set.processCalculate(domElements, this);
