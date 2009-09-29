@@ -260,6 +260,12 @@ public class SmsServiceImpl implements SmsService {
 
 		final SmsTask task = getPreliminaryTask(ids, new Date(), message,
 				siteId, toolId, fromId);
+		
+		if (task == null) {
+			// No account for this site
+			return new String[] {};			
+		}
+		
 		doSend(task);
 
 		if (task.getSmsMessages() == null) {
@@ -287,6 +293,11 @@ public class SmsServiceImpl implements SmsService {
 
 		SmsTask task = getPreliminaryTask(new Date(), message, siteId, toolId,
 				fromId, numbers);
+		
+		if (task == null) {
+			return new String[] {};
+		}
+		
 		doSend(task);
 
 		if (task.getSmsMessages() != null) {

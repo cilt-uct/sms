@@ -365,12 +365,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public Set<SmsMessage> getSakaiGroupMembers(SmsTask smsTask,
 			boolean getMobileNumbers) {
 
+		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+
+		if (smsTask == null) {
+			return messages;
+		}
+		
 		if (smsTask.getId() == null) {
 			LOG.debug("Getting recipient numbers for preliminary task ");
 		} else {
 			LOG.debug("Getting recipient numbers for task " + smsTask.getId());
 		}
-		Set<SmsMessage> messages = new HashSet<SmsMessage>();
+		
 		if (smsTask.getDeliveryEntityList() != null) {
 			LOG.debug("Adding numbers for entity reference list");
 			// list of references to groups, roles etc.
