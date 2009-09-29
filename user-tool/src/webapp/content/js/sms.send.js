@@ -8,6 +8,8 @@ $(document).ready(function() {
         history.go(-1);
         return false;
     });
+	
+	$.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
 
     //Counter for the SMS Textarea
         $("#messageBody")
