@@ -38,7 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -340,12 +340,12 @@ public class ExternalLogicStub implements ExternalLogic {
 		return "/site/" + siteId;
 	}
 
-	public String executeCommand(SmsCommand command, ParsedMessage msg, String mobileNr) {
-		return command.execute(msg, mobileNr);
+	public String executeCommand(ShortMessageCommand command, ParsedMessage msg, String mobileNr) {
+		return command.execute(msg, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNr);
 	}
 
 	public String getBestUserMatch(String siteId, List<String> userIds,
-			SmsCommand cmd) {
+			ShortMessageCommand cmd) {
 
 		return userIds.isEmpty() ? null : userIds.get(0);
 	}

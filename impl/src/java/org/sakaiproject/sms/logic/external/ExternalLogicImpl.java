@@ -64,7 +64,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -1004,7 +1004,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	 * @param bodyParameters
 	 * @return the reply message
 	 */
-	public String executeCommand(SmsCommand command, ParsedMessage message, String mobileNumber) {
+	public String executeCommand(ShortMessageCommand command, ParsedMessage message, String mobileNumber) {
 
 		String reply = null;
 
@@ -1028,7 +1028,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					}
 				});
 	
-				reply = command.execute(message, mobileNumber);
+				reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
 	
 			} catch (Exception e) {
 				LOG.warn("Error executing incoming SMS command: ", e);
@@ -1060,7 +1060,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 
 		try {
-			reply = command.execute(message, mobileNumber);
+			reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
 		} catch (Exception e) {
 			LOG.warn("Error executing incoming SMS command: ", e);
 		}
@@ -1076,7 +1076,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public String getBestUserMatch(String siteId, List<String> userIds,
-			SmsCommand cmd) {
+			ShortMessageCommand cmd) {
 
 		if (userIds.size() == 1) {
 			// If only 1, just return that. If the user doesn't have permission,

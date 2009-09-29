@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
@@ -37,7 +37,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  * @author etienne@psybergate.co.za
  * 
  */
-public class SmsAdminCommand implements SmsCommand {
+public class SmsAdminCommand implements ShortMessageCommand {
 
 	private static final Log LOG = LogFactory.getLog(SmsAdminCommand.class);
 
@@ -109,6 +109,22 @@ public class SmsAdminCommand implements SmsCommand {
 
 	public boolean requiresSiteId() {
 		return false;
+	}
+
+	public boolean canExecute(ParsedMessage message) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	public String execute(ParsedMessage message, String messageType,
+			String sourceAddress) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getHelpMessage(String messageType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
@@ -367,7 +367,7 @@ public interface ExternalLogic {
 	 * @param mobileNumber
 	 * @return Reply to send back to the user
 	 */
-	public String executeCommand(SmsCommand command, ParsedMessage message, String mobileNumber);
+	public String executeCommand(ShortMessageCommand command, ParsedMessage message, String mobileNumber);
 	
 	/**
 	 * Get the best match of user to the site: find the user(s) who have access to the site,
@@ -377,5 +377,5 @@ public interface ExternalLogic {
 	 * @param cmd
 	 * @return
 	 */
-	public String getBestUserMatch(String siteId, List<String> userIds, SmsCommand cmd);
+	public String getBestUserMatch(String siteId, List<String> userIds, ShortMessageCommand cmd);
 }

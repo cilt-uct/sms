@@ -27,12 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
 public class RegisteredCommands {
 
 	// commands in command key - command object pairs
-	private final Map<String, SmsCommand> commands = new LinkedHashMap<String, SmsCommand>();
+	private final Map<String, ShortMessageCommand> commands = new LinkedHashMap<String, ShortMessageCommand>();
 	// aliases in alias-command key pairs
 	private final Map<String, String> aliasMap = new HashMap<String, String>();
 
@@ -40,7 +40,7 @@ public class RegisteredCommands {
 
 	}
 
-	public RegisteredCommands(SmsCommand cmd) {
+	public RegisteredCommands(ShortMessageCommand cmd) {
 		addCommand(cmd);
 	}
 
@@ -48,7 +48,7 @@ public class RegisteredCommands {
 		return commands.keySet();
 	}
 
-	public void addCommand(SmsCommand cmd) {
+	public void addCommand(ShortMessageCommand cmd) {
 		final String commandKey = cmd.getCommandKey().toUpperCase();
 		commands.remove(commandKey);
 		commands.put(commandKey, cmd);
@@ -59,7 +59,7 @@ public class RegisteredCommands {
 		return aliasMap.get(alias);
 	}
 
-	public SmsCommand getCommand(String commandKey) {
+	public ShortMessageCommand getCommand(String commandKey) {
 		return commands.get(commandKey.toUpperCase());
 	}
 
@@ -68,7 +68,7 @@ public class RegisteredCommands {
 		removeAliasByCommandKey(commandKey.toUpperCase());
 	}
 
-	private void buildAliasMap(SmsCommand cmd) {
+	private void buildAliasMap(ShortMessageCommand cmd) {
 		final String[] aliases = cmd.getAliases();
 		for (String alias : aliases) {
 			aliasMap.remove(alias); // remove any previous aliases

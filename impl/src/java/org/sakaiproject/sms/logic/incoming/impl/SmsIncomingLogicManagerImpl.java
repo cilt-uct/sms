@@ -34,7 +34,7 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
@@ -162,7 +162,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			// The canonical command for the supplied command (if uniquely identified)
 			parsedMessage.setCommand(validCommandMatch.getPattern());
 			
-			final SmsCommand cmd = allCommands.getCommand(validCommandMatch.getPattern());
+			final ShortMessageCommand cmd = allCommands.getCommand(validCommandMatch.getPattern());
 
 			// Get the site if required
 			
@@ -170,7 +170,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				try {
 					smsMessageParser.parseSite(parsedMessage);
 				} catch (ParseException e) {
-					reply = cmd.getHelpMessage();
+					reply = cmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS);
 					parsedMessage.setBodyReply(formatReply(reply));
 					
 					return parsedMessage;
@@ -202,7 +202,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				
 				if (cmd.isVisible()) {
 					// Body parameter count wrong
-					reply = cmd.getHelpMessage();
+					reply = cmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS);
 				}
 			}
 		}
@@ -219,7 +219,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	 *            as specified by message
 	 * @return
 	 */
-	private boolean getSiteAndUser(ParsedMessage message, List<String> userIds, SmsCommand cmd) {
+	private boolean getSiteAndUser(ParsedMessage message, List<String> userIds, ShortMessageCommand cmd) {
 
 		// Get a match for the given site, possible user matches, and command
 
@@ -413,7 +413,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		return commands.findAliasCommandKey(supplied);
 	}
 
-	public void register(String toolKey, SmsCommand command) {
+	public void register(String toolKey, ShortMessageCommand command) {
 		toolKey = toolKey.toUpperCase();
 
 		if (SmsConstants.HELP.equalsIgnoreCase(command.getCommandKey())) {

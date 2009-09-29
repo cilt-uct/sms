@@ -22,14 +22,14 @@ package org.sakaiproject.sms.logic.incoming.helper;
 
 import java.util.List;
 
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 
 public class SmsCommandRegisterHelper {
 	
 	private String toolKey;
 	private SmsIncomingLogicManager incomingLogicManager;
-	private List<SmsCommand> commands;
+	private List<ShortMessageCommand> commands;
 	
 	public void init() {
 		if (incomingLogicManager == null) {
@@ -40,7 +40,7 @@ public class SmsCommandRegisterHelper {
 		}
 			
 		incomingLogicManager.clearCommands(toolKey);
-		for (SmsCommand command : commands) {
+		for (ShortMessageCommand command : commands) {
 			incomingLogicManager.register(toolKey, command);
 		}
 	}
@@ -53,7 +53,7 @@ public class SmsCommandRegisterHelper {
 			SmsIncomingLogicManager incomingLogicManager) {
 		this.incomingLogicManager = incomingLogicManager;
 	}
-	public void setCommands(List<SmsCommand> commands) {
+	public void setCommands(List<ShortMessageCommand> commands) {
 		this.commands = commands;
 	}
 	

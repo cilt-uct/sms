@@ -3,14 +3,14 @@ package org.sakaiproject.sms.logic.stubs.commands;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
-public class CreateSmsCommandCopy implements SmsCommand {
+public class CreateSmsCommandCopy implements ShortMessageCommand {
 
 	private static final Log LOG = LogFactory
 			.getLog(CreateSmsCommandCopy.class);
 
-	public String execute(ParsedMessage msg, String mobileNr) {
+	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 		
 		String[] body = msg.getBodyParameters();
 		
@@ -27,7 +27,7 @@ public class CreateSmsCommandCopy implements SmsCommand {
 		return "CREATE";
 	}
 
-	public String getHelpMessage() {
+	public String getHelpMessage(String messageType) {
 		return getCommandKey() + " HELP";
 	}
 
@@ -44,7 +44,10 @@ public class CreateSmsCommandCopy implements SmsCommand {
 	}
 
 	public boolean requiresSiteId() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public boolean canExecute(ParsedMessage message) {
+		return true;
 	}
 }

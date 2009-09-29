@@ -3,9 +3,9 @@ package org.sakaiproject.sms.logic.stubs.commands;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
-public class MultipleBodySmsCommand implements SmsCommand {
+public class MultipleBodySmsCommand implements ShortMessageCommand {
 
 	private static final Log LOG = LogFactory
 			.getLog(MultipleBodySmsCommand.class);
@@ -13,7 +13,7 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	public String param1;
 	public String param2;
 
-	public String execute(ParsedMessage msg, String mobileNr) {
+	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 
 		String[] body = msg.getBodyParameters();
 
@@ -37,7 +37,7 @@ public class MultipleBodySmsCommand implements SmsCommand {
 		return "MULTIPLE";
 	}
 
-	public String getHelpMessage() {
+	public String getHelpMessage(String messageType) {
 		return getCommandKey() + " HELP";
 	}
 
@@ -50,6 +50,10 @@ public class MultipleBodySmsCommand implements SmsCommand {
 	}
 
 	public boolean requiresSiteId() {
+		return true;
+	}
+
+	public boolean canExecute(ParsedMessage message) {
 		return true;
 	}
 

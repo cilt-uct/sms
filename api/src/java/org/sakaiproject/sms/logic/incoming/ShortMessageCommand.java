@@ -21,9 +21,13 @@
 package org.sakaiproject.sms.logic.incoming;
 
 /**
- * Interface for incoming SMS commands to be implemented by specific tool
+ * Interface for incoming short message commands to be implemented by specific tool
  */
-public interface SmsCommand {
+public interface ShortMessageCommand {
+
+	public static final String MESSAGE_TYPE_SMS = "sms";
+	public static final String MESSAGE_TYPE_XMPP = "xmpp";
+	public static final String MESSAGE_TYPE_TWITTER = "twitter";
 
 	/**
 	 * Keyword for command
@@ -40,25 +44,31 @@ public interface SmsCommand {
 	String[] getAliases();
 
 	/**
-	 * Execute method to run when incoming SMS matches command. The method will be called
+	 * Execute method to run when incoming message matches command. The method will be called
 	 * within an appropriate security context: if the user is anonymous, with a security advisor
 	 * allowing "site.visit" for the site, if the user is identified, a session for the user.
-	 * Implementations should nevertheless be cautious as to which operations are permitted.
+	 * Implementations should nevertheless be cautious as to which operations are permitted,
+	 * as the sourceAddress may be the only method of authentication.
 	 * 
-	 * @param siteId
-	 * @param userId
-	 * @param mobileNr
-	 * @param body
+	 * @param message
+	 * @param messageType The type of message
+	 * @param sourceAddress A source address of the appropriate type for messageType
 	 * @return
 	 */
-	String execute(ParsedMessage message, String mobileNumber);
+	String execute(ParsedMessage message, String messageType, String sourceAddress);
 
 	/**
-	 * Help message to use when no parameters are given
+	 * Can the message be executed? Can be used to verify permissions to resolve ambiguous
+	 * user:site matches, for example. If in doubt, return true.
+	 */
+	boolean canExecute(ParsedMessage message);
+	
+	/**
+	 * Help message to use when no parameters are given for the given message type
 	 * 
 	 * @return
 	 */
-	String getHelpMessage();
+	String getHelpMessage(String messageType);
 
 	/**
 	 * Return the number of parameters expected in the body, excluding the command and site

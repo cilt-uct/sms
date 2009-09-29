@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
@@ -188,12 +189,12 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	public void testCommandHelpMessage() {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
-		System.out.println("expected help: " + createCmd.getHelpMessage());
+		System.out.println("expected help: " + createCmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS));
 		System.out.println("actual reply: " + msg.getBodyReply());
-		assertEquals(createCmd.getHelpMessage(), msg.getBodyReply());
+		assertEquals(createCmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS), msg.getBodyReply());
 
 		msg = manager.process("UPDATE", TEST_MOBILE);
-		assertEquals(updateCmd.getHelpMessage(), msg.getBodyReply());
+		assertEquals(updateCmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS), msg.getBodyReply());
 	}
 
 	public void testMultipleBody() {

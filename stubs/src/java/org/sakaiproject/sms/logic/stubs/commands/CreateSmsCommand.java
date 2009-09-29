@@ -3,13 +3,13 @@ package org.sakaiproject.sms.logic.stubs.commands;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
-import org.sakaiproject.sms.logic.incoming.SmsCommand;
+import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
-public class CreateSmsCommand implements SmsCommand {
+public class CreateSmsCommand implements ShortMessageCommand {
 
 	private static final Log LOG = LogFactory.getLog(CreateSmsCommand.class);
 
-	public String execute(ParsedMessage msg, String mobileNr) {
+	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 	
 		String[] body = msg.getBodyParameters();
 		String concatBody = "";
@@ -33,7 +33,7 @@ public class CreateSmsCommand implements SmsCommand {
 		return "CREATE";
 	}
 
-	public String getHelpMessage() {
+	public String getHelpMessage(String messageType) {
 		return getCommandKey() + " HELP";
 	}
 
@@ -52,4 +52,9 @@ public class CreateSmsCommand implements SmsCommand {
 	public boolean requiresSiteId() {
 		return true;
 	}
+
+	public boolean canExecute(ParsedMessage message) {
+		return true;
+	}
+
 }

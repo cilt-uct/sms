@@ -36,9 +36,9 @@ public interface SmsIncomingLogicManager {
 	 * @param toolKey
 	 *            unique key for tool
 	 * @param command
-	 *            {@link SmsCommand} to register for tool
+	 *            {@link ShortMessageCommand} to register for tool
 	 */
-	public void register(String toolKey, SmsCommand command);
+	public void register(String toolKey, ShortMessageCommand command);
 
 	/**
 	 * Clears all commands for tool
@@ -49,7 +49,7 @@ public interface SmsIncomingLogicManager {
 
 	/**
 	 * Process a {@link ParsedMessage} Finds and executes registered
-	 * {@link SmsCommand}
+	 * {@link ShortMessageCommand}
 	 * 
 	 * Try to find a tool command that closest match the command as entered my
 	 * the sender. Go through the hash map of commands for the specific sakai
