@@ -57,4 +57,9 @@ public class CreateSmsCommand implements ShortMessageCommand {
 		return true;
 	}
 
+	public boolean requiresUserId() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

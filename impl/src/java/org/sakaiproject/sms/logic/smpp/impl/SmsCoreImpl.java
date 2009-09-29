@@ -274,7 +274,6 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (SmsAccountNotFoundException e) {
 			LOG.error("Sms account not found  for sakaiSiteID:=" + sakaiSiteID
 					+ " sakaiSenderID:= " + sakaiSenderID);
-			LOG.error(e.getMessage(), e);
 			return null;
 		}
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);

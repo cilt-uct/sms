@@ -127,4 +127,8 @@ public class SmsAdminCommand implements ShortMessageCommand {
 		return null;
 	}
 
+	public boolean requiresUserId() {
+		return true;
+	}
+
 }

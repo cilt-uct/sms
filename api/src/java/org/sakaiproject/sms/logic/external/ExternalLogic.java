@@ -234,7 +234,14 @@ public interface ExternalLogic {
 	 * @return
 	 */
 	public String getSiteReferenceFromId(String siteId);
-	
+
+	/**
+	 * Get a site title from an id
+	 * @param siteId
+	 * @return site title
+	 */
+	public String getSiteTitle(String siteId);
+
 	/**
 	 * Returns all aliases as String array
 	 * 

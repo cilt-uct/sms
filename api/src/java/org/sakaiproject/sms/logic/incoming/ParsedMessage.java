@@ -26,6 +26,7 @@ public class ParsedMessage {
 
 	private String command = null;
 	private String site = null;
+	private String siteTitle = null;
 	private String body = null;
 	private String bodyReply = null;
 	private String incomingUserId = null;
@@ -124,6 +125,15 @@ public class ParsedMessage {
 	}
 	
 	public String toString() {
-		return "command: " + command + " user: " + incomingUserId + " site: " + site + " body: " + body;
+		return "command: " + command + " user: " + incomingUserId + 
+			" site: " + site + " site-title: " + siteTitle + " body: " + body;
+	}
+
+	public void setSiteTitle(String siteTitle) {
+		this.siteTitle = siteTitle;
+	}
+
+	public String getSiteTitle() {
+		return siteTitle;
 	}
 }

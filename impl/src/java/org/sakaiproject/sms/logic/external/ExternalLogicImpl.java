@@ -1007,87 +1007,96 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String executeCommand(ShortMessageCommand command, ParsedMessage message, String mobileNumber) {
 
 		String reply = null;
-
 		final String finalSiteId = message.getSite();
+		String oldId = null;
+		String oldEid = null;
+		Session session = null;
 		
-		if (message.getIncomingUserId() == null) {
-			// Set up a security advisor for the case where the user is anonymous
-			// (unmatched mobile number). In this case the command handler is
-			// responsible for enforcing appropriate security (i.e. deciding whether
-			// anonymous access is allowed, and if so to what).
-		
+		LOG.debug("Executing command: " + command.getCommandKey() + " for " + mobileNumber + " with " + message);
+				
+		if (message.getIncomingUserId() != null) {
+
+			// Otherwise set up a session. Incoming delivery currently takes place in its own thread,
+			// but for safety we'll set up and restore the session when done. This should not ever be
+			// invoked from a user request thread.
+
+			session = sessionManager.getCurrentSession();
+	
+			oldId = session.getUserId();
+			oldEid = session.getUserEid();
+	
+			// If session is not anonymous
+			String userId = message.getIncomingUserId();
+			session.setUserId(userId);
+	
 			try {
-				securityService.pushAdvisor(new SecurityAdvisor() {
-					public SecurityAdvice isAllowed(String userId, String function, String reference) {
-						if (reference != null && finalSiteId != null 
-								&& SiteService.SITE_VISIT.equals(function) 
-								&& reference.equals(getSiteReferenceFromId(finalSiteId))) {
-							return SecurityAdvice.ALLOWED;
-						}
-						return SecurityAdvice.PASS;
-					}
-				});
-	
-				reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
-	
-			} catch (Exception e) {
-				LOG.warn("Error executing incoming SMS command: ", e);
-			} finally {
-				securityService.popAdvisor();
+				session.setUserEid(userDirectoryService.getUser(userId).getEid());
+			} catch (UserNotDefinedException e) {
+				// Shouldn't ever happen as we should be passed a valid user
+				LOG.error(e.getMessage(), e);
 			}
+			
+			LOG.debug("Set session for command execution to: " + userId + " / " + sessionManager.getCurrentSessionUserId());
+		}
+
+		// Set up a security advisor for the case where the user is anonymous
+		// (unmatched mobile number), or the command does not require a userId
+		// (in which case a user who is not a member of the site is still
+		// acceptable). In this case the command handler is responsible for enforcing
+		// appropriate security (i.e. deciding whether anonymous access is allowed, 
+		// and if so to what).
 	
-			return reply;
-		}
-		
-		// Otherwise set up a session. Incoming delivery currently takes place in its own thread,
-		// but for safety we'll set up and restore the session when done. This should not ever be
-		// invoked from 
-
-		final Session session = sessionManager.getCurrentSession();
-
-		String oldId = session.getUserId();
-		String oldEid = session.getUserEid();
-
-		// If session is anonymous
-		String userId = message.getIncomingUserId();
-		session.setUserId(userId);
-
 		try {
-			session.setUserEid(userDirectoryService.getUser(userId).getEid());
-		} catch (UserNotDefinedException e) {
-			// Shouldn't ever happen as we should be passed a valid user
-			LOG.error(e.getMessage(), e);
-		}
+			securityService.pushAdvisor(new SecurityAdvisor() {
+				public SecurityAdvice isAllowed(String userId, String function, String reference) {
+					if (reference != null && finalSiteId != null 
+							&& SiteService.SITE_VISIT.equals(function) 
+							&& reference.equals(getSiteReferenceFromId(finalSiteId))) {
+						return SecurityAdvice.ALLOWED;
+					}
+					return SecurityAdvice.PASS;
+				}
+			});
 
-		try {
+			// Set site title for convenience of the command
+			if (message.getSite() != null) {
+				message.setSiteTitle(getSiteTitle(message.getSite()));
+			}
+			
+			// Execute
 			reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
+
 		} catch (Exception e) {
 			LOG.warn("Error executing incoming SMS command: ", e);
-		}
-		
-		if (oldId == null) {
-			session.clear();
-		} else {
-			session.setUserId(oldId);
-			session.setUserId(oldEid);
+		} finally {
+			securityService.popAdvisor();
 		}
 
+		// Clear session if not anonymous
+		if (session != null) {
+			
+			if (oldId == null) {
+				session.clear();
+			} else {
+				session.setUserId(oldId);
+				session.setUserId(oldEid);
+			}
+		}
+		
 		return reply;
 	}
 
 	public String getBestUserMatch(String siteId, List<String> userIds,
 			ShortMessageCommand cmd) {
-
-		if (userIds.size() == 1) {
-			// If only 1, just return that. If the user doesn't have permission,
-			// the command will fail and give an appropriate error.
-			return userIds.get(0);
-		}
+		
+		LOG.debug("Finding users with access to site " + siteId + " from list " + userIds);
+		
+		// Find users who have access to the site
 		
 		List<String> usersWithAccess = new ArrayList<String>();
 		
 		for (String userId: userIds) {
-			if (securityService.unlock(SiteService.SITE_VISIT, siteService.siteReference(siteId))) {
+			if (securityService.unlock(userId, SiteService.SITE_VISIT, siteService.siteReference(siteId))) {
 				usersWithAccess.add(userId);
 			}
 		}
@@ -1099,9 +1108,28 @@ public class ExternalLogicImpl implements ExternalLogic {
 			return usersWithAccess.get(0);
 		}
 		
+		// Anonymous allowed?
+		if (!cmd.requiresUserId() && !userIds.isEmpty()) {
+			return userIds.get(0);
+		}
+		
 		// None of the target set had access
 		
 		return null;
+	}
+
+	public String getSiteTitle(String siteId) {
+		
+		String title = null;
+		
+		try {
+			Site s = siteService.getSite(siteId);
+			title = s.getTitle();
+		} catch (IdUnusedException e) {
+			LOG.debug("Unknown site id: " + siteId);
+		}
+				
+		return title;
 	}
 
 }

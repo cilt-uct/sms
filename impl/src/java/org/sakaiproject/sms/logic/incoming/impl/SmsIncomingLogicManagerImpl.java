@@ -21,7 +21,6 @@
 package org.sakaiproject.sms.logic.incoming.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +106,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			smsMessageParser.parseCommand(parsedMessage);
 		} catch (ParseException e) {
 			// Null message or empty body
-			reply = generateUnknownCommandMessage(parsedMessage, incomingUserLocale);
+			reply = generateHelpMessage(incomingUserLocale);
 			parsedMessage.setBodyReply(formatReply(reply));
 			return parsedMessage;
 		}
@@ -130,7 +129,7 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			validCommandMatch.getMatchResult() == null) {
 			
 			// Unknown command
-			reply = generateUnknownCommandMessage(parsedMessage, incomingUserLocale);
+			reply = generateUnknownCommandMessage(suppliedCommand, incomingUserLocale);
 			parsedMessage.setBodyReply(formatReply(reply));
 			parsedMessage.setCommand(null);
 			return parsedMessage;
@@ -146,14 +145,14 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 			
 			// No matches
 			parsedMessage.setCommand(null);
-			reply = generateAssistMessage(validCommandMatch.getPossibleMatches(), incomingUserLocale);
+			reply = generateUnknownCommandMessage(suppliedCommand, incomingUserLocale);
 			
 		} else if (validCommandMatch.getMatchResult().equals(
 				SmsPatternSearchResult.MORE_THAN_ONE_MATCH)) {
 						
 			// Ambiguous
 			parsedMessage.setCommand(null);
-			reply = generateAssistMessage(validCommandMatch.getPossibleMatches(), incomingUserLocale);
+			reply = generateAssistMessage(suppliedCommand, validCommandMatch.getPossibleMatches(), incomingUserLocale);
 			
 		} else { 
 						
@@ -177,9 +176,12 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				}
 			} 
 			
+			String suppliedSite = parsedMessage.getSite();
+			
 			// Get the best match for the user and site name / abbreviation	
 			if (!getSiteAndUser(parsedMessage, userIds, cmd)) {
-				reply = generateInvalidSiteMessage("", incomingUserLocale);
+				reply = generateInvalidSiteMessage(suppliedSite, incomingUserLocale);
+				parsedMessage.setSite(null);
 				parsedMessage.setBodyReply(formatReply(reply));
 				return parsedMessage;				
 			}
@@ -223,6 +225,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		// Get a match for the given site, possible user matches, and command
 
+		log.debug("Looking for best match for site: " + message.getSite() + " and user list: " + userIds);
+		
+		boolean haveSite = false;
 		String suppliedSiteId = message.getSite();
 		
 		if (suppliedSiteId == null && cmd.requiresSiteId()) {
@@ -232,29 +237,45 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		if (!cmd.requiresSiteId()) {
 			// Don't need a site
+			
+			// Set user to the first matching user
+			if (!userIds.isEmpty()) {
+				message.setIncomingUserId(userIds.get(0));
+			}
 			return true;
 		}
 		
 		// Lookup by site id
 		if (externalLogic.isValidSite(suppliedSiteId)) {
 			message.setSite(suppliedSiteId);
+			haveSite = true;
 		}
 
 		// Lookup by site alias
 		String siteId = externalLogic.getSiteFromAlias(suppliedSiteId);
 		if (siteId != null) {
 			message.setSite(siteId);
+			haveSite = true;
 		}
 		
 		// Match on site alias
-		SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
-				externalLogic.getAllSiteAliases());
-		if (result.getMatchResult().equals(
-				SmsPatternSearchResult.ONE_MATCH)) {
-			message.setSite(externalLogic.getSiteFromAlias(result.getPattern()));
+		if (!haveSite) {
+			SmsPatternSearchResult result = getClosestMatch(suppliedSiteId,
+					externalLogic.getAllSiteAliases());
+			if (result.getMatchResult().equals(
+					SmsPatternSearchResult.ONE_MATCH)) {
+				message.setSite(externalLogic.getSiteFromAlias(result.getPattern()));
+				haveSite = true;
+			}
 		}
 
-		if (message.getSite() != null) {
+		if (haveSite) {
+			
+			// No user, but we don't need one
+			if (userIds.isEmpty() && !cmd.requiresUserId()) {
+				return true;
+			}
+			
 			// An exact match for a site or alias, now find the user
 			String userId = externalLogic.getBestUserMatch(message.getSite(), userIds, cmd);
 			if (userId != null) {
@@ -454,34 +475,42 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 		command = command.toUpperCase();
 		return (allCommands.getCommandKeys().contains(command) || SmsConstants.HELP
 				.equalsIgnoreCase(command));
-
 	}
 
 	private String generateNoCommandsMessage(Locale preferedLocale) {
-		return externalLogic.getLocalisedString("sms.incoming.nocommands", preferedLocale);
-
+		return externalLogic.getLocalisedString("sms.incoming.nocommands", preferedLocale,
+				new Object[]{ externalLogic.getSmsContactEmail()});
 	}
 
 	private String generateInvalidSiteMessage(String site, Locale preferedLocale) {
-		return externalLogic.getLocalisedString("sms.incoming.unknownsite", preferedLocale);
-
+		return externalLogic.getLocalisedString("sms.incoming.unknownsite", preferedLocale,
+				new Object[]{ site, externalLogic.getSmsContactEmail()});
 	}
 
-	private String generateUnknownCommandMessage(ParsedMessage message, Locale preferedLocale) {
-		String cmd = "";
-		if (message != null && message.getCommand() != null) {
-			cmd = message.getCommand();
+	private String generateUnknownCommandMessage(String cmd, Locale preferedLocale) {
+
+		if (cmd == null) {
+			cmd = "";
 		}
-		String ret = externalLogic.getLocalisedString("sms.incoming.unknown", preferedLocale, new Object[]{cmd});
-		ret = ret + " " + generateHelpMessage(preferedLocale); 
-	
-		return ret;
+		
+		return externalLogic.getLocalisedString("sms.incoming.unknown", preferedLocale, 
+				new Object[]{ cmd, visibleCommandList(), externalLogic.getSmsContactEmail()  });
 	}
 
 	private String generateHelpMessage(Locale locale) {
+
+		return externalLogic.getLocalisedString("sms.incoming.validCommands", locale,
+				new Object[]{ visibleCommandList(), externalLogic.getSmsContactEmail()} );
+	}
+	
+	/**
+	 * Comma-separate list of valid, visible commands
+	 * @return
+	 */
+	private String visibleCommandList() {
+
 		StringBuilder body = new StringBuilder();
-		body.append(externalLogic.getLocalisedString("sms.incoming.validCommands", locale) + " ");
-		
+
 		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
 			String command = i.next();
@@ -497,53 +526,29 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 				}
 			}
 		}
-
+		
 		return body.toString();
 	}
 
-	public String generateAssistMessage(List<String> matches, Locale locale) {
-		Collection<String> commands = null;
-		StringBuilder body = new StringBuilder();
-
-		body.append(externalLogic.getLocalisedString("sms.incoming.possmatches", locale));
-		if (matches == null || matches.isEmpty()
-				|| matches.contains(SmsConstants.HELP)) {
-			// TODO: not sure what to do here
-		} else {
-			commands = matches;
+	public String generateAssistMessage(String command, List<String> matches, Locale locale) {
+		
+		if (matches == null || matches.isEmpty() || matches.contains(SmsConstants.HELP)) {
+			// Generally shouldn't get here
+			return generateUnknownCommandMessage(command, locale);
 		}
-		if (commands != null) {
-			final Iterator<String> i = commands.iterator();
-			while (i.hasNext()) {
-				String command = i.next();
-				body.append(command);
-				if (i.hasNext()) {
-					body.append(", ");
-				}
+		
+		StringBuilder matchList = new StringBuilder();
+	
+		final Iterator<String> i = matches.iterator();
+		while (i.hasNext()) {
+			matchList.append(i.next());
+			if (i.hasNext()) {
+				matchList.append(", ");
 			}
 		}
-		return body.toString();
-	}
 
-	public String generateAssistMessage(String tool, Locale locale) {
-		if (tool == null || !toolCmdsMap.containsKey(tool.toUpperCase())) {
-			return externalLogic.getLocalisedString("sms.incoming.invalidTool", locale);
-		} else {
-			StringBuilder body = new StringBuilder();
-			body.append(externalLogic.getLocalisedString("sms.incoming.possmatches", locale));
-			RegisteredCommands commands = toolCmdsMap.get(tool.toUpperCase());
-			final Iterator<String> i = commands.getCommandKeys().iterator();
-			while (i.hasNext()) {
-				String command = i.next();
-				body.append(command);
-				if (i.hasNext()) {
-					body.append(", ");
-				}
-			}
-
-			return body.toString();
-		}
-
+		return externalLogic.getLocalisedString("sms.incoming.possmatches", locale,
+				new Object[]{ command, matchList.toString(), externalLogic.getSmsContactEmail()} );
 	}
 
 	/**

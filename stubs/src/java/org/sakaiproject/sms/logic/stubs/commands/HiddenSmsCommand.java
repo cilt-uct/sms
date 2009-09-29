@@ -57,4 +57,9 @@ public class HiddenSmsCommand implements ShortMessageCommand {
 	public boolean canExecute(ParsedMessage message) {
 		return true;
 	}
+
+	public boolean requiresUserId() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

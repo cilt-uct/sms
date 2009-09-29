@@ -350,4 +350,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return userIds.isEmpty() ? null : userIds.get(0);
 	}
 
+	public String getSiteTitle(String siteId) {
+		return "Site Title";
+	}
+
 }

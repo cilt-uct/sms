@@ -96,4 +96,13 @@ public interface ShortMessageCommand {
 	 * @return
 	 */
 	boolean requiresSiteId();
+	
+	/**
+	 * Does this command require a userId to be specified? If true and requiresSiteId() is true,
+	 * then it implies that the user must also be able to visit the site. Set this to false for
+	 * commands which allow anonymous posting or information retrieval depending on tool configuration.
+	 * @return
+	 */
+	boolean requiresUserId();
+
 }

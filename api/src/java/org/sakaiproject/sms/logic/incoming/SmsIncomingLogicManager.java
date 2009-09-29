@@ -73,23 +73,14 @@ public interface SmsIncomingLogicManager {
 	public boolean isValidCommand(String command);
 
 	/**
-	 * Generate help message for a user then sent an invalid command to us.
+	 * Generate help message for a user when the command is unmatched or ambiguous
 	 * 
 	 * @param toolKey
 	 *            tool to generate message for
 	 * @param the locale
 	 * @return the assist message
 	 */
-	public String generateAssistMessage(List<String> matches, Locale locale);
-
-	/**
-	 * Genereate help message for specific tool
-	 * 
-	 * @param tool
-	 * @param local for message
-	 * @return
-	 */
-	public String generateAssistMessage(String tool, Locale locale);
+	public String generateAssistMessage(String command, List<String> matches, Locale locale);
 
 	/**
 	 * Return the closest matching string in the values array. So the command
