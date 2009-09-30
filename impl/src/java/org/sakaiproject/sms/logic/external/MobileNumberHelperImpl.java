@@ -167,9 +167,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		example.setNormalizedMobile(numberRoutingHelper.normalizeNumber(mobileNumber));
 		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
 
-		final List<SakaiPerson> list = sakaiPersonManager
-				.findSakaiPerson(example);
 		final List<String> toReturn = new ArrayList<String>();
+		
+		final List<SakaiPerson> list = sakaiPersonManager.findSakaiPerson(example);
+		
+		LOG.debug("Found " + list.size() + " matches against normalized numbers");
+		
 		for (SakaiPerson person : list) {
 			toReturn.add(person.getUid());
 		}
@@ -178,8 +181,9 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		example1.setMobile(mobileNumber);
 		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
 
-		final List<SakaiPerson> list1 = sakaiPersonManager
-				.findSakaiPerson(example1);
+		final List<SakaiPerson> list1 = sakaiPersonManager.findSakaiPerson(example1);
+		
+		LOG.debug("Found " + list1.size() + " matches against non-normalized numbers");
 		
 		for (SakaiPerson person : list1) {
 			toReturn.add(person.getUid());
