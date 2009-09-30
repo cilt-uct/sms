@@ -333,8 +333,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				receivedDeliveryReports.add(deliverSm);
 
 			} else {
-				LOG.info("Queuing MO message from: "
-						+ deliverSm.getSourceAddr());
+				LOG.info("Queuing MO message from: " + deliverSm.getSourceAddr() + 
+						" with data coding " + deliverSm.getDataCoding());
 				SmsMOMessage moMessage = new SmsMOMessage();
 				
 				// TODO - when/if we have multiple listeners, record this connection's SMSC ID
