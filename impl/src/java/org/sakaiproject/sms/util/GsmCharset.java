@@ -224,22 +224,5 @@ public class GsmCharset {
     return byteArrayResult;
   }
 
-  /**
-   * This main function is used for the class test purpose
-   */
-  public static void main(String[] args) {
-    if (args.length < 1) {
-      System.out.println("Usage: java com.kunilkuda.GsmCharset <string>");
-      System.exit(1);
-    }
-
-    byte[] data = new GsmCharset().translateToGsm0338(args[0]);
-    for(int i = 0; i < data.length; i++) {
-      System.out.print(data[i] + " ");
-    }
-    System.out.println();
-
-    System.out.println(new GsmCharset().translateToIso(data));
-  }
 }
 

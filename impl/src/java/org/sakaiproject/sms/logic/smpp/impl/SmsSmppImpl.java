@@ -87,6 +87,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
+import org.sakaiproject.sms.util.GsmCharset;
 
 public class SmsSmppImpl implements SmsSmpp {
 
@@ -345,9 +346,16 @@ public class SmsSmppImpl implements SmsSmpp {
 				if (deliverSm.getShortMessage() == null) {
 					// person sent a blank sms
 					messageBody = SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
-
+					
 				} else {
-					messageBody = new String(deliverSm.getShortMessage());
+					if (deliverSm.getDataCoding() == 0 )  {
+						LOG.debug("Parsing message with dataCoding 0");
+						GsmCharset gsm = new GsmCharset();
+						messageBody = gsm.translateToIso(deliverSm.getShortMessage());
+						LOG.debug("message body: " + messageBody);
+					} else {
+						messageBody = new String(deliverSm.getShortMessage());
+					}
 				}
 				moMessage.setSmsMessagebody(messageBody);
 				receivedMOmessages.add(moMessage);
