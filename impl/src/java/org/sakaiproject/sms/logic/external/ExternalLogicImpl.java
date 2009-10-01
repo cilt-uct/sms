@@ -713,7 +713,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 			
 		} catch (IdUnusedException e) {
-			LOG.error("Undefined alias used: " + alias);
+			LOG.info("Undefined alias used: " + alias);
 			return null;
 		}
 
