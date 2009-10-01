@@ -344,18 +344,37 @@ public class SmsSmppImpl implements SmsSmpp {
 				moMessage.setMobileNumber(deliverSm.getSourceAddr());
 				String messageBody = "";
 				if (deliverSm.getShortMessage() == null) {
+
 					// person sent a blank sms
 					messageBody = SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
 					
 				} else {
-					if (deliverSm.getDataCoding() == 0 )  {
-						LOG.debug("Parsing message with dataCoding 0");
+					
+					// Alphabet is defined in bits 2 and 3 of data coding: GSM 03.38 Version 5.3.0
+					
+					int alphabet = ((deliverSm.getDataCoding() & 12) >> 2);
+
+					LOG.debug("Message alphabet is " + alphabet);
+					
+					if (alphabet == 0 )  {
+						// GSM
 						GsmCharset gsm = new GsmCharset();
 						messageBody = gsm.translateToIso(deliverSm.getShortMessage());
-						LOG.debug("message body: " + messageBody);
+					} else if (alphabet == 2) {
+						// UTF-16
+						try {
+							messageBody = new String(deliverSm.getShortMessage(), "UTF-16BE");
+						} catch (UnsupportedEncodingException e) {
+							LOG.warn("Unsupported encoding UTF-16BE");
+							messageBody = new String(deliverSm.getShortMessage());
+						}
 					} else {
+						// 8 bit or Reserved
 						messageBody = new String(deliverSm.getShortMessage());
 					}
+
+					LOG.debug("message body: " + messageBody);
+					
 				}
 				moMessage.setSmsMessagebody(messageBody);
 				receivedMOmessages.add(moMessage);
