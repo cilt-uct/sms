@@ -23,7 +23,11 @@
         <ul>
           <li rsf:id="roles:" id="peopleTabsRoles"> <a rsf:id="roles-title" href="#peopleListRoles">Select by role</a> <span rsf:id="roles-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
           <li rsf:id="groups:" id="peopleTabsGroups"> <a rsf:id="groups-title" href="#peopleListGroups">Select by group</a> <span rsf:id="groups-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
-          <li rsf:id="names:" id="peopleTabsNames"> <a rsf:id="names-title" href="#peopleListNames">Individuals</a> <span rsf:id="names-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
+          <li rsf:id="names:" id="peopleTabsNames">
+              <a rsf:id="names-title" href="#peopleListNames" style="display: none;">Individuals</a>
+              <a rsf:id="names-title-loading" href="#peopleListNames" name="loading">Loading individuals</a>
+              <span rsf:id="names-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span>
+          </li>
           <li rsf:id="numbers:" id="peopleTabsNumbers"> <a rsf:id="numbers-title" href="#peopleListNumbers">Numbers</a> <span rsf:id="numbers-selected" rel="recipientsSum" class="tabsNumber" title="Number you have selected" style="display:none">0</span> </li>
         </ul>
           <div id="peopleListRoles">

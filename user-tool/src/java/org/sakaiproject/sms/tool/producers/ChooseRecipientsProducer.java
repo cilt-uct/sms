@@ -297,6 +297,10 @@ public class ChooseRecipientsProducer implements ViewComponentProducer,
 			String tab = tabCapitalised.toLowerCase();
 			UIOutput.make(tofill, tab).decorate(
 					new UIIDStrategyDecorator("peopleTabs" + tabCapitalised));
+			if("Names".equals(tabCapitalised)){
+				UILink.make(tofill, "names-title-loading", messageLocator
+						.getMessage("ui.recipients.choose.names.title.loading"), null);
+			}
 			UILink
 					.make(tofill, tab + "-title", messageLocator
 							.getMessage("ui.recipients.choose." + tab
