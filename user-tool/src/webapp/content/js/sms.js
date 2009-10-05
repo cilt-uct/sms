@@ -230,7 +230,7 @@
             //Re-select saved users selections ie: individuals
             if (userIds !== null && userIds.length !== 0) {
                 //Render saved entity selections
-                if (var_getEveryoneInSite_participants.length > 2) {
+                if (var_getEveryoneInSite_participants.length > 16) {
                    //Autocomplete is activated now populate saved names
                     $.each(userIds, function(i, entityId) {
                         if (entityId !== "" && entityId !== null) {
