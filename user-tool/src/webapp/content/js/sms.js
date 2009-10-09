@@ -89,9 +89,9 @@
                         $("#recipientsCmd")
                                 .removeAttr("disabled")
                                 .addClass("active");
-	                    var cSelected = json.groupSizeEstimate; 	 
-	                    var cCredits = json.creditEstimate; 	 
-	                    var cCost = json.costEstimate; 	 
+	                    var cSelected = json.groupSizeEstimate,
+	                    cCredits = json.creditEstimate,
+	                    cCost = json.costEstimate;
 	                    $("#cReportConsole .console-selected").text(cSelected);
 	                    $("#cReportConsole .console-credits").text(cCredits);
                         //make sure there are 2 decimal points in the cost
@@ -100,7 +100,7 @@
                            cost = ( cost + ".00" );
                         }else if ( cost.length - ( cost.indexOf(".") + 1) === 1){
                             cost = ( cost + "0" );
-                        };
+                        }
 	                    $("#cReportConsole .console-cost").text($("#currency").val() + cost);
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
@@ -175,11 +175,11 @@
             if ( isRecipientsChosen && $("#messageBody").val().length > 0 ) {
                 $("#smsSend")
                         .removeAttr("disabled")
-                        .addClass("active");;
+                        .addClass("active");
             } else {
                 $("#smsSend")
                         .attr("disabled", "disabled")
-                        .removeClass("active");;
+                        .removeClass("active");
             }
         },
         addSelectedRecipientsListName: function(array) {
@@ -356,9 +356,9 @@
      * Private variables
      */
 
-    var var_getEveryoneInSite;     // to hold full people list
-    var var_getEveryoneInSite_participants = [];     // to hold full participants list
-    var selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
+    var var_getEveryoneInSite,     // to hold full people list
+    var_getEveryoneInSite_participants = [],     // to hold full participants list
+    selectedRecipientsList = { //Object with multidimetional Dimensional Arrays to hold the Selected Recipients
         roles:[],
         groups: [],
         names: [],
@@ -650,15 +650,15 @@
             $("#peopleListNumbersDuplicates").fadeOut("fast");
             $.fn.SMS.get.selectionsHaveChanged = true;
             if (that.val()) {
-                var numbers = that.val().split("\n");
-                var nums_invalid = [];
+                var numbers = that.val().split("\n"),
+                nums_invalid = [];
 
                 $.each(numbers, function(i, item) {
                     var num = item.split(' ').join('');
                     if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
                         //verify the unformattd version of the number is not a duplicate
                         var found = false,
-                        strippedItem = item.replace(/[+]/g, "").replace(/[-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
+                        strippedItem = item.replace(/[+]/g, "").replace(/[\-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
                         for (var x = 0; x < strippedNumbers.length; x++){
                            if ( strippedItem === strippedNumbers[x] ){
                                found = true;

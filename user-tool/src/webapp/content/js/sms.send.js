@@ -93,7 +93,7 @@ $(document).ready(function() {
         if ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE") {
             $("#smsSend")
                     .removeAttr("disabled")
-                    .addClass("active");;
+                    .addClass("active");
             $.fn.SMS.get.preserveDomSelections = true;
             //Hide set controls for dates
             $("#newSchedule").hide();
