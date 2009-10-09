@@ -8,9 +8,7 @@ $(document).ready(function() {
         history.go(-1);
         return false;
     });
-	
-	$.fn.SMS.get.peopleByName(); //Populate the people lists ie:individuals
-
+    
     //Counter for the SMS Textarea
         $("#messageBody")
                 .change(function(e) {
@@ -50,6 +48,7 @@ $(document).ready(function() {
             }
             $.fn.SMS.set.setSubmitTaskButton();
         });
+
 
     //focus on messageBody and update char counter
     $("#messageBody")
@@ -94,7 +93,7 @@ $(document).ready(function() {
         if ($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE") {
             $("#smsSend")
                     .removeAttr("disabled")
-                    .addClass("active");
+                    .addClass("active");;
             $.fn.SMS.get.preserveDomSelections = true;
             //Hide set controls for dates
             $("#newSchedule").hide();
@@ -162,22 +161,9 @@ $(document).ready(function() {
             $.fn.SMS.set.disableTab('peopleTabsGroups', 'error-no-groups');
            }
 
-        $("#peopleListNamesSuggest").autoCompletefb({
-                urlLookup  : $.fn.SMS.get.peopleByName('array'),
-                acOptions  : {
-                    minChars: 1,
-                    matchContains:  true,
-                    selectFirst:    false,
-                    width:  300,
-                    formatItem: function(row) {
-                        return row[0] + ' (' + row[2] + ')';
-                    }
-                },
-                foundClass : ".acfb-data",
-                inputClass : ".acfb-input",
-                deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
-        });
-		
+        //Start membership loading event action
+        $.fn.SMS.get.peopleByName(); //trigger event to populate the people lists ie:individuals
+
         $("#calculateCmd").bind('click', function(){
             var domElements = ["sakaiUserIds", "sakaiSiteId","deliveryEntityList", "deliveryMobileNumbersSet"];
             $.fn.SMS.set.processCalculate(domElements, this);

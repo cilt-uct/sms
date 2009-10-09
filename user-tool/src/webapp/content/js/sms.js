@@ -8,6 +8,7 @@
         // build main options before class instantiation
         $.extend({}, $.fn.SMS.defaults, options);
     };
+
     // define and expose our format function
     $.fn.SMS.get = {
         preserveDomSelections: false,
@@ -23,11 +24,8 @@
             renderPeople();
         },
 
-        peopleByName: function(type) {
-            if (type == null) {    //putting 3 equal signs (ie: ===) will break this check
-                var_getEveryoneInSite_participants = getPeople('Names');
-            }
-            return var_getEveryoneInSite_participants;
+        peopleByName: function() {
+            getPeople();
         },
         getSelectedRecipientsListNames : function() {
             getSelectedRecipientsList.length('names');
@@ -51,7 +49,8 @@
             bool = (getSelectedRecipientsList.length("roles") > 0 || getSelectedRecipientsList.length("groups") > 0 || getSelectedRecipientsList.length("names") > 0 || getSelectedRecipientsList.length("numbers") > 0 || $("#copy-me:checked").length !== 0 );
             return bool;
         },
-        errorEb: null
+        errorEb: null,
+        isIndividualsLoaded: false
     };
     $.fn.SMS.set = {
         init: function() {
@@ -90,9 +89,9 @@
                         $("#recipientsCmd")
                                 .removeAttr("disabled")
                                 .addClass("active");
-                        var cSelected = json.groupSizeEstimate,
-                        cCredits = json.creditEstimate,
-                        cCost = json.costEstimate;
+	                    var cSelected = json.groupSizeEstimate; 	 
+	                    var cCredits = json.creditEstimate; 	 
+	                    var cCost = json.costEstimate; 	 
 	                    $("#cReportConsole .console-selected").text(cSelected);
 	                    $("#cReportConsole .console-credits").text(cCredits);
                         //make sure there are 2 decimal points in the cost
@@ -101,7 +100,7 @@
                            cost = ( cost + ".00" );
                         }else if ( cost.length - ( cost.indexOf(".") + 1) === 1){
                             cost = ( cost + "0" );
-                        }
+                        };
 	                    $("#cReportConsole .console-cost").text($("#currency").val() + cost);
                         $("#cReportConsole").slideDown('fast', function() {
                             $(this).effect('highlight', 'fast');
@@ -176,11 +175,11 @@
             if ( isRecipientsChosen && $("#messageBody").val().length > 0 ) {
                 $("#smsSend")
                         .removeAttr("disabled")
-                        .addClass("active");
+                        .addClass("active");;
             } else {
                 $("#smsSend")
                         .attr("disabled", "disabled")
-                        .removeClass("active");
+                        .removeClass("active");;
             }
         },
         addSelectedRecipientsListName: function(array) {
@@ -307,7 +306,7 @@
                     .css($.fn.SMS.settings.css.tabDisabled)
                     .attr('title', err);
             $('#' + tabName + ' a')
-                    .unbind('click')
+			 		.unbind('click')
                     .bind('click', function(){
                 return false;
             });
@@ -341,6 +340,13 @@
                 'background-color':'#999999',
                 'background-image': 'none',
                 color: '#666666'
+            },
+            tabBusy: {
+                'background-color':'#fff',
+                color: '#000',
+                'background-image':'url(/library/image/sakai/spinner.gif)',
+                'background-position':'0 50%',
+                'background-repeat':'no-repeat'
             }
         }
     };
@@ -400,32 +406,112 @@
         }
     };
     /**
-     * Getter for recipients page
-     * @param filter Search list by {string} variable. Returns a Two Dimensional array
+     * Getter for individuals tab
      */
-    function getPeople(filter) {
-        if (filter !== null && (filter === "Roles" || filter === "Groups" || filter === "Names")) {
-            var query = [];
-            if (filter === "Names") {
-                    if ($('input[name=sakaiSiteId]').val() !== null) {
-                        $.ajax({
-                            url: '/direct/sms-task/memberships/site/' + $('input[name=sakaiSiteId]').val() + '.json',
-                            dataType: "json",
-                            cache: false,
-                            success: function(data) {
-                                $.each(data["sms-task_collection"], function(i, item) {
-                                    query.push([item.sortName, item.id, item.displayId]);
-                                });
-                            }
+    function getPeople() {
+        var disableTab = function(){
+            tabFinishedLoading();
+            $.fn.SMS.set.disableTab('peopleTabsNames', 'errorEb');
+        },
+        tabLoading = function(){
+            $('#peopleTabsNames a[name=loading]')
+                    .unbind("click")
+                    .bind("click", function(){ return false; })
+                    .css($.fn.SMS.settings.css.tabBusy);
+        },
+        tabFinishedLoading = function(){
+            $('#peopleTabsNames a[name=loading]').hide();
+            $('#peopleTabsNames a').not("[name=loading]").show();
+        },
+        initTab = function(list) {
+                    $.fn.SMS.get.isIndividualsLoaded = true;
+                    //Initialise the Individuals Tab
+                    if (list.length > 16) {
+                        tabFinishedLoading();
+                        // Create autocomplete object
+                        $("#peopleListNamesSuggest").autoCompletefb({
+                                urlLookup  : list,
+                                acOptions  : {
+                                    minChars: 1,
+                                    matchContains:  true,
+                                    selectFirst:    false,
+                                    width:  300,
+                                    formatItem: function(row) {
+                                        return row[0] + ' (' + row[2] + ')';
+                                    }
+                                },
+                                foundClass : ".acfb-data",
+                                inputClass : ".acfb-input",
+                                deleteImage: $.fn.SMS.settings.images.deleteAutocompleteImage
                         });
+                        $("#instructionsNames").show();
+                        $(".autocompleteParent").click(function(){
+                            $(".ac_input").focus();
+                        });
+                    } else if (list.length > 0) {
+                        tabFinishedLoading();
+                        $("#peopleListNamesSuggest")
+                                .removeClass('first acfb-holder')
+                                .html(renderPeopleAsCheckboxes("Names"));
+                        $('#peopleListNamesSuggest > div[@rel=Names] input').click(function() {
+                            var id = $(this).val();
+                            $.fn.SMS.get.selectionsHaveChanged = true;
+                            //Fn for the check event
+                            if (this.checked) {
+                                checkNameboxAction(this);
+                            } else
+                            //Fn for the UNcheck event
+                            {
+                                //Remove data from selectedRecipientsList
+                                $.each(selectedRecipientsList.names, function(i, parent) {
+                                    if (parent) {
+                                        //log(selectedRecipientsList.names.toString());
+                                        //log("Item: "+item);
+                                        if (parent[0] === id) {
+                                            selectedRecipientsList.names.splice(Number(i), 1);
+                                        }
+                                    }
+                                });
+                                //Refresh {selectedRecipients} Number on TAB
+                                if (getSelectedRecipientsList.length('names') > 0) {
+                                    $('#peopleTabsNames span[rel=recipientsSum]').text(getSelectedRecipientsList.length('names'));
+                                }
+                                else    {
+                                    $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
+                                }
+                                 $.fn.SMS.set.disableContinue();
+                            }
+                            // log(selectedRecipientsList.names.toString());
+                        });
+
+                    } else {
+                        disableTab();
                     }
-            }
-
-            //log(query);
-            return query;
-
+        };
+        
+        if ($('input[name=sakaiSiteId]').val() !== null && !$.fn.SMS.get.isIndividualsLoaded && var_getEveryoneInSite_participants.length === 0) {
+            $.ajax({
+                url: '/direct/sms-task/memberships/site/' + $('input[name=sakaiSiteId]').val() + '.json',
+                dataType: "json",
+                cache: false,
+                beforeSend: function(){
+                    tabLoading();
+                },
+                success: function(data) {
+                    var query = [];
+                    $.each(data["sms-task_collection"], function(i, item) {
+                        query.push([item.sortName, item.id, item.displayId]);
+                    });
+                    var_getEveryoneInSite_participants = query;
+                    initTab(query);
+                },
+                error: function(){
+                    disableTab();
+                }
+            });
+        }else if ($.fn.SMS.get.isIndividualsLoaded && var_getEveryoneInSite_participants.length !== 0 ){
+             initTab(var_getEveryoneInSite_participants);
         }
-        return null;
     }
 
     function returnThis(d) {
@@ -554,55 +640,6 @@
             });
         });
 
-        //Initialise the Individuals Tab
-        if (var_getEveryoneInSite_participants.length > 16) {  
-            $("#instructionsNames").show();
-            $(".autocompleteParent").click(function(){
-                $(".ac_input").focus();
-            });
-        } else if (var_getEveryoneInSite_participants.length > 0) {
-            $("#peopleListNamesSuggest")
-                    .removeClass('first acfb-holder')
-                    .html(renderPeopleAsCheckboxes("Names"));
-            $('#peopleListNamesSuggest > div[@rel=Names] input').click(function() {
-                var id = $(this).val();
-                $.fn.SMS.get.selectionsHaveChanged = true;
-                //Fn for the check event
-                if (this.checked) {
-                    checkNameboxAction(this);
-                } else
-                //Fn for the UNcheck event
-                {
-                    //Remove data from selectedRecipientsList
-                    $.each(selectedRecipientsList.names, function(i, parent) {
-                        if (parent) {
-                            //log(selectedRecipientsList.names.toString());
-                            //log("Item: "+item);
-                            if (parent[0] === id) {
-                                selectedRecipientsList.names.splice(Number(i), 1);
-                            }
-                        }
-                    });
-                    //Refresh {selectedRecipients} Number on TAB
-                    if (getSelectedRecipientsList.length('names') > 0) {
-                        $('#peopleTabsNames span[rel=recipientsSum]').text(getSelectedRecipientsList.length('names'));
-                    }
-                    else    {
-                        $('#peopleTabsNames span[rel=recipientsSum]').fadeOut();
-                    }
-                     $.fn.SMS.set.disableContinue();
-                }
-                // log(selectedRecipientsList.names.toString());
-            });
-
-        } else {
-            $('#peopleListNamesSuggest').hide();
-            $('#peopleListNamesSuggest p').hide();
-            $('#withNumbersOnlyNames').hide();
-            $('#errorNoNames').show();
-            $.fn.SMS.set.disableTab('peopleTabsNames', 'errorEb');
-        }
-
         //Events for the Numbers textarea
 
         $('#checkNumbers').bind('click', function() {
@@ -621,7 +658,7 @@
                     if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
                         //verify the unformattd version of the number is not a duplicate
                         var found = false,
-                        strippedItem = item.replace(/[+]/g, "").replace(/[\-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
+                        strippedItem = item.replace(/[+]/g, "").replace(/[-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
                         for (var x = 0; x < strippedNumbers.length; x++){
                            if ( strippedItem === strippedNumbers[x] ){
                                found = true;
