@@ -143,10 +143,9 @@
 			<list>
 				<bean class="org.sakaiproject.sms.logic.command.SmsAdminCommand">
 				<property name="hibernateLogicLocator"
-			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
-					
+			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />					
 				</bean>
-				
+                <bean class="org.sakaiproject.sms.logic.command.SmsPingCommand" />
 			</list>
 		</property>
 	</bean>	

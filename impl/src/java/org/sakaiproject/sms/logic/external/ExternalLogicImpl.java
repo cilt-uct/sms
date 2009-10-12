@@ -1042,7 +1042,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				LOG.error(e.getMessage(), e);
 			}
 			
-			LOG.debug("Set session for command execution to: " + userId + " / " + sessionManager.getCurrentSessionUserId());
+			LOG.debug("Set session for command execution to userid: " + sessionManager.getCurrentSessionUserId());
 		}
 
 		// Set up a security advisor for the case where the user is anonymous

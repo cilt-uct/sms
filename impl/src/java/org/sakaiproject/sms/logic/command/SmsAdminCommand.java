@@ -52,7 +52,7 @@ public class SmsAdminCommand implements ShortMessageCommand {
 
 	private HibernateLogicLocator hibernateLogicLocator = null;
 
-	public String execute(ParsedMessage msg, String mobileNr) {
+	public String execute(ParsedMessage msg, String messageType, String sourceAddress) {
 		String[] body = msg.getBodyParameters();
 		
 		String concatBody = "";
@@ -63,11 +63,14 @@ public class SmsAdminCommand implements ShortMessageCommand {
 				concatBody += "," + arg;
 			}
 		}
+
 		LOG.debug(getCommandKey() + " command called with parameters: ("
 				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + concatBody + ")");
+
 		if (body[0] == null || "".equals(body[0].trim())) {
 			return SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
 		}
+		
 		try {
 			SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
 					.getSmsAccount(Long.parseLong(body[0]));
@@ -91,10 +94,6 @@ public class SmsAdminCommand implements ShortMessageCommand {
 		return "SMS";
 	}
 
-	public String getHelpMessage() {
-		return "BALANCE";
-	}
-
 	public int getBodyParameterCount() {
 		return 1;
 	}
@@ -112,19 +111,11 @@ public class SmsAdminCommand implements ShortMessageCommand {
 	}
 
 	public boolean canExecute(ParsedMessage message) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
-	public String execute(ParsedMessage message, String messageType,
-			String sourceAddress) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public String getHelpMessage(String messageType) {
-		// TODO Auto-generated method stub
-		return null;
+		return "BALANCE";
 	}
 
 	public boolean requiresUserId() {

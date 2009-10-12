@@ -513,20 +513,23 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		final Iterator<String> i = allCommands.getCommandKeys().iterator();
 		while (i.hasNext()) {
+			
 			String command = i.next();
+			
 			if (allCommands.getCommand(command).isVisible()) {
 				body.append(command);
-			}
-
-			if (i.hasNext()) {
-				body.append(", ");
-			} else { // This happens if last command happens to be invisible
-				if (", ".equals(body.substring(body.length() - 2))) {
-					body.delete(body.length() - 2, body.length());
+				
+				if (i.hasNext()) {
+					body.append(", ");
 				}
 			}
 		}
-		
+
+		// Zap trailing comma if necessary (e.g. last command(s) were not visible)
+		if (", ".equals(body.substring(body.length() - 2))) {
+			body.delete(body.length() - 2, body.length());
+		}
+
 		return body.toString();
 	}
 
