@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>Sakai Sms</name>
 	<groupId>org.sakaiproject.sms</groupId>
@@ -11,7 +10,7 @@
 	</organization>
 	<inceptionYear>2008</inceptionYear>
 	<packaging>pom</packaging>
-	<version>0.12-SNAPSHOT</version><!--Sms.version-->
+	<version>0.12</version><!--Sms.version-->
 	<description>The SMS service provides SMS (short message service or
 		texting) capablities to Sakai.The module consists of 1) A SMPP service
 		to forward messages to an SMPP complient gateway. 2) An admin tool to
@@ -66,18 +65,18 @@
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-api</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>0.12</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-impl</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>0.12</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-stubs</artifactId>
-				<version>0.12-SNAPSHOT</version>
+				<version>0.12</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -186,9 +185,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/trunk</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/trunk</url>
+		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/tags/sms-0.12</connection>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/tags/sms-0.12</developerConnection>
+		<url>https://source.sakaiproject.org/contrib/sms/tags/sms-0.12</url>
 	</scm>
 	<distributionManagement>
 		<downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
