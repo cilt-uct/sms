@@ -17,7 +17,7 @@
 	<parent>
 		<groupId>org.sakaiproject.sms</groupId>
 		<artifactId>sms</artifactId>
-		<version>0.12-SNAPSHOT</version><!--Sms.version-->
+		<version>0.12</version><!--Sms.version-->
 	</parent>
 	<properties>
 		<sakairsf.sakai.version>2.2.x</sakairsf.sakai.version>
