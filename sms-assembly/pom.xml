@@ -15,7 +15,7 @@
     <parent>
         <artifactId>sms</artifactId>
         <groupId>org.sakaiproject.sms</groupId>
-        <version>0.13</version><!--entitybroker.version-->
+        <version>0.14-SNAPSHOT</version><!--entitybroker.version-->
     </parent>
 
     <dependencies>
