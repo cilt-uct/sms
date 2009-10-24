@@ -54,8 +54,21 @@
 			</dependency>
 			
     </dependencies>
-
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2-beta-2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -67,14 +80,15 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>install</phase> <!-- append to the install phase. -->
+                        <phase>package</phase> <!-- append to the packaging phase. -->
                         <goals>
-                            <goal>assembly</goal> <!-- goals == mojos -->
+                            <goal>attached</goal> <!-- goals == mojos -->
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+   
 
 </project>
