@@ -73,16 +73,27 @@ public class SmsRestCommand implements ShortMessageCommand {
 		params.put("siteId", msg.getSite());
 		params.put("siteTitle", msg.getSiteTitle());
 		params.put("userId", msg.getIncomingUserId());
+		params.put("userEid", msg.getIncomingUserEid());
 		params.put("command", msg.getCommand());
 		
-		HttpResponse resp = HttpRESTUtils.fireRequest(restUrl, Method.POST, params);
+		HttpResponse resp = null;
 		
-		LOG.debug("Return code is: " + resp.getResponseCode());
-		
+		try {
+			resp = HttpRESTUtils.fireRequest(restUrl, Method.POST, params);
+		} catch (RuntimeException e) {
+			LOG.debug("Exception: ", e);
+			// retry or queue
+			// TODO - probably throw upwards or return null
+		}
+
 		String returnStr = "";
-		
-		if (resp.getResponseCode() == 200) {
-			returnStr = resp.getResponseBody();
+
+		if (resp != null) {
+			LOG.debug("Return code is: " + resp.getResponseCode());
+			
+			if (resp.getResponseCode() == 200) {
+				returnStr = resp.getResponseBody();
+			}
 		}
 		
 		return returnStr;

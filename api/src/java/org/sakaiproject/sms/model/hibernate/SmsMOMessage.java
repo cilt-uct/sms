@@ -23,12 +23,13 @@ package org.sakaiproject.sms.model.hibernate;
 
 public class SmsMOMessage {
 
+	/** The message body */
 	private String smsMessagebody;
+	
+	/** The mobile number from which this message originated */
 	private String mobileNumber;
 
-	/**
-	 * A unique id for the specific gateway from which this message originated.
-	 */
+	/**	A unique id for the specific gateway from which this message originated */
 	private String smscId;
 	
 	public String getSmsMessagebody() {

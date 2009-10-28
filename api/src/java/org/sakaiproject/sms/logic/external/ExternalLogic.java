@@ -368,11 +368,16 @@ public interface ExternalLogic {
 	public String getLocalisedString(String key, Locale locale, Object[] replacementValues);
 	
 	/**
-	 * Execute a command in the appropriate security context for the user and site
+	 * Execute the external command in the appropriate security context. As this may set a session for the user,
+	 * this should only ever be invoked in its own thread by the IncomingLogicManager. It should never be called
+	 * from a user's http request thread in a tool or other context. Also sets the user's eid on the message
+	 * if unset and a userid is set, and the site title if a site is set.
 	 * @param command
-	 * @param message
-	 * @param mobileNumber
-	 * @return Reply to send back to the user
+	 * @param siteId
+	 * @param userId
+	 * @param mobileNr
+	 * @param bodyParameters
+	 * @return the reply message
 	 */
 	public String executeCommand(ShortMessageCommand command, ParsedMessage message, String mobileNumber);
 	

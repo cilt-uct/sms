@@ -30,6 +30,7 @@ public class ParsedMessage {
 	private String body = null;
 	private String bodyReply = null;
 	private String incomingUserId = null;
+	private String incomingUserEid = null;
 	private String[] bodyParameters = null;
 	
 	public ParsedMessage() {
@@ -135,5 +136,13 @@ public class ParsedMessage {
 
 	public String getSiteTitle() {
 		return siteTitle;
+	}
+
+	public void setIncomingUserEid(String incomingUserEid) {
+		this.incomingUserEid = incomingUserEid;
+	}
+
+	public String getIncomingUserEid() {
+		return incomingUserEid;
 	}
 }

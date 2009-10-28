@@ -154,7 +154,7 @@
                     <property name="enabled" value="true"/>
                     <property name="helpMessage" value="Usage: EXT1 some thing"/>
                     <property name="requiresSiteId" value="true"/>
-                    <property name="restUrl" value="http://localhost/some/url1"/>
+                    <property name="restUrl" value="https://vula.uct.ac.za/linktool/smsping.php"/>
                     <property name="visible" value="false"/>
                 </bean>
 

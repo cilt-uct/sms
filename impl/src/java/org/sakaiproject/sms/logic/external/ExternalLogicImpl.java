@@ -999,17 +999,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return siteService.siteReference(siteId);
 	}
 
-	/**
-	 * Execute the external command in the appropriate security context. As this may set a session for the user,
-	 * this should only ever be invoked in its own thread by the IncomingLogicManager. It should never be called
-	 * from a user's http request thread in a tool or other context.
-	 * @param command
-	 * @param siteId
-	 * @param userId
-	 * @param mobileNr
-	 * @param bodyParameters
-	 * @return the reply message
-	 */
 	public String executeCommand(ShortMessageCommand command, ParsedMessage message, String mobileNumber) {
 
 		String reply = null;
@@ -1036,12 +1025,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			session.setUserId(userId);
 	
 			try {
-				session.setUserEid(userDirectoryService.getUser(userId).getEid());
+				User u = userDirectoryService.getUser(userId);
+				session.setUserEid(u.getEid());
+				message.setIncomingUserEid(u.getEid());
 			} catch (UserNotDefinedException e) {
 				// Shouldn't ever happen as we should be passed a valid user
 				LOG.error(e.getMessage(), e);
 			}
-			
+				
 			LOG.debug("Set session for command execution to userid: " + sessionManager.getCurrentSessionUserId());
 		}
 
