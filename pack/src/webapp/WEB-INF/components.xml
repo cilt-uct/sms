@@ -146,6 +146,27 @@
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />					
 				</bean>
                 <bean class="org.sakaiproject.sms.logic.command.SmsPingCommand" />
+                
+                <!-- REST command handler -->
+                
+                <bean id="ext1" class="org.sakaiproject.sms.logic.command.SmsRestCommand">
+                    <property name="commandKey" value="EXT1"/>
+                    <property name="enabled" value="true"/>
+                    <property name="helpMessage" value="Usage: EXT1 some thing"/>
+                    <property name="requiresSiteId" value="true"/>
+                    <property name="restUrl" value="http://localhost/some/url1"/>
+                    <property name="visible" value="false"/>
+                </bean>
+
+                <bean id="ext2" class="org.sakaiproject.sms.logic.command.SmsRestCommand">
+                    <property name="commandKey" value="EXT2"/>
+                    <property name="enabled" value="true"/>
+                    <property name="helpMessage" value="Usage: EXT2 some thing"/>
+                    <property name="requiresSiteId" value="true"/>
+                    <property name="restUrl" value="http://localhost/some/url2"/>
+                    <property name="visible" value="false"/>
+                </bean>
+                
 			</list>
 		</property>
 	</bean>	
