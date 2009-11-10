@@ -691,6 +691,11 @@ public class ExternalLogicImpl implements ExternalLogic {
 		if (addressRange != null && !"".equals(addressRange)) {
 			smsSmppProperties.setAddressRange(addressRange);
 		}
+
+		String sourceAddress =  serverConfigurationService.getString("sms.sourceAddress").trim();
+		if (sourceAddress != null && !"".equals(sourceAddress)) {
+			smsSmppProperties.setSourceAddress(sourceAddress);
+		}
 		
 		LOG.debug("Read properties from ServerConfigurationService");
 
