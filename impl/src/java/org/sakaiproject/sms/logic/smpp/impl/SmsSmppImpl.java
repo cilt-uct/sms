@@ -1039,13 +1039,20 @@ public class SmsSmppImpl implements SmsSmpp {
 
 				// Set the encoding
 				
-				Alphabet alphabet = Alphabet.ALPHA_DEFAULT;
+				Alphabet alphabet = null;
+				byte[] messageBytes = null;
 				
-				if ("8-bit".equals(smsSmppProperties.getMessageEncoding())) {
-					alphabet = Alphabet.ALPHA_8_BIT;
-				} else if ("UCS2".equals(smsSmppProperties.getMessageEncoding())) {
+				if (gsm.isEncodeableInGsm0338(messageText)) {
+					// Encode in GSM
+					alphabet = Alphabet.ALPHA_DEFAULT;
+					messageBytes = gsm.utfToGsm(messageText);
+				} else {
+					// Encode in UTF
 					alphabet = Alphabet.ALPHA_UCS2;
+					messageBytes = messageText.getBytes("UTF-16BE");
 				}
+				
+				// TODO - When should we use Alphabet.ALPHA_8_BIT ?
 				
 				DataCoding messageEncoding = new GeneralDataCoding(false, false, MessageClass.CLASS0, alphabet);
 				LOG.debug("Encoding is " + messageEncoding);
@@ -1094,7 +1101,7 @@ public class SmsSmppImpl implements SmsSmpp {
 								SMSCDeliveryReceipt.SUCCESS_FAILURE),
 						smsSmppProperties.getReplaceIfPresentFlag(),
 						messageEncoding, smsSmppProperties
-								.getSmDefaultMsgId(), messageText.getBytes());
+								.getSmDefaultMsgId(), messageBytes);
 
 				message.setSmscMessageId(messageId);
 				message.setSubmitResult(true);

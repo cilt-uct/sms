@@ -96,104 +96,36 @@ public class GsmCharset {
 			{ 0x3D, 0x007E }, { 0x3E, 0x005D }, { 0x40, 0x007C },
 			{ 0x65, 0x20AC } };
   
-  /**
-   * \brief ISO-8859-1 - GSM 03.38 character map
-   *
-   * Taken from http://www.dreamfabric.com/sms/default_alphabet.html
-   */
-  private static final short[] isoGsmMap = {
-    // Index = GSM, { ISO }
-      64, 163,  36, 165, 232, 233, 249, 236, 242, 199,  10, 216,
-     248,  13, 197, 229,   0,  95,   0,   0,   0,   0,   0,   0,
-       0,   0,   0,   0, 198, 230, 223, 201,  32,  33,  34,  35,
-     164,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
-      48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,
-      60,  61,  62,  63, 161,  65,  66,  67,  68,  69,  70,  71,
-      72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,
-      84,  85,  86,  87,  88,  89,  90, 196, 214, 209, 220, 167,
-     191,  97,  98,  99, 100, 101, 102, 103, 104, 105, 106, 107,
-     108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
-     120, 121, 122, 228, 246, 241, 252, 224
-  };
+  
+  public byte[] utfToGsm(String dataUtf) {
+	    char[] dataUtfBytes = dataUtf.toCharArray();
+	    ArrayList<Short> dataGsm = new ArrayList<Short>();
 
-  /**
-   * \brief Extended ISO-8859-1 - GSM 03.38 character map
-   *
-   * Taken from http://www.dreamfabric.com/sms/default_alphabet.html
-   */
-  private static final short[][] extIsoGsmMap = {
-    //{ {Ext GSM,ISO} }
-    { 10, 12}, { 20, 94}, { 40,123}, { 41,125}, { 47, 92},
-    { 60, 91}, { 61,126}, { 62, 93}, { 64,124}, {101,164}
-  };
+	    for (int dataIndex = 0; dataIndex < dataUtfBytes.length; dataIndex++) {
+	      char currentDataIso = dataUtfBytes[dataIndex];
 
-  /**
-   * \brief Translate ISO-8859-1 character set into GSM 03.38 character set
-   * \param dataIso Data in ISO-8859-1 charset
-   * \return GSM03.38 character set in byte array
-   */
-  public byte[] translateToGsm0338(String dataIso) {
-    byte[] dataIsoBytes = dataIso.getBytes();
-    ArrayList<Short> dataGsm = new ArrayList<Short>();
+	      // Search currentDataGsm in the isoGsmMap
+	      short currentDataGsm = findGsmChar(currentDataIso);
 
-    for (int dataIndex = 0; dataIndex < dataIsoBytes.length; dataIndex++) {
-      byte currentDataIso = dataIsoBytes[dataIndex];
+	      // If the data is not available in the isoGsmMap, search in the extended
+	      // ISO-GSM map (extIsoGsmMap)
+	      if (currentDataGsm == -1) {
+	        currentDataGsm = findExtGsmChar(currentDataIso);
 
-      // Search currentDataGsm in the isoGsmMap
-      short currentDataGsm = findGsmChar(currentDataIso);
-
-      // If the data is not available in the isoGsmMap, search in the extended
-      // ISO-GSM map (extIsoGsmMap)
-      if (currentDataGsm == -1) {
-        currentDataGsm = findExtGsmChar(currentDataIso);
-
-        // If the character is found inside the extended map, add escape byte in
-        // the return byte[]
-        if (currentDataGsm != -1) {
-          dataGsm.add(ESC_BYTE);
-        }
-      }
-
-      dataGsm.add(Short.valueOf(currentDataGsm));
-    }
-
-    Short[] dataGsmShortArray = (Short[]) dataGsm.toArray(new Short[0]);
-    return translateShortToByteArray(dataGsmShortArray);
-  }
-
-  /**
-   * \brief Translate GSM 03.38 character set set into ISO-8859-1 character
-   * \param dataGsm Data in GSM 03.38 charset
-   * \return ISO-8859-1 byte array
-   */
-  public byte[] gsmToIso(byte[] dataGsm) {
-	  ArrayList<Short> dataIso = new ArrayList<Short>();
-
-	    boolean isEscape = false;
-	    for (int dataIndex = 0; dataIndex < dataGsm.length; dataIndex++) {
-	      // Convert to short to avoid negative values
-	      short currentDataGsm = (short) dataGsm[dataIndex];
-	      short currentDataIso = -1;
-
-	      if (currentDataGsm == ESC_BYTE.shortValue()) {
-	        isEscape = true;
+	        // If the character is found inside the extended map, add escape byte in
+	        // the return byte[]
+	        if (currentDataGsm != -1) {
+	          dataGsm.add(ESC_BYTE);
+	        }
 	      }
-	      else if (!isEscape) {
-	        currentDataIso = findIsoChar(currentDataGsm);
-	        dataIso.add(Short.valueOf(currentDataIso));
-	      }
-	      else {
-	        currentDataIso = findExtIsoChar(currentDataGsm);
-	        dataIso.add(Short.valueOf(currentDataIso));
-	        isEscape = false;
-	      }
+
+	      dataGsm.add(Short.valueOf(currentDataGsm));
 	    }
 
-	    Short[] dataIsoShortArray = (Short[]) dataIso.toArray(new Short[0]);
-	    byte[] dataIsoByteArray = translateShortToByteArray(dataIsoShortArray);
+	    Short[] dataGsmShortArray = (Short[]) dataGsm.toArray(new Short[0]);
+	    return translateShortToByteArray(dataGsmShortArray);
+	  }
 
-	    return dataIsoByteArray;
-  }
   
   /**
    * Translate GSM 03.38 character set into UTF String
@@ -228,15 +160,15 @@ public class GsmCharset {
 	}
   
   /**
-   * \brief Find GSM 03.38 character for the ISO-8859-1 character
-   * \param isoChar ISO-8859-1 character
+   * \brief Find GSM 03.38 character for the UTF character
+   * \param utfChar UTF-16 character
    * \result GSM 03.38 character or -1 if no match
    */
-  private short findGsmChar(byte isoChar) {
+  private short findGsmChar(char utfChar) {
     short gsmChar = -1;
 
-    for (short mapIndex = 0; mapIndex < isoGsmMap.length; mapIndex++) {
-      if (isoGsmMap[mapIndex] == (short) isoChar) {
+    for (short mapIndex = 0; mapIndex < gsmUtfMap.length; mapIndex++) {
+      if (gsmUtfMap[mapIndex] == utfChar) {
         gsmChar = mapIndex;
         break;
       }
@@ -250,12 +182,12 @@ public class GsmCharset {
    * \param isoChar ISO-8859-1 character
    * \result Extended GSM 03.38 character or 0xFFFF (-1) if no match
    */
-  private short findExtGsmChar(byte isoChar) {
+  private short findExtGsmChar(char utfChar) {
     short gsmChar = -1;
 
-    for (short mapIndex = 0; mapIndex < extIsoGsmMap.length; mapIndex++) {
-      if (extIsoGsmMap[mapIndex][1] == isoChar) {
-        gsmChar = extIsoGsmMap[mapIndex][0];
+    for (short mapIndex = 0; mapIndex < extGsmUtfMap.length; mapIndex++) {
+      if (extGsmUtfMap[mapIndex][1] == utfChar) {
+        gsmChar = (short) extGsmUtfMap[mapIndex][0];
         break;
       }
     }
@@ -263,40 +195,7 @@ public class GsmCharset {
     return gsmChar;
   }
 
-  /**
-   * \brief Find ISO-8859-1 character for the GSM 03.38 character
-   * \param gsmChar GSM 03.38 character
-   * \result ISO-8859-1 character or -1 if no match
-   */
-  private short findIsoChar(short gsmChar) {
-    short isoChar = -1;
-
-    if (gsmChar < isoGsmMap.length) {
-      isoChar = isoGsmMap[gsmChar];
-    }
-
-    return isoChar;
-  }
-
-  /**
-   * \brief Find ISO-8859-1 character for the extended GSM 03.38 character
-   * \param gsmChar Extended GSM 03.38 character
-   * \result ISO-8859-1 character or 0xFFFF (-1) if no match
-   */
-  private short findExtIsoChar(short gsmChar) {
-    short isoChar = -1;
-
-    for (short mapIndex = 0; mapIndex < extIsoGsmMap.length; mapIndex++) {
-      if (extIsoGsmMap[mapIndex][0] == gsmChar) {
-        isoChar = extIsoGsmMap[mapIndex][1];
-        break;
-      }
-    }
-
-    return isoChar;
-  }
-
-  /**
+   /**
    * \brief Find UTF character for the extended GSM 03.38 character
    * \param gsmChar Extended GSM 03.38 character
    * \result UTF character or 0xFFFF (-1) if no match
@@ -330,6 +229,32 @@ public class GsmCharset {
 
     return byteArrayResult;
   }
+
+  /**
+   * Is this string encodeable in the GSM 03.38 alphabet ?
+   * 
+   * Adapted from http://code.google.com/p/jsmpp/source/browse/trunk/src/java/examples/org/jsmpp/examples/SubmitMultipartMultilangualExample.java
+   * Based on http://www.smsitaly.com/Download/ETSI_GSM_03.38.pdf
+   */
+   public boolean isEncodeableInGsm0338(String utfString) {
+
+		char[] utfChars = utfString.toCharArray();
+
+		outer: for (int i = 0; i < utfChars.length; i++) {
+			for (int j = 0; j < gsmUtfMap.length; j++) {
+				if (gsmUtfMap[j] == utfChars[i]) {
+					continue outer;
+				}
+			}
+			for (int j = 0; j < extGsmUtfMap.length; j++) {
+				if (extGsmUtfMap[j][1] == utfChars[i]) {
+					continue outer;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
 
 }
 

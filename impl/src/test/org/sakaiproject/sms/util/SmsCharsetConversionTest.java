@@ -20,6 +20,7 @@
 package org.sakaiproject.sms.util;
 
 import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 public class SmsCharsetConversionTest extends TestCase {
 	
@@ -58,4 +59,41 @@ public class SmsCharsetConversionTest extends TestCase {
 
 	}
 	
+	public void testIsEncodeableInGsm0338() {
+
+		GsmCharset gsm = new GsmCharset();
+
+		// Straight ASCII
+		assertTrue(gsm.isEncodeableInGsm0338("Hello everyone!"));
+		
+		// Characters with non-ASCII representations in GSM
+		assertTrue(gsm.isEncodeableInGsm0338("@${[|]}"));
+		
+		// Some unusual chars OK in GSM
+		String okInGsm = new String("abc" + "\u20AC" + "\u00A5" + "\u007E" + "\u00F6");
+		assertTrue(gsm.isEncodeableInGsm0338(okInGsm));
+		
+		// Unicode not represented in GSM
+		String notOkInGsm = new String("from google.cn: " + "\u52a0");
+		assertFalse(gsm.isEncodeableInGsm0338(notOkInGsm));
+	}
+	
+	public void testUtfToGsm() {
+
+		GsmCharset gsm = new GsmCharset();
+
+		String messageText = "@${[|]}";	
+		byte[] messageBytes = gsm.utfToGsm(messageText);
+		byte[] gsmBytes = { 0x00, 0x02, 0x1b, 0x28, 0x1b, 0x3c, 0x1b, 0x40, 0x1b, 0x3e, 0x1b, 0x29};
+		assertArrayEquals(gsmBytes, messageBytes);
+
+		String asciiMsg = "hello, these are all normal ASCII chars";
+		assertArrayEquals(asciiMsg.getBytes(), gsm.utfToGsm(asciiMsg));
+		
+		// Some unusual chars OK in GSM
+		String okInGsm = new String("ABC" + "\u20AC" + "\u00A5" + "\u007E" + "\u00F6");
+		byte[] gsmBytes2 = { 0x41, 0x42, 0x43, 0x1b, 0x65, 0x03, 0x1b, 0x3d, 0x7c};
+		assertArrayEquals(gsmBytes2, gsm.utfToGsm(okInGsm));
+
+	}
 }
