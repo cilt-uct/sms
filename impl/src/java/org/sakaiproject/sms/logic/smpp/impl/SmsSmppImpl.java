@@ -360,12 +360,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					
 					if (alphabet == 0 )  {
 						// GSM
-					    try {
-							messageBody = new String(gsm.gsmToIso(deliverSm.getShortMessage()), "ISO-8859-1");
-						} catch (UnsupportedEncodingException e) {
-							LOG.warn("Unsupported encoding ISO-8859-1");
-							messageBody = new String(gsm.gsmToIso(deliverSm.getShortMessage()));
-						}
+						messageBody = new String(gsm.gsmToUtf(deliverSm.getShortMessage()));
 					} else if (alphabet == 2) {
 						// UTF-16
 						try {
