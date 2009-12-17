@@ -121,6 +121,8 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private NumberRoutingHelper numberRoutingHelper;
 
+	private GsmCharset gsm = new GsmCharset();
+
 	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
 		this.numberRoutingHelper = numberRoutingHelper;
 	}
@@ -358,8 +360,12 @@ public class SmsSmppImpl implements SmsSmpp {
 					
 					if (alphabet == 0 )  {
 						// GSM
-						GsmCharset gsm = new GsmCharset();
-						messageBody = gsm.translateToIso(deliverSm.getShortMessage());
+					    try {
+							messageBody = new String(gsm.gsmToIso(deliverSm.getShortMessage()), "ISO-8859-1");
+						} catch (UnsupportedEncodingException e) {
+							LOG.warn("Unsupported encoding ISO-8859-1");
+							messageBody = new String(gsm.gsmToIso(deliverSm.getShortMessage()));
+						}
 					} else if (alphabet == 2) {
 						// UTF-16
 						try {

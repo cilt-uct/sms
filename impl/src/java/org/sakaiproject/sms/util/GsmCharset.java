@@ -1,7 +1,29 @@
+/**********************************************************************************
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2009 The Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
+
 package org.sakaiproject.sms.util;
 
-
 /*
+ * Original copyright:
+ * 
  * Copyright (c) 2008, Daniel Widyanto <kunilkuda at gmail.com>
  * All rights reserved.
  *
@@ -27,7 +49,6 @@ package org.sakaiproject.sms.util;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-//package com.kunilkuda; //< Replace with your package
 
 import java.util.ArrayList;
 
@@ -39,14 +60,14 @@ public class GsmCharset {
   /**
    * \brief Escape byte for the extended ISO
    */
-  private final Short ESC_BYTE = Short.valueOf((short) 27);
+  private static final Short ESC_BYTE = Short.valueOf((short) 27);
 
   /**
    * \brief ISO-8859-1 - GSM 03.38 character map
    *
    * Taken from http://www.dreamfabric.com/sms/default_alphabet.html
    */
-  private final short[] isoGsmMap = {
+  private static final short[] isoGsmMap = {
     // Index = GSM, { ISO }
       64, 163,  36, 165, 232, 233, 249, 236, 242, 199,  10, 216,
      248,  13, 197, 229,   0,  95,   0,   0,   0,   0,   0,   0,
@@ -66,7 +87,7 @@ public class GsmCharset {
    *
    * Taken from http://www.dreamfabric.com/sms/default_alphabet.html
    */
-  private final short[][] extIsoGsmMap = {
+  private static final short[][] extIsoGsmMap = {
     //{ {Ext GSM,ISO} }
     { 10, 12}, { 20, 94}, { 40,123}, { 41,125}, { 47, 92},
     { 60, 91}, { 61,126}, { 62, 93}, { 64,124}, {101,164}
@@ -109,36 +130,37 @@ public class GsmCharset {
   /**
    * \brief Translate GSM 03.38 character set set into ISO-8859-1 character
    * \param dataGsm Data in GSM 03.38 charset
-   * \return ISO-8859-1 string
+   * \return ISO-8859-1 byte array
    */
-  public String translateToIso(byte[] dataGsm) {
-    ArrayList<Short> dataIso = new ArrayList<Short>();
+  public byte[] gsmToIso(byte[] dataGsm) {
+	  ArrayList<Short> dataIso = new ArrayList<Short>();
 
-    boolean isEscape = false;
-    for (int dataIndex = 0; dataIndex < dataGsm.length; dataIndex++) {
-      // Convert to short to avoid negative values
-      short currentDataGsm = (short) dataGsm[dataIndex];
-      short currentDataIso = -1;
+	    boolean isEscape = false;
+	    for (int dataIndex = 0; dataIndex < dataGsm.length; dataIndex++) {
+	      // Convert to short to avoid negative values
+	      short currentDataGsm = (short) dataGsm[dataIndex];
+	      short currentDataIso = -1;
 
-      if (currentDataGsm == ESC_BYTE.shortValue()) {
-        isEscape = true;
-      }
-      else if (!isEscape) {
-        currentDataIso = findIsoChar(currentDataGsm);
-        dataIso.add(Short.valueOf(currentDataIso));
-      }
-      else {
-        currentDataIso = findExtIsoChar(currentDataGsm);
-        dataIso.add(Short.valueOf(currentDataIso));
-        isEscape = false;
-      }
-    }
+	      if (currentDataGsm == ESC_BYTE.shortValue()) {
+	        isEscape = true;
+	      }
+	      else if (!isEscape) {
+	        currentDataIso = findIsoChar(currentDataGsm);
+	        dataIso.add(Short.valueOf(currentDataIso));
+	      }
+	      else {
+	        currentDataIso = findExtIsoChar(currentDataGsm);
+	        dataIso.add(Short.valueOf(currentDataIso));
+	        isEscape = false;
+	      }
+	    }
 
-    Short[] dataIsoShortArray = (Short[]) dataIso.toArray(new Short[0]);
-    byte[] dataIsoByteArray = translateShortToByteArray(dataIsoShortArray);
-    return new String(dataIsoByteArray);
+	    Short[] dataIsoShortArray = (Short[]) dataIso.toArray(new Short[0]);
+	    byte[] dataIsoByteArray = translateShortToByteArray(dataIsoShortArray);
+
+	    return dataIsoByteArray;
   }
-
+  
   /**
    * \brief Find GSM 03.38 character for the ISO-8859-1 character
    * \param isoChar ISO-8859-1 character
