@@ -22,7 +22,8 @@
 package org.sakaiproject.sms.util;
 
 /*
- * Incorporates code from:
+ * Incorporates some code from 
+ * http://embeddedfreak.wordpress.com/2008/10/08/java-gsm-0338-sms-character-set-translator/
  * 
  * Copyright (c) 2008, Daniel Widyanto <kunilkuda at gmail.com>
  * All rights reserved.
@@ -211,9 +212,14 @@ public class GsmCharset {
 			if (currentDataGsm == ESC_BYTE.shortValue()) {
 				isEscape = true;
 			} else if (!isEscape) {
-				sb.append(gsmUtfMap[currentDataGsm]);
+				if (currentDataGsm >=0 && currentDataGsm < gsmUtfMap.length) {
+					sb.append(gsmUtfMap[currentDataGsm]);
+				}
 			} else {
-				sb.append(findExtUtfChar(currentDataGsm));
+				char extchar = findExtUtfChar(currentDataGsm);
+				if (extchar != 0xffff) {
+					sb.append(extchar);
+				}
 				isEscape = false;
 			}
 		}
