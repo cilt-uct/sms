@@ -72,10 +72,14 @@ public class SmsRestCommand implements ShortMessageCommand {
 		
 		params.put("sourceAddress", sourceAddress);
 		params.put("message", body[0]);
-		params.put("siteId", msg.getSite());
-		params.put("siteTitle", msg.getSiteTitle());
-		params.put("userId", msg.getIncomingUserId());
-		params.put("userEid", msg.getIncomingUserEid());
+		if (msg.getSite() != null) {
+			params.put("siteId", msg.getSite());
+			params.put("siteTitle", msg.getSiteTitle());
+		}
+		if (msg.getIncomingUserId() != null) {
+			params.put("userId", msg.getIncomingUserId());
+			params.put("userEid", msg.getIncomingUserEid());
+		}
 		params.put("command", msg.getCommand());
 		
 		HttpResponse resp = null;
