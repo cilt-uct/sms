@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils;
 import org.sakaiproject.entitybroker.util.http.HttpResponse;
+import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpIOException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpRequestException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
@@ -89,6 +90,11 @@ public class SmsRestCommand implements ShortMessageCommand {
 			
 			//TODO -  retry or queue
 			//TODO - probably throw upwards or return null
+		} catch (HttpIOException hio) {
+			LOG.warn("Command: " + commandKey + "threw Exception: " + hio);
+			if (LOG.isDebugEnabled()) {
+				hio.printStackTrace();
+			}
 		}
 
 		String returnStr = "";
