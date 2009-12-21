@@ -108,6 +108,8 @@ public class SmsRestCommand implements ShortMessageCommand {
 			
 			if (resp.getResponseCode() == 200) {
 				returnStr = resp.getResponseBody();
+			} else {
+				LOG.warn("Command: " + commandKey + " gave a response code: " + resp.getResponseCode() + ": " + resp.responseMessage);
 			}
 		}
 		
