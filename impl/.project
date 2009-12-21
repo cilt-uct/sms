@@ -4,6 +4,7 @@
   <projects>
     <project>sms-api</project>
     <project>sms-stubs</project>
+    <project>sms-util</project>
   </projects>
   <buildSpec>
     <buildCommand>

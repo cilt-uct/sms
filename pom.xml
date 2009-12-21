@@ -37,6 +37,7 @@
 				<module>user-tool</module>
 				<module>help</module>
 				<module>sms-assembly</module>
+				<module>util</module>
 			</modules>
 		</profile>
 		<profile>
@@ -67,6 +68,11 @@
 				<artifactId>sms-api</artifactId>
 				<version>0.14-SNAPSHOT</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.sakaiproject.sms</groupId>
+				<artifactId>sms-util</artifactId>
+				<version>0.14-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>

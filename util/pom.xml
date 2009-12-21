@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<name>Sakai Sms Implementation</name>
+	<name>Sakai Sms Utils</name>
 	<groupId>org.sakaiproject.sms</groupId>
-	<artifactId>sms-impl</artifactId>
+	<artifactId>sms-util</artifactId>
 	<organization>
 		<name>Sakai Project</name>
 		<url>http://sakaiproject.org/</url>
@@ -11,10 +11,7 @@
 	<inceptionYear>2008</inceptionYear>
 	<description>Sms implementation</description>
 	<packaging>jar</packaging>
-	<properties>
-		<deploy.target />
-	</properties>
-
+	
 	<!-- the base is parent -->
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
@@ -45,10 +42,7 @@
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.sakaiproject.sms</groupId>
-			<artifactId>sms-util</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-stubs</artifactId>
@@ -162,19 +156,6 @@
 	<build>
 		<finalName>sms_impl</finalName>
 		<sourceDirectory>${basedir}/src/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/resources</directory>
-			</resource>
-			<resource>
-				<directory>${basedir}/../tool/src/webapp/WEB-INF/bundle</directory>
-				<includes>
-					<include>**/*.properties</include>
-				</includes>
-			</resource>
-
-		</resources>
-
 		<testResources>
 			<testResource>
 				<directory>${basedir}/src/resources</directory>
