@@ -234,11 +234,14 @@ public class SmsSmppImpl implements SmsSmpp {
 						
 						if (smsMOmessage != null) {
 							new MOProcessThread(smsMOmessage, moReceivingThread);
+						} else {
+							// Wait for more MO messages to be available
+							Thread.sleep(1000);
 						}
 						
 					} else {
-						// Wait for new MO messages to be available, and/or delivery threads to finish
-						Thread.sleep(1000);						
+						// Wait for some delivery threads to finish
+						Thread.sleep(50);						
 					}
 
 				} catch (Exception e) {
