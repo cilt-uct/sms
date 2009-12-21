@@ -228,12 +228,16 @@ public class SmsSmppImpl implements SmsSmpp {
 						}
 					}
 					
-					SmsMOMessage smsMOmessage = receivedMOmessages.poll();
-					
-					if (smsMOmessage != null &&
-						(moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT)) {
-						new MOProcessThread(smsMOmessage, moReceivingThread);
+					if (moReceivingThread.activeCount() <= SmsConstants.SMS_MO_MAX_THREAD_COUNT) {
+						
+						SmsMOMessage smsMOmessage = receivedMOmessages.poll();
+						
+						if (smsMOmessage != null) {
+							new MOProcessThread(smsMOmessage, moReceivingThread);
+						}
+						
 					} else {
+						// Wait for new MO messages to be available, and/or delivery threads to finish
 						Thread.sleep(1000);						
 					}
 
@@ -242,7 +246,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					LOG.error(e.getMessage());
 				}
 				
-			}
+			} // (!allDone)
 		}
 	}
 
