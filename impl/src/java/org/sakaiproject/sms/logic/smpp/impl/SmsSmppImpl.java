@@ -46,6 +46,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jsmpp.InvalidResponseException;
 import org.jsmpp.PDUException;
 import org.jsmpp.bean.AlertNotification;
@@ -1169,10 +1170,19 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		} finally {
 			
-			hibernateSession.update(message);
-			tx.commit();
-			hibernateSession.close();
-			
+			try {
+				hibernateSession.update(message);
+				tx.commit();
+			} catch (ConstraintViolationException cve) {
+				// This should not happen unless the SMSC returns duplicate message IDs
+				// (which can happen in some testing / simulator scenarios)
+				LOG.warn("Cannot update SMSC id for message id=" + message.getId() + ". Delivery status will not be recorded.");
+				message.setSmscMessageId(null);
+				hibernateSession.update(message);
+				tx.commit();
+			} finally {
+				hibernateSession.close();	
+			}
 		}
 		
 		return message;
