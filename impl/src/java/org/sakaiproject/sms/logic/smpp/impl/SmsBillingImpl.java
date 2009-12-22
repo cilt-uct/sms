@@ -105,7 +105,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param accountId
 	 * @param creditsToDebit
 	 */
-	public synchronized void creditAccount(final Long accountId,
+	public void creditAccount(final Long accountId,
 			final double creditsToDebit, String description) {
 
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
@@ -139,7 +139,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @parm overDraftCheck
 	 * @return
 	 */
-	public synchronized boolean checkSufficientCredits(SmsTask smsTask,
+	public boolean checkSufficientCredits(SmsTask smsTask,
 			boolean overDraftCheck) {
 		return this.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
 				.getCreditEstimate(), overDraftCheck);
@@ -153,7 +153,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param smsTask
 	 * @return
 	 */
-	public synchronized boolean checkSufficientCredits(SmsTask smsTask) {
+	public boolean checkSufficientCredits(SmsTask smsTask) {
 		return this.checkSufficientCredits(smsTask.getSmsAccountId(), smsTask
 				.getCreditEstimate());
 	}
@@ -168,7 +168,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if sufficient credits
 	 */
-	public synchronized boolean checkSufficientCredits(Long accountID,
+	public boolean checkSufficientCredits(Long accountID,
 			double creditsRequired) {
 
 		return this.checkSufficientCredits(accountID, creditsRequired, false);
@@ -186,7 +186,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if sufficient credits
 	 */
-	public synchronized boolean checkSufficientCredits(Long accountID,
+	public boolean checkSufficientCredits(Long accountID,
 			double creditsRequired, boolean overDraftCheck) {
 		final SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(accountID);
@@ -282,7 +282,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if reserve credits
 	 */
-	public synchronized boolean reserveCredits(SmsTask smsTask) {
+	public boolean reserveCredits(SmsTask smsTask) {
 
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
@@ -327,7 +327,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param smsTask
 	 * @return true, if successful
 	 */
-	public synchronized boolean debitLateMessages(SmsTask smsTask, double credits) {
+	public boolean debitLateMessages(SmsTask smsTask, double credits) {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
@@ -389,7 +389,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param account
 	 *            the account
 	 */
-	private synchronized void recalculateAccountBalance(Long accountId,
+	private void recalculateAccountBalance(Long accountId,
 			SmsAccount account) {
 		hibernateLogicLocator.getSmsAccountLogic().recalculateAccountBalance(
 				accountId, account);
@@ -401,7 +401,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param account
 	 *            the account
 	 */
-	private synchronized void recalculateAccountBalance(SmsAccount account) {
+	private void recalculateAccountBalance(SmsAccount account) {
 		recalculateAccountBalance(null, account);
 	}
 
@@ -411,14 +411,14 @@ public class SmsBillingImpl implements SmsBilling {
 	 * @param accountId
 	 *            the account id
 	 */
-	public synchronized void recalculateAccountBalance(Long accountId) {
+	public void recalculateAccountBalance(Long accountId) {
 		recalculateAccountBalance(accountId, null);
 	}
 
 	/**
 	 * Recalculate balances for all existing accounts.
 	 */
-	public synchronized void recalculateAccountBalances() {
+	public void recalculateAccountBalances() {
 		List<SmsAccount> accounts = hibernateLogicLocator.getSmsAccountLogic()
 				.getAllSmsAccounts();
 		for (SmsAccount account : accounts) {
@@ -434,7 +434,7 @@ public class SmsBillingImpl implements SmsBilling {
 	 * 
 	 * @return true, if successful
 	 */
-	public synchronized boolean cancelPendingRequest(Long smsTaskId) {
+	public boolean cancelPendingRequest(Long smsTaskId) {
 
 		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				smsTaskId);
