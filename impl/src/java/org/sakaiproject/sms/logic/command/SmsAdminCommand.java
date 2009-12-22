@@ -56,14 +56,16 @@ public class SmsAdminCommand implements ShortMessageCommand {
 		String[] body = msg.getBodyParameters();
 		
 		String concatBody = "";
+		StringBuilder sb = new StringBuilder();
 		for (String arg : body) {
 			if ("".equals(concatBody)) {
-				concatBody += arg;
+				sb.append(arg);
 			} else {
-				concatBody += "," + arg;
+				sb.append("," + arg);
 			}
 		}
-
+		concatBody = sb.toString();
+		
 		LOG.debug(getCommandKey() + " command called with parameters: ("
 				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + concatBody + ")");
 
