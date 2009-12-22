@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: $
- * $Id: $
+ * $URL$
+ * $Id$
  ***********************************************************************************
  *
  * Copyright (c) 2008, 2009 The Sakai Foundation
@@ -20,14 +20,17 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
-public class DuplicateCommandKeyException extends RuntimeException {
-
+/**
+ * A single method Interface to be used with ShortMessageCommand if you want to override the billing account. 
+ * @author dhorwitz
+ *
+ */
+public interface AccountSpecifiedCommand {
+	
 	/**
-	 * 
+	 * All messages on this account should be billed to this account
+	 * @return
 	 */
-	private static final long serialVersionUID = 1L;
+	public Long getBillingAccountId();
 
-	public DuplicateCommandKeyException(String key) {
-		super("Command key " + key + " is already registered");
-	}
 }

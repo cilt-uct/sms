@@ -503,6 +503,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		String smsMessagebody = inMessage.getSmsMessagebody();
 		String mobileNumber = inMessage.getMobileNumber();
+		String knowAccountId = null;
 		
 		// Allocate the cost of incoming messages, default to admin account
 
@@ -517,9 +518,10 @@ public class SmsCoreImpl implements SmsCore {
 			// We don't ever expect a null return value here
 			LOG.error("Error parsing incoming message from " + mobileNumber);
 
-			billIncomingMessage(routingCredits, defaultBillingSite, null, null);
+			billIncomingMessage(routingCredits, defaultBillingSite, null, null, null);
 			return;		
 		}
+
 		
 		// Check for empty reply body
 		if (parsedMessage.getBodyReply() == null
@@ -527,7 +529,7 @@ public class SmsCoreImpl implements SmsCore {
 						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
 			LOG.debug("No reply to this incoming message.");
 
-			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null);
+			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null, parsedMessage.getAccountId());
 			return;
 		}
 		
@@ -561,7 +563,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			// Only failure case here is account not found but should never happen because it will
 			// use the default MO billing account if necessary
-			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null);
+			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null, parsedMessage.getAccountId());
 			return;
 		}
 
@@ -590,20 +592,25 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		
 		billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(),
-				outTask != null ? outTask.getId() : null);
+				outTask != null ? outTask.getId() : null, parsedMessage.getAccountId());
 		
 		return;
 	}
 
-	private void billIncomingMessage(double credits, String defaultSiteId, String parsedSiteId, Long taskId) {
+	private void billIncomingMessage(double credits, String defaultSiteId, String parsedSiteId, Long taskId, Long accountId) {
 
 		if ((defaultSiteId == null && parsedSiteId == null) || (credits == 0)) {
 			// nothing to do 
 			return;
 		}
-
-		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
+		SmsAccount account = null;
+		if (accountId != null) {
+			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(accountId);
+		} else {
+			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				parsedSiteId != null ? parsedSiteId : defaultSiteId, null);
+		}
+		
 		
 		if (account != null) {
 			smsBilling.debitIncomingMessage(account, credits, taskId);	

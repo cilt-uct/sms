@@ -32,7 +32,10 @@ public class ParsedMessage {
 	private String incomingUserId = null;
 	private String incomingUserEid = null;
 	private String[] bodyParameters = null;
+	private Long accountId = null;
 	
+
+
 	public ParsedMessage() {
 	}
 
@@ -144,5 +147,13 @@ public class ParsedMessage {
 
 	public String getIncomingUserEid() {
 		return incomingUserEid;
+	}
+	
+	public Long getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
 	}
 }

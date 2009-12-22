@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.incoming.AccountSpecifiedCommand;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
@@ -175,6 +176,11 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 					return parsedMessage;
 				}
 			} 
+			
+			if (cmd instanceof AccountSpecifiedCommand) {
+				AccountSpecifiedCommand asc = (AccountSpecifiedCommand)cmd;
+				parsedMessage.setAccountId(asc.getBillingAccountId());
+			}
 			
 			String suppliedSite = parsedMessage.getSite();
 			

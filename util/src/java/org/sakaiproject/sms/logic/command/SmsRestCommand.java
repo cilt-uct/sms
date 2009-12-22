@@ -30,6 +30,7 @@ import org.sakaiproject.entitybroker.util.http.HttpResponse;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpIOException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpRequestException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
+import org.sakaiproject.sms.logic.incoming.AccountSpecifiedCommand;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -38,7 +39,7 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
  * This executes an external command by invoking an http url.
  * 
  */
-public class SmsRestCommand implements ShortMessageCommand {
+public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedCommand {
 
 	private static final Log LOG = LogFactory.getLog(SmsRestCommand.class);
 
@@ -49,6 +50,7 @@ public class SmsRestCommand implements ShortMessageCommand {
 	private boolean enabled = true;
 	private boolean requiresSiteId = false;
 	private boolean requiresUserId = false;
+	private Long billingAccountId = null;
 
 	public void setCommandKey(String commandKey) {
 		this.commandKey = commandKey;
@@ -178,6 +180,15 @@ public class SmsRestCommand implements ShortMessageCommand {
 
 	public void setHelpMessage(String helpMessage) {
 		this.helpMessage = helpMessage;
+	}
+
+	
+	public Long getBillingAccountId() {
+		return billingAccountId;
+	}
+
+	public void setBillingAccountId(Long billingAccountId) {
+		this.billingAccountId = billingAccountId;
 	}
 
 }
