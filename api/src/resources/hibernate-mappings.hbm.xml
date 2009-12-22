@@ -142,7 +142,7 @@
 		<property name="accountEnabled" type="boolean" column="ACCOUNT_ENABLED"
 			not-null="true" />
 
-		<set name="smsTransactions" lazy="false" inverse="true"
+		<set name="smsTransactions" lazy="true" inverse="true"
 			cascade="persist,delete">
 			<key column="SMS_ACCOUNT_ID" not-null="true" />
 			<one-to-many class="org.sakaiproject.sms.model.hibernate.SmsTransaction"
