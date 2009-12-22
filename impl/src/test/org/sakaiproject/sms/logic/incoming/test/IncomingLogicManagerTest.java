@@ -109,7 +109,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	private String loadPropertiesFile(final String name) {
-		String fileContents = "";
+		StringBuilder fileContents = new StringBuilder();
 		try {
 			InputStream is = IncomingLogicManagerTest.class.getClassLoader()
 					.getResourceAsStream(name);
@@ -117,7 +117,7 @@ public class IncomingLogicManagerTest extends TestCase {
 			BufferedReader bufferedReader = new BufferedReader(input);
 
 			while (bufferedReader.ready()) {
-				fileContents += bufferedReader.readLine();
+				fileContents.append(bufferedReader.readLine());
 
 			}
 			bufferedReader.close();
@@ -125,7 +125,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		} catch (Exception e) {
 
 		}
-		return fileContents;
+		return fileContents.toString();
 	}
 
 	private String[] parseCSVFile(String csv) {
