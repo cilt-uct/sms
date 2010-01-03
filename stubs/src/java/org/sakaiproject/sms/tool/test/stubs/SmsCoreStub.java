@@ -140,4 +140,9 @@ public class SmsCoreStub implements SmsCore {
 		
 	}
 
+	public boolean hasNextTask() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

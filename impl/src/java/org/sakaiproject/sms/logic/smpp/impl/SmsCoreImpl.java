@@ -36,6 +36,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.jsmpp.SMPPConstant;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -642,6 +643,19 @@ public class SmsCoreImpl implements SmsCore {
 		}
 	}
 
+	public boolean hasNextTask() {
+		SmsTask task = hibernateLogicLocator.getSmsTaskLogic()
+		.getNextSmsTask();
+		if (task != null) {
+			//we need to release the lock
+			task.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void processTask(SmsTask smsTask) {
 
 		if (!SmsConst_DeliveryStatus.STATUS_BUSY.equals(smsTask.getStatusCode())) {

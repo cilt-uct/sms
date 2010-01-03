@@ -51,6 +51,12 @@ public interface SmsCore {
 	public SmsTask getNextSmsTask();
 
 	/**
+	 * is there a pending task waiting to be proccessed?
+	 * @return
+	 */
+	public boolean hasNextTask();
+	
+	/**
 	 * Add a new task to the sms task list Validation will be done to make sure
 	 * that the preliminary values are supplied.
 	 * 
