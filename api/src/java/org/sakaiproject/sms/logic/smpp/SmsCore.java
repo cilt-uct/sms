@@ -50,11 +50,7 @@ public interface SmsCore {
 	 */
 	public SmsTask getNextSmsTask();
 
-	/**
-	 * is there a pending task waiting to be proccessed?
-	 * @return
-	 */
-	public boolean hasNextTask();
+
 	
 	/**
 	 * Add a new task to the sms task list Validation will be done to make sure
@@ -171,6 +167,11 @@ public interface SmsCore {
 	 * date to sent. This is typically called by the sms scheduler.
 	 */
 	public void processNextTask();
+	
+	/**
+	 * process all pending SO tasks
+	 */
+	public void processSOTasks();
 
 	/**
 	 * Processes all the queued MO tasks.

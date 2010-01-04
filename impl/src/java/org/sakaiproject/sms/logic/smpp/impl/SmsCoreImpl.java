@@ -643,18 +643,19 @@ public class SmsCoreImpl implements SmsCore {
 		}
 	}
 
-	public boolean hasNextTask() {
-		SmsTask task = hibernateLogicLocator.getSmsTaskLogic()
-		.getNextSmsTask();
-		if (task != null) {
-			//we need to release the lock
-			task.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
-			return true;
-		} else {
-			return false;
+	public void processSOTasks() {
+		synchronized (this) {
+			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
+			.getNextSmsTask();
+			while (smsTask != null) {
+				processTaskInThread(smsTask, smsThreadGroup);
+				
+				smsTask = hibernateLogicLocator.getSmsTaskLogic()
+				.getNextSmsTask();
+			}
 		}
 	}
+	
 	
 	public void processTask(SmsTask smsTask) {
 

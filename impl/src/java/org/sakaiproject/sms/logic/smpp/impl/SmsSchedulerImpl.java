@@ -118,9 +118,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 				// Run scheduled processes
 				try {
 					smsCore.processMOTasks();
-					while (smsCore.hasNextTask()) {
-						smsCore.processNextTask();
-					}
+					smsCore.processSOTasks();
 					smsCore.processTimedOutDeliveryReports();
 					smsCore.checkAndSetTasksCompleted();
 					smsCore.adjustLateDeliveryBilling();
