@@ -1010,6 +1010,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			return message;
 		}
 
+		long timeStart = System.currentTimeMillis();
 		String messageText = message.getSmsTask().getMessageBody();
 
 		if (message.getSmsTask().getMessageTypeId().equals(
@@ -1115,11 +1116,12 @@ public class SmsSmppImpl implements SmsSmpp {
 				message.setSubmitResult(true);
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
-
+				long timeToSend = timeStart - System.currentTimeMillis();
 				LOG.info("Message submitted, smsc_id = " + messageId
 						+ " MessageID = " + message.getId()
 						+ " Number = " + message.getMobileNumber()
-						+ " TaskID = " + message.getSmsTask().getId());
+						+ " TaskID = " + message.getSmsTask().getId()
+						+ " in " + timeToSend + " ms");
 			
 			} else {
 				// number is unroutable
