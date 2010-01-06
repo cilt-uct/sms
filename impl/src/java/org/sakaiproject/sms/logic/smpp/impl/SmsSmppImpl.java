@@ -945,9 +945,10 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		for (SmsMessage message : messages) {
-			
+			long timeStart = System.currentTimeMillis();
 			SmsMessage deliverMessage = sendMessageToGateway(message);
-			
+			long timeToSend = System.currentTimeMillis() - timeStart;
+			LOG.debug("Message processed in " + timeToSend + "ms");
 			// Because we get back a different object, copy across the fields we need
 			
 			message.setStatusCode(deliverMessage.getStatusCode());
@@ -969,7 +970,11 @@ public class SmsSmppImpl implements SmsSmpp {
 			}
 			
 			try {
-				Thread.sleep(smsSmppProperties.getSendingDelay());
+				//seeing as we may have slow sending we need to prevent this slowing down submission too much
+				long sendDelay = smsSmppProperties.getSendingDelay() - timeToSend;
+				if (sendDelay > 0 ) {
+					Thread.sleep(sendDelay);
+				}
 			} catch (InterruptedException e) {
 				LOG.error(e);
 			}
@@ -1116,7 +1121,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				message.setSubmitResult(true);
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
-				long timeToSend = timeStart - System.currentTimeMillis();
+				long timeToSend = System.currentTimeMillis() - timeStart;
 				LOG.info("Message submitted, smsc_id = " + messageId
 						+ " MessageID = " + message.getId()
 						+ " Number = " + message.getMobileNumber()
