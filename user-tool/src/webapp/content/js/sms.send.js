@@ -10,6 +10,9 @@ $(document).ready(function() {
     });
     
     //Counter for the SMS Textarea
+
+    //save prior message in case we need to restore it
+   // var lastBoxValue = $("#messageBody").val();
         $("#messageBody")
                 .change(function(e) {
             $(this).keypress();
@@ -27,25 +30,47 @@ $(document).ready(function() {
             $(this).keypress();
         })
                 .keypress(function(e) {
-            var limit = 160,
+            var limit,
             boxValue = $(this).val(),
-            len = boxValue.length,
-            nonASCIIcount = 0;
-            if (len <= limit && len >= 0) {
-                // Detect and count non-ASCII chars as 2 chararcters. SMS-170
-                for(var i = 0; i < len; i++){
-                   if( boxValue.charCodeAt(i) > 127 ){ // non-ASCII chars have  char code >= 128
-                      nonASCIIcount++;
-                   }
-                }
-                if(nonASCIIcount > 0 ){
-                    len = len + nonASCIIcount;
+            len = boxValue.length;
+            if (len > 0) {
+                //SMS-170: When entering an SMS message, detect non-GSM chars and adjust max length to 70
+                //sms has 140 bytes. if it's utf-16, that's 70 chars, if it's gsm alphabet, 160 chars are packed into 140 bytes (because the alphabet is 7bit)
+
+                if (!smsUtils.isEncodeableInGsm0338(boxValue)) {
+                    limit = 70;
+                    /*if(confirm("You have entered a non-standard character in the SMS box. \n\n" +
+                     "This forces the SMS to limit the number of characters allowed to 70. \n\n" +
+                     "Would you like to keep this character?")){
+                     limit = 160;
+                     boxValue = lastBoxValue,
+                     len = lastBoxValue.length;
+                     };*/
+                } else {
+                    limit = 160;
                 }
 
+                if (len <= limit) {
+                    $('#smsBoxCounter').text(len);
+                    $('#smsBoxCounterMax').text(limit);
+                }else {
+                    $(this).val($(this).val().substr(0, limit));
+                }
+            }
+/*
+
+            if (len <= limit && len > 0) {
+                //SMS-170: When entering an SMS message, detect non-GSM chars and adjust max length to 70
+                //sms has 140 bytes. if it's utf-16, that's 70 chars, if it's gsm alphabet, 160 chars are packed into 140 bytes (because the alphabet is 7bit)
+                if( !smsUtils.isEncodeableInGsm0338(boxValue) ){
+                    limit = 70;
+                }             
                 $('#smsBoxCounter').text(len);
+                $('#smsBoxCounterMax').text(limit);
             } else {
                 $(this).val($(this).val().substr(0, limit));
-            }
+            }*/
+            
             $.fn.SMS.set.setSubmitTaskButton();
         });
 
