@@ -103,7 +103,8 @@ var smsUtils = (function($) {
             },
             dom: function(errorText) {
                  error(errorText, null, "errorFacebox");
-            }
+            },
+            isMessageLengthValid: false
         },
         isEncodeableInGsm0338: function(utfString){
            return _isEncodeableInGsm0338(utfString);

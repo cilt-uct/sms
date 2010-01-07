@@ -8,6 +8,7 @@
         <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
         <link rel="stylesheet" href="../css/sms.css" type="text/css"/>
         <link rel="stylesheet" href="../css/ui.all.css" type="text/css"/>
+        <link rel="stylesheet" href="../css/tipsy.css" type="text/css"/>
         <script type="text/javascript" src="../js/jquery-1.2.6.min.js">
         </script>
         <script type="text/javascript" src="../js/jquery-ui-1.6.custom.min.js">
@@ -25,6 +26,8 @@
         <script type='text/javascript' src='../js/jquery.autocomplete/jquery.autocompletefb.js'>
         </script>
         <script type='text/javascript' src='../js/jquery.form.js'>
+        </script>
+        <script type='text/javascript' src='../js/jquery.tipsy.js'>
         </script>
         <link rel="stylesheet" type="text/css" href="../js/jquery.autocomplete/jquery.autocompletefb.css" />
         <script type="text/javascript" language="JavaScript"
@@ -56,7 +59,7 @@
                 <h4 rsf:id="msg=ui.send.message">
                     Your message:
                 </h4>
-                <div class="Counter"><span rsf:id="msg=ui.send.counter">Characters left:</span> <span style="font-weight:bold;" id="smsBoxCounter">0</span>/<span id="smsBoxCounterMax">160</span></div>
+                <div class="Counter"><span id="smsBoxCounter">160</span></div>
         <textarea rsf:id="messageBody" name="" cols="50" rows="7" class="" id="">
                 </textarea>
                 <div>

@@ -172,15 +172,30 @@
                 $.fn.SMS.set.restoreSelections();
             }
             var isRecipientsChosen = ($.fn.SMS.get.isSelectionMade() || $("input[id^=task]").length > 0);
-            if ( isRecipientsChosen && $("#messageBody").val().length > 0 ) {
+            /*error = "Before you can send: ";
+
+            if( !smsUtils.error.isMessageLengthValid){
+               error += " Reduce the length of your message.";
+                $("#smsBoxCounter").attr("title", error);
+            }else{
+                $("#smsBoxCounter").removeAttr("title");
+            }
+            if( !isRecipientsChosen){
+               error += " Choose at least one recipient.";
+            }*/
+
+            if ( isRecipientsChosen && smsUtils.error.isMessageLengthValid ) {
                 $("#smsSend")
                         .removeAttr("disabled")
                         .addClass("active");
+                //error = "";
+                //$("#errorNoSelections").hide();
             } else {
                 $("#smsSend")
                         .attr("disabled", "disabled")
                         .removeClass("active");
             }
+            //$("#errorNoSelections").text(error).show();
         },
         addSelectedRecipientsListName: function(array) {
             selectedRecipientsList.names.push([array[1],array[0]]);
