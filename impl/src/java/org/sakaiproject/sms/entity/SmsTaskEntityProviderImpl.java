@@ -450,7 +450,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	}
 	
 	private void setPropertyFromParams(SmsTask task, Map<String, Object> params, EntityReference ref) {
-
+		//SMS-28 Only manually set 'copy to sender' and date properties passed via EB. Native object casting will set all other properties.
+		
 		//Assert date params to task object. Default EB casting to task doesn't set these. SMS-28
 		SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT_ISO8601);
 		
@@ -463,22 +464,6 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			String paramsKey = pairs.getKey();
 			String paramsValue = pairs.getValue().toString();
 
-			if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		task.setSakaiSiteId(paramsValue);
-	    	}else 
-	    	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		task.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
-	    	}else 
-	        if( "sakaiUserIds".equals(paramsKey) && ! "".equals( paramsValue)){
-	        	List<String> tempListValues = Arrays.asList(paramsValue.split(","));
-	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
-	        	task.setSakaiUserIdsList(tempSetValues);
-	    	}else 
-	    	if( "deliveryMobileNumbersSet".equals(paramsKey) && ! "".equals( paramsValue)){
-	    		List<String> tempListValues = Arrays.asList(paramsValue.split(","));
-	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
-	    		task.setDeliveryMobileNumbersSet(tempSetValues);
-	    	}else
 	    	if(task.getDateToSend() == null && "dateToSend".equals(paramsKey) ){
     			try {
 					task.setDateToSend( formatter.parse(paramsValue) );
@@ -488,15 +473,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 				} catch (ParseException e) {
 					throw new IllegalArgumentException( getMessage( ValidationConstants.DATE_FORMAT_INCORRECT ));
 				}
-	    	}else
-	    	if( task.getDateToExpire() == null && "dateToExpire".equals(paramsKey) ){
+	    	}
+	    	else if( task.getDateToExpire() == null && "dateToExpire".equals(paramsKey) ){
 				try {
 					task.setDateToExpire( formatter.parse(paramsValue) );
 				} catch (ParseException e) {
 					throw new IllegalArgumentException( getMessage( ValidationConstants.DATE_FORMAT_INCORRECT ));
 				}
-	    	}else
-			if( "copyMe".equals(paramsKey) ){
+	    	}
+	    	else if( "copyMe".equals(paramsKey) ){
 	    		copy = Boolean.parseBoolean(paramsValue);	
 	    	}
 		}
