@@ -369,7 +369,31 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	@EntityCustomAction(action=CUSTOM_ACTION_CALCULATE,viewKey=EntityView.VIEW_NEW)
 	public String calculate(EntityReference ref, Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) getSampleEntity();
-		//Build smsTask object with received parameters
+		//Build smsTask object with received parameters since object casting will cause an NPE
+		Iterator<Entry<String, Object>> selector = params.entrySet().iterator();
+		while ( selector.hasNext() ) {
+			Entry<String, Object> pairs = selector.next();
+			String paramsKey = pairs.getKey();
+			String paramsValue = pairs.getValue().toString();
+
+			if( "sakaiSiteId".equals(paramsKey) && ! "".equals( paramsValue)){
+				smsTask.setSakaiSiteId(paramsValue);
+	    	}else 
+	    	if( "deliveryEntityList".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		smsTask.setDeliveryEntityList(Arrays.asList(paramsValue.split(",")));
+	    	}else 
+	        if( "sakaiUserIds".equals(paramsKey) && ! "".equals( paramsValue)){
+	        	List<String> tempListValues = Arrays.asList(paramsValue.split(","));
+	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
+	    		smsTask.setSakaiUserIdsList(tempSetValues);
+	    	}else 
+	    	if( "deliveryMobileNumbersSet".equals(paramsKey) && ! "".equals( paramsValue)){
+	    		List<String> tempListValues = Arrays.asList(paramsValue.split(","));
+	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
+	    		smsTask.setDeliveryMobileNumbersSet(tempSetValues);
+	    	}
+		}
+		
 		setPropertyFromParams(smsTask, params, ref);
 		
 		String userReference = developerHelperService.getCurrentUserReference();
