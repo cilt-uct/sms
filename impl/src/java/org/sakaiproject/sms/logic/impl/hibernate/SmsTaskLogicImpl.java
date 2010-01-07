@@ -140,7 +140,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		hql.append(" from SmsTask task where task.dateToSend <= :today ");
 		hql.append(" and task.messageTypeId = (:messageTypeId) ");
 		hql.append(" and task.statusCode IN (:statusCodes) ");
-		hql.append(" order by task.dateToSend, task.messageId,");
+		hql.append(" order by task.dateToSend, task.messageId");
 		final List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 				new QueryParameter("today", getDelayedCurrentDate(10),
 						Hibernate.TIMESTAMP), new QueryParameter(
