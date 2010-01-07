@@ -479,7 +479,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	    		Set<String> tempSetValues = new HashSet<String>(tempListValues);
 	    		task.setDeliveryMobileNumbersSet(tempSetValues);
 	    	}else
-	    	if( "dateToSend".equals(paramsKey) ){
+	    	if(task.getDateToSend() == null && "dateToSend".equals(paramsKey) ){
     			try {
 					task.setDateToSend( formatter.parse(paramsValue) );
 					if ( task.getDateCreated().after( task.getDateToSend() )){
@@ -489,7 +489,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 					throw new IllegalArgumentException( getMessage( ValidationConstants.DATE_FORMAT_INCORRECT ));
 				}
 	    	}else
-	    	if( "dateToExpire".equals(paramsKey) ){
+	    	if( task.getDateToExpire() == null && "dateToExpire".equals(paramsKey) ){
 				try {
 					task.setDateToExpire( formatter.parse(paramsValue) );
 				} catch (ParseException e) {
