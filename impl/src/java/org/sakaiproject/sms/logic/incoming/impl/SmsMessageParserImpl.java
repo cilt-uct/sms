@@ -40,7 +40,16 @@ public class SmsMessageParserImpl implements SmsMessageParser {
 		}
 
 		final String[] params = StringUtils.split(msgText, DELIMITERS, 2);
-		message.setCommand(params[0]);
+		
+		// SMS-216 Trim leading spaces or punctuation
+
+		int cmdstart = 0;
+		
+		while (cmdstart < params[0].length() && !Character.isLetterOrDigit(params[0].charAt(cmdstart))) {
+			cmdstart++;
+		}
+		
+		message.setCommand(params[0].substring(cmdstart));
 		
 		return;
 	}
