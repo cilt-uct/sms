@@ -171,10 +171,11 @@ text-align:right;
 	overflow: auto;
 }
 .Counter {
-	text-indent: 390px;
-    margin-top:-20px;
+    margin-top:-28px;
     font-size: 1.5em;
     color: #CCCCCC;
+    text-align: right;
+    width: 410px;
 }
 
 /* all DIV tags with an ID starting with peopleList */
@@ -248,5 +249,10 @@ ul.numbers-holder li.acfb-data {
 	border     : 1px solid #CAD8F3;
 	padding    : 1px 5px 2px;
 	background : #DEE7F8;
+}
+
+textarea {
+    width:400px;
+    overflow:auto;
 }
 
