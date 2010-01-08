@@ -23,6 +23,7 @@ package org.sakaiproject.sms.logic.smpp.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
@@ -49,6 +50,12 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	public SmsSchedulerThread smsSchedulerThread = null;
 
+	private ExternalLogic externalLogic;
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 	private HibernateLogicLocator hibernateLogicLocator = null;
 
 	public HibernateLogicLocator getHibernateLogicLocator() {
@@ -64,9 +71,13 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		Assert.notNull(smsCore);
 		setSmsConfig(hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig());
-		smsSchedulerThread = new SmsSchedulerThread();
-		LOG.info("Init of SmsScheduler complete");
-
+		
+		if (externalLogic.isNodeBindToGateway()) {
+			smsSchedulerThread = new SmsSchedulerThread();
+			LOG.info("init() - scheduler started");
+		} else {	
+			LOG.info("init() - this node not binding to SMPP gateway, scheduler NOT started");
+		}
 	}
 
 	public void destroy() {

@@ -645,6 +645,11 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void processSOTasks() {
 		synchronized (this) {
+			
+			if (!externalLogic.isNodeBindToGateway()) {
+				return;
+			}
+
 			SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic()
 			.getNextSmsTask();
 			while (smsTask != null) {

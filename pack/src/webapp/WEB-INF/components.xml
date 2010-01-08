@@ -107,6 +107,8 @@
 		<property name="smsCore" ref="org.sakaiproject.sms.api.SmsCore" />
 		<property name="hibernateLogicLocator"
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+        <property name="externalLogic"
+            ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator"
