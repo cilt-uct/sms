@@ -1134,4 +1134,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return title;
 	}
 
+	public String getUserEidFromId(String userId) {
+		try {
+			return userDirectoryService.getUserEid(userId);
+		} catch (UserNotDefinedException e) {
+			LOG.debug("no eid found for userId: " + userId);
+		}
+		return userId;
+	}
+
 }

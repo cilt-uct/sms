@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
+
 import junit.framework.TestCase;
 
 public class BeanToCSVReflectorTest extends TestCase {
@@ -31,6 +33,8 @@ public class BeanToCSVReflectorTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		beanToCSVReflector = new BeanToCSVReflector();
+		beanToCSVReflector.setExternalLogic(new ExternalLogicStub());
+	
 	}
 
 	@Override

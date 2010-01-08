@@ -228,6 +228,14 @@ public interface ExternalLogic {
 	 */
 	public String getSiteFromAlias(String alias);
 
+	
+	/**
+	 * Get a users eid from a suplied internal sakai Id
+	 * @param userId
+	 * @return
+	 */
+	public String getUserEidFromId(String userId);
+	
 	/**
 	 * Get a site reference from an id
 	 * @param siteId

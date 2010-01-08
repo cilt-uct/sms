@@ -354,4 +354,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return "Site Title";
 	}
 
+	public String getUserEidFromId(String userId) {
+		return userId;
+	}
+
 }

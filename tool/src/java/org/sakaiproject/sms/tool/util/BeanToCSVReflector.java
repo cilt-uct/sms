@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 
 /**
  * A Utility class to convert a List of java beans to a CSV list, does not fetch
@@ -32,9 +35,14 @@ import org.apache.commons.lang.StringUtils;
  */
 public class BeanToCSVReflector {
 
+	private static Log log = LogFactory.getLog(BeanToCSVReflector.class);
 	private static final String NOT_FOUND = "N/A";
 	private static final String IS = "is";
 	private static final String GET = "get";
+	private ExternalLogic externalLogic;
+	
+	
+
 
 	/**
 	 * Returns a CSV list of all the java accessors
@@ -68,6 +76,7 @@ public class BeanToCSVReflector {
 		Method[] methodArray = getAllPublicAccesorMethods(objectToReflectOn);
 		methodArray = createOrderedMethodArray(methodArray, fieldNames);
 
+		//create
 		for (int i = 0; i < methodArray.length; i++) {
 			String fieldName = convertMethodNameToFieldName(methodArray[i]
 					.getName());
@@ -87,6 +96,8 @@ public class BeanToCSVReflector {
 
 					if (fieldValue != null) {
 						value = fieldValue.toString();
+						//this may need conversion or lookup (e.g id to eid conversion)
+						value = convertFieldValue(methodArray[i], value);
 						String escape = value.contains(",") ? "\"" : "";
 						value = escape
 								+ StringUtils.replace(value, "\"", "\"\"")
@@ -102,12 +113,25 @@ public class BeanToCSVReflector {
 					throw new RuntimeException(
 							"Failed to obtain value from method "
 									+ methodArray[i].toString() + " cause "
-									+ e.toString());
+									+ e.toString(), e);
 				}
 			}
 		}
 
 		return buffer.toString();
+	}
+
+	private String convertFieldValue(Method method, String value) {
+		log.info("got method "  + method.getName() + " for value: " + value);
+		if (externalLogic == null ) {
+			log.error("external logic is null!");
+		} else {
+			String methodName = method.getName();
+			if ("getSakaiUserId".equals(methodName)) {
+				return externalLogic.getUserEidFromId(value);
+			}
+		}
+		return value;
 	}
 
 	private Method[] getAllPublicAccesorMethods(Object objectToReflectOn) {
@@ -179,4 +203,10 @@ public class BeanToCSVReflector {
 			methodName = methodName.toLowerCase();
 		return methodName;
 	}
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+	
+	
 }

@@ -142,6 +142,7 @@
   <bean id="csvExportBean" class="org.sakaiproject.sms.tool.reporting.CsvExportBean">
   	<property name="sakaiDateFormat" ref="sakaiDateFormat"/>
   	<property name="hibernateLogicLocator" ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
   </bean>
 
   <bean id="SmsTestActionBean" class="org.sakaiproject.sms.tool.beans.SmsTestActionBean">

@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
@@ -58,6 +59,12 @@ public class CsvExportBean {
 
 	public void setSakaiDateFormat(SakaiDateFormat dateFormat) {
 		this.sakaiDateFormat = dateFormat;
+	}
+
+	
+	private ExternalLogic externalLogic;	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
 
 	public CsvExportBean() {
@@ -90,7 +97,7 @@ public class CsvExportBean {
 		SearchFilterBean searchFilterBean = viewparams
 				.extractSearchFilter(sakaiDateFormat.getSakaiDateFormat());
 		csvExporters.get(viewparams.sourceView).createCsvResponse(response,
-				searchFilterBean);
+				searchFilterBean, externalLogic);
 	}
 
 	private abstract class CsvExportStrategy {
@@ -98,7 +105,7 @@ public class CsvExportBean {
 		protected BeanToCSVReflector beanToCSVReflector = new BeanToCSVReflector();
 
 		public void createCsvResponse(HttpServletResponse response,
-				SearchFilterBean searchFilterBean) {
+				SearchFilterBean searchFilterBean, ExternalLogic externalLogic) {
 
 			Date date = new Date();
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -110,6 +117,9 @@ public class CsvExportBean {
 			response.setHeader("Content-Disposition", "attachment; filename="
 					+ getFileNamePrefix() + sdf.format(date) + ".csv");
 
+			//set the external logic in the reflector
+			beanToCSVReflector.setExternalLogic(externalLogic);
+			
 			List<?> pageResults = null;
 			try {
 				pageResults = getCriteriaResults(searchFilterBean);
