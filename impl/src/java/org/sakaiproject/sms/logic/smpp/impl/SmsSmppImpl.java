@@ -112,9 +112,9 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private boolean appserverShuttingDown = false;
 
-	MOmessageQueueThread mOmessageQueueThread = new MOmessageQueueThread();
+	MOmessageQueueThread mOmessageQueueThread = null;
 
-	DeliveryReportQueueThread deliveryReportQueueThread = new DeliveryReportQueueThread();
+	DeliveryReportQueueThread deliveryReportQueueThread = null;
 
 	private SmsSmppProperties smsSmppProperties = null;
 
@@ -657,10 +657,18 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	public void init() {
 		LOG.info("init()");
+
 		loadPropertiesFile();
 		loadSmsSmppProperties();
+
+		if (smsSmppProperties.isBindThisNode()) {
+			mOmessageQueueThread = new MOmessageQueueThread();
+			deliveryReportQueueThread = new DeliveryReportQueueThread();
+		}
+		
 		connectToGateway();
 		setupStatusBridge();
+		
 		LOG.debug("SmsSmpp implementation is started");
 	}
 
