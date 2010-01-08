@@ -204,6 +204,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 		SmsTask smsTask = (SmsTask) entity;
+			
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		//Give a 15 minute leeway before deeming a task as a past task. Better this be done here than by client JS
@@ -273,10 +274,10 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         if (current == null) {
 			throw new IllegalArgumentException( getMessage( ValidationConstants.TASK_NOEXIST )); 
         }
-
-
+        
         SmsTask task = (SmsTask) entity;
-        //Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
+
+		//Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
         setPropertyFromParams(task, params, ref);
         
         boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
@@ -487,8 +488,8 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			Entry<String, Object> pairs = selector.next();
 			String paramsKey = pairs.getKey();
 			String paramsValue = pairs.getValue().toString();
-
-	    	if(task.getDateToSend() == null && "dateToSend".equals(paramsKey) ){
+			
+	    	if( (ref.getId() != null || task.getDateToSend() == null) && "dateToSend".equals(paramsKey) ){
     			try {
 					task.setDateToSend( formatter.parse(paramsValue) );
 					if ( task.getDateCreated().after( task.getDateToSend() )){
@@ -498,7 +499,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 					throw new IllegalArgumentException( getMessage( ValidationConstants.DATE_FORMAT_INCORRECT ));
 				}
 	    	}
-	    	else if( task.getDateToExpire() == null && "dateToExpire".equals(paramsKey) ){
+	    	else if( (ref.getId() != null || task.getDateToExpire() == null) && "dateToExpire".equals(paramsKey) ){
 				try {
 					task.setDateToExpire( formatter.parse(paramsValue) );
 				} catch (ParseException e) {
