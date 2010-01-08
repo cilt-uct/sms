@@ -30,7 +30,9 @@ public interface ShortMessageCommand {
 	public static final String MESSAGE_TYPE_TWITTER = "twitter";
 
 	/**
-	 * Keyword for command
+	 * Keyword for command. The command keyword must begin with a letter or digit
+	 * (as defined by Character.isLetterOrDigit). For example "ABC" and "2XY" are valid commands,
+	 * but "+pqr" is not. 
 	 * 
 	 * @return
 	 */
