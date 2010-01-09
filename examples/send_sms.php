@@ -9,6 +9,8 @@ $host="https://localgist:8080";
 
 $url=$host."direct/sms-task/new";
 
+//Teh short code number that will handle responses
+$return_number="00000";
 
 // The id of the site that contains the sms tool
 $siteId="!admin";
@@ -41,7 +43,7 @@ while (!feof($fin)) {
 
     }
     
-    $message="Student No.$campusId: UCT Commerce has made you an offer for $degreeCode for 2010. Sms the words: offer COM $campusId accept OR decline to 31957";
+    $message="Student No.$campusId: UCT Commerce has made you an offer for $degreeCode for 2010. Sms the words: offer COM $campusId accept OR decline to $return_number";
 
     print "\n$message \n";
     if (strlen($message) > 160) die ("Message longer than 160 chars for
