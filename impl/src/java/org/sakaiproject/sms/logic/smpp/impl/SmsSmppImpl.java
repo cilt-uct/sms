@@ -203,6 +203,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private class MOmessageQueueThread implements Runnable {
 
+		private static final int INITIAL_MO_SLEEP = 1000*60*2;
 		boolean allDone = false;
 
 		MOmessageQueueThread() {
@@ -216,8 +217,14 @@ public class SmsSmppImpl implements SmsSmpp {
 		}
 
 		public void work() {
+			//we need to slow down the Initial run to avoid proccesing messages before commands are registered
+			try {
+				LOG.info("sleeping for " + INITIAL_MO_SLEEP + "ms to avoid binding before task registration");
+				Thread.sleep(INITIAL_MO_SLEEP);
+			} catch (InterruptedException e1) {
+				LOG.debug("sleep interupeted");
+			}
 			while (!allDone) {
-				
 				try {
 
 					if (LOG.isDebugEnabled()) {
