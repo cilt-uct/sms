@@ -375,7 +375,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					
 					if (alphabet == 0 )  {
 						// GSM
-						messageBody = new String(gsm.gsmToUtf(deliverSm.getShortMessage()));
+						messageBody =  String.valueOf(gsm.gsmToUtf(deliverSm.getShortMessage()));
 					} else if (alphabet == 2) {
 						// UTF-16
 						try {
