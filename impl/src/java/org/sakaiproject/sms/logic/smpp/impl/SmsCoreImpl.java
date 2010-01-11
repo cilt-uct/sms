@@ -36,7 +36,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.jsmpp.SMPPConstant;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -179,10 +178,6 @@ public class SmsCoreImpl implements SmsCore {
 	private class ProcessThread implements Runnable {
 
 		private SmsTask smsTask;
-
-		public SmsTask getSmsTask() {
-			return smsTask;
-		}
 
 		public void setSmsTask(SmsTask smsTask) {
 			this.smsTask = smsTask;
@@ -504,7 +499,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		String smsMessagebody = inMessage.getSmsMessagebody();
 		String mobileNumber = inMessage.getMobileNumber();
-		String knowAccountId = null;
+		
 		
 		// Allocate the cost of incoming messages, default to admin account
 
