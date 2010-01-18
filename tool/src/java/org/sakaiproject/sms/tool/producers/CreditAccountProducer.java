@@ -1,5 +1,8 @@
 package org.sakaiproject.sms.tool.producers;
 
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
+import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
@@ -11,8 +14,9 @@ import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.view.ComponentChecker;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
+import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
-public class CreditAccountProducer implements ViewComponentProducer {
+public class CreditAccountProducer implements ViewComponentProducer, ViewParamsReporter {
 
 	public static final String VIEW_ID = "credit_account";
 
@@ -36,19 +40,37 @@ public class CreditAccountProducer implements ViewComponentProducer {
 		return VIEW_ID;
 	}
 
+	private SmsAccountLogic smsAccountLogic;	
+	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
+		this.smsAccountLogic = smsAccountLogic;
+	}
+
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams,
 			ComponentChecker checker) {
 
 		init();
+		SmsAccount account = null;
+		IdParams idp = (IdParams)viewparams;
+		String id = idp.id;
+		if (id != null) {
+			System.out.println("got id of: " + id);
+			account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
+		}
+			
+		System.out.println("here we are");
 		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		UIMessage.make(tofill, "page-title", "sms.credit.account.title");
 		UIMessage.make(tofill, "sms-credit-account-heading","sms.credit.account.title");
 
 		UIForm form = UIForm.make(tofill, "credit-account-form");
-
 		UIMessage.make(form, "account-id-label", "sms.credit.account.id");
-		UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}");
+		
+		if(account == null) {
+			UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}");
+		} else {
+			UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}", account.getId().toString());
+		}
 
 		UIMessage.make(form, "account-amount-label", "sms.credit.account.amount");
 		UIInput.make(form, "account-amount-input","#{creditAccountBean.creditsToCredit}");
@@ -57,5 +79,9 @@ public class CreditAccountProducer implements ViewComponentProducer {
 		UIInput.make(form, "account-description-input","#{creditAccountBean.description}");
 
 		UICommand.make(form, "save-btn","#{creditAccountActionBean.creditAccount}");
+	}
+
+	public ViewParameters getViewParameters() {
+		return new IdParams();
 	}
 }

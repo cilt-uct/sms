@@ -63,6 +63,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 		// Creates headers
 		UIMessage.make(tofill, "account-name-title",
 				"sms.billing-admin.account-name-title");
+		UIMessage.make(tofill, "credit-account-title",
+		"sms.billing-admin.account-credit-title");
+
 		UIMessage.make(tofill, "account-no-title",
 				"sms.billing-admin.account-no-title");
 		UIMessage.make(tofill, "sakai-site-title",
@@ -86,6 +89,8 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 			UIInternalLink.make(entry, "account-name-link", account
 					.getAccountName(), new IdParams(AccountProducer.VIEW_ID,
+					account.getId().toString()));
+			UIInternalLink.make(entry, "credit-account-link", UIMessage.make("sms.billing-admin.account-credit"), new IdParams(CreditAccountProducer.VIEW_ID,
 					account.getId().toString()));
 			UIOutput.make(entry, "account-no", account.getId().toString());
 			// TODO: Use Sakai services to get site and username

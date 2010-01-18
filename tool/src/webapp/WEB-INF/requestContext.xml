@@ -58,6 +58,7 @@
   <bean class="org.sakaiproject.sms.tool.producers.CreditAccountProducer">
 	<property name="messageFixupHelper" ref="messageFixupHelper" />
 	<property name="navBarRenderer" ref="navBarRenderer" />
+	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
   </bean>
 
   <bean class="org.sakaiproject.sms.tool.producers.SmsTestProducer" >
