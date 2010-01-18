@@ -96,9 +96,6 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 					"tableheader-task-id:", sortViewParams, "id",
 					"sms.task-list-search-results.id");
 			sortHeaderRenderer.makeSortingLink(searchResultsTable,
-					"tableheader-group:", sortViewParams, "deliveryGroupName",
-					"sms.task-list-search-results.group");
-			sortHeaderRenderer.makeSortingLink(searchResultsTable,
 					"tableheader-size-estimate:", sortViewParams,
 					"groupSizeEstimate",
 					"sms.task-list-search-results.size.estimate");
@@ -146,8 +143,6 @@ public class TaskListResultsRenderer implements SearchResultsRenderer {
 				UIOutput idRow = UIOutput.make(row, "row-data-id", NullHandling
 						.safeToString(smsTask.getId()));
 				idRow.decorate(new UIIDStrategyDecorator(String.valueOf(id)));
-				UIOutput.make(row, "row-data-group", NullHandling
-						.safeToString(smsTask.getDeliveryGroupName()));
 				UIOutput.make(row, "row-data-size-estimate", NullHandling
 						.safeToString(smsTask.getGroupSizeEstimate()));
 				UIOutput.make(row, "row-data-size-actual", NullHandling
