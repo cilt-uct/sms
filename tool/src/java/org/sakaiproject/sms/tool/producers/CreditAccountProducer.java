@@ -53,11 +53,10 @@ public class CreditAccountProducer implements ViewComponentProducer, ViewParamsR
 		IdParams idp = (IdParams)viewparams;
 		String id = idp.id;
 		if (id != null) {
-			System.out.println("got id of: " + id);
 			account = smsAccountLogic.getSmsAccount(Long.valueOf(id));
 		}
 			
-		System.out.println("here we are");
+		
 		navBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID);
 
 		UIMessage.make(tofill, "page-title", "sms.credit.account.title");
