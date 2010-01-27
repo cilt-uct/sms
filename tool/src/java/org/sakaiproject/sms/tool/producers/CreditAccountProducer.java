@@ -8,6 +8,7 @@ import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
+import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIMessage;
@@ -63,12 +64,13 @@ public class CreditAccountProducer implements ViewComponentProducer, ViewParamsR
 		UIMessage.make(tofill, "sms-credit-account-heading","sms.credit.account.title");
 
 		UIForm form = UIForm.make(tofill, "credit-account-form");
-		UIMessage.make(form, "account-id-label", "sms.credit.account.id");
+		
 		
 		if(account == null) {
+			UIMessage.make(form, "account-id-label", "sms.credit.account.id");
 			UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}");
 		} else {
-			UIInput.make(form, "account-id-input", "#{creditAccountBean.accountId}", account.getId().toString());
+			form.addParameter(new UIELBinding("#{creditAccountBean.accountId}", 	account.getId().toString()));
 		}
 
 		UIMessage.make(form, "account-amount-label", "sms.credit.account.amount");
