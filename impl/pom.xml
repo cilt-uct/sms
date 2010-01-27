@@ -54,6 +54,11 @@
 			<artifactId>sms-stubs</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.sakaiproject.emailtemplateservice</groupId>
+			<artifactId>emailtemplateservice-api</artifactId>
+			<version>(0.1,1.0]</version>
+		</dependency>		
 		
 
 		<dependency>

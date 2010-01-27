@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+	"http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<bean id="SmsAccountNotification"
+		class="org.sakaiproject.sms.jobs.AccountActivityNotification">
+		<property name="externalLogic"
+			ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+		<property name="smsTransactionLogic"
+			ref="org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic" />
+		<property name="smsAccountLogic"
+			ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
+		<property name="emailService" ref="org.sakaiproject.email.api.EmailService"/>
+		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.service.EmailTemplateService"/>
+	</bean>
+
+	<bean
+		id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.schedulerSmsAccountNotification"
+		class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+		singleton="true" init-method="init">
+		<property name="beanId">
+			<value>SmsAccountNotification</value>
+		</property>
+		<property name="jobName">
+			<value>SMS Account Notifications</value>
+		</property>
+		<property name="schedulerManager">
+			<ref
+				bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+		</property>
+	</bean>
+
+
+
+
+</beans>

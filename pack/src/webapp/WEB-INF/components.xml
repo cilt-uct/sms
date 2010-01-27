@@ -177,4 +177,5 @@
 		</property>
 	</bean>	
 	<import resource="external.xml" />
+	<import resource="quartz.xml" />
 </beans>
