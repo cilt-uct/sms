@@ -1143,4 +1143,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return userId;
 	}
 
+	public boolean userExists(String userId) {
+		try {
+			userDirectoryService.getUser(userId);
+			return true;
+		} catch (UserNotDefinedException e) {
+			LOG.debug("userId: " + userId + " not found");
+		}
+		return false;
+	}
+
 }

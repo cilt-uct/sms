@@ -358,4 +358,8 @@ public class ExternalLogicStub implements ExternalLogic {
 		return userId;
 	}
 
+	public boolean userExists(String userId) {
+		return true;
+	}
+
 }

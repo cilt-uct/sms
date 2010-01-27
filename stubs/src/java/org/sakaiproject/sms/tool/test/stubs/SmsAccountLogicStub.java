@@ -50,5 +50,10 @@ public class SmsAccountLogicStub implements SmsAccountLogic {
 		return 0;
 	}
 
+	public List<SmsAccount> getSmsAccountsForOwner(String sakaiUserId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

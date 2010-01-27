@@ -84,6 +84,25 @@ public class SmsAccount extends BaseModel {
 	 * message sending is possible.
 	 */
 	private Boolean accountEnabled;
+	
+	
+	private String ownerId;
+
+	/**
+	 * Get the user id of the owner of this account
+	 * @return
+	 */
+	public String getOwnerId() {
+		return ownerId;
+	}
+
+	/**
+	 * Set the userId of the owner of this account
+	 * @param ownerId
+	 */
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
 
 	/**
 	 * Gets the account status.

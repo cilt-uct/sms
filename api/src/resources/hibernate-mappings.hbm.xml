@@ -123,6 +123,8 @@
 		</id>
 		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"
 			not-null="false" length="99" unique="true" />
+		<property name="ownerId" type="string" column="OWNER_ID"
+			not-null="false" length="99"/>
 		<property name="sakaiSiteId" type="string" column="SAKAI_SITE_ID"
 			not-null="false" length="99" unique="true" />
 		<property name="messageTypeCode" type="string" column="MESSAGE_TYPE_CODE"

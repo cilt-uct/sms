@@ -3,8 +3,11 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
+import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
+import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -41,6 +44,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsAccount.setOverdraftLimit(1000);
 		insertSmsAccount.setCredits(5000);
 		insertSmsAccount.setAccountName("accountName");
+		insertSmsAccount.setOwnerId("admin");
 		insertSmsAccount.setAccountEnabled(true);
 		insertSmsAccount.setMessageTypeCode("SO");
 
@@ -232,4 +236,29 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		assertNotNull(retAccount);
 		assertEquals(retAccount, account);
 	}
+	
+	
+	public void testGestSMSAccountsForOwner() {
+		SmsAccount account = new SmsAccount();
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 2);
+		account.setMessageTypeCode("12345");
+		account.setOverdraftLimit(1000);
+		account.setCredits(5000);
+		account.setAccountName(SmsConstants.SMS_DEV_DEFAULT_SAKAI_ACCOUNT_NAME);
+		account.setOwnerId("admin");
+		account.setAccountEnabled(true);
+		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
+		
+		
+		
+		List<SmsAccount> one = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("admin");
+		assertNotNull(one);
+		assertEquals(1, one.size());
+		
+		List<SmsAccount> two = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("wegwerg");
+		assertNotNull(two);
+		assertEquals(0, two.size());
+		
+	}
+	
 }

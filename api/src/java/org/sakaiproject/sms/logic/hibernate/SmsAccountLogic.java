@@ -22,6 +22,7 @@ package org.sakaiproject.sms.logic.hibernate;
 
 import java.util.List;
 
+
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 
 /**
@@ -62,12 +63,12 @@ public interface SmsAccountLogic {
 	 * 
 	 * @param sakaiSiteId
 	 *            the sakai site id. Can be null.
-	 * @param SakaiUserId
+	 * @param sakaiUserId
 	 *            the sakai user id. Can be null.
 	 * 
 	 * @return sms congiguration
 	 */
-	public SmsAccount getSmsAccount(String sakaiSiteId, String SakaiUserId);
+	public SmsAccount getSmsAccount(String sakaiSiteId, String sakaiUserId);
 
 	/**
 	 * Gets all the sms account records
@@ -77,6 +78,14 @@ public interface SmsAccountLogic {
 	public List<SmsAccount> getAllSmsAccounts();
 
 	/**
+	 * Get all the accounts the bellong to that owner
+	 * @param sakaiUserId
+	 * @return a list of sms accounts
+	 */
+	public List<SmsAccount> getSmsAccountsForOwner(String sakaiUserId);
+	
+	
+	/**
 	 * This method will persists the given object.
 	 * 
 	 * If the object is a new entity then it will be created on the DB. If it is
@@ -85,7 +94,7 @@ public interface SmsAccountLogic {
 	 * @param sms
 	 *            account to be persisted
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount);
+	public void persistSmsAccount(SmsAccount smsAccount) throws IllegalArgumentException;
 
 	/**
 	 * Recalculate balance for a specific account.

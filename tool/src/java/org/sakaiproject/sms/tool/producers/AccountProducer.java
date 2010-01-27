@@ -131,8 +131,14 @@ public class AccountProducer implements ViewComponentProducer,
 							null));
 		}
 
+		UIMessage.make(form, "sakai-owner-id-label",
+		"sms.sms-account.sakai-owner-id");
+		UIInput.make(form, "sakai-owner-id", accountOTP + ".ownerId");
+		
+
+
 		UIMessage.make(form, "overdraft-limit-label",
-				"sms.sms-account.overdraft-limit");
+		"sms.sms-account.overdraft-limit");
 		UIInput.make(form, "overdraft-limit", accountOTP + ".overdraftLimit");
 		UIMessage.make(form, "notiEmail-label",
 				"sms.sms-account.notificationEmail");

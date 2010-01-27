@@ -27,6 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.quartz.impl.jdbcjobstore.InvalidConfigurationException;
+import org.sakaiproject.genericdao.api.search.Restriction;
+import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.logic.SmsLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
@@ -104,6 +107,15 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		return smsDao.runQuery("from SmsAccount");
 	}
 
+	
+	public List<SmsAccount> getSmsAccountsForOwner(String sakaiUserId) {
+		List<SmsAccount> ret = null;
+		Search search = new Search();
+		search.addRestriction(new Restriction("ownerId", sakaiUserId));
+		ret = smsDao.findBySearch(SmsAccount.class, search);
+		return ret;
+	}
+	
 	/**
 	 * This method will persists the given object.
 	 * 
@@ -112,13 +124,21 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * 
 	 * @param sms
 	 *            account to be persisted
+	 * @throws InvalidConfigurationException 
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount) {
+	public void persistSmsAccount(SmsAccount smsAccount) throws IllegalArgumentException {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
 			throw new DuplicateUniqueFieldException(smsAccount.getSakaiSiteId());
 		}
 		if (!hasUniqueSakaiUserId(smsAccount)) {
 			throw new DuplicateUniqueFieldException(smsAccount.getSakaiUserId());
+		}
+		
+		//does the userId supplied match a sakai user?
+		if (smsAccount.getOwnerId() != null && smsAccount.getOwnerId().length() >0) {
+			if (!externalLogic.userExists(smsAccount.getOwnerId())) {
+				throw new IllegalArgumentException(smsAccount.getOwnerId() + "  doesnt match a valid user");
+			}
 		}
 
 		persist(smsAccount);
@@ -261,7 +281,12 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			smsAccount.setMessageTypeCode(SmsConstants.MESSAGE_TYPE_CODE_SO);
 			smsAccount.setStartdate(new Date());
 			smsAccount.setSakaiSiteId(SmsConstants.SAKAI_SMS_ADMIN_SITE);
-			persistSmsAccount(smsAccount);
+			try {
+				persistSmsAccount(smsAccount);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			return getSmsAccount(sakaiSiteId, sakaiUserId);
 		}
@@ -366,7 +391,13 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			credits += transaction.getTransactionCredits();
 		}
 		account.setCredits(credits);
-		persistSmsAccount(account);
+		
+		try {
+			persistSmsAccount(account);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public double getAccountBalance(double credits) {

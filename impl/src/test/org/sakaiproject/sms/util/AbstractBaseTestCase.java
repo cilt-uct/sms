@@ -59,6 +59,7 @@ public abstract class AbstractBaseTestCase extends TestCase {
 		SmsAccountLogicImpl smsAccountLogicImpl = new SmsAccountLogicImpl();
 		smsAccountLogicImpl.setHibernateLogicLocator(hibernateLogicLocator);
 		smsAccountLogicImpl.setSmsDao(smsDao);
+		smsAccountLogicImpl.setExternalLogic(new ExternalLogicStub());
 
 		hibernateLogicLocator.setSmsAccountLogic(smsAccountLogicImpl);
 

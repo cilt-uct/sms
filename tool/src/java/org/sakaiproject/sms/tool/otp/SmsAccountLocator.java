@@ -84,6 +84,12 @@ public class SmsAccountLocator implements BeanLocator {
 						TargettedMessage.SEVERITY_ERROR));
 				return ActionResults.ERROR;
 			}
+			catch (IllegalArgumentException e) {
+				messages.addMessage(new TargettedMessage("sms.errors."
+						+  "userNotFound", new Object[]{account.getOwnerId()},
+						TargettedMessage.SEVERITY_ERROR));
+				return ActionResults.ERROR;
+			}
 
 			messages.addMessage(new TargettedMessage("sms.sms-account.saved",
 					null, TargettedMessage.SEVERITY_INFO));

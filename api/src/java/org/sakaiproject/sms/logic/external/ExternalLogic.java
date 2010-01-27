@@ -237,6 +237,14 @@ public interface ExternalLogic {
 	public String getUserEidFromId(String userId);
 	
 	/**
+	 * Does the supplied userId Exist?
+	 * @param userId
+	 * @return
+	 */
+	public boolean userExists(String userId);
+	
+	
+	/**
 	 * Get a site reference from an id
 	 * @param siteId
 	 * @return
