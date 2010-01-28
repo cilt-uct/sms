@@ -126,7 +126,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 *            account to be persisted
 	 * @throws InvalidConfigurationException 
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount) throws IllegalArgumentException {
+	public void persistSmsAccount(SmsAccount smsAccount) {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
 			throw new DuplicateUniqueFieldException(smsAccount.getSakaiSiteId());
 		}
@@ -134,13 +134,6 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			throw new DuplicateUniqueFieldException(smsAccount.getSakaiUserId());
 		}
 		
-		//does the userId supplied match a sakai user?
-		if (smsAccount.getOwnerId() != null && smsAccount.getOwnerId().length() >0) {
-			if (!externalLogic.userExists(smsAccount.getOwnerId())) {
-				throw new IllegalArgumentException(smsAccount.getOwnerId() + "  doesnt match a valid user");
-			}
-		}
-
 		persist(smsAccount);
 		
 		// TODO - Distinguish between creation and update events

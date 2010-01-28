@@ -94,7 +94,7 @@ public interface SmsAccountLogic {
 	 * @param sms
 	 *            account to be persisted
 	 */
-	public void persistSmsAccount(SmsAccount smsAccount) throws IllegalArgumentException;
+	public void persistSmsAccount(SmsAccount smsAccount);
 
 	/**
 	 * Recalculate balance for a specific account.

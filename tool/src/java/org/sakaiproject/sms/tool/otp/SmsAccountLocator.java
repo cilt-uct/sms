@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.otp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
@@ -76,17 +77,22 @@ public class SmsAccountLocator implements BeanLocator {
 
 	public String saveAll() {
 		for (SmsAccount account : delivered.values()) {
+			
+			//does the userId supplied match a sakai user?
+			if (account.getOwnerId() != null && account.getOwnerId().length() >0) {
+				if (!externalLogic.userExists(account.getOwnerId())) {
+					messages.addMessage(new TargettedMessage("sms.errors."
+							+  "userNotFound", new Object[]{account.getOwnerId()},
+							TargettedMessage.SEVERITY_ERROR));
+					return ActionResults.ERROR;
+				}
+			}
+					
 			try {
 				smsAccountLogic.persistSmsAccount(account);
 			} catch (DuplicateUniqueFieldException e) {
 				messages.addMessage(new TargettedMessage("sms.errors."
 						+ e.getField() + ".duplicate", null,
-						TargettedMessage.SEVERITY_ERROR));
-				return ActionResults.ERROR;
-			}
-			catch (IllegalArgumentException e) {
-				messages.addMessage(new TargettedMessage("sms.errors."
-						+  "userNotFound", new Object[]{account.getOwnerId()},
 						TargettedMessage.SEVERITY_ERROR));
 				return ActionResults.ERROR;
 			}
@@ -103,6 +109,11 @@ public class SmsAccountLocator implements BeanLocator {
 
 	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
 		this.smsAccountLogic = smsAccountLogic;
+	}
+	
+	private ExternalLogic externalLogic;
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
 
 }

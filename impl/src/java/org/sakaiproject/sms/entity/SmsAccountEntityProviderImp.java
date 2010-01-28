@@ -69,6 +69,12 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		this.smsAccountLogic = smsAccountLogic;
 	}
 	
+	
+	private ExternalLogic externalLogic;	
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
+	}
+
 	private SmsBilling smsBilling;
 
 	public void setSmsBilling(SmsBilling smsBilling) {
@@ -107,6 +113,14 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		smsAccount.setCredits(0);
 		
 		smsAccount.setAccountEnabled(true);
+		
+		
+		//does the userId supplied match a sakai user?
+		if (smsAccount.getOwnerId() != null && smsAccount.getOwnerId().length() >0) {
+			if (!externalLogic.userExists(smsAccount.getOwnerId())) {
+				throw new IllegalArgumentException(smsAccount.getOwnerId() + "  doesnt match a valid user");
+			}
+		}
 		
 		// Save the new account
 		

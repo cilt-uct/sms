@@ -15,6 +15,7 @@
 		<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic"/>
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
+		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 	</bean>
 
     <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl">
