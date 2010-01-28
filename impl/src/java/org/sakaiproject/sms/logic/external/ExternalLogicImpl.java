@@ -65,6 +65,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
+import org.sakaiproject.sms.model.SmsUser;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -1152,5 +1153,17 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		return false;
 	}
+
+	
+	public SmsUser getSmsUser(String userId) {
+		try {
+			User u = userDirectoryService.getUser(userId);
+			return new SmsUser(userId, u.getEmail(), u.getFirstName(), u.getLastName(), u.getDisplayName(), u.getEid());
+		} catch (UserNotDefinedException e) {
+			LOG.debug("user not found for id: " + userId);
+		}
+		return null;
+	}
+
 
 }

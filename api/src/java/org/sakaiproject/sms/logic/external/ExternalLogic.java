@@ -30,6 +30,7 @@ import java.util.TimeZone;
 
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
+import org.sakaiproject.sms.model.SmsUser;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
@@ -244,6 +245,12 @@ public interface ExternalLogic {
 	public boolean userExists(String userId);
 	
 	
+	/**
+	 * Get a SmsUser object for the given identifier
+	 * @param userId
+	 * @return
+	 */
+	public SmsUser getSmsUser(String userId);
 	/**
 	 * Get a site reference from an id
 	 * @param siteId

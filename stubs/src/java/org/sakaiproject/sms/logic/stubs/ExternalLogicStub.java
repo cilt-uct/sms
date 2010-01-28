@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
+import org.sakaiproject.sms.model.SmsUser;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
@@ -360,6 +361,11 @@ public class ExternalLogicStub implements ExternalLogic {
 
 	public boolean userExists(String userId) {
 		return true;
+	}
+
+	public SmsUser getSmsUser(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

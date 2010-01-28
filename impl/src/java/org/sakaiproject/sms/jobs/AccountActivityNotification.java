@@ -2,12 +2,9 @@ package org.sakaiproject.sms.jobs;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -30,6 +27,7 @@ import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
+import org.sakaiproject.sms.model.SmsUser;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTransaction;
 /**
@@ -74,11 +72,20 @@ public class AccountActivityNotification implements Job {
 		for (int i = 0; i < accounts.size(); i++) {
 			SmsAccount account = accounts.get(i);
 			
+			//user to send to
+			String sendToUser = null;
+			
 			//ok we need some info on the users
 			String to = account.getNotificationEmail();
+			SmsUser userTo = null;
 			if ((to == null || to.length() == 0) && account.getOwnerId() != null) {
-				//look up the owners email 
-				to = externalLogic.getSakaiEmailAddressForUserId(account.getOwnerId()); 
+				//look up the owners email
+				userTo = externalLogic.getSmsUser(account.getOwnerId());
+				to = userTo.getEmail();
+				sendToUser = "/user/" + account.getOwnerId();
+			} else {
+				//TODO - need to get the userId from the email
+				
 			}
 			
 			
@@ -86,6 +93,7 @@ public class AccountActivityNotification implements Job {
 			//construct the transaction list
 			List<SmsTransaction> transList = smsTransactionLogic.getSmsTransactionsForAccountId(account.getId());
 			StringBuilder csv = new StringBuilder();
+			csv.append("\"Date\",\"Description\",\"Credits\",\"Balance\"\r\n");
 			for (int q = 0; q < transList.size(); q ++) {
 				SmsTransaction transaction = transList.get(q);
 				csv.append("\"" + transaction.getTransactionDate() + "\",");
@@ -96,7 +104,9 @@ public class AccountActivityNotification implements Job {
 			LOG.info("going to send sms to: " + to);
 			LOG.info(csv.toString());
 			//we need a file for this
-			File csvAttach = new File("/tmp/accountstatement.csv");
+			String filePath = System.getProperty("java.io.tmpdir") + File.separator + "accountstatement.csv";
+			LOG.info(filePath);
+			File csvAttach = new File(filePath);
 			Writer output = null;
 			
 			try {
@@ -126,7 +136,13 @@ public class AccountActivityNotification implements Job {
 			LOG.info("file of size: " + csvAttach.length());
 			
 			Map<String, String> repVals = new HashMap<String, String>();
-			RenderedTemplate template = emailTemplateService.getRenderedTemplateForUser("sms.accountActivity", "/user/" + account.getOwnerId(),repVals);
+			LOG.info("user first: " + userTo.getFirstName());
+			repVals.put("recipientFirst", userTo.getFirstName());
+			repVals.put("accountName", account.getAccountName());
+			repVals.put("accountId", account.getId().toString());
+			repVals.put("currentBalance", String.valueOf(account.getCredits()));
+			
+			RenderedTemplate template = emailTemplateService.getRenderedTemplateForUser("sms.accountActivity", sendToUser,repVals);
 			InternetAddress inetTo[];
 			try {
 				inetTo = new InternetAddress[]{new InternetAddress(to)};
@@ -135,7 +151,7 @@ public class AccountActivityNotification implements Job {
 				attachments.add(new Attachment(csvAttach, "accountstatement.csv"));
 				List<String> headers = new ArrayList<String>();
 				String subject = template.getSubject();
-				emailService.sendMail(inetFrom, inetTo, subject, template.getHtmlMessage(), null, null, headers, attachments);
+				emailService.sendMail(inetFrom, inetTo, subject, template.getRenderedMessage(), null, null, headers, attachments);
 			} catch (AddressException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
