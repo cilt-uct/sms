@@ -88,7 +88,10 @@ public class AccountActivityNotification implements Job {
 				
 			}
 			
-			
+			if (userTo == null) {
+				LOG.warn("can't resolve owner of account " + account.getId().toString() );
+				continue;
+			}
 			
 			//construct the transaction list
 			List<SmsTransaction> transList = smsTransactionLogic.getSmsTransactionsForAccountId(account.getId());
@@ -101,8 +104,8 @@ public class AccountActivityNotification implements Job {
 				csv.append("\"" + transaction.getTransactionCredits() + "\",");
 				csv.append("\"" + transaction.getCreditBalance() + "\"\r\n");
 			}
-			LOG.info("going to send sms to: " + to);
-			LOG.info(csv.toString());
+			LOG.debug("going to send sms to: " + to);
+			LOG.debug(csv.toString());
 			//we need a file for this
 			String filePath = System.getProperty("java.io.tmpdir") + File.separator + "accountstatement.csv";
 			LOG.info(filePath);
@@ -133,10 +136,9 @@ public class AccountActivityNotification implements Job {
 				}
 				
 			}
-			LOG.info("file of size: " + csvAttach.length());
+			LOG.debug("file of size: " + csvAttach.length());
 			
 			Map<String, String> repVals = new HashMap<String, String>();
-			LOG.info("user first: " + userTo.getFirstName());
 			repVals.put("recipientFirst", userTo.getFirstName());
 			repVals.put("accountName", account.getAccountName());
 			repVals.put("accountId", account.getId().toString());
