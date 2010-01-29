@@ -48,14 +48,13 @@ sub createAccount($$$$$$) {
     my $host = shift;
     my $siteId = shift;
     my $accountName = shift;
-    my $ownerEid = shift;
-    my $ownerEmail = shift;
+    my $ownerId = shift;
     my $overdraft = shift;
     
     $response = $ua->post("$host/direct/sms-account/new", [
         accountName => $accountName,
         sakaiSiteId => $siteId,
-	notificationEmail => $ownerEmail,
+	ownerId => $ownerId,
 	overdraftLimit => $overdraft ]);
 
     ## Return the new account ID if successful, otherwise empty string

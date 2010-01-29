@@ -49,9 +49,9 @@ sub getSiteName($$$) {
     return $json_text->{title};
 }
 
-## Get user's email address
+## Get user's id and email address
 
-sub getUserEmail($$$) {
+sub getUserByEid($$$) {
 
     my $ua = shift;
     my $host = shift;
@@ -59,14 +59,14 @@ sub getUserEmail($$$) {
     
     $response = $ua->get("$host/direct/user/$userEid.json");
 
-    ## Return the email address if successful, otherwise empty string
+    ## Return the userid and email address if successful, otherwise empty string
        
     if ($debug) {
         print "getUserEmail status: " . $response->status_line . "\n";
     }
     
     if ($response->code ne "200") {
-        return "";
+        return ("", "");
     }
     
     ## Parse the JSON 
@@ -74,12 +74,12 @@ sub getUserEmail($$$) {
     my $json = new JSON; 
     my $json_text = $json->decode($response->content);
  
-    return $json_text->{email};
+    return ($json_text->{id}, $json_text->{email});
 }
 
 ## Get user's eid given email address, if the email address is unique
 
-sub getUserEidByEmail($$$) {
+sub getUserByEmail($$$) {
 
     my $ua = shift;
     my $host = shift;
@@ -87,7 +87,7 @@ sub getUserEidByEmail($$$) {
     
     $response = $ua->get("$host/direct/user.json?email=$userEmail");
 
-    ## Return the eid if successful and the email address is unique, otherwise empty string
+    ## Return the id and eid if successful and the email address is unique, otherwise empty string
        
     if ($debug) {
         print "getUserEidByEmail status: " . $response->status_line . "\n";
@@ -103,12 +103,12 @@ sub getUserEidByEmail($$$) {
     my $rcount = @{$json_text->{user_collection}};
     
     if ($rcount == 1) {
-	return $json_text->{user_collection}[0]->{eid};
+	return ($json_text->{user_collection}[0]->{id}, $json_text->{user_collection}[0]->{eid});
     }
 
     ## Not found or not unique
 
-    return "";
+    return ("", "");
 }
 
 return 1;
