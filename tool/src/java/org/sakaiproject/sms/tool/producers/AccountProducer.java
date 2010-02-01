@@ -32,6 +32,7 @@ import org.sakaiproject.sms.tool.util.MessageFixupHelper;
 import uk.org.ponder.beanutil.BeanGetter;
 import uk.org.ponder.rsf.components.ELReference;
 import uk.org.ponder.rsf.components.UIBoundList;
+import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
@@ -123,9 +124,10 @@ public class AccountProducer implements ViewComponentProducer,
 					.addParameter(new UIELBinding(accountOTP + ".sakaiUserId",
 							null));
 		} else {
-			UIMessage.make(form, "sakai-user-id-label",
+			UIBranchContainer uRow = UIBranchContainer.make(form, "type filter text");
+			UIMessage.make(uRow, "sakai-user-id-label",
 					"sms.sms-account.sakai-user-id");
-			UIInput.make(form, "sakai-user-id", accountOTP + ".sakaiUserId");
+			UIInput.make(uRow, "sakai-user-id", accountOTP + ".sakaiUserId");
 			form
 					.addParameter(new UIELBinding(accountOTP + ".sakaiSiteId",
 							null));
