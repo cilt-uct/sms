@@ -238,6 +238,6 @@ public interface SmsBilling {
 	 * @param description 
 	 * @throws SmsInsufficientCreditsException 
 	 */
-	public void transferAccountCredits(SmsAccount fromAccount, SmsAccount toAccount, double credits, String description) throws SmsInsufficientCreditsException;
+	public void transferAccountCredits(Long fromAccount, Long toAccount, double credits) throws SmsInsufficientCreditsException;
 
 }

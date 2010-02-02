@@ -539,31 +539,17 @@ public class SmsBillingImpl implements SmsBilling {
 				"TRANS_INCOMING", "IN"), 5);
 	}
 
-	public void transferAccountCredits(SmsAccount fromAccount,
-			SmsAccount toAccount, double credits, String description) throws SmsInsufficientCreditsException {
+	public void transferAccountCredits(Long fromAccountId,
+			Long toAccountId, double credits) throws SmsInsufficientCreditsException {
 		
 		//consider checking if accounts are enabled?
 		//cannot transfer from an account in overdraft
-		
-		if( credits <= fromAccount.getCredits()){
-			double fromAccountCredit = fromAccount.getCredits() - credits;
-			double toAccountCredit = toAccount.getCredits() + credits;
-
-			fromAccount.setCredits(fromAccountCredit);
-			toAccount.setCredits(toAccountCredit);
-			
-			// Update accounts
-			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(fromAccount);
-			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(toAccount);
-			
-			String txRef = "/sms-account/transfer?fromAccount=" + fromAccount.getId() 
-				+ "&toAccount=" + toAccount.getId() + "credits=" + credits
-				+ "&description=" + description;
-			externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef, null);
-			
+		if( checkSufficientCredits(fromAccountId, credits) ){
+			creditAccount(fromAccountId, -credits, "Transfer credits to account " + toAccountId);
+			creditAccount(toAccountId, credits, "Transfer credits from account " + fromAccountId);
 		}else{
 			//not enough credits in from account
-			throw new SmsInsufficientCreditsException("Cannot transfer " + credits + "credits from account: " + fromAccount.getId());
+			throw new SmsInsufficientCreditsException("Cannot transfer " + credits + "credits from account: " + fromAccountId);
 		}
 		
 	}

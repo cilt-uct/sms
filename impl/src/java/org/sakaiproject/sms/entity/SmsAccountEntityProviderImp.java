@@ -347,10 +347,6 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 	@EntityCustomAction(action=CUSTOM_ACTION_TRANSFER,viewKey=EntityView.VIEW_NEW)
 	public void transferAccountCredit(EntityReference ref, Map<String, Object> params) {
 
-		if (!SecurityService.isSuperUser()) {
-        	throw new SecurityException("Only admin users may manage accounts");	
-        }
-
 		Long fromAccountId;
 		Long toAccountId;
 		try{
@@ -362,13 +358,18 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		
 		SmsAccount fromAccount = smsAccountLogic.getSmsAccount(fromAccountId);
 		SmsAccount toAccount = smsAccountLogic.getSmsAccount(toAccountId);
-		if (fromAccount == null) {
+		if (fromAccountId == null) {
 			throw new IllegalArgumentException(
 					"No account found to transfer FROM, given id: "  + fromAccountId);
 		}
-		if (toAccount == null) {
+		if (toAccountId == null) {
 			throw new IllegalArgumentException(
 					"No account found to transfer TO, given id: "  + toAccountId);
+		}
+		
+		if(fromAccount == toAccount){
+			throw new IllegalArgumentException(
+					"Cannot transfer to same account: "  + fromAccountId);
 		}
 
 		try {
@@ -376,15 +377,22 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 			if (credit == null) {
 				throw new IllegalArgumentException("No credit value given");
 			}
-			
 			double cred = Double.valueOf(credit).doubleValue();
-			String description = (String) params.get("description");
 			
-			try{
-				//Call transfer method
-				smsBilling.transferAccountCredits(fromAccount, toAccount, cred, description);
-			} catch (SmsInsufficientCreditsException e) {
-				throw new IndexOutOfBoundsException(cred + "credits is too much to move from account: " + fromAccount.getId());
+			//Check permissions
+			String currentUserId = developerHelperService.getCurrentUserId();
+			boolean isFromAccountOwner = currentUserId.equals(fromAccount.getOwnerId());
+			boolean isToAccountOwner = currentUserId.equals(toAccount.getOwnerId());
+			
+			if( (isFromAccountOwner && isToAccountOwner) || SecurityService.isSuperUser()){
+				try{
+					//Call transfer method
+					smsBilling.transferAccountCredits(fromAccountId, toAccountId, cred);
+				} catch (SmsInsufficientCreditsException e) {
+					throw new IndexOutOfBoundsException(cred + "credits is too much to move from account: " + fromAccountId);
+				}
+			}else{
+				throw new SecurityException("You do not own any valid accounts to make this transfer.");
 			}
 			
  		} catch (NumberFormatException e){

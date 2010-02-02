@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
@@ -187,9 +188,9 @@ public class SmsBillingStub implements SmsBilling {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public void transferAccountCredits(SmsAccount fromAccount,
-			SmsAccount toAccount, double credits, String description) {
+	
+	public void transferAccountCredits(Long fromAccount, Long toAccount,
+			double credits) throws SmsInsufficientCreditsException {
 		// TODO Auto-generated method stub
 		
 	}
