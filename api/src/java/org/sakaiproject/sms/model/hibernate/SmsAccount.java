@@ -101,7 +101,11 @@ public class SmsAccount extends BaseModel {
 	 * @param ownerId
 	 */
 	public void setOwnerId(String ownerId) {
-		this.ownerId = ownerId;
+		if (ownerId != null) {
+			this.ownerId = ownerId.trim();
+		} else {
+			this.ownerId = null;
+		}
 	}
 
 	/**
