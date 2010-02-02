@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsConfig;
@@ -536,6 +537,35 @@ public class SmsBillingImpl implements SmsBilling {
 	public String getIncomingMessageCode() {
 		return StringUtils.left(PROPERTIES.getProperty(
 				"TRANS_INCOMING", "IN"), 5);
+	}
+
+	public void transferAccountCredits(SmsAccount fromAccount,
+			SmsAccount toAccount, double credits, String description) throws SmsInsufficientCreditsException {
+		
+		//consider checking if accounts are enabled?
+		//cannot transfer from an account in overdraft
+		
+		if( credits <= fromAccount.getCredits()){
+			double fromAccountCredit = fromAccount.getCredits() - credits;
+			double toAccountCredit = toAccount.getCredits() + credits;
+
+			fromAccount.setCredits(fromAccountCredit);
+			toAccount.setCredits(toAccountCredit);
+			
+			// Update accounts
+			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(fromAccount);
+			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(toAccount);
+			
+			String txRef = "/sms-account/transfer?fromAccount=" + fromAccount.getId() 
+				+ "&toAccount=" + toAccount.getId() + "credits=" + credits
+				+ "&description=" + description;
+			externalLogic.postEvent(ExternalLogic.SMS_EVENT_ACCOUNT_CREDIT, txRef, null);
+			
+		}else{
+			//not enough credits in from account
+			throw new SmsInsufficientCreditsException("Cannot transfer " + credits + "credits from account: " + fromAccount.getId());
+		}
+		
 	}
 
 }

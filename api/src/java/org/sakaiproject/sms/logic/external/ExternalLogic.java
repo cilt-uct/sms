@@ -51,6 +51,7 @@ public interface ExternalLogic {
 	public final static String SMS_EVENT_ACCOUNT_DELETE = "sms.account.delete";
 	public final static String SMS_EVENT_ACCOUNT_REVISE = "sms.account.revise";
 	public final static String SMS_EVENT_ACCOUNT_CREDIT = "sms.account.credit";
+	public final static String SMS_EVENT_ACCOUNT_TRANSFER = "sms.account.transfer";
 	
 	// Permissions for SMS
 

@@ -22,6 +22,7 @@
 package org.sakaiproject.sms.logic.smpp;
 
 import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 
@@ -227,5 +228,16 @@ public interface SmsBilling {
 	public String getIncomingMessageCode();
 	
 	public boolean debitIncomingMessage(SmsAccount account, double credits, Long replyTaskId);
+	
+
+	/**
+	 * Move credits from one account to the other.
+	 * @param fromAccount Account to debit
+	 * @param toAccount Account to credit
+	 * @param credits Amount to transfer
+	 * @param description 
+	 * @throws SmsInsufficientCreditsException 
+	 */
+	public void transferAccountCredits(SmsAccount fromAccount, SmsAccount toAccount, double credits, String description) throws SmsInsufficientCreditsException;
 
 }

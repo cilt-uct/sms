@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:$
+ * $Id:$
  ***********************************************************************************
  *
  * Copyright (c) 2008, 2009 The Sakai Foundation
@@ -18,16 +18,41 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.entity;
+package org.sakaiproject.sms.logic.hibernate.exception;
 
-import org.sakaiproject.entitybroker.entityprovider.EntityProvider;
+/**
+ * A exception class that indicates an account does not have enough credits for a particular action
+ */
+public class SmsInsufficientCreditsException extends Exception{
 
-public interface SmsAccountEntityProvider extends EntityProvider {
-	public final static String ENTITY_PREFIX = "sms-account";
+	private static final long serialVersionUID = 1L;
+
 	/**
-	 * Custom action locator for crediting or debiting an account
+	 * Instantiates a account not found exception.
 	 */
-	public final static String CUSTOM_ACTION_CREDIT = "credit";
-	public final static String CUSTOM_ACTION_TRANSFER = "transfer";
+	public SmsInsufficientCreditsException() {
+	}
 
+	/**
+	 * Instantiates a account not found exception.
+	 * 
+	 * @param msg
+	 *            the msg
+	 */
+	public SmsInsufficientCreditsException(String msg) {
+		super(msg);
+	}
+
+	/**
+	 * Instantiates a account not found exception.
+	 * 
+	 * @param e
+	 *            the exception  
+	 */
+	public SmsInsufficientCreditsException(Exception e) {
+		super(e);
+	}
+
+	
+	
 }

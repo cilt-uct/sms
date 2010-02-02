@@ -188,4 +188,10 @@ public class SmsBillingStub implements SmsBilling {
 		return null;
 	}
 
+	public void transferAccountCredits(SmsAccount fromAccount,
+			SmsAccount toAccount, double credits, String description) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

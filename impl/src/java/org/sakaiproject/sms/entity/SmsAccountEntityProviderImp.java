@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.EntityView;
 import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
@@ -42,6 +43,7 @@ import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.model.hibernate.SmsAccount;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
@@ -252,11 +254,13 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		// All accounts - admin only
 		if (userRes == null && siteRes == null) {
 
-			if (!SecurityService.isSuperUser()) {
-				throw new SecurityException("Only admin users may manage accounts");	
+			if (SecurityService.isSuperUser()) {
+				return smsAccountLogic.getAllSmsAccounts();	
+			}else{
+				
+				String currentUserId = developerHelperService.getCurrentUserId();
+				return smsAccountLogic.getSmsAccountsForOwner(currentUserId);
 			}
-
-			return smsAccountLogic.getAllSmsAccounts();
 		}
 
 		// Site - if the user has send permission in this site
@@ -292,14 +296,8 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 			userId = userRes.getStringValue();
 		}
 			
-		List<SmsAccount> accounts = new ArrayList<SmsAccount>();
-		SmsAccount account = smsAccountLogic.getSmsAccount(null, userId);
-		
-		if (account != null) {
-			accounts.add(account);
-		}
-		
-		return accounts;
+		return smsAccountLogic.getSmsAccountsForOwner(userId);
+	
 	}
 
 	//Custom action to handle /sms-account/:ID:/credit 
@@ -344,7 +342,56 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 
 		return nf.format(account.getCredits());
 	}
-	
+
+	//Custom action to handle /sms-account/transfer
+	@EntityCustomAction(action=CUSTOM_ACTION_TRANSFER,viewKey=EntityView.VIEW_NEW)
+	public void transferAccountCredit(EntityReference ref, Map<String, Object> params) {
+
+		if (!SecurityService.isSuperUser()) {
+        	throw new SecurityException("Only admin users may manage accounts");	
+        }
+
+		Long fromAccountId;
+		Long toAccountId;
+		try{
+			fromAccountId = Long.parseLong(params.get("fromAccount").toString());
+			toAccountId = Long.parseLong(params.get("toAccount").toString());
+		} catch (NumberFormatException e){
+ 			throw new IllegalArgumentException("An account id value is invalid.");
+ 		}
+		
+		SmsAccount fromAccount = smsAccountLogic.getSmsAccount(fromAccountId);
+		SmsAccount toAccount = smsAccountLogic.getSmsAccount(toAccountId);
+		if (fromAccount == null) {
+			throw new IllegalArgumentException(
+					"No account found to transfer FROM, given id: "  + fromAccountId);
+		}
+		if (toAccount == null) {
+			throw new IllegalArgumentException(
+					"No account found to transfer TO, given id: "  + toAccountId);
+		}
+
+		try {
+			String credit = (String) params.get("credits");
+			if (credit == null) {
+				throw new IllegalArgumentException("No credit value given");
+			}
+			
+			double cred = Double.valueOf(credit).doubleValue();
+			String description = (String) params.get("description");
+			
+			try{
+				//Call transfer method
+				smsBilling.transferAccountCredits(fromAccount, toAccount, cred, description);
+			} catch (SmsInsufficientCreditsException e) {
+				throw new IndexOutOfBoundsException(cred + "credits is too much to move from account: " + fromAccount.getId());
+			}
+			
+ 		} catch (NumberFormatException e){
+ 			throw new IllegalArgumentException("Invalid credit value");
+ 		}
+ 		
+	}
 	
 	public String[] getHandledOutputFormats() {
 		return new String[] { Formats.XML, Formats.JSON };
