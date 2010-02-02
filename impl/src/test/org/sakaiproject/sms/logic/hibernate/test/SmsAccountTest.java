@@ -116,7 +116,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 					newSmsAccount);
 			fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID, due
+			assertEquals("sakaiSiteId", due
 					.getField());
 		}
 	}
@@ -143,7 +143,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 					newSmsAccount);
 			fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID, due
+			assertEquals("sakaiUserId", due
 					.getField());
 		}
 	}

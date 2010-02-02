@@ -128,10 +128,10 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 */
 	public void persistSmsAccount(SmsAccount smsAccount) {
 		if (!hasUniqueSakaiSiteId(smsAccount)) {
-			throw new DuplicateUniqueFieldException(smsAccount.getSakaiSiteId());
+			throw new DuplicateUniqueFieldException("sakaiSiteId");
 		}
 		if (!hasUniqueSakaiUserId(smsAccount)) {
-			throw new DuplicateUniqueFieldException(smsAccount.getSakaiUserId());
+			throw new DuplicateUniqueFieldException("sakaiUserId");
 		}
 		
 		persist(smsAccount);
