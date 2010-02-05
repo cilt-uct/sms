@@ -164,25 +164,13 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		if (!developerHelperService.isEntityRequestInternal(ref + "")) {
 			// not an internal request so we require user to be logged in
 			
-			// TODO - relax these to permit users to retreive their own
-			// account info. This is slightly unclear for accounts associated
-			// with sites because we don't have a concept of account owner.
-			
 			if (currentUserId == null) {
 				throw new SecurityException(
 						"User must be logged in in order to access sms task: "
 								+ ref);
-			} else {
-				String userReference = developerHelperService
-						.getCurrentUserReference();
-				allowedManage = developerHelperService
-						.isUserAdmin(developerHelperService
-								.getCurrentUserReference());
-				if (!allowedManage
-						&& !account.getSakaiUserId().equals(currentUserId)) {
-					throw new SecurityException("User (" + userReference
-							+ ") not allowed to access sms task: " + ref);
-				}
+			} else if (!currentUserId.equals(account.getOwnerId()) || !SecurityService.isSuperUser()) {
+				throw new SecurityException("User (" + currentUserId
+						+ ") not allowed to access sms task: " + ref);
 			}
 		}
 
