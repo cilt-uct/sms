@@ -159,16 +159,14 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		}
 
 		String currentUserId = developerHelperService.getCurrentUserId();
-		boolean allowedManage = false;
 		
 		if (!developerHelperService.isEntityRequestInternal(ref + "")) {
 			// not an internal request so we require user to be logged in
-			
 			if (currentUserId == null) {
 				throw new SecurityException(
 						"User must be logged in in order to access sms task: "
 								+ ref);
-			} else if (!currentUserId.equals(account.getOwnerId()) || !SecurityService.isSuperUser()) {
+			} else if (!currentUserId.equals(account.getOwnerId()) && !SecurityService.isSuperUser()) { 
 				throw new SecurityException("User (" + currentUserId
 						+ ") not allowed to access sms task: " + ref);
 			}
