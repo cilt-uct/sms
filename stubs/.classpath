@@ -1,46 +1,6 @@
 <classpath>
-  <classpathentry kind="src" path="src/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/java"/>
   <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="var" path="M2_REPO/javax/activation/activation/1.1.1/activation-1.1.1.jar" sourcepath="M2_REPO/javax/activation/activation/1.1.1/activation-1.1.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4.2/mail-1.4.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/net/sourceforge/groboutils/groboutils-core/5/groboutils-core-5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/google/code/jsmpp/2.1.0/jsmpp-2.1.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.12/log4j-1.2.12.jar"/>
-  <classpathentry kind="var" path="M2_REPO/quartz/quartz/1.5.2/quartz-1.5.2.jar" sourcepath="M2_REPO/quartz/quartz/1.5.2/quartz-1.5.2-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/common/sakai-common-edu-person-api/1.0.0-beta01/sakai-common-edu-person-api-1.0.0-beta01.jar" sourcepath="M2_REPO/org/sakaiproject/common/sakai-common-edu-person-api/1.0.0-beta01/sakai-common-edu-person-api-1.0.0-beta01-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/common/sakai-common-edu-person-api/1.0.0-beta01/sakai-common-edu-person-api-1.0.0-beta01-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/common/sakai-common-manager-api/1.0.0-beta01/sakai-common-manager-api-1.0.0-beta01.jar" sourcepath="M2_REPO/org/sakaiproject/common/sakai-common-manager-api/1.0.0-beta01/sakai-common-manager-api-1.0.0-beta01-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/common/sakai-common-manager-api/1.0.0-beta01/sakai-common-manager-api-1.0.0-beta01-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/common/sakai-common-type-api/1.0.0-beta01/sakai-common-type-api-1.0.0-beta01.jar" sourcepath="M2_REPO/org/sakaiproject/common/sakai-common-type-api/1.0.0-beta01/sakai-common-type-api-1.0.0-beta01-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/common/sakai-common-type-api/1.0.0-beta01/sakai-common-type-api-1.0.0-beta01-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta02/sakai-component-manager-1.1.0-beta02.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta02/sakai-component-manager-1.1.0-beta02-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-component-manager/1.1.0-beta02/sakai-component-manager-1.1.0-beta02-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta02/sakai-kernel-api-1.1.0-beta02.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta02/sakai-kernel-api-1.1.0-beta02-sources.jar">
-    <attributes>
-      <attribute value="jar:file:/home/dhorwitz/.m2/repository/org/sakaiproject/kernel/sakai-kernel-api/1.1.0-beta02/sakai-kernel-api-1.1.0-beta02-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.4.3/slf4j-api-1.4.3-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.4.3/slf4j-log4j12-1.4.3-sources.jar"/>
-  <classpathentry kind="src" path="/sms-api"/>
-  <classpathentry kind="lib" path="/usr/java/jdk1.5.0_20/lib/tools.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 </classpath>
