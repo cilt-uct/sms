@@ -69,6 +69,13 @@ public class TaskListPopupProducer implements ViewComponentProducer,
 						+ NullHandling.safeToStringFormated(smsTask
 								.getDateToSend()));
 
+				UIMessage.make(tofill, "date-to-expire-label",
+				"sms.sms-task.date.to.expire");
+		UIOutput.make(tofill, "date-to-expire", " "
+				+ NullHandling.safeToStringFormated(smsTask
+						.getDateToExpire()));
+				
+				
 				UIMessage.make(tofill, "delivery-group-name-label",
 						"sms.sms-task.delivery.group.name");
 				UIOutput.make(tofill, "delivery-group-name", " "
