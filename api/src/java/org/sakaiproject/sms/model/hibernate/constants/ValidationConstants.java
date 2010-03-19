@@ -68,6 +68,9 @@ public class ValidationConstants {
 	/** Date to send after expiry. */
 	public final static String TASK_DATE_TO_SEND_AFTER_EXPIRY = "sms.errors.task.dateToSend.afterExpiry";
 
+	/** Date to send equal to expiry. */
+	public final static String TASK_DATE_TO_SEND_EQUALS_EXPIRY = "sms.errors.task.dateToSend.equalsExpiry";
+
 	/** Status code empty. */
 	public final static String TASK_STATUS_CODE_EMPTY = "sms.errors.task.statusCode.empty";
 

@@ -148,6 +148,11 @@ public class SmsTaskValidatorImpl implements SmsTaskValidator {
 			errors.add(ValidationConstants.TASK_DATE_TO_SEND_AFTER_EXPIRY);
 		}
 
+		// Check that date to send is not equal to the expiry date
+		if ( smsTask.getDateToSend() != null && smsTask.getDateToExpire() != null && smsTask.getDateToExpire().equals(smsTask.getDateToSend()) ){
+			errors.add(ValidationConstants.TASK_DATE_TO_SEND_EQUALS_EXPIRY);
+		}
+
 		return errors;
 	}
 

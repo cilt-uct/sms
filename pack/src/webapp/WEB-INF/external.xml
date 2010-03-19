@@ -9,6 +9,7 @@
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 		<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"/>
+		<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp" class="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp">
@@ -17,7 +18,6 @@
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 	</bean>
-
     <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl">
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
     </bean>

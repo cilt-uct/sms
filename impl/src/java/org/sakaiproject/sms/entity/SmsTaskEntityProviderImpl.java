@@ -65,6 +65,7 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
+import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
 import org.sakaiproject.sms.model.hibernate.SmsMessage;
 import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
@@ -126,6 +127,12 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	public void setSmsMessageLogic(SmsMessageLogic smsMessageLogic) {
 		this.smsMessageLogic = smsMessageLogic;
 	}
+	
+	private SmsTaskValidator smsTaskValidator;
+	public void setSmsTaskValidator(SmsTaskValidator smsTaskValidator) {
+		this.smsTaskValidator = smsTaskValidator;
+	}
+
 
 
 	/**
@@ -292,8 +299,22 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 
 		// Sanitize the character set in the message body
 		task.setMessageBody(SmsMessageUtil.sanitizeMessageBody(task.getMessageBody()));
-
-        // TODO validate the task
+		
+		try{
+			ArrayList<String> errors = new ArrayList<String>();
+			errors.addAll(smsTaskValidator.validateInsertTask(task));
+			if (!errors.isEmpty()) {
+				throw new SmsTaskValidationException(
+						errors,
+						getMessage("messages.sms.errors.task.validationFailed"));
+			}
+		} catch (SmsTaskValidationException e) {
+			StringBuilder errorBuilder = new StringBuilder();
+			for ( String s : e.getErrorMessages()){
+				errorBuilder.append(getMessage(s)).append("\n ");
+			}
+			throw new IllegalArgumentException(errorBuilder.toString());
+		}
 
         smsTaskLogic.persistSmsTask(task);
         
@@ -500,11 +521,11 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 				}
 	    	}
 	    	else if( (ref.getId() != null || task.getDateToExpire() == null) && "dateToExpire".equals(paramsKey) ){
-				try {
+	    		try {
 					task.setDateToExpire( formatter.parse(paramsValue) );
 				} catch (ParseException e) {
 					throw new IllegalArgumentException( getMessage( ValidationConstants.DATE_FORMAT_INCORRECT ));
-				}
+				}		
 	    	}
 	    	else if( "copyMe".equals(paramsKey) ){
 	    		copy = Boolean.parseBoolean(paramsValue);	
