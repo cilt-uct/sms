@@ -37,6 +37,14 @@ import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
 
 /**
  * This executes an external command by invoking an http url.
+ * The script posts the following parameters:
+ * sourceAddress : originating cell no
+ * message: the message sent
+ * siteId: siteId (if included)
+ * siteTitle: if site id is included
+ * userId: internal Sakai id (if apple to  map number to user)
+ * userEid: user enterpriseId (i.e. staff/student no)
+ * command: the command used
  * 
  */
 public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedCommand {
