@@ -20,15 +20,18 @@ package org.sakaiproject.sms.logic.incoming.test;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.sakaiproject.sms.logic.command.SmsRestCommand;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
+import org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
@@ -47,6 +50,7 @@ import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
  */
 public class IncomingLogicManagerTest extends TestCase {
 
+	private static final String LOWERCASE_STRING = "lowercaseString";
 	private SmsIncomingLogicManagerImpl manager;
 	private ExternalLogic externalLogic;
 
@@ -55,6 +59,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	private DeleteSmsCommand deleteCmd;
 	private MultipleBodySmsCommand multipleCmd;
 	private HiddenSmsCommand hiddenCmd;
+	
 
 	private static String TEST_MOBILE = "1234";
 	private static String TEST_SITE = SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;
@@ -70,11 +75,20 @@ public class IncomingLogicManagerTest extends TestCase {
 		deleteCmd = new DeleteSmsCommand();
 		multipleCmd = new MultipleBodySmsCommand();
 		hiddenCmd = new HiddenSmsCommand();
-
+		
+				
+		SmsRestCommand lowerCaseCommand = new SmsRestCommand();
+		lowerCaseCommand.setVisible(true);
+		lowerCaseCommand.setCommandKey(LOWERCASE_STRING);
+		
+	
+				
 		manager.register("TEST", createCmd);
 		manager.register("TEST", updateCmd);
 		manager.register("TEST", deleteCmd);
 		manager.register("TEST", multipleCmd);
+		manager.register("TEST", lowerCaseCommand);
+	
 
 	}
 
@@ -82,6 +96,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertTrue(manager.isValidCommand("UPDATE"));
 		assertTrue(manager.isValidCommand("DELETE"));
+		assertTrue(manager.isValidCommand(LOWERCASE_STRING));
 		assertFalse(manager.isValidCommand("SOMETHING"));
 	}
 
@@ -89,7 +104,10 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertTrue(manager.isValidCommand("cReAtE"));
 		assertTrue(manager.isValidCommand("update"));
 		assertTrue(manager.isValidCommand("delETE"));
+		assertTrue(manager.isValidCommand(LOWERCASE_STRING.toUpperCase()));
+		assertTrue(manager.isValidCommand("LowerCaseString"));
 		assertFalse(manager.isValidCommand("something"));
+		
 	}
 
 	public void testDuplicateNotReplace() {
