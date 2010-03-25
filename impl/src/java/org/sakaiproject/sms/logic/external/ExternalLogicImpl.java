@@ -305,7 +305,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 			// Only add if it has corresponding role
 			for (Member member : allMembers) {
-				if (role.equals(member.getRole().getId())) {
+				if (role.equals(member.getRole().getId()) && member.isActive()) {
 					members.add(member);
 				}
 			}
@@ -315,8 +315,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			if ( groupId != null ){
 				AuthzGroup group = siteService.findGroup(groupId);
 				if(group != null){
-					LOG.debug("Found group " + group.getDescription() + " with id " + groupId + " of size: " + group.getMembers().size());
-					members.addAll(group.getMembers());
+					Set<Member> allMembers = group.getMembers();
+					for (Member member : allMembers) {
+						//only add active members
+						if (member.isActive()) {
+							members.add(member);
+						}
+					}
+					
 				}else{
 					LOG.debug("Could not find group with id: " + groupId);
 				}
