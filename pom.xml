@@ -219,7 +219,7 @@
 		<site>
 			<id>cet-site</id>
 			<name>Sakai release Site</name>
-			<url>file:///tmp/sms/</url>
+			<url>scp://arabica.cet.uct.ac.za/srv/www/vhost/release/sms/${project.version}</url>
 		</site>
 	</distributionManagement>
 	<ciManagement>
