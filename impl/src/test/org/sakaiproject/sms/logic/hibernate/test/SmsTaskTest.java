@@ -3,10 +3,14 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.PropertyValueException;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
@@ -25,6 +29,7 @@ import org.sakaiproject.sms.util.AbstractBaseTestCase;
  */
 public class SmsTaskTest extends AbstractBaseTestCase {
 
+	private static final Log log = LogFactory.getLog(SmsTaskTest.class);
 	private static final String MOBILE_NUMBER_1 = "082 345 6789";
 	private static final String MOBILE_NUMBER_2 = "083 345 6789";
 	private static final String MOBILE_NUMBER_3 = "084 345 6789";
@@ -393,6 +398,53 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 				MOBILE_NUMBER_2));
 		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_3));
+	}
+	
+	public void testSaveNullFields() {
+		//this has a null site Id
+		SmsTask task = new SmsTask();
+		task.setMessageBody("Happy Birthday from the Vula Team at UCT!");
+	    task.setDateCreated(new Date());
+	    Calendar cal = new GregorianCalendar();
+	    cal.set(Calendar.HOUR_OF_DAY, 9);
+	    cal.set(Calendar.MINUTE, 0);
+	    Date dateToSend = cal.getTime();
+	    task.setDateToSend(dateToSend);
+	    task.setSmsAccountId(Long.valueOf(1));
+	    try {
+	    	hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
+	    	fail("cant save with a null siteId");
+	    }
+	    catch (PropertyValueException e) {
+	    	fail("cant save with a null siteId");
+	    }
+	    catch (IllegalArgumentException e) {
+	    	//we ecpect this!
+	    } 
+	    catch (Exception e) {
+			e.printStackTrace();
+			fail("Unkown Exception throws");
+		}
+	    
+		task = new SmsTask();
+		task.setMessageBody("Happy Birthday from the Vula Team at UCT!");
+	    task.setDateCreated(new Date());
+	    task.setDateToSend(dateToSend);
+	    task.setSakaiSiteId("~admin");
+	    try {
+	    	hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
+	    	fail("cant save with a null siteId");
+	    }
+	    catch (PropertyValueException e) {
+	    	fail("cant save with a null siteId");
+	    }
+	    catch (IllegalArgumentException e) {
+	    	//we ecpect this!
+	    } 
+	    catch (Exception e) {
+			e.printStackTrace();
+			fail("Unkown Exception throws");
+		}
 	}
 
 }

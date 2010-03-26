@@ -124,6 +124,15 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 *            task to be persisted
 	 */
 	public void persistSmsTask(SmsTask smsTask) {
+		//the site Id can't be null
+		if (smsTask.getSakaiSiteId() == null) {
+			throw new IllegalArgumentException("SakaiSiteId can't be null");
+		}
+		if (smsTask.getSmsAccountId() == null) {
+			throw new IllegalArgumentException("SmsAccountId can't be null");
+		}
+		
+		
 		persist(smsTask);
 	}
 
