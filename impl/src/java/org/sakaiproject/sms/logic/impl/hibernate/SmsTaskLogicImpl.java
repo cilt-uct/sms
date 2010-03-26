@@ -131,6 +131,9 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		if (smsTask.getSmsAccountId() == null) {
 			throw new IllegalArgumentException("SmsAccountId can't be null");
 		}
+		if (smsTask.getAttemptCount() == null) {
+			smsTask.setAttemptCount(0);
+		}
 		
 		
 		persist(smsTask);

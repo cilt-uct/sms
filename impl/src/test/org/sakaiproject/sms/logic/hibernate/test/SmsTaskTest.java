@@ -439,7 +439,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	    	fail("cant save with a null siteId");
 	    }
 	    catch (IllegalArgumentException e) {
-	    	//we ecpect this!
+	    	//we expect this!
 	    } 
 	    catch (Exception e) {
 			e.printStackTrace();
