@@ -704,14 +704,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setSourceAddress(sourceAddress);
 		}
 		
-		String sourceAddressTON = serverConfigurationService.getString("sms.sourceAddressTon").trim();
-		if (sourceAddressTON != null) {
+		String sourceAddressTON = serverConfigurationService.getString("sms.sourceAddressTon");
+		if (sourceAddressTON != null && sourceAddressTON.trim().length() > 0) {
 			smsSmppProperties.setSourceAddressTON(Byte.parseByte(sourceAddressTON));
 		}
 		
-		String destAddressTON = serverConfigurationService.getString("sms.destinationAddressTon").trim();
-		if (destAddressTON != null) {
-			smsSmppProperties.setDestAddressTON(Byte.parseByte(destAddressTON));
+		String destAddressTON = serverConfigurationService.getString("sms.destinationAddressTon");
+		if (destAddressTON != null && destAddressTON.trim().length() > 0) {
+			smsSmppProperties.setDestAddressTON(Byte.parseByte(destAddressTON.trim()));
 		}
 		
 		
