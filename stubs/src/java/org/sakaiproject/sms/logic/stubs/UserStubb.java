@@ -188,4 +188,9 @@ public class UserStubb implements UserEdit {
 		return false;
 	}
 
+	public void restrictEditEid() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
