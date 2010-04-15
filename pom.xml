@@ -218,7 +218,7 @@
 		<site>
 			<id>cet-site</id>
 			<name>Sakai release Site</name>
-			<url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/release/sms/${project.version}</url>
+			<url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/release/sms/sms-${project.version}</url>
 		</site>
 	</distributionManagement>
 	<ciManagement>

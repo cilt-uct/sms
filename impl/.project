@@ -1,17 +1,17 @@
 <projectDescription>
   <name>sms-impl</name>
-  <comment>Sms implementation</comment>
-  <projects/>
+  <comment>Sms implementation. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>sms-api</project>
+    <project>sms-stubs</project>
+    <project>sms-util</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
-    <buildCommand>
-      <name>org.maven.ide.eclipse.maven2Builder</name>
-    </buildCommand>
   </buildSpec>
   <natures>
     <nature>org.eclipse.jdt.core.javanature</nature>
-    <nature>org.maven.ide.eclipse.maven2Nature</nature>
   </natures>
 </projectDescription>
