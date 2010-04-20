@@ -195,9 +195,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/sms/trunk</url>
+		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/branches/sms-0.x</connection>
+		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/branches/sms-0.x</developerConnection>
+		<url>https://source.sakaiproject.org/contrib/sms/sms/branches/sms-0.x</url>
 	</scm>
 	<distributionManagement>
 		<downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
