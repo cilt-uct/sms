@@ -96,12 +96,13 @@
 	                    $("#cReportConsole .console-credits").text(cCredits);
                         //make sure there are 2 decimal points in the cost
                         var cost = String(cCost);
+                        if(cost.length - ( cost.indexOf(".") + 1) > 1){
+                        	cost = String(Math.round(cost*100)/100);
+                    	}
                         if ( cost.search(/\./) === -1 ){
                            cost = ( cost + ".00" );
                         }else if ( cost.length - ( cost.indexOf(".") + 1) === 1){
                             cost = ( cost + "0" );
-                        }else{
-                        	cost = Math.round(cost*100)/100;
                         }
 	                    $("#cReportConsole .console-cost").text($("#currency").val() + cost);
                         $("#cReportConsole").slideDown('fast', function() {
