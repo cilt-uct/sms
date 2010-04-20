@@ -32,6 +32,7 @@
 			not-null="true" length="2" />
 		<property name="attemptCount" type="integer" column="ATTEMPT_COUNT"
 			not-null="true"  />
+		<property name="nextRetryTime" type="timestamp" column="NEXT_RETRY_COUNT"/>
 		<property name="messageBody" type="string" column="MESSAGE_BODY"
 			not-null="true" length="200" />
 		<property name="messageReplyBody" type="string" column="MESSAGE_REPLY_BODY"

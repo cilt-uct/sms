@@ -786,10 +786,9 @@ public class SmsCoreImpl implements SmsCore {
 				smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_RETRY)) {
 				
 				// Reschedule for later delivery if necessary
-				Calendar now = Calendar.getInstance();
-				now.add(Calendar.SECOND, systemConfig.getSmsRetryScheduleInterval());
-				smsTask.rescheduleDateToSend(new Date(now.getTimeInMillis()));
 				smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
+				smsTask.setNextRetryTime(getNextRetryTime(smsTask.getAttemptCount()));
+				
 			}
 			
 			session.update(smsTask);
@@ -1344,5 +1343,43 @@ public class SmsCoreImpl implements SmsCore {
 					+ " reached. Task will be scheduled for later processing.");
 		}
 
+	}
+	
+	
+	private Date getNextRetryTime(Integer retryCount) {
+
+		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
+		.getOrCreateSystemSmsConfig();
+		//is a number of seconds
+		Integer offset = systemConfig.getSmsRetryScheduleInterval();
+
+		if (retryCount == null) {
+			retryCount = Integer.valueOf(1);
+		}
+
+		if (retryCount > 9 && retryCount < 20) {
+			//with default settings this will be 240s
+			offset = offset * 2;
+		} else if (retryCount > 19 && retryCount < 30) {
+			//with default settings this will be 480s
+			offset = offset * 4;
+		} else if (retryCount > 29 && retryCount < 40) {
+			//with default settings this will be 960
+			offset = offset * 8;
+		} else if (retryCount > 39 && retryCount < 50) {
+			//with default settings this will be 1920s
+			offset = offset * 16;
+		} else if (retryCount > 49 && retryCount < 60) {
+			//with default settings this will be 3840s (60m)
+			offset = offset * 32;
+		} else if (retryCount > 59) {
+			//with default settings this will be 7680s (128m)
+			offset = offset * 64;
+		} 
+
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.SECOND, offset); 
+		return new Date();
 	}
 }

@@ -324,7 +324,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	/**
 	 * This listener will receive delivery reports as well as incoming messages
-	 * from the smpp gateway. When we are binded to the gateway, this listener
+	 * from the smpp gateway. When we are bound to the gateway, this listener
 	 * will receive tcp packets form the gateway. Note that any of the listeners
 	 * running on a ip address, will receive reports and not just the session
 	 * that sent them!

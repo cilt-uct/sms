@@ -134,6 +134,12 @@ public class SmsTask extends BaseModel {
 	 * down.
 	 */
 	private Integer attemptCount;
+	
+	/**
+	 * The time at which the next attempt to proccess the message shoudl occur
+	 */
+	private Date nextRetryTime;
+
 
 	/**
 	 * The maximum amount of minutes to allow this task to be pending since it
@@ -305,6 +311,22 @@ public class SmsTask extends BaseModel {
 	 */
 	public Integer getAttemptCount() {
 		return attemptCount;
+	}
+
+	/**
+	 * Get the next time the task should be attempted to deliver
+	 * @return
+	 */
+	public Date getNextRetryTime() {
+		return nextRetryTime;
+	}
+
+	/**
+	 * Get the next time the task should be attempted to deliver
+	 * @return
+	 */
+	public void setNextRetryTime(Date nextRetryTime) {
+		this.nextRetryTime = nextRetryTime;
 	}
 
 	/**
@@ -548,6 +570,7 @@ public class SmsTask extends BaseModel {
 	 * 
 	 * @param dateToSend
 	 *            the date to send
+	 * @deprecated rather set a retry time to resend as this will reset the UI scheduling
 	 */
 	public void rescheduleDateToSend(Date dateToSend) {
 		this.setDateToSend(dateToSend);
