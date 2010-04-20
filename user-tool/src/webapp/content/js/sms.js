@@ -100,6 +100,8 @@
                            cost = ( cost + ".00" );
                         }else if ( cost.length - ( cost.indexOf(".") + 1) === 1){
                             cost = ( cost + "0" );
+                        }else{
+                        	cost = Math.round(cost*100)/100;
                         }
 	                    $("#cReportConsole .console-cost").text($("#currency").val() + cost);
                         $("#cReportConsole").slideDown('fast', function() {
