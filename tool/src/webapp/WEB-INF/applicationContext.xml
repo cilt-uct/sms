@@ -119,7 +119,7 @@
 		<property name="converter">
 			<bean class="org.sakaiproject.sms.tool.util.NumberEditorFactory">
 				<property name="field" value="creditsToCredit" />
-				<property name="numberClass" value="java.lang.Long" />
+				<property name="numberClass" value="java.lang.Double" />
 			</bean>
 		</property>
 	</bean>

@@ -23,7 +23,7 @@ package org.sakaiproject.sms.tool.beans;
 public class CreditAccountBean {
 
 	private Long accountId;
-	private Long creditsToCredit;
+	private Double creditsToCredit;
 	private String description;
 
 	public String getDescription() {
@@ -42,12 +42,12 @@ public class CreditAccountBean {
 		this.accountId = accountId;
 	}
 
-	public Long getCreditsToCredit() {
+	public Double getCreditsToCredit() {
 		return creditsToCredit;
 
 	}
 
-	public void setCreditsToCredit(Long creditsToCredit) {
+	public void setCreditsToCredit(Double creditsToCredit) {
 		this.creditsToCredit = creditsToCredit;
 	}
 }

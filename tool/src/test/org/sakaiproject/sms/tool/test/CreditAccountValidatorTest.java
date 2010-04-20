@@ -24,7 +24,7 @@ public class CreditAccountValidatorTest extends TestCase {
 
 	public void testAccountDoesNotExsist() {
 		creditAccountBean.setAccountId(-10L);
-		creditAccountBean.setCreditsToCredit(10L);
+		creditAccountBean.setCreditsToCredit(10D);
 		validator.validate(creditAccountBean, bindException);
 		assertTrue(bindException.hasErrors());
 		assertEquals("sms.credit.account.errors.no.account", bindException
@@ -34,7 +34,7 @@ public class CreditAccountValidatorTest extends TestCase {
 
 	public void testValidationPasses() {
 		creditAccountBean.setAccountId(1L);
-		creditAccountBean.setCreditsToCredit(20L);
+		creditAccountBean.setCreditsToCredit(20D);
 		validator.validate(creditAccountBean, bindException);
 		assertFalse(bindException.hasErrors());
 	}
