@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 

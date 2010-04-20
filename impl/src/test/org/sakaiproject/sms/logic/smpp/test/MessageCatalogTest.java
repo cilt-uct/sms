@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.logic.smpp.test;
 
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**

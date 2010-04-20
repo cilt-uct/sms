@@ -18,40 +18,18 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate.exception;
+package org.sakaiproject.sms.logic;
 
-public class SmsTaskNotFoundException extends Exception {
+import org.hibernate.type.Type;
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-
-
-	/**
-	 * Instantiates a new sms  Task not found  exception.
-	 */
-	public SmsTaskNotFoundException() {
+public class QueryParameter {
+	public String name;
+	public Object val;
+	public Type type;
+	
+	public QueryParameter(String name,Object val, Type type) {
+		this.name = name;
+		this.val = val;
+		this.type = type;
 	}
-
-	/**
-	 * Instantiates a new sms Task not found exception.
-	 * 
-	 * @param msg
-	 *            the msg
-	 */
-	public SmsTaskNotFoundException(String msg) {
-		super(msg);
-	}
-
-	/**
-	 * Instantiates a new sms Task not found exception.
-	 * 
-	 * @param e
-	 *            the e
-	 */
-	public SmsTaskNotFoundException(Exception e) {
-		super(e);
-	}
-
 }

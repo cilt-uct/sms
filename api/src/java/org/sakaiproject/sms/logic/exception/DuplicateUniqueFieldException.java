@@ -18,18 +18,46 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic.exception;
 
-import org.hibernate.type.Type;
+public class DuplicateUniqueFieldException extends RuntimeException {
 
-public class QueryParameter {
-	public String name;
-	public Object val;
-	public Type type;
-	
-	public QueryParameter(String name,Object val, Type type) {
-		this.name = name;
-		this.val = val;
-		this.type = type;
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Unique field on which duplicate was fount
+	 */
+	private final String field;
+
+	/**
+	 * Instantiates a DuplicateUniqueFieldException
+	 * 
+	 * @param msg
+	 *            the msg
+	 */
+	public DuplicateUniqueFieldException(String field) {
+		super(field + " should be unique");
+		this.field = field;
 	}
+
+	/**
+	 * Instantiates a DuplicateUniqueFieldException
+	 * 
+	 * @param e
+	 *            the exception
+	 */
+	public DuplicateUniqueFieldException(Exception e, String field) {
+		super(e);
+		this.field = field;
+	}
+
+	/**
+	 * Returns the field which caused the DuplicateUniqueFieldException
+	 * 
+	 * @return the field
+	 */
+	public String getField() {
+		return field;
+	}
+
 }

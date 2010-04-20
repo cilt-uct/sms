@@ -20,7 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.exception;
 
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 public class SmsSendDisabledException extends Exception {
 

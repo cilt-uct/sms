@@ -2,8 +2,8 @@ package org.sakaiproject.sms.tool.test.stubs;
 
 import java.util.List;
 
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.model.SmsAccount;
 
 public class SmsAccountLogicStub implements SmsAccountLogic {
 

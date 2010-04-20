@@ -25,12 +25,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
-import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsMOMessage;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * The SMS service will handle all logic regarding the queueing, sending and

@@ -28,8 +28,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsService;
@@ -38,8 +38,8 @@ import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledExcep
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * This API allows for easy implementation of SMS services in an existing or new

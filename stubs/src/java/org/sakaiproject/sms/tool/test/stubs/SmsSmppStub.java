@@ -20,7 +20,7 @@ package org.sakaiproject.sms.tool.test.stubs;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsMessage;
 
 /**
  * The Class SmsSmppStub. Stub implementation of {@link SmsSmpp} with minimal
@@ -105,8 +105,7 @@ public class SmsSmppStub implements SmsSmpp {
 	/**
 	 * Test method that sets debugInfo as "called"
 	 * 
-	 * @see org.sakaiproject.sms.logic.smpp.SmsSmpp#sendMessageToGateway(org.sakaiproject
-	 *      .sms.hibernate.model.SmsMessage)
+	 * @see org.sakaiproject.sms.logic.smpp.SmsSmpp#sendMessageToGateway(org.sakaiproject.sms.model.hibernate.model.SmsMessage)
 	 */
 	public SmsMessage sendMessageToGateway(SmsMessage msg) {
 		msg.setDebugInfo(CALLED);

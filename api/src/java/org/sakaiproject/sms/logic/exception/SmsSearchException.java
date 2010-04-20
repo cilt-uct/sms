@@ -18,41 +18,44 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate.exception;
+package org.sakaiproject.sms.logic.exception;
 
 /**
- * A exception class that indicates an account does not exists for a partucluar action
+ * General search exception that will be thrown when hibernate search criteria
+ * objects with invalid values of some sort.
+ * 
+ * @author julian@psybergate.com
+ * @version 1.0
+ * @created 01-Dec-2008
  */
-public class SmsAccountNotFoundException extends Exception{
+public class SmsSearchException extends Exception {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a account not found exception.
+	 * Instantiates a new sms search exception.
 	 */
-	public SmsAccountNotFoundException() {
+	public SmsSearchException() {
 	}
 
 	/**
-	 * Instantiates a account not found exception.
+	 * Instantiates a new sms search exception.
 	 * 
 	 * @param msg
 	 *            the msg
 	 */
-	public SmsAccountNotFoundException(String msg) {
+	public SmsSearchException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Instantiates a account not found exception.
+	 * Instantiates a new sms search exception.
 	 * 
 	 * @param e
-	 *            the exception  
+	 *            the e
 	 */
-	public SmsAccountNotFoundException(Exception e) {
+	public SmsSearchException(Exception e) {
 		super(e);
 	}
-
-	
-	
 }

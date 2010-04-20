@@ -22,11 +22,11 @@ package org.sakaiproject.sms.logic.command;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 /**
  * This is a example of an sms admin command. It can be used by administrators

@@ -38,7 +38,7 @@ package org.sakaiproject.sms.logic.smpp.exception;
  *
  **********************************************************************************/
 
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * Exception that will be thrown when the receiving of incoming sms messages is

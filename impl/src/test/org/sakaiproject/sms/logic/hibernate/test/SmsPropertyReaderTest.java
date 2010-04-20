@@ -1,6 +1,6 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.SmsPropertyReader;
 

@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.otp;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.logic.SmsMessageLogic;
+import org.sakaiproject.sms.model.SmsMessage;
 
 import uk.org.ponder.beanutil.BeanLocator;
 

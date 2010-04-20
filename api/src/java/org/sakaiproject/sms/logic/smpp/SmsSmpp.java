@@ -22,7 +22,7 @@ package org.sakaiproject.sms.logic.smpp;
 
 import java.util.Set;
 
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsMessage;
 
 /**
  * Handle all logic regarding SMPP gateway communication.

@@ -19,7 +19,7 @@ package org.sakaiproject.sms.tool.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 
 import uk.org.ponder.messageutil.TargettedMessage;

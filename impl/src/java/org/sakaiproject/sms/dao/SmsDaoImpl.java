@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.hibernate.Query;
 import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
-import org.sakaiproject.sms.logic.hibernate.QueryParameter;
+import org.sakaiproject.sms.logic.QueryParameter;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;

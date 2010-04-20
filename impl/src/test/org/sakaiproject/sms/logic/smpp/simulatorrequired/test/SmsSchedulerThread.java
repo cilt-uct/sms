@@ -24,7 +24,7 @@ import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.apache.log4j.Level;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
@@ -36,9 +36,9 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * 

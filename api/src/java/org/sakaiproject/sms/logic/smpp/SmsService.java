@@ -24,11 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * This API allows for implementation of SMS services in an existing or new

@@ -30,16 +30,16 @@ import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.QueryParameter;
 import org.sakaiproject.sms.logic.SmsLogic;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.hibernate.QueryParameter;
-import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
+import org.sakaiproject.sms.logic.SmsTransactionLogic;
+import org.sakaiproject.sms.logic.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.SmsTransaction;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**

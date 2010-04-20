@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.test.stubs.SmsCoreStub;
 

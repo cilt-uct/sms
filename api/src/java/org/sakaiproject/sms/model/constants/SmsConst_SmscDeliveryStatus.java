@@ -18,41 +18,30 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate.exception;
+package org.sakaiproject.sms.model.constants;
 
 /**
- * A exception class that indicates an account does not have enough credits for a particular action
+ * These are the message status codes as defined by the SMPP protocol.
  */
-public class SmsInsufficientCreditsException extends Exception{
 
-	private static final long serialVersionUID = 1L;
+public class SmsConst_SmscDeliveryStatus {
 
-	/**
-	 * Instantiates a account not found exception.
-	 */
-	public SmsInsufficientCreditsException() {
-	}
+	public final static int ACCEPTED = 6;
 
-	/**
-	 * Instantiates a account not found exception.
-	 * 
-	 * @param msg
-	 *            the msg
-	 */
-	public SmsInsufficientCreditsException(String msg) {
-		super(msg);
-	}
+	public final static int DELETED = 4;
 
-	/**
-	 * Instantiates a account not found exception.
-	 * 
-	 * @param e
-	 *            the exception  
-	 */
-	public SmsInsufficientCreditsException(Exception e) {
-		super(e);
-	}
+	public final static int DELIVERED = 2;
 
-	
-	
+	public final static int ENROUTE = 1;
+
+	public final static int EXPIRED = 3;
+
+	public final static int REJECTED = 8;
+
+	public final static int SKIPPED = 9;
+
+	public final static int UNDELIVERA = 5;
+
+	public final static int UNKNOWN = 7;
+
 }

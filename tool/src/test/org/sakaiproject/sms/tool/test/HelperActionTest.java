@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.beans.HelperActionBean;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;

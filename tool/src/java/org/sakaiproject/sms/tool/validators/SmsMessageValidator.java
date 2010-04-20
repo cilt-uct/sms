@@ -20,7 +20,7 @@ package org.sakaiproject.sms.tool.validators;
 import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.validate.MessageValidator;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsMessage;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

@@ -59,13 +59,13 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 	protected void init() {
 		final List<String> persistentClasses = new ArrayList<String>();
 		persistentClasses
-				.add("org.sakaiproject.sms.model.hibernate.SmsAccount");
-		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsConfig");
+				.add("org.sakaiproject.sms.model.SmsAccount");
+		persistentClasses.add("org.sakaiproject.sms.model.SmsConfig");
 		persistentClasses
-				.add("org.sakaiproject.sms.model.hibernate.SmsMessage");
-		persistentClasses.add("org.sakaiproject.sms.model.hibernate.SmsTask");
+				.add("org.sakaiproject.sms.model.SmsMessage");
+		persistentClasses.add("org.sakaiproject.sms.model.SmsTask");
 		persistentClasses
-				.add("org.sakaiproject.sms.model.hibernate.SmsTransaction");
+				.add("org.sakaiproject.sms.model.SmsTransaction");
 
 		super.setPersistentClasses(persistentClasses);
 		setTransactionManager(new HibernateTransactionManager(

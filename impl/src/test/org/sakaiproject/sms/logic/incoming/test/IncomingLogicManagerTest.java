@@ -41,7 +41,7 @@ import org.sakaiproject.sms.logic.stubs.commands.DeleteSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.HiddenSmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.MultipleBodySmsCommand;
 import org.sakaiproject.sms.logic.stubs.commands.UpdateSmsCommand;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 /**

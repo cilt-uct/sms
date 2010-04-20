@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;

@@ -19,8 +19,8 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.tool.otp.SmsConfigLocator;
 import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 

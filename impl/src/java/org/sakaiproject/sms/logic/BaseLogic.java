@@ -22,7 +22,7 @@ package org.sakaiproject.sms.logic;
 
 import org.hibernate.HibernateException;
 import org.sakaiproject.sms.dao.SmsDao;
-import org.sakaiproject.sms.model.hibernate.BaseModel;
+import org.sakaiproject.sms.model.BaseModel;
 
 /**
  * Base logic to retrieve from db

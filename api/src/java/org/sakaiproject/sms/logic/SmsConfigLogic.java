@@ -18,11 +18,11 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.SmsConfig;
 
 /**
  * SMS configuration is stored in SMS_CONFIG. It caters for site-specific

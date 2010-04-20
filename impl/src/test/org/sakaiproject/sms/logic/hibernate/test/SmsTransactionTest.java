@@ -6,9 +6,9 @@ import java.util.List;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsTransaction;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**

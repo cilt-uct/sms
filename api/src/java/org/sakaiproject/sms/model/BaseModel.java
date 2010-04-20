@@ -18,46 +18,59 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate.exception;
 
-public class DuplicateUniqueFieldException extends RuntimeException {
+package org.sakaiproject.sms.model;
 
+import java.io.Serializable;
+
+/**
+ * This is the base model class from which all model class should inherit.
+ * 
+ * It also holds the id field that should be used as the unique identifier for
+ * all the model classes.
+ * 
+ * @author Julian Wyngaard
+ * @version 1.0
+ * @created 19-Nov-2008
+ */
+public abstract class BaseModel implements Serializable {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Unique field on which duplicate was fount
-	 */
-	private final String field;
+	 * Represent the unique id for the model object.
+	 * */
+	private Long id;
 
 	/**
-	 * Instantiates a DuplicateUniqueFieldException
+	 * Exists.
 	 * 
-	 * @param msg
-	 *            the msg
+	 * @return true if this entity already exists in the persistent store - we
+	 *         determine this if id is allocated.
 	 */
-	public DuplicateUniqueFieldException(String field) {
-		super(field + " should be unique");
-		this.field = field;
+	public boolean exists() {
+		if (getId() != null)
+			return true;
+		return false;
 	}
 
 	/**
-	 * Instantiates a DuplicateUniqueFieldException
+	 * Gets the id.
 	 * 
-	 * @param e
-	 *            the exception
+	 * @return the id
 	 */
-	public DuplicateUniqueFieldException(Exception e, String field) {
-		super(e);
-		this.field = field;
+	public Long getId() {
+		return id;
 	}
 
 	/**
-	 * Returns the field which caused the DuplicateUniqueFieldException
+	 * Sets the id.
 	 * 
-	 * @return the field
+	 * @param id
+	 *            the new id
 	 */
-	public String getField() {
-		return field;
+	public void setId(Long id) {
+		this.id = id;
 	}
-
 }

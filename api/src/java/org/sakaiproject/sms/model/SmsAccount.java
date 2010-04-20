@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.model.hibernate;
+package org.sakaiproject.sms.model;
 
 import java.util.Date;
 import java.util.HashSet;

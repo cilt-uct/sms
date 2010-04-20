@@ -7,11 +7,11 @@ import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.smpp.validate.MessageValidator;
 import org.sakaiproject.sms.logic.smpp.validate.MessageValidatorImpl;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
-import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.ValidationConstants;
 
 // TODO: Auto-generated Javadoc
 /**

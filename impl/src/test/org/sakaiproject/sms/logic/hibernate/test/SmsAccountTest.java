@@ -3,14 +3,14 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsTransaction;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**

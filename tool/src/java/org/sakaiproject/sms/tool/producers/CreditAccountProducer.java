@@ -1,7 +1,7 @@
 package org.sakaiproject.sms.tool.producers;
 
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
 import org.sakaiproject.sms.tool.util.MessageFixupHelper;

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**

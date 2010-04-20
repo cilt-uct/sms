@@ -22,10 +22,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 public class SmsServiceStub implements SmsService {
 

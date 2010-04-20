@@ -29,8 +29,8 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.incoming.AccountSpecifiedCommand;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
@@ -38,7 +38,7 @@ import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
 import org.sakaiproject.sms.logic.parser.exception.ParseException;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {

@@ -33,7 +33,7 @@ import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
 import org.sakaiproject.sms.logic.incoming.AccountSpecifiedCommand;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 /**
  * This executes an external command by invoking an http url.

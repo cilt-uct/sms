@@ -6,8 +6,8 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 /**
  * The Class SmsSendEmailTest. Just test if we can send email outside sakai when

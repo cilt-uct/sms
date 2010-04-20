@@ -23,11 +23,11 @@ package org.sakaiproject.sms.logic.smpp.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.SmsConfig;
 import org.springframework.util.Assert;
 
 public class SmsSchedulerImpl implements SmsScheduler {

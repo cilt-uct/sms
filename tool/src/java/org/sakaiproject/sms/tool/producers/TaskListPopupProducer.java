@@ -18,8 +18,8 @@
 
 package org.sakaiproject.sms.tool.producers;
 
-import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.logic.SmsTaskLogic;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.util.NullHandling;
 

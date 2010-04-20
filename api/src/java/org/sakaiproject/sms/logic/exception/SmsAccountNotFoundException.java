@@ -18,30 +18,41 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.model.hibernate.constants;
+package org.sakaiproject.sms.logic.exception;
 
 /**
- * These are the message status codes as defined by the SMPP protocol.
+ * A exception class that indicates an account does not exists for a partucluar action
  */
+public class SmsAccountNotFoundException extends Exception{
 
-public class SmsConst_SmscDeliveryStatus {
+	private static final long serialVersionUID = 1L;
 
-	public final static int ACCEPTED = 6;
+	/**
+	 * Instantiates a account not found exception.
+	 */
+	public SmsAccountNotFoundException() {
+	}
 
-	public final static int DELETED = 4;
+	/**
+	 * Instantiates a account not found exception.
+	 * 
+	 * @param msg
+	 *            the msg
+	 */
+	public SmsAccountNotFoundException(String msg) {
+		super(msg);
+	}
 
-	public final static int DELIVERED = 2;
+	/**
+	 * Instantiates a account not found exception.
+	 * 
+	 * @param e
+	 *            the exception  
+	 */
+	public SmsAccountNotFoundException(Exception e) {
+		super(e);
+	}
 
-	public final static int ENROUTE = 1;
-
-	public final static int EXPIRED = 3;
-
-	public final static int REJECTED = 8;
-
-	public final static int SKIPPED = 9;
-
-	public final static int UNDELIVERA = 5;
-
-	public final static int UNKNOWN = 7;
-
+	
+	
 }

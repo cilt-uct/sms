@@ -16,10 +16,10 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 /**

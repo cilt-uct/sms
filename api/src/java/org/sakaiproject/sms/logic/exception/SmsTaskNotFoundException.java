@@ -18,44 +18,40 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate.exception;
+package org.sakaiproject.sms.logic.exception;
 
-/**
- * General search exception that will be thrown when hibernate search criteria
- * objects with invalid values of some sort.
- * 
- * @author julian@psybergate.com
- * @version 1.0
- * @created 01-Dec-2008
- */
-public class SmsSearchException extends Exception {
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+public class SmsTaskNotFoundException extends Exception {
 
 	/**
-	 * Instantiates a new sms search exception.
+	 *
 	 */
-	public SmsSearchException() {
+	private static final long serialVersionUID = 1L;
+
+
+	/**
+	 * Instantiates a new sms  Task not found  exception.
+	 */
+	public SmsTaskNotFoundException() {
 	}
 
 	/**
-	 * Instantiates a new sms search exception.
+	 * Instantiates a new sms Task not found exception.
 	 * 
 	 * @param msg
 	 *            the msg
 	 */
-	public SmsSearchException(String msg) {
+	public SmsTaskNotFoundException(String msg) {
 		super(msg);
 	}
 
 	/**
-	 * Instantiates a new sms search exception.
+	 * Instantiates a new sms Task not found exception.
 	 * 
 	 * @param e
 	 *            the e
 	 */
-	public SmsSearchException(Exception e) {
+	public SmsTaskNotFoundException(Exception e) {
 		super(e);
 	}
+
 }

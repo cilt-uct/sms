@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.util.SmsAccountHelper;

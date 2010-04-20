@@ -18,15 +18,15 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import java.util.List;
 
 import org.hibernate.Session;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.logic.exception.SmsSearchException;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * The data service will handle all sms task database transactions for the sms

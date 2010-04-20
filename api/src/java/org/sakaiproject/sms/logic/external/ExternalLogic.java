@@ -30,9 +30,9 @@ import java.util.TimeZone;
 
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.SmsUser;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 import org.sakaiproject.user.api.User;
 

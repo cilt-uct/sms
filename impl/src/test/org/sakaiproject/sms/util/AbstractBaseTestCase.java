@@ -20,7 +20,7 @@ package org.sakaiproject.sms.util;
 import junit.framework.TestCase;
 
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;

@@ -22,10 +22,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.SmsTaskLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 
 import uk.org.ponder.beanutil.BeanLocator;
 

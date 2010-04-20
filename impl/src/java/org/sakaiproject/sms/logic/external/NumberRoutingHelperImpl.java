@@ -1,8 +1,8 @@
 package org.sakaiproject.sms.logic.external;
 
 import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 

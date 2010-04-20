@@ -16,14 +16,14 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import java.util.List;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
+import org.sakaiproject.sms.logic.exception.SmsSearchException;
+import org.sakaiproject.sms.model.SmsTransaction;
 
 /**
  * The data service will handle all sms Account database transactions for the

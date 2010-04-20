@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.model.hibernate.constants;
+package org.sakaiproject.sms.model.constants;
 
 //TODO move to sms_core project later on
 

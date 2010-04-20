@@ -20,8 +20,8 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.logic.SmsConfigLogic;
+import org.sakaiproject.sms.model.SmsConfig;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.otp.SmsAccountLocator;

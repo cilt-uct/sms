@@ -23,7 +23,7 @@ import junit.framework.TestCase;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.tool.constants.SmsUiConstants;
 import org.sakaiproject.sms.tool.validators.SmsAccountValidator;
 import org.springframework.validation.BindException;

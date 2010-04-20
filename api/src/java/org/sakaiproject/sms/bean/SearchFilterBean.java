@@ -23,7 +23,7 @@ package org.sakaiproject.sms.bean;
 
 import java.util.Date;
 
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**

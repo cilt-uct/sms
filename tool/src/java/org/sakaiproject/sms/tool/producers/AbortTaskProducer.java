@@ -20,7 +20,7 @@ package org.sakaiproject.sms.tool.producers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 import org.sakaiproject.sms.tool.params.IdParams;

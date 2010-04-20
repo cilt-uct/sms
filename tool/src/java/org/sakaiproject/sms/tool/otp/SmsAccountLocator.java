@@ -20,12 +20,12 @@ package org.sakaiproject.sms.tool.otp;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.exception.DuplicateUniqueFieldException;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 
 import uk.org.ponder.beanutil.BeanLocator;

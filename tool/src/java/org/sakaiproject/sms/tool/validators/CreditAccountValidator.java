@@ -1,7 +1,7 @@
 package org.sakaiproject.sms.tool.validators;
 
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.tool.beans.CreditAccountBean;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

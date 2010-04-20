@@ -19,17 +19,17 @@ package org.sakaiproject.sms.logic.hibernate.test.dataload;
 
 import java.util.List;
 
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsMessageLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTransactionLogic;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.SmsMessageLogic;
+import org.sakaiproject.sms.logic.SmsTaskLogic;
+import org.sakaiproject.sms.logic.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.SmsTransaction;
 
 /**
  * Use the application to insert test data into the database. Increase the value

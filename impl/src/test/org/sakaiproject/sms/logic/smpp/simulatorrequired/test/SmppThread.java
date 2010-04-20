@@ -25,7 +25,7 @@ import java.util.Set;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsMessageLogicImpl;
@@ -34,12 +34,12 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_SmscDeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 /**
  * The Class SmppSession. Used in the threading test.

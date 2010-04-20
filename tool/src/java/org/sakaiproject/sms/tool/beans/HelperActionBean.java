@@ -24,7 +24,7 @@ import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
 import org.sakaiproject.sms.logic.smpp.exception.ReceiveIncomingSmsDisabledException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDeniedException;
 import org.sakaiproject.sms.logic.smpp.exception.SmsSendDisabledException;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.otp.SmsTaskLocator;
 
 import uk.org.ponder.messageutil.TargettedMessage;

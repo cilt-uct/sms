@@ -31,16 +31,16 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
 import org.sakaiproject.sms.logic.smpp.SmsBilling;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsConfig;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.SmsTransaction;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 /**
  * The billing service will handle all financial functions for the sms tool in

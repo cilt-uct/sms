@@ -20,9 +20,9 @@ package org.sakaiproject.sms.tool.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.logic.SmsConfigLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsConfigLogic;
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.SmsConfig;
 import org.sakaiproject.sms.tool.otp.SmsConfigLocator;
 import org.springframework.util.Assert;
 

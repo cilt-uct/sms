@@ -26,12 +26,12 @@ import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
 import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
-import org.sakaiproject.sms.model.hibernate.constants.ValidationConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.ValidationConstants;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -18,7 +18,7 @@
 package org.sakaiproject.sms.tool.validators;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.SmsAccount;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;

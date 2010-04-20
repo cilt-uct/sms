@@ -21,10 +21,10 @@
 
 package org.sakaiproject.sms.logic.smpp;
 
-import org.sakaiproject.sms.logic.hibernate.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsInsufficientCreditsException;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsInsufficientCreditsException;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * The billing service will handle all financial functions for the sms tool in

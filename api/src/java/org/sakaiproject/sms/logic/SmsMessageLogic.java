@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import java.util.Date;
 import java.util.List;
@@ -27,8 +27,8 @@ import java.util.List;
 import org.hibernate.Session;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
-import org.sakaiproject.sms.logic.hibernate.exception.SmsSearchException;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.logic.exception.SmsSearchException;
+import org.sakaiproject.sms.model.SmsMessage;
 
 /**
  * The data service will handle all sms Message database transactions for the

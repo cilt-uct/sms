@@ -39,11 +39,11 @@ import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.command.SmsRestCommand;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
 import org.sakaiproject.sms.logic.incoming.impl.RegisteredCommands;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 
 public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 		RESTful, AutoRegisterEntityProvider {

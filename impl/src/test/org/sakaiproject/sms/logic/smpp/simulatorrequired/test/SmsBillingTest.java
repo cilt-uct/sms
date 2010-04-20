@@ -24,12 +24,12 @@ import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
-import org.sakaiproject.sms.model.hibernate.SmsTransaction;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConstants;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.sms.model.SmsTransaction;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 
 // TODO: Auto-generated Javadoc

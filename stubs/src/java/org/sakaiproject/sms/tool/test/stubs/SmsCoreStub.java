@@ -21,10 +21,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.sms.logic.hibernate.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
-import org.sakaiproject.sms.model.hibernate.SmsMOMessage;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsMOMessage;
+import org.sakaiproject.sms.model.SmsTask;
 
 public class SmsCoreStub implements SmsCore {
 

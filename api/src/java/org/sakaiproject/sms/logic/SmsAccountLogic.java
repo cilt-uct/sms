@@ -18,12 +18,12 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.sakaiproject.sms.logic.hibernate;
+package org.sakaiproject.sms.logic;
 
 import java.util.List;
 
 
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.SmsAccount;
 
 /**
  * The data service will handle all sms Account database transactions for the

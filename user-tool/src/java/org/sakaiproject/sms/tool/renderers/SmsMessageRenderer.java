@@ -20,7 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.renderers;
 
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.util.DateUtil;
 
 import uk.org.ponder.rsf.components.UIContainer;

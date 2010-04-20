@@ -20,7 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.external;
 
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsMessage;
 
 /**
  * Helper methods to give information about the routing of numbers

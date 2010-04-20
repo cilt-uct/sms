@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.model.hibernate;
+package org.sakaiproject.sms.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.sakaiproject.sms.model.hibernate.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.util.DateUtil;
 
 /**

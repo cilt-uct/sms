@@ -17,12 +17,12 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.producers;
 
-import static org.sakaiproject.sms.model.hibernate.constants.SmsConstants.MAX_SMS_LENGTH;
+import static org.sakaiproject.sms.model.constants.SmsConstants.MAX_SMS_LENGTH;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.tool.beans.ActionResults;
 import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;

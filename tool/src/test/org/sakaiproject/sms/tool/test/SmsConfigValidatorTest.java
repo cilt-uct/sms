@@ -19,7 +19,7 @@ package org.sakaiproject.sms.tool.test;
 
 import junit.framework.TestCase;
 
-import org.sakaiproject.sms.model.hibernate.SmsConfig;
+import org.sakaiproject.sms.model.SmsConfig;
 import org.sakaiproject.sms.tool.validators.SmsConfigValidator;
 import org.springframework.validation.BindException;
 

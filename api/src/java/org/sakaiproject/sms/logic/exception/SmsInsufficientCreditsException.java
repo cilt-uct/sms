@@ -18,59 +18,41 @@
  * limitations under the License.
  *
  **********************************************************************************/
-
-package org.sakaiproject.sms.model.hibernate;
-
-import java.io.Serializable;
+package org.sakaiproject.sms.logic.exception;
 
 /**
- * This is the base model class from which all model class should inherit.
- * 
- * It also holds the id field that should be used as the unique identifier for
- * all the model classes.
- * 
- * @author Julian Wyngaard
- * @version 1.0
- * @created 19-Nov-2008
+ * A exception class that indicates an account does not have enough credits for a particular action
  */
-public abstract class BaseModel implements Serializable {
+public class SmsInsufficientCreditsException extends Exception{
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Represent the unique id for the model object.
-	 * */
-	private Long id;
-
-	/**
-	 * Exists.
-	 * 
-	 * @return true if this entity already exists in the persistent store - we
-	 *         determine this if id is allocated.
+	 * Instantiates a account not found exception.
 	 */
-	public boolean exists() {
-		if (getId() != null)
-			return true;
-		return false;
+	public SmsInsufficientCreditsException() {
 	}
 
 	/**
-	 * Gets the id.
+	 * Instantiates a account not found exception.
 	 * 
-	 * @return the id
+	 * @param msg
+	 *            the msg
 	 */
-	public Long getId() {
-		return id;
+	public SmsInsufficientCreditsException(String msg) {
+		super(msg);
 	}
 
 	/**
-	 * Sets the id.
+	 * Instantiates a account not found exception.
 	 * 
-	 * @param id
-	 *            the new id
+	 * @param e
+	 *            the exception  
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public SmsInsufficientCreditsException(Exception e) {
+		super(e);
 	}
+
+	
+	
 }

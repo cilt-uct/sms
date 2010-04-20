@@ -26,11 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.SmsTaskLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsAccountLogic;
-import org.sakaiproject.sms.logic.hibernate.SmsTaskLogic;
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
-import org.sakaiproject.sms.model.hibernate.SmsTask;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.tool.params.SmsParams;
 import org.sakaiproject.sms.tool.util.CurrencyUtil;
 

@@ -20,7 +20,7 @@ package org.sakaiproject.sms.logic.hibernate.test.dataload;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.SmsAccount;
+import org.sakaiproject.sms.model.SmsAccount;
 
 public class SampleSmsAccountFactory implements Listable {
 

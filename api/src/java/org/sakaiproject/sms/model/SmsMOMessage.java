@@ -19,7 +19,7 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.sms.model.hibernate;
+package org.sakaiproject.sms.model;
 
 public class SmsMOMessage {
 

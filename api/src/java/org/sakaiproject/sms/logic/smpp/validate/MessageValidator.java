@@ -22,7 +22,7 @@ package org.sakaiproject.sms.logic.smpp.validate;
 
 import java.util.List;
 
-import org.sakaiproject.sms.model.hibernate.SmsMessage;
+import org.sakaiproject.sms.model.SmsMessage;
 
 public interface MessageValidator {
 
