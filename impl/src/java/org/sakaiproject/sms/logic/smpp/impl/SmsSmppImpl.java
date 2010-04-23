@@ -1121,9 +1121,9 @@ public class SmsSmppImpl implements SmsSmpp {
 						.getSourceAddressTON()), NumberingPlanIndicator
 						.valueOf(smsSmppProperties.getSourceAddressNPI()),
 						smsSmppProperties.getSourceAddress(), TypeOfNumber
-								.valueOf(smsSmppProperties.getSourceAddressTON()),
+								.valueOf(smsSmppProperties.getDestAddressTON()),
 						NumberingPlanIndicator.valueOf(smsSmppProperties
-								.getSourceAddressNPI()), message.getMobileNumber(),
+								.getDestAddressNPI()), message.getMobileNumber(),
 						new ESMClass(), smsSmppProperties.getProtocolId(),
 						smsSmppProperties.getPriorityFlag(), timeFormatter
 								.format(new Date()), null, new RegisteredDelivery(
