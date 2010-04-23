@@ -57,7 +57,7 @@ import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.event.api.NotificationService;
-import org.sakaiproject.event.cover.EventTrackingService;
+import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
@@ -173,7 +173,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 		timeService = ts;
 	}
 
-
+	public EventTrackingService eventTrackingService;
+	public void setEventTrackingService(EventTrackingService eventTrackingService) {
+		this.eventTrackingService = eventTrackingService;
+	}
 
 	private PreferencesService preferencesService;
 	public void setPreferencesService(PreferencesService ps) {
@@ -950,7 +953,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			EventTrackingService.post(EventTrackingService.newEvent(event, ref, true, NotificationService.NOTI_NONE));
 		*/
 		
-		EventTrackingService.post(EventTrackingService.newEvent(event, ref, context, true, NotificationService.NOTI_NONE));
+		eventTrackingService.post(eventTrackingService.newEvent(event, ref, context, true, NotificationService.NOTI_NONE));
 	}
 	
 	public static class GroupNameComparator implements Comparator<Group> {
