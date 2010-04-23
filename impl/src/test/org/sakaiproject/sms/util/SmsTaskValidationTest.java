@@ -19,7 +19,9 @@ package org.sakaiproject.sms.util;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -308,6 +310,33 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		assertEquals(ValidationConstants.TASK_STATUS_CODE_EMPTY, errors.get(0));
 	}
 
+	public void testExpiredBeforeSend() {
+		smsTask.setDateToSend(new Date());
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.HOUR, -1);
+		smsTask.setDateToExpire(cal.getTime());
+		errors = validator.validateInsertTask(smsTask);
+		assertTrue(errors.size() > 0);
+		assertEquals(ValidationConstants.TASK_DATE_TO_SEND_AFTER_EXPIRY, errors.get(0));
+
+		
+	}
+	
+	
+	public void testExpiredEqualsSend() {
+		Date date = new Date();
+		smsTask.setDateToSend(date);
+		smsTask.setDateToExpire(date);
+		assertTrue(smsTask.getDateToExpire().equals(smsTask.getDateToSend()));
+		errors = validator.validateInsertTask(smsTask);
+		System.out.println("errors size:" + errors.size());
+		
+		assertTrue(errors.size() > 0);
+		assertEquals(ValidationConstants.TASK_DATE_TO_SEND_EQUALS_EXPIRY, errors.get(0));
+
+		
+	}
+	
 	/**
 	 * Test valid message.
 	 */

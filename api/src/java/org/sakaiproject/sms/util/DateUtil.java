@@ -146,9 +146,9 @@ public final class DateUtil {
 	 * Gets a usable Date.
 	 * <p>
 	 * When hibernate save a model class to the DB, MySql zero's the
-	 * milliseconds. This caused inconsistensies in the equeals methods of the
+	 * milliseconds. This caused inconsistensies in the equals methods of the
 	 * model classes. We zero the millisecond because it makes things consistent
-	 * and becuase it's insignificant for our use.
+	 * and because it's insignificant for our use.
 	 * 
 	 * @param dateCreated
 	 *            the date created

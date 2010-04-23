@@ -281,7 +281,7 @@ public class SmsTask extends BaseModel {
 	 * @param dateToExpire
 	 */
 	public void setDateToExpire(Date dateToExpire) {
-		this.dateToExpire = dateToExpire;
+		this.dateToExpire = DateUtil.getUsableDate(dateToExpire);
 	}
 
 	/**
