@@ -135,7 +135,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					smsCore.adjustLateDeliveryBilling();
 				} catch (Exception e) {
 					LOG.error("SoScheduler encountered an error : "
-							+ e.getMessage());
+							+ e.getMessage(), e);
 				}
 				
 				// Pause a while
