@@ -9,6 +9,7 @@
   <!--  Renderers -->
   <bean id="userNavBarRenderer" class="org.sakaiproject.sms.tool.renderers.UserNavBarRenderer">
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+  	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
   	</bean>
   <bean id="savedSelectionsRenderer" class="org.sakaiproject.sms.tool.renderers.SavedSelectionsRenderer" >
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
@@ -63,8 +64,13 @@
   	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
 	<property name="messageLocator" ref="messageLocator" />
   </bean>
+  
+  <bean class="org.sakaiproject.sms.tool.producers.CreditTransferProducer">
+  	<property name="userNavBarRenderer" ref="userNavBarRenderer" />
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+  </bean>
 
-<bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
+	<bean id="dummyBean" class="org.sakaiproject.sms.tool.beans.DummyBean"/>
 
   <bean id="myFieldDateInputEvolver"
    class="uk.ac.cam.caret.rsf.evolverimpl.FieldDateInputEvolver" singleton="false">

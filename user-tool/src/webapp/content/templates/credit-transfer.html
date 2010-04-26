@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+<head>
+<title rsf:id="msg=sms.navbar.transfer">Account Transfers</title>
+	<script type="text/javascript" rsf:id="scr=portal-matter" language="JavaScript" src="/library/js/headscripts.js"></script>
+	<link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
+	<link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
+	<link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+    <script type="text/javascript" language="JavaScript" src="/library/js/jquery-latest.min.js"></script>
+    <script type="text/javascript" language="javaScript" src="../js/json2.js"></script>
+    <script type="text/javascript" language="javaScript" src="../js/jquery-ui-1.6.custom.min.js"></script>
+    <script type="text/javascript" language="javaScript" src="../js/sms.transfer.js"></script>
+</head>
+<body>
+<div class="portletBody">
+  <div rsf:id="navIntraTool:" class="navIntraTool"/>
+  <p/>
+<div id="loading">
+    <h3>
+        <img rsf:id="imgFetch" src="/library/image/sakai/spinner.gif" alt="Fetching groups..." title="Fetching groups..."/>
+        &nbsp;
+        <span rsf:id="msg=ui.transfer.loading"> Loading SMS accounts </span>            
+    </h3>
+</div>
+
+<div id="accounts-body" style="display:none;">
+    <div id="account-from">
+        <label rsf:id="msg=ui.transfer.site.transfer" id="account-title" for="account-select">Transfer from site:</label>
+        <select id="account-select">
+            <option value="{accountID}" name="{credits}">Site</option>
+        </select> 
+        <span id="account-balance-parent" style="display:none;">
+        	<span rsf:id="msg=ui.transfer.balance">Current site balance: </span>
+        	<span id="account-balance" style="font-weight:bold">00</span>
+        </span>
+    </div>
+
+    <div id="accounts">
+    <h3 rsf:id="msg=ui.transfer.balances" id="accounts-title">Account Balances</h3>
+    <table id="accounts-table" cellspacing="0" border="0" class="listHier lines nolines centerLines">
+        <thead>
+            <tr>
+                <th rsf:id="msg=ui.transfer.table.account">Account ID</th>
+                <th rsf:id="msg=ui.transfer.table.site">Site</th>
+                <th rsf:id="msg=ui.transfer.table.balance">Balance</th>
+                <th rsf:id="msg=ui.transfer.table.credits">Credits to transfer</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr name="acc-row" id="acc:{accountID}">
+                <td name="acc-id">0</td>
+                <td name="acc-site-name">Site</td>
+                <td id="acc-credits-for:{accountID}" name="acc-credits">0</td>
+                <td>
+                    <input id="acc-transfer-amount-for:{accountID}" name="amount" value="0" type="text" style="width: 50px;" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="act">
+        <div id="alert" style="display:none;">
+            <span class="alertText"></span>
+        </div>
+        <input rsf:id="msg=ui.transfer.button.action" type="button" id="doAction" value="Transfer" class="active"/>
+        <input rsf:id="msg=ui.transfer.button.clear" type="button" id="doClear" value="Clear" />
+        <input rsf:id="msg=sms.general.back" type="button" id="doBack" value="Back" />
+        &nbsp;
+        <img rsf:id="imgWorking" class="img-loading" src="/library/image/sakai/spinner.gif" alt="Working..." title="Working..." style="display:none;"/>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

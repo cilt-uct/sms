@@ -20,7 +20,12 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.renderers;
 
+import java.util.List;
+
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.tool.producers.CreditTransferProducer;
 import org.sakaiproject.sms.tool.producers.SmsPermissions;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
@@ -38,6 +43,11 @@ public class UserNavBarRenderer {
 		this.externalLogic = externalLogic;
 	}
 	
+	private SmsAccountLogic smsAccountLogic;
+	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
+		this.smsAccountLogic = smsAccountLogic;
+	}
+	
 	/**
 	 * Renderer for the nav bar. If @param currentUserId AND @param currentSiteId are null or invalid, nav bar will not render the permissions link
 	 * @param tofill
@@ -52,7 +62,13 @@ public class UserNavBarRenderer {
 		UIJointContainer joint = new UIJointContainer(tofill, divID,
 				"sms-navigation:");
 		
-		renderBranch(joint, "1", currentViewID, SmsPermissions.VIEW_ID,
+		List<SmsAccount> accounts = smsAccountLogic.getSmsAccountsForOwner(currentUserId);
+		if ( (accounts != null && accounts.size() > 1) || externalLogic.isUserAdmin(currentUserId)){
+		renderBranch(joint, "1", currentViewID, CreditTransferProducer.VIEW_ID,
+				"sms.navbar.transfer", true);
+		}		
+		
+		renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
 				"sms.navbar.permissions", false);
 		}
 	}
