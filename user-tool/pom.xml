@@ -56,12 +56,7 @@
 			<artifactId>SakaiRSFComponents-templates</artifactId>
 			<version>${rsfutil.version}-sakai_${sakairsf.sakai.version}</version>
 			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		
+		</dependency>		
 		<dependency>
 			<groupId>org.sakaiproject.kernel</groupId>
 			<artifactId>sakai-kernel-api</artifactId>
@@ -71,6 +66,29 @@
 			<groupId>org.sakaiproject.common</groupId>
 			<artifactId>sakai-common-edu-person-api</artifactId>
 		</dependency>
+		
+		<!-- Sakai util -->
+        <dependency>
+            <groupId>org.sakaiproject</groupId>
+            <artifactId>sakai-util</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+		
+		<!-- Spring dependency -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sakaiproject.entitybroker</groupId>
+            <artifactId>entitybroker-api</artifactId>
+        </dependency>
+		
+	    <dependency>
+	      <groupId>org.sakaiproject.entitybroker</groupId>
+	      <artifactId>entitybroker-utils</artifactId>
+	    </dependency>
 		
 	</dependencies>
 	<build>

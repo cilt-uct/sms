@@ -3,6 +3,11 @@
   "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+<!-- tool entity providers -->
+	<bean
+		parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
+		class="org.sakaiproject.sms.tool.entity.SmsResourcesEntityProvider">		
+	</bean>
 
 <!-- Configure the location of the messages files -->
     <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
@@ -10,7 +15,7 @@
             <bean
                 class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
                 <property name="basename"
-                    value="WEB-INF/bundle/messages" />
+                    value="classpath:org/sakaiproject/sms/tool/bundle/messages" />
                 <property name="cacheSeconds" value="10" />
             </bean>
         </property>

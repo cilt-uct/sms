@@ -1,6 +1,7 @@
 var smsTransfer = function($){
 
-    var     log = function(string){
+    var     messgeBundlePath = "/direct/sms-resources/message-bundle.json",
+            log = function(string){
                  _alert(string,'l');
             },
             info = function(string){
@@ -12,21 +13,10 @@ var smsTransfer = function($){
             error = function(string){
                  _alert(string,'e');
             },
-            lang = {
-                errors: {
-                    chooseFromAccount: "Choose an account to transfer credits from.",
-                    insufficientFunds: "There are not enough credits for this transfer. Reduce transfer amount by <b>{difference} credits</b> or select a different account.",
-                    noTransferAmount: "Enter an amount to transfer to at least one account.",
-                    userNotLoggedIn: "You are not logged in.",
-                    serverNoAccounts: "You do not have any SMS accounts to administer.",
-                    serverOneAccount: "You have only one SMS account to administer. To use this tool, ensure that tou have at least two.",
-                    serverAccountError: "<b>{site}</b> could not be transfered to.",
-                    serverNeedSync: "Oops, your request was partially successful due to SMS data having been changed on the server.\n\n" +
-                                    "We need to refresh to get the recent data."
-                },
-                success: {
-                    transfer: "<div><b>{credits} credits</b> have been successfully moved to {site}.</div>"
-                }
+            messageBundle = {},
+            //retrieve the message strings for key
+            messageLocator = function(key, params){
+                return fluid.messageLocator( messageBundle )([key], params);
             },
             //images
             images = {
@@ -79,7 +69,7 @@ var smsTransfer = function($){
                             if(accounts.length > 0){
                                 _getSites();
                             }else{
-                                error(lang.errors.serverNoAccounts);
+                                error(messageLocator("ui.transfer.js.serverNoAccounts"));
                             }
                         });
             },
@@ -173,7 +163,7 @@ var smsTransfer = function($){
                     $("div.act").hide();
                     $("#account-from").hide();
                     $("input[id*=acc-transfer-amount-for:]").attr("disabled", "disabled");
-                    error(lang.errors.serverOneAccount);
+                    error(messageLocator("ui.transfer.js.serverOneAccount"));
                     return false;    //exit
                 }
 
@@ -207,7 +197,7 @@ var smsTransfer = function($){
                 $("td input[id*=acc-transfer-amount-for:]").bind("keyup", function(){
                     selectedFromAccountBalance = $("#account-select option:selected").attr("name");
                     if(selectedFromAccountBalance === "choose"){
-                        warn(lang.errors.chooseFromAccount);
+                        warn(messageLocator("ui.transfer.js.chooseFromAccount"));
                         return false;
                     }
                     if(isNaN(this.value)){
@@ -230,7 +220,7 @@ var smsTransfer = function($){
                     selectedFromAccountBalance = $("#account-select option:selected").attr("name");
                     selectedFromAccount = $("#account-select option:selected").val();
                     if(selectedFromAccount === "null"){
-                        warn(lang.errors.chooseFromAccount);
+                        warn(messageLocator("ui.transfer.js.chooseFromAccount"));
                         return false;
                     }
                     _startWork();
@@ -251,12 +241,12 @@ var smsTransfer = function($){
                     if(selectedAccountsEntities.length > 0){
                         //check suffiecient funds
                         if (totalToTransfer > selectedFromAccountBalance){
-                            warn(lang.errors.insufficientFunds.replace("{difference}", totalToTransfer*1 - selectedFromAccountBalance*1));
+                            warn(messageLocator("ui.transfer.js.insufficientFunds", [totalToTransfer*1 - selectedFromAccountBalance*1]));
                         }else{
                             _doTransfer();
                         }
                     }else{
-                        warn(lang.errors.noTransferAmount);
+                        warn(messageLocator("ui.transfer.js.noTransferAmount"));
                     }
                 });
 
@@ -348,7 +338,7 @@ var smsTransfer = function($){
                             }
                         }
                         //show only error message based on how many errors ie plural etc
-                        error(lang.errors.serverAccountError.replace("{site}", errorSites.join(" and ")));
+                        error(messageLocator("ui.transfer.js.serverAccountError", [errorSites.join(" and ")]));
                     }else if(errors.length > 0){
                         /*some successes & errors*/
                         //highlight rows affected by error
@@ -364,11 +354,11 @@ var smsTransfer = function($){
                                 }
                             }
                         }
-                        msg = '<div class="messageError"><span>'+lang.errors.serverAccountError.replace("{site}", errorSites.join(" and "))+'</span></div>';
+                        msg = '<div class="messageError"><span>'+messageLocator("ui.transfer.js.serverAccountError", [errorSites.join(" and ")])+'</span></div>';
                         for(var s in successes){
                             for(var b in accounts){
                                 if(successes[s][0]*1 === accounts[b].id*1){
-                                    tempMsg += lang.success.transfer.replace("{credits}", successes[s][1]).replace("{site}", accounts[b].siteName);
+                                    tempMsg += messageLocator("ui.transfer.js.transfer", [successes[s][1], accounts[b].siteName]);
                                     break;
                                 }
                             }
@@ -378,7 +368,7 @@ var smsTransfer = function($){
                         info(msg+'<div class="messageSuccess"><span>'+tempMsg+'</span></div><p class="closeMe" />');
                         //****CATASTROPHIC ERROR ****//
                         //This app has info inconsistant with the server. probably an account was deleted or edited shomehow. we need to refetch data
-                        alert(lang.errors.serverNeedSync);
+                        alert(messageLocator("ui.transfer.js.serverNeedSync"));
                         location.reload(true);
                     }else if(errors.length === 0 && successes.length > 0){
                         /*No errors, only successes*/
@@ -386,7 +376,7 @@ var smsTransfer = function($){
                         for(var s in successes){
                             for(var b in accounts){
                                 if(successes[s][0]*1 === accounts[b].id*1){
-                                    msg += lang.success.transfer.replace("{credits}", successes[s][1]).replace("{site}", accounts[b].siteName);
+                                    msg += messageLocator("ui.transfer.js.transfer", [successes[s][1], accounts[b].siteName]);
                                     break;
                                 }
                             }
@@ -471,6 +461,18 @@ var smsTransfer = function($){
                 }
                 return finalCredits;
             },
+            // Format bundle path for user locale
+            _loadMessageBundle = function(){
+                $.ajax({
+                    url: messgeBundlePath,
+                    global: false,
+                    cache: true,
+                    dataType : "json",
+                    success: function(messageBundleJSON){
+                        messageBundle = messageBundleJSON.data;
+                    }
+                });
+            },
             _init = function(){
             //preload icons. Dimensions are not important
             var preload = new Image();
@@ -486,10 +488,13 @@ var smsTransfer = function($){
                     _stopWork();
                 },
                 error: function(xhr) {
-                    alert("Oops, the server could not process your action due to this error: " + xhr.statusText + " (" + xhr.status + ").");
+                    alert(messageLocator('GeneralAjaxChannelError', [xhr.statusText, xhr.status]));
                     return false;
                 }
             });
+
+            // Message Locale bundle loader
+            _loadMessageBundle();
 
             _getAccounts();
 
