@@ -50,6 +50,10 @@
   <bean id="navBarRenderer" class="org.sakaiproject.sms.tool.renderers.NavBarRenderer" />
 
   <!--  Producers -->
+  <bean class="org.sakaiproject.sms.tool.producers.RegisteredCommandProducer">
+  	<property name="smsIncomingLogicManager" ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager"/>
+  </bean>
+  
   <bean class="org.sakaiproject.sms.tool.producers.AbortTaskProducer">
 	<property name="navBarRenderer" ref="navBarRenderer" />
 	<property name="ELEvaluator" ref="ELEvaluator" />

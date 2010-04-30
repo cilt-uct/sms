@@ -20,6 +20,7 @@ package org.sakaiproject.sms.tool.renderers;
 
 import org.sakaiproject.sms.tool.producers.BillingAdminProducer;
 import org.sakaiproject.sms.tool.producers.MessageLogProducer;
+import org.sakaiproject.sms.tool.producers.RegisteredCommandProducer;
 import org.sakaiproject.sms.tool.producers.SmsSiteConfigProducer;
 import org.sakaiproject.sms.tool.producers.SmsSystemConfigProducer;
 import org.sakaiproject.sms.tool.producers.TaskListProducer;
@@ -64,6 +65,9 @@ public class NavBarRenderer {
 				"sms.navbar.site-config", true);
 		renderBranch(joint, "6", currentViewID,
 				SmsSystemConfigProducer.VIEW_ID, "sms.navbar.system-config",
+				false);
+		renderBranch(joint, "7", currentViewID,
+				RegisteredCommandProducer.VIEW_ID, "sms.navbar.commands",
 				false);
 
 	}

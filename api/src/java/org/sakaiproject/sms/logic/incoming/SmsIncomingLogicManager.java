@@ -22,6 +22,7 @@ package org.sakaiproject.sms.logic.incoming;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
@@ -92,5 +93,11 @@ public interface SmsIncomingLogicManager {
 	 */
 	public SmsPatternSearchResult getClosestMatch(String valueToMatch,
 			List<String> values);
+	
+	/**
+	 * Get all the commands registered with the gateway
+	 * @return a map containing the command and its tool
+	 */
+	public List<ShortMessageCommand> getAllCommands();
 
 }

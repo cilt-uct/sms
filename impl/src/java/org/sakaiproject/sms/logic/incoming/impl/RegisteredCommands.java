@@ -92,4 +92,13 @@ public class RegisteredCommands {
 		}
 
 	}
+	
+	public List<ShortMessageCommand> getCommands() {
+		List<ShortMessageCommand> ret = new ArrayList<ShortMessageCommand>();
+		for (int i = 0; i < commands.size(); i++) {
+			ShortMessageCommand cmd = commands.get(i);
+			ret.add(cmd);
+		}
+		return ret;
+	}
 }

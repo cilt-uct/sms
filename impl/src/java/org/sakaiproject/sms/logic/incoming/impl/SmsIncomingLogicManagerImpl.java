@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -44,7 +45,7 @@ import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 	// Collection for keeping tool ids with their logic
-	private final HashMap<String, RegisteredCommands> toolCmdsMap = new HashMap<String, RegisteredCommands>();
+	private final Map<String, RegisteredCommands> toolCmdsMap = new HashMap<String, RegisteredCommands>();
 
 	private final RegisteredCommands allCommands = new RegisteredCommands();
 
@@ -577,5 +578,18 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 
 		SmsPatternSearchResult.setPossibleMatches(possibleMatches);
 		return SmsPatternSearchResult;
+	}
+
+	public List<ShortMessageCommand> getAllCommands() {
+		
+		List<ShortMessageCommand> ret = new ArrayList<ShortMessageCommand>();
+		final Iterator<String> i = allCommands.getCommandKeys().iterator();
+		while (i.hasNext()) {
+			
+			String command = i.next();
+			ret.add(allCommands.getCommand(command));
+			
+		}
+		return ret;
 	}
 }
