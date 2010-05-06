@@ -10,6 +10,9 @@
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 		<property name="smsMessageLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsMessageLogic"/>
 		<property name="smsTaskValidator" ref="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator" />
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
 	</bean>
 
 	<bean id="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp" class="org.sakaiproject.sms.entity.SmsAccountEntityProviderImp">
@@ -17,7 +20,10 @@
 		<property name="developerHelperService" ref="org.sakaiproject.entitybroker.DeveloperHelperService"/>
 		<property name="smsBilling" ref="org.sakaiproject.sms.api.SmsBilling" />
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
 	</bean>
+	
     <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl">
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
     </bean>

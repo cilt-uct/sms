@@ -41,7 +41,7 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
-import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -52,7 +52,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.Statisticable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.SmsMessageLogic;
 import org.sakaiproject.sms.logic.SmsTaskLogic;
@@ -72,7 +72,7 @@ import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.ValidationConstants;
 import org.sakaiproject.sms.util.SmsMessageUtil;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful, Statisticable {
@@ -133,6 +133,20 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		this.smsTaskValidator = smsTaskValidator;
 	}
 
+	private SecurityService securityService;
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	private SiteService siteService;	
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
+	
+	private UserDirectoryService userDirectoryService;
+	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
+		this.userDirectoryService = userDirectoryService;
+	}
 
 
 	/**
@@ -166,7 +180,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	    			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), " --- "} ));
 	            } else {
 	                String userReference = developerHelperService.getCurrentUserReference();
-	                allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+	                allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteService.siteReference(task.getSakaiSiteId()));
 	                if (!allowedSend) {
 	        			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), userReference} ));
 	                }
@@ -221,7 +235,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			smsTask.setDateCreated(simpleDate);
 
 	
-         if (!SecurityService.unlock(PERMISSION_SEND, SiteService.siteReference(smsTask.getSakaiSiteId()))) {
+         if (!securityService.unlock(PERMISSION_SEND, siteService.siteReference(smsTask.getSakaiSiteId()))) {
              throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_SEND_SMS ));
          }
          
@@ -287,7 +301,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		//Assert task properties not set by EB casting at SmsTask task = (SmsTask) entity.
         setPropertyFromParams(task, params, ref);
         
-        boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+        boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteService.siteReference(task.getSakaiSiteId()));
         if (!allowedSend) {
             throw new SecurityException("User ("+userReference+") not allowed to access sms task: " + ref);
         }
@@ -332,7 +346,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
         }
 
 		String userReference = developerHelperService.getCurrentUserReference();
-		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(task.getSakaiSiteId()));
+		boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteService.siteReference(task.getSakaiSiteId()));
         if (!allowedSend) {
 			throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_ACCESS_SMS, new String[] {ref.getId(), userReference} ));
         }
@@ -435,7 +449,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 			throw new IllegalArgumentException( getMessage(ValidationConstants.TASK_RECIPIENTS_EMPTY) );
 		}
 
-		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, SiteService.siteReference(smsTask.getSakaiSiteId()));
+		 boolean allowedSend = developerHelperService.isUserAllowedInEntityReference(userReference, PERMISSION_SEND, siteService.siteReference(smsTask.getSakaiSiteId()));
          if (!allowedSend) {
              throw new SecurityException( getMessage(ValidationConstants.USER_NOTALLOWED_SEND_SMS ));
          }
@@ -477,7 +491,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		
 		String userId = developerHelperService.getCurrentUserId();
 		
-		if (!SecurityService.unlock(userId, PERMISSION_SEND, SiteService.siteReference(siteId))) {
+		if (!securityService.unlock(userId, PERMISSION_SEND, siteService.siteReference(siteId))) {
 			throw new SecurityException( getMessage(ValidationConstants.USER_ANONYMOUS_CANNOT_VIEW_MEMBERS, new String[] {siteId, userId} ));
 		}
 		
@@ -533,7 +547,7 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 		}
         
 		// Set user info - only allow sending as someone else if admin
-		User user = UserDirectoryService.getCurrentUser();
+		User user = userDirectoryService.getCurrentUser();
 
 		String senderDisplayName = user.getDisplayName();
 		if ( senderDisplayName == null || "".equals(senderDisplayName) ){

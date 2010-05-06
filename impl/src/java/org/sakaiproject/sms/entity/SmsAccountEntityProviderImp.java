@@ -29,7 +29,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.EntityView;
@@ -39,7 +39,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.exception.SmsInsufficientCreditsException;
@@ -82,11 +82,21 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 	public void setSmsBilling(SmsBilling smsBilling) {
 		this.smsBilling = smsBilling;
 	}
+	
+	private SecurityService securityService;
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	private SiteService siteService;	
+	public void setSiteService(SiteService siteService) {
+		this.siteService = siteService;
+	}
 
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage accounts");	
         }
         
@@ -166,7 +176,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 				throw new SecurityException(
 						"User must be logged in in order to access sms task: "
 								+ ref);
-			} else if (!currentUserId.equals(account.getOwnerId()) && !SecurityService.isSuperUser()) { 
+			} else if (!currentUserId.equals(account.getOwnerId()) && !securityService.isSuperUser()) { 
 				throw new SecurityException("User (" + currentUserId
 						+ ") not allowed to access sms task: " + ref);
 			}
@@ -178,7 +188,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 	public void updateEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage accounts");	
         }
 		
@@ -206,7 +216,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 
 	public void deleteEntity(EntityReference ref, Map<String, Object> params) {
 		
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage accounts");	
         }
 		
@@ -240,7 +250,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		// All accounts - admin only
 		if (userRes == null && siteRes == null) {
 
-			if (SecurityService.isSuperUser()) {
+			if (securityService.isSuperUser()) {
 				return smsAccountLogic.getAllSmsAccounts();	
 			}else{
 				
@@ -255,7 +265,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 			
 			String siteId = siteRes.getStringValue();
 			
-			if (!SecurityService.unlock(ExternalLogic.SMS_SEND, SiteService.siteReference(siteId))) {
+			if (!securityService.unlock(ExternalLogic.SMS_SEND, siteService.siteReference(siteId))) {
 				throw new SecurityException("No permission to view account info for this site");
 			}
 
@@ -278,7 +288,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		
 		String userId = developerHelperService.getCurrentUserId();
 		
-		if (userRes != null && userRes.getStringValue() != null && SecurityService.isSuperUser()) {
+		if (userRes != null && userRes.getStringValue() != null && securityService.isSuperUser()) {
 			userId = userRes.getStringValue();
 		}
 			
@@ -290,7 +300,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 	@EntityCustomAction(action=CUSTOM_ACTION_CREDIT,viewKey="")
 	public String creditAccount(EntityReference ref, Map<String, Object> params) {
 
-		if (!SecurityService.isSuperUser()) {
+		if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage accounts");	
         }
 
@@ -370,7 +380,7 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 			boolean isFromAccountOwner = currentUserId.equals(fromAccount.getOwnerId());
 			boolean isToAccountOwner = currentUserId.equals(toAccount.getOwnerId());
 			
-			if( (isFromAccountOwner && isToAccountOwner) || SecurityService.isSuperUser()){
+			if( (isFromAccountOwner && isToAccountOwner) || securityService.isSuperUser()){
 				try{
 					//Call transfer method
 					smsBilling.transferAccountCredits(fromAccountId, toAccountId, cred);

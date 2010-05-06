@@ -20,30 +20,19 @@
  **********************************************************************************/
 package org.sakaiproject.sms.entity;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
 import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.annotations.EntityCustomAction;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
-import org.sakaiproject.entitybroker.entityprovider.search.Restriction;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.command.SmsRestCommand;
-import org.sakaiproject.sms.logic.external.ExternalLogic;
-import org.sakaiproject.sms.logic.incoming.impl.RegisteredCommands;
-import org.sakaiproject.sms.model.constants.SmsConstants;
 
 public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 		RESTful, AutoRegisterEntityProvider {
@@ -61,10 +50,15 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 		this.developerHelperService = developerHelperService;
 	}
 
+	private SecurityService securityService;
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+	
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage commands");	
         }
         
@@ -88,7 +82,7 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 			return new SmsRestCommand();
 		}
 
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage accounts");	
         }
 		
@@ -100,7 +94,7 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 	public void updateEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {
 
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage commands");	
         }
 		
@@ -117,7 +111,7 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 
 	public void deleteEntity(EntityReference ref, Map<String, Object> params) {
 		
-        if (!SecurityService.isSuperUser()) {
+        if (!securityService.isSuperUser()) {
         	throw new SecurityException("Only admin users may manage commands");	
         }
 		
@@ -131,7 +125,7 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 
 	public List<?> getEntities(EntityReference ref, Search search) {
 
-		if (!SecurityService.isSuperUser()) {
+		if (!securityService.isSuperUser()) {
 			throw new SecurityException("Only admin users may manage accounts");	
 		}
 
