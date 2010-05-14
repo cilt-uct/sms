@@ -1125,8 +1125,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						NumberingPlanIndicator.valueOf(smsSmppProperties
 								.getDestAddressNPI()), message.getMobileNumber(),
 						new ESMClass(), smsSmppProperties.getProtocolId(),
-						smsSmppProperties.getPriorityFlag(), timeFormatter
-								.format(new Date()), null, new RegisteredDelivery(
+						smsSmppProperties.getPriorityFlag(), null, null, new RegisteredDelivery(
 								SMSCDeliveryReceipt.SUCCESS_FAILURE),
 						smsSmppProperties.getReplaceIfPresentFlag(),
 						messageEncoding, smsSmppProperties
