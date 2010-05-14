@@ -39,13 +39,13 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 	 * Actual methods
 	 * 
 	 */
-	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
+	public boolean sendEmail(String toAddress, String subject,
 			String body) {
 
 		LOG.debug("Sending email to:" + toAddress + " subject:" + subject
 				+ " body:" + body);
 		String from = "smstesting@sakai";
-		sendEmails(smsTask, from, new String[] { toAddress }, subject, body);
+		sendEmails(from, new String[] { toAddress }, subject, body);
 		return true;
 	}
 	
@@ -55,7 +55,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 	/**
 	 * @see ExternalLogic#sendEmails(String, String[], String, String)
 	 */
-	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
+	public String[] sendEmails(String from, String[] emails,
 			String subject, String message) {
 		InternetAddress fromAddress;
 		try {
@@ -72,14 +72,14 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 			}
 		}
 
-		return sendEmails(smsTask, fromAddress, toEmails, subject, message);
-		// return sendEmails(null, Arrays.asList(emails), subject, message);
+		return sendEmails(fromAddress, toEmails, subject, message);
+		
 	}
 
 	/**
 	 * Actual sending of e-mail via Sakai email service
 	 */
-	private String[] sendEmails(SmsTask smsTask, InternetAddress fromAddress,
+	private String[] sendEmails(InternetAddress fromAddress,
 			Collection<String> toEmails, String subject, String message) {
 
 		if (!serverConfigurationService.getBoolean("sms.notify.email", false)) {
@@ -117,6 +117,12 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		}
 		return addresses;
 		// return ((String[]) toEmails.toArray());
+	}
+
+	public void sendEmailTemplate(String from, String[] to, String templateKey,
+			String[] replacementValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

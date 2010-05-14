@@ -21,7 +21,6 @@
 
 package org.sakaiproject.sms.logic.external;
 
-import org.sakaiproject.sms.model.SmsTask;
 
 /**
  * Methods for sending emails 
@@ -34,8 +33,6 @@ public interface ExternalEmailLogic {
 	/**
 	 * Send email.
 	 * 
-	 * @param smsTask
-	 *            the sms task
 	 * @param toAddress
 	 *            the to address
 	 * @param subject
@@ -45,7 +42,7 @@ public interface ExternalEmailLogic {
 	 * 
 	 * @return true, if successful
 	 */
-	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
+	public boolean sendEmail(String toAddress, String subject,
 			String body);
 
 
@@ -58,16 +55,21 @@ public interface ExternalEmailLogic {
 	 *            subject of e-mail
 	 * @param message
 	 *            message of e-mail
-	 * @param smsTask
-	 *            the sms task
 	 * @param emails
 	 *            the emails
 	 * 
 	 * @return an array of email addresses that this message was sent to
 	 */
-	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
+	public String[] sendEmails(String from, String[] emails,
 			String subject, String message);
 
-	
+	/**
+	 *  Send a predefined email template to users 
+	 * @param from
+	 * @param to
+	 * @param templateKey
+	 * @param replacementValues
+	 */
+	public void sendEmailTemplate(String from, String[] to, String templateKey, String[] replacementValues);
 	
 }

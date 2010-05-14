@@ -891,9 +891,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	private boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
+	private boolean sendNotificationEmail(String toAddress,
 			String subject, String body) {
-		externalEmailLogic.sendEmail(smsTask, toAddress,
+		externalEmailLogic.sendEmail(toAddress,
 				subject, body);
 		return true;
 	}
@@ -1079,13 +1079,13 @@ public class SmsCoreImpl implements SmsCore {
 		boolean ownerNotification = false;
 
 		if (notiToAddress != null && notiToAddress.length() > 0) {
-			accountNotification = sendNotificationEmail(smsTask, notiToAddress,
+			accountNotification = sendNotificationEmail(notiToAddress,
 					subject, body);
 		}
 
 		if (ownerToAddress != null && ownerToAddress.length() > 0
 				&& !ownerToAddress.equals(notiToAddress)) {
-			ownerNotification = sendNotificationEmail(smsTask, ownerToAddress,
+			ownerNotification = sendNotificationEmail(ownerToAddress,
 					subject, body);
 		}
 
