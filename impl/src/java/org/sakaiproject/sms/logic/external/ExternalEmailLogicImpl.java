@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -13,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.EmailValidator;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
-import org.sakaiproject.sms.model.SmsTask;
+import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 
 public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
@@ -33,6 +34,15 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 			ServerConfigurationService serverConfigurationService) {
 		this.serverConfigurationService = serverConfigurationService;
 	}
+
+	
+	private EmailTemplateService emailTemplateService;	
+	public void setEmailTemplateService(EmailTemplateService emailTemplateService) {
+		this.emailTemplateService = emailTemplateService;
+	}
+
+
+
 
 	/*
 	 * 
@@ -119,9 +129,9 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		// return ((String[]) toEmails.toArray());
 	}
 
-	public void sendEmailTemplate(String from, String[] to, String templateKey,
-			String[] replacementValues) {
-		// TODO Auto-generated method stub
+	public void sendEmailTemplate(String from, List<String> to, String templateKey,
+			Map<String, String>replacementValues) {
+		emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
 		
 	}
 

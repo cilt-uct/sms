@@ -21,6 +21,9 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * Methods for sending emails 
@@ -28,6 +31,13 @@ package org.sakaiproject.sms.logic.external;
  *
  */
 public interface ExternalEmailLogic {
+	
+
+	/**
+	 * The template key for a task in progress
+	 */
+	public static final String TEMPLATE_TASK_STARTED="template.taskStarted";
+	
 	
 	
 	/**
@@ -70,6 +80,6 @@ public interface ExternalEmailLogic {
 	 * @param templateKey
 	 * @param replacementValues
 	 */
-	public void sendEmailTemplate(String from, String[] to, String templateKey, String[] replacementValues);
+	public void sendEmailTemplate(String from, List<String> userRefsTo, String templateKey, Map<String, String> replacementValues);
 	
 }

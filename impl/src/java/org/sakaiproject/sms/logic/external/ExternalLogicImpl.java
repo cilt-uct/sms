@@ -1099,5 +1099,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return null;
 	}
 
+	public String getSakaiUserRefFromId(String id) {
+		return userDirectoryService.userReference(id);
+	}
+
 
 }

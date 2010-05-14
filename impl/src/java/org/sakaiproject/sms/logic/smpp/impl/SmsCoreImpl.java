@@ -26,8 +26,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -891,12 +893,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	private boolean sendNotificationEmail(String toAddress,
-			String subject, String body) {
-		externalEmailLogic.sendEmail(toAddress,
-				subject, body);
-		return true;
-	}
+
 
 	/**
 	 * Send a email notification out.
@@ -949,6 +946,7 @@ public class SmsCoreImpl implements SmsCore {
 		String subject = null;
 		String body = null;
 		String ownerToAddress = null;
+		String ownerRef = null;
 		String notiToAddress = null;
 
 		SmsConfig configSystem = hibernateLogicLocator.getSmsConfigLogic()
@@ -984,19 +982,29 @@ public class SmsCoreImpl implements SmsCore {
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
 
+		ownerRef = externalLogic.getSakaiUserRefFromId(smsTask.getSenderUserId());
+		
 		// Email address for the site
 		notiToAddress = account.getNotificationEmail();
 
 		// TODO - Use the EmailTemplateService to construct message bodies
 
+		Map<String, String> repValues = new HashMap<String, String>();
+		String templateKey = null;
+		
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
+			repValues.put("taskId", smsTask.getId().toString());
+			repValues.put("creditsRequired", creditsRequired);
+			repValues.put("creditsAvailable", creditsAvailable);
+			templateKey = ExternalEmailLogic.TEMPLATE_TASK_STARTED;
+			/*
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectStarted", smsTask.getId()
 							.toString());
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", creditsRequired,
 					creditsAvailable);
-
+			*/
 		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
 			subject = MessageCatalog.getMessage(
 					"messages.notificationSubjectSent", smsTask.getId()
@@ -1077,16 +1085,28 @@ public class SmsCoreImpl implements SmsCore {
 		}
 		boolean accountNotification = false;
 		boolean ownerNotification = false;
+		
+		/*
+		 * 			
+		externalEmailLogic.sendEmail(toAddress,
+				subject, body);
+		return true;
+		 */
 
 		if (notiToAddress != null && notiToAddress.length() > 0) {
-			accountNotification = sendNotificationEmail(notiToAddress,
-					subject, body);
+			
+			  accountNotification = sendNotificationEmail(notiToAddress,
+			 					subject, body);
+			 					
+			//List<String> toList = new ArrayList<String>()
+			//externalEmailLogic.sendEmailTemplate(toList, templateKey, repValues);
 		}
 
 		if (ownerToAddress != null && ownerToAddress.length() > 0
 				&& !ownerToAddress.equals(notiToAddress)) {
-			ownerNotification = sendNotificationEmail(ownerToAddress,
-					subject, body);
+			//ownerNotification = sendNotificationEmail(ownerToAddress,
+				//	subject, body);
+			
 		}
 
 		return (accountNotification && ownerNotification);

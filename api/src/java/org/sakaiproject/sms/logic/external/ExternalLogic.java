@@ -247,10 +247,31 @@ public interface ExternalLogic {
 	 */
 	List<String> getUserIdsFromMobileNumber(String mobileNumber);
 
+	/**
+	 * 
+	 * @return
+	 */
 	public TimeZone getLocalTimeZone();
 
+	/**
+	 * 
+	 * @param sakaiUserId
+	 * @return
+	 */
 	public String getSakaiUserSortName(String sakaiUserId);
+	
+	/**
+	 * Get a reference (/user/admin) from a id (e.g. admin)
+	 * @param id
+	 * @return
+	 */
+	public String getSakaiUserRefFromId(String id);
 
+	/**
+	 * 
+	 * @param siteId
+	 * @return
+	 */
 	public Map<String, String> getSakaiRolesForSite(String siteId);
 
 	/**
@@ -260,12 +281,33 @@ public interface ExternalLogic {
 	 */
 	public Map<String, String> getSakaiGroupsForSite(String siteId);
 
+	/**
+	 * 
+	 * @param siteId
+	 * @param groupId
+	 * @return
+	 */
 	public String getSakaiGroupNameFromId(String siteId, String groupId);
-
+	
+	/**
+	 * 
+	 * @param entity
+	 * @param key
+	 * @return
+	 */
 	public String getEntityRealIdFromRefByKey(String entity, String key);
 
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	public String getEntityPrefix(String entity);
-
+	
+	/**
+	 * Get the support Email Number
+	 * @return
+	 */
 	public String getSmsContactEmail();
 
 	/**
