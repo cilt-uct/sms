@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,12 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.validator.EmailValidator;
 import org.sakaiproject.alias.api.Alias;
 import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -51,13 +46,12 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entitybroker.EntityBroker;
 import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.event.api.EventTrackingService;
+import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
@@ -143,11 +137,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		this.entityBroker = entityBroker;
 	}
 
-	private EmailService emailService;
-
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
-	}
 
 	private MobileNumberHelper mobileNumberHelper;
 
@@ -487,73 +476,6 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return result;
 	}
 
-	/**
-	 * @see ExternalLogic#sendEmails(String, String[], String, String)
-	 */
-	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
-			String subject, String message) {
-		InternetAddress fromAddress;
-		try {
-			fromAddress = new InternetAddress(from);
-		} catch (AddressException e) {
-			// cannot recover from this failure
-			throw new IllegalArgumentException("Invalid from address: " + from,
-					e);
-		}
-		List<String> toEmails = new ArrayList<String>();
-		for (String email : emails) {
-			if (email != null && !"".equals(email)) {
-				toEmails.add(email);
-			}
-		}
-
-		return sendEmails(smsTask, fromAddress, toEmails, subject, message);
-		// return sendEmails(null, Arrays.asList(emails), subject, message);
-	}
-
-	/**
-	 * Actual sending of e-mail via sakai email service
-	 */
-	private String[] sendEmails(SmsTask smsTask, InternetAddress fromAddress,
-			Collection<String> toEmails, String subject, String message) {
-
-		if (!serverConfigurationService.getBoolean("sms.notify.email", false)) {
-			LOG.debug("Enable notification is disabled (sms.notify.email=false in sakai.properties)");
-			return new String[0];
-		}
-		
-		InternetAddress[] replyTo = new InternetAddress[1];
-		List<InternetAddress> listAddresses = new ArrayList<InternetAddress>();
-		EmailValidator emailValidator = EmailValidator.getInstance();
-
-		for (Iterator<String> it = toEmails.iterator(); it.hasNext();) {
-			String email = it.next();
-			try {
-				if (emailValidator.isValid(email)) {
-					InternetAddress toAddress = new InternetAddress(email);
-					listAddresses.add(toAddress);
-				}
-			} catch (AddressException e) {
-				LOG.warn("Invalid to address: " + email
-						+ ", cannot send email", e);
-			}
-		}
-
-		replyTo[0] = fromAddress;
-		InternetAddress[] toAddresses = listAddresses
-		.toArray(new InternetAddress[listAddresses.size()]);
-		setupSession(smsTask.getSenderUserId());
-		emailService.sendMail(fromAddress, toAddresses, subject, message, null,
-				null, null);
-
-		// now we send back the list of people who the email was sent to
-		String[] addresses = new String[toAddresses.length];
-		for (int i = 0; i < toAddresses.length; i++) {
-			addresses[i] = toAddresses[i].getAddress();
-		}
-		return addresses;
-		// return ((String[]) toEmails.toArray());
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -612,15 +534,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 	}
 
-	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
-			String body) {
 
-		LOG.debug("Sending email to:" + toAddress + " subject:" + subject
-				+ " body:" + body);
-		String from = "smstesting@sakai";
-		sendEmails(smsTask, from, new String[] { toAddress }, subject, body);
-		return true;
-	}
 
 	public String getSakaiEmailAddressForUserId(String userId) {
 		try {

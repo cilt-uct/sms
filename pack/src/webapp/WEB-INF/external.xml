@@ -35,22 +35,24 @@
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
     </bean>
 
-	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic"	class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
+	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
 		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
 		<property name="toolManager" ref="org.sakaiproject.tool.api.ToolManager" />
 		<property name="entityBroker" ref="org.sakaiproject.entitybroker.EntityBroker" />
-		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
 		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
-		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="mobileNumberHelper" ref="org.sakaiproject.sms.logic.external.MobileNumberHelper" />
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 		<property name="aliasService" ref="org.sakaiproject.alias.api.AliasService"/>
 		<property name="timeService" ref="org.sakaiproject.time.api.TimeService" />
 		<property name="preferencesService" ref="org.sakaiproject.user.api.PreferencesService"/>
 		<property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService"/>
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 	</bean>
 
-</beans>
+	<bean id="org.sakaiproject.sms.logic.external.ExternalEmailLogic" class="org.sakaiproject.sms.logic.external.ExternalEmailLogicImpl">
+		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+	</bean>
+	</beans>

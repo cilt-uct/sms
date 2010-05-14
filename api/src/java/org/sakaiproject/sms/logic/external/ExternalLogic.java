@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL:$
- * $Id:$
+ * $URL: $
+ * $Id: $
  ***********************************************************************************
  *
  * Copyright (c) 2008, 2009 The Sakai Foundation
@@ -124,24 +124,6 @@ public interface ExternalLogic {
 	 */
 	public String getSakaiMobileNumber(String userID);
 
-	/**
-	 * Send e-mail to array of e-mail addresses.
-	 * 
-	 * @param from
-	 *            from address to be used
-	 * @param subject
-	 *            subject of e-mail
-	 * @param message
-	 *            message of e-mail
-	 * @param smsTask
-	 *            the sms task
-	 * @param emails
-	 *            the emails
-	 * 
-	 * @return an array of email addresses that this message was sent to
-	 */
-	public String[] sendEmails(SmsTask smsTask, String from, String[] emails,
-			String subject, String message);
 
 	/**
 	 * Return the actual list of message constructed for each user in the group
@@ -197,22 +179,6 @@ public interface ExternalLogic {
 	public boolean isValidUser(String userId);
 
 
-	/**
-	 * Send email.
-	 * 
-	 * @param smsTask
-	 *            the sms task
-	 * @param toAddress
-	 *            the to address
-	 * @param subject
-	 *            the subject
-	 * @param body
-	 *            the body
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean sendEmail(SmsTask smsTask, String toAddress, String subject,
-			String body);
 
 	/**
 	 * Gets the smsppProperties from the sakai.properties

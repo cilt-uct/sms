@@ -226,23 +226,6 @@ public interface SmsCore {
 	public SmsTask calculateEstimatedGroupSize(SmsTask smsTask);
 
 	/**
-	 * Send an email.
-	 * 
-	 * @param toAddress
-	 *            the to address
-	 * @param subject
-	 *            the subject
-	 * @param body
-	 *            the body
-	 * @param smsTask
-	 *            the sms task
-	 * 
-	 * @return true, if send notification email
-	 */
-	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
-			String subject, String body);
-
-	/**
 	 * Checks for tasks that can be marked as complete. If the total messages
 	 * processed equals the actual group size the task is marked as complete.
 	 */

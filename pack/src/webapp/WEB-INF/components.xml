@@ -96,6 +96,7 @@
 		<property name="smsIncomingLogicManager"
 			ref="org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager" />
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
+		<property name="externalEmailLogic" ref="org.sakaiproject.sms.logic.external.ExternalEmailLogic"/>
        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
 	</bean>
 	<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser"

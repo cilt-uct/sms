@@ -39,6 +39,7 @@ import org.hibernate.Transaction;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
+import org.sakaiproject.sms.logic.external.ExternalEmailLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
@@ -85,6 +86,11 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
 		this.externalLogic = externalLogic;
+	}
+
+	private ExternalEmailLogic externalEmailLogic;	
+	public void setExternalEmailLogic(ExternalEmailLogic externalEmailLogic) {
+		this.externalEmailLogic = externalEmailLogic;
 	}
 
 	public void setLastSendMoOverdraftEmail(Calendar lastSendMoOverdraftEmail) {
@@ -885,9 +891,9 @@ public class SmsCoreImpl implements SmsCore {
 
 	}
 
-	public boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
+	private boolean sendNotificationEmail(SmsTask smsTask, String toAddress,
 			String subject, String body) {
-		hibernateLogicLocator.getExternalLogic().sendEmail(smsTask, toAddress,
+		externalEmailLogic.sendEmail(smsTask, toAddress,
 				subject, body);
 		return true;
 	}
