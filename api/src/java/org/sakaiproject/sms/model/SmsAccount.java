@@ -138,13 +138,34 @@ public class SmsAccount extends BaseModel {
 	 * The email address that will receive the notification email
 	 */
 	private String notificationEmail;
-
+	
+	@Deprecated
 	public String getNotificationEmail() {
 		return notificationEmail;
 	}
 
+	@Deprecated
 	public void setNotificationEmail(String notificationEmail) {
 		this.notificationEmail = notificationEmail;
+	}
+
+	
+	private String notificationUserId;
+	
+	/**
+	 * The user who notifications should go to
+	 * @return
+	 */
+	public String getNotificationUserId() {
+		return notificationUserId;
+	}
+
+	/**
+	 * Se the user who notifications should go to
+	 * @param notificationUserId
+	 */
+	public void setNotificationUserId(String notificationUserId) {
+		this.notificationUserId = notificationUserId;
 	}
 
 	/**

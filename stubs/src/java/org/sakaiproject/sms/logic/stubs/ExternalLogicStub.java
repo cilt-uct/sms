@@ -368,4 +368,9 @@ public class ExternalLogicStub implements ExternalLogic {
 		return null;
 	}
 
+	public String getSakaiUserRefFromId(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -36,8 +36,58 @@ public interface ExternalEmailLogic {
 	/**
 	 * The template key for a task in progress
 	 */
-	public static final String TEMPLATE_TASK_STARTED="template.taskStarted";
+	public static final String TEMPLATE_TASK_STARTED = "template.taskStarted";
 	
+	/**
+	 * Template for task sent notification
+	 */
+	public static final String TEMPLATE_TASK_SENT = "template.taskSent";
+	
+	
+	/**
+	 * Template for task exception notification
+	 */
+	public static final String TEMPLATE_TASK_EXCEPTION = "template.taskException";
+	
+	/**
+	 * Template for task expired notification
+	 */
+	public static final String TEMPLATE_TASK_EXPIRED = "template.taskExpired";
+	
+	/**
+	 * Template for task over quota
+	 */
+	public static final String TEMPLATE_TASK_OVER_QUOTA="template.taskOverQuota";
+	
+	
+	/**
+	 * Template for task over quota MO
+	 */
+	public static final String TEMPLATE_TASK_OVER_QUOTA_MO="template.taskOverQuotaMO";
+	
+	
+	/**
+	 * Template for task Completed
+	 */
+	public static final String TEMPLATE_TASK_COMPLETED="template.taskCompleted";
+
+
+	/**
+	 * Template for task Aborted
+	 */
+	public static final String TEMPLATE_TASK_ABORTED = "template.taskAborted";
+	
+	
+	/**
+	 * Template for task Failed 
+	 */
+	public static final String TEMPLATE_TASK_FAILED = "template.taskFailed";
+	
+	
+	/**
+	 * Template for task Failed
+	 */
+	public static final String TEMPLATE_TASK_INSUFICIENT_CREDITS = "template.taskInsuficientCredits";
 	
 	
 	/**

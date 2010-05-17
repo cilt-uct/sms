@@ -138,6 +138,8 @@
 			not-null="true" length="99" />
 		<property name="notificationEmail" type="string" column="NOTIFICATION_EMAIL"
 			not-null="false" length="100" />
+	<property name="notificationUserId" type="string" column="NOTIFICATION_USER"
+			not-null="false" length="255" />
 		<property name="startdate" type="timestamp" column="START_DATE"
 			not-null="true" />
 		<property name="enddate" type="timestamp" column="END_DATE"
