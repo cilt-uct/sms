@@ -631,6 +631,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setDestAddressTON(Byte.parseByte(destAddressTON.trim()));
 		}
 		
+		String serviceType = serverConfigurationService.getString("sms.serviceType");
+		if (serviceType != null || serverConfigurationService.getBoolean("sms.useNullServiceType", false)) {
+			smsSmppProperties.setServiceType(serviceType);
+		}
 		
 		LOG.debug("Read properties from ServerConfigurationService");
 
