@@ -663,7 +663,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<String> getAllSiteAliases() {
 		
 		List<String> siteAliases = new ArrayList<String>();
@@ -704,7 +704,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public Map<String, String> getSakaiGroupsForSite(String siteId) {
 		//Using a {@link LinkedHashMap} to preserve the sorting order we will do later
 		Map<String, String> groups = new LinkedHashMap<String, String>();
@@ -723,7 +723,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return groups;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public Map<String, String> getSakaiRolesForSite(String siteId) {
 		Map<String, String> roles = new HashMap<String, String>();
 		try {
@@ -801,7 +801,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<User> getUsersWithMobileNumbersOnly(String siteId) {
 		List<String> userIds = new ArrayList<String>();
 		List<User> users = new ArrayList<User>();
@@ -837,7 +837,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				locationId);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public Map<String, User> getSakaiUsers(Set<String> userIds) {
 		Map<String, User> userMap = new HashMap<String, User>();
 		if (userIds != null && !userIds.isEmpty()) {
@@ -853,7 +853,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		return serverConfigurationService.getBoolean("sms.BindThisNode", true);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public Map<String, String> getSakaiUserDisplayNames(Set<String> sakaiUserIds) {
 		Map<String, String> usernames = new HashMap<String, String>();
 		if (sakaiUserIds != null && !sakaiUserIds.isEmpty()) {

@@ -160,7 +160,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	/**
 	 * @see MobileNumberHelper#getUserIdsFromMobileNumber(String)
 	 */
-	@SuppressWarnings("unchecked")
+	
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
 		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber + ")");
 		final SakaiPerson example = sakaiPersonManager.getPrototype();
@@ -216,7 +216,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		return true;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	private Set<String> filterUserListForPreference(Set<String> userids) {
 		List<User> users = userDirectoryService.getUsers(userids);
 		Set<String> ret = new HashSet<String>();
