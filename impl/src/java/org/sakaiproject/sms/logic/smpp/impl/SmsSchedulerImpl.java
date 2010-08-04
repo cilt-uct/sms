@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.external.ExternalMessageSending;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsScheduler;
 import org.sakaiproject.sms.model.SmsConfig;
@@ -67,12 +68,18 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		this.hibernateLogicLocator = hibernateLogicLocator;
 	}
 
+	public ExternalMessageSending externalMessageSending;	
+	public void setExternalMessageSending(
+			ExternalMessageSending externalMessageSending) {
+		this.externalMessageSending = externalMessageSending;
+	}
+	
 	public void init() {
 		Assert.notNull(smsCore);
 		setSmsConfig(hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig());
-		
-		if (externalLogic.isNodeBindToGateway()) {
+		LOG.info("externalLogic: " + externalMessageSending);
+		if (externalLogic.isNodeBindToGateway() || externalMessageSending != null) {
 			smsSchedulerThread = new SmsSchedulerThread();
 			LOG.info("init() - scheduler started");
 		} else {	

@@ -98,9 +98,9 @@
 		<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
 		<property name="externalEmailLogic" ref="org.sakaiproject.sms.logic.external.ExternalEmailLogic"/>
        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
-	</bean>
-	<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser"
-		class="org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl">
+       
+       <!-- external message sending for non-SMPP -->
+       <!-- <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/>  -->
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsScheduler" class="org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl"
@@ -110,7 +110,22 @@
 			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
         <property name="externalLogic"
             ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
+            <!-- external message sending for non-SMPP -->
+      <!--  <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/> -->
 	</bean>
+
+
+	<!-- Sending via clickatell -->
+	<bean id="org.sakaiproject.sms.logic.external.ExternalMessageSending" 
+	class="org.sakaiproject.sms.logic.external.ClickatellService">
+	</bean>
+
+
+	
+	<bean id="org.sakaiproject.sms.logic.incoming.SmsMessageParser"
+		class="org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl">
+	</bean>
+
 
 	<bean id="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator"
 		class="org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidatorImpl">

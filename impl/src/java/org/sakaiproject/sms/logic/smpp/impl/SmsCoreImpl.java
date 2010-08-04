@@ -43,6 +43,7 @@ import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.external.ExternalEmailLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
+import org.sakaiproject.sms.logic.external.ExternalMessageSending;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsIncomingLogicManager;
@@ -148,6 +149,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	public SmsIncomingLogicManager getSmsIncomingLogicManager() {
 		return smsIncomingLogicManager;
+	}
+
+	public ExternalMessageSending externalMessageSending;	
+	public void setExternalMessageSending(
+			ExternalMessageSending externalMessageSending) {
+		this.externalMessageSending = externalMessageSending;
 	}
 
 	public SmsSmpp smsSmpp = null;
@@ -632,7 +639,7 @@ public class SmsCoreImpl implements SmsCore {
 	
 	public void processNextTask() {
 		synchronized (this) {
-			if (!externalLogic.isNodeBindToGateway()) {
+			if (externalMessageSending == null && !externalLogic.isNodeBindToGateway()) {
 				return;
 			}
 
@@ -649,7 +656,7 @@ public class SmsCoreImpl implements SmsCore {
 	public void processSOTasks() {
 		synchronized (this) {
 			
-			if (!externalLogic.isNodeBindToGateway()) {
+			if (externalMessageSending == null && !externalLogic.isNodeBindToGateway()) {
 				return;
 			}
 
@@ -759,7 +766,14 @@ public class SmsCoreImpl implements SmsCore {
 											smsTask.getId(),
 											SmsConst_DeliveryStatus.STATUS_PENDING));
 
-			String submissionStatus = smsSmpp.sendMessagesToGateway(messageList);
+			String submissionStatus = null;
+			
+			//if set use an external service
+			if (externalMessageSending != null) {
+				submissionStatus = externalMessageSending.sendMessagesToService(messageList);
+			} else {
+				submissionStatus = smsSmpp.sendMessagesToGateway(messageList);
+			}
 
 			// Calculate number of messages actually sent and the total cost
 			double credits = 0;
@@ -790,8 +804,8 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setCreditsActual(smsTask.getCreditsActual() + credits);
 			smsTask.setMessagesProcessed(smsTask.getMessagesProcessed() + sent + errors);
 
-			if (smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_INCOMPLETE) ||
-				smsTask.getStatusCode().equals(SmsConst_DeliveryStatus.STATUS_RETRY)) {
+			if (SmsConst_DeliveryStatus.STATUS_INCOMPLETE.equals(smsTask.getStatusCode()) ||
+					SmsConst_DeliveryStatus.STATUS_RETRY.equals(smsTask.getStatusCode())) {
 				
 				// Reschedule for later delivery if necessary
 				smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);

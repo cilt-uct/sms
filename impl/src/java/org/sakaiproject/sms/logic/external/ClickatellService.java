@@ -3,7 +3,7 @@
  * $Id: ExternalEmailLogic.java 67664 2010-05-17 09:09:14Z david.horwitz@uct.ac.za $
  ***********************************************************************************
  *
- * Copyright (c) 2008, 2009 The Sakai Foundation
+ * Copyright (c) 2008, 2009, 2010 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,26 @@
  * limitations under the License.
  *
  **********************************************************************************/
+
 package org.sakaiproject.sms.logic.external;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public interface MobileNumberHelper {
-	
-	/**
-	 * Retrieves mobile number for user.
-	 * 
-	 * @param userid user id to retrieve 
-	 * @return user's mobile number in normalized international form, or null if not available / unset.
-	 */
-	String getUserMobileNumber(String userid);
-	
-	/**
-	 * Retrieves mobile numbers of multiple users
-	 * 
-	 * @param userids list of userid's
-	 * @return returns map of mobile numbers. Userid is key, value is mobile number in 
-	 * normalized international form, or null if unset/unavailable.
-	 */
-	Map<String,String> getUserMobileNumbers(List<String> userids);
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.sms.model.SmsMessage;
+import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 
-	/**
-	 * Retrieve userIds with supplied mobile number
-	 * 
-	 * @param mobileNumber
-	 * @return
-	 */
-	List<String> getUserIdsFromMobileNumber(String mobileNumber);
+public class ClickatellService implements ExternalMessageSending {
+
+	private final static Log LOG = LogFactory.getLog(ClickatellService.class);
 	
-	/**
-	 * Retrieve userIds for users who have mobile numbers
-	 * @param userids
-	 * @return
-	 */
-	List<String> getUsersWithMobileNumbers(Set<String> userids);
+	public String sendMessagesToService(Set<SmsMessage> messages) {
+		LOG.info("sending messages to clickatell: " + messages.size());
+		
+		//http://api.clickatell.com/http/sendmsg?user=xxxxx&password=xxxxx&api_id=xxxxx&to=448311234567&text=Meet+me+at+home
+		
+		return SmsConst_DeliveryStatus.STATUS_SENT;
+	}
+
 }
