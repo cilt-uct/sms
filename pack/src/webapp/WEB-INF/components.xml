@@ -100,7 +100,8 @@
        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
        
        <!-- external message sending for non-SMPP -->
-       <!-- <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/>  -->
+       <!-- <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/> -->
+       	  
 	</bean>
 
 	<bean id="org.sakaiproject.sms.api.SmsScheduler" class="org.sakaiproject.sms.logic.smpp.impl.SmsSchedulerImpl"
@@ -111,13 +112,16 @@
         <property name="externalLogic"
             ref="org.sakaiproject.sms.logic.external.ExternalLogic" />
             <!-- external message sending for non-SMPP -->
-      <!--  <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/> -->
+       <!-- <property name="externalMessageSending" ref="org.sakaiproject.sms.logic.external.ExternalMessageSending"/>-->
 	</bean>
 
 
 	<!-- Sending via clickatell -->
 	<bean id="org.sakaiproject.sms.logic.external.ExternalMessageSending" 
 	class="org.sakaiproject.sms.logic.external.ClickatellService">
+		<property name="hibernateLogicLocator"
+			ref="org.sakaiproject.sms.logic.hibernate.HibernateLogicLocator" />
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService"/>
 	</bean>
 
 

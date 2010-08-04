@@ -668,10 +668,11 @@ public class SmsSmppImpl implements SmsSmpp {
 		loadPropertiesFile();
 		loadSmsSmppProperties();
 
-		if (smsSmppProperties.isBindThisNode()) {
+		//if (smsSmppProperties.isBindThisNode()) {
 			mOmessageQueueThread = new MOmessageQueueThread();
 			deliveryReportQueueThread = new DeliveryReportQueueThread();
-		}
+			
+	//	}
 		
 		connectToGateway();
 		setupStatusBridge();

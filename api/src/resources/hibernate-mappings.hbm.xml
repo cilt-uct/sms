@@ -91,7 +91,7 @@
 		<property name="smscMessageId" type="string" column="SMSC_MESSAGE_ID"
 			not-null="false" length="100" unique-key="true" />
 		<property name="smscId" type="string" column="SMSC_ID"
-			not-null="false" length="20" unique-key="true" />
+			not-null="false" length="100" unique-key="true" />
 		<property name="mobileNumber" type="string" column="MOBILE_NUMBER"
 			not-null="true" length="50" />
 		<property name="sakaiUserId" type="string" column="SAKAI_USER_ID"

@@ -21,21 +21,79 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.entitybroker.util.http.HttpRESTUtils;
+import org.sakaiproject.entitybroker.util.http.HttpResponse;
+import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
+import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.SmsMessageLogic;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 
 public class ClickatellService implements ExternalMessageSending {
 
 	private final static Log LOG = LogFactory.getLog(ClickatellService.class);
 	
+	
+	private HibernateLogicLocator hibernateLogicLocator;
+
+	public void setHibernateLogicLocator(HibernateLogicLocator hibernateLogicLocator) {
+		this.hibernateLogicLocator = hibernateLogicLocator;
+	}
+
+	private ServerConfigurationService serverConfigurationService;
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
+	}
+
 	public String sendMessagesToService(Set<SmsMessage> messages) {
 		LOG.info("sending messages to clickatell: " + messages.size());
+		Iterator<SmsMessage> messageI = messages.iterator();
+		while (messageI.hasNext()) {
+			SmsMessage message = messageI.next();
+			
+			//http://api.clickatell.com/http/sendmsg?user=xxxxx&password=xxxxx&api_id=xxxxx&to=448311234567&text=Meet+me+at+home
+			Map<String,String> params = new HashMap<String,String>();
+			params.put("user", serverConfigurationService.getString("sms.clickatell.user"));
+			params.put("password", serverConfigurationService.getString("sms.clickatell.password"));
+			params.put("api_id", serverConfigurationService.getString("sms.clickatell.apiid"));
+			
+			//from the message
+			params.put("to", message.getMobileNumber());
+			params.put("text", message.getMessageBody());
+			
+			
+			HttpResponse response = HttpRESTUtils.fireRequest("http://api.clickatell.com/http/sendmsg", Method.POST, params);
+			LOG.info(response.responseCode);
+			String body = response.responseBody;
+			LOG.info(body);
+			if (body != null && body.startsWith("ID:")) {
+				String id = body.substring(body.indexOf(":") +1).trim() ;
+				LOG.info("got id of " + id + " len:" + id.length());
+				message.setDateDelivered(new Date());
+				message.setDateSent(new Date());
+				message.setSubmitResult(true);
+				message.setSmscId(id);
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
+				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.DELIVERED);
+			} else {
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+				message.setFailReason(body);
+			}
+			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(message);
+		}
 		
-		//http://api.clickatell.com/http/sendmsg?user=xxxxx&password=xxxxx&api_id=xxxxx&to=448311234567&text=Meet+me+at+home
+		
 		
 		return SmsConst_DeliveryStatus.STATUS_SENT;
 	}
