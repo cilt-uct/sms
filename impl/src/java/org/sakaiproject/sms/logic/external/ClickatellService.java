@@ -34,7 +34,6 @@ import org.sakaiproject.entitybroker.util.http.HttpRESTUtils;
 import org.sakaiproject.entitybroker.util.http.HttpResponse;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
-import org.sakaiproject.sms.logic.SmsMessageLogic;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
