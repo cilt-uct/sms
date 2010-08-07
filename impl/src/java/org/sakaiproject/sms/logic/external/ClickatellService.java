@@ -83,7 +83,9 @@ public class ClickatellService implements ExternalMessageSending {
 				message.setDateSent(new Date());
 				message.setSubmitResult(true);
 				message.setSmscId(id);
-				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
+				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
+				//for now just set this to 1
+				message.setCredits(1);
 				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.DELIVERED);
 			} else {
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);

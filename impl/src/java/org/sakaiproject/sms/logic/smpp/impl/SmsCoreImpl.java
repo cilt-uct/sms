@@ -779,6 +779,7 @@ public class SmsCoreImpl implements SmsCore {
 			double credits = 0;
 			int sent = 0;
 			int errors = 0;
+			int delivered = 0;
 			
 			for (SmsMessage sentMessage : messageList) {
 				if (SmsConst_DeliveryStatus.STATUS_SENT.equals(sentMessage.getStatusCode())) {
@@ -786,6 +787,12 @@ public class SmsCoreImpl implements SmsCore {
 					sent++;
 				}
 
+				//if sending externaly the status may be delivered
+				if (SmsConst_DeliveryStatus.STATUS_DELIVERED.equals(sentMessage.getStatusCode())) {
+					credits += sentMessage.getCredits();
+					delivered++;
+				}
+				
 				if (SmsConst_DeliveryStatus.STATUS_ERROR.equals(sentMessage.getStatusCode())) {
 					errors++;
 				}
@@ -804,6 +811,8 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setCreditsActual(smsTask.getCreditsActual() + credits);
 			smsTask.setMessagesProcessed(smsTask.getMessagesProcessed() + sent + errors);
 
+			smsTask.setMessagesDelivered(delivered);
+			
 			if (SmsConst_DeliveryStatus.STATUS_INCOMPLETE.equals(smsTask.getStatusCode()) ||
 					SmsConst_DeliveryStatus.STATUS_RETRY.equals(smsTask.getStatusCode())) {
 				
