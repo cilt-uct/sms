@@ -56,7 +56,7 @@ public class ClickatellService implements ExternalMessageSending {
 	}
 
 	public String sendMessagesToService(Set<SmsMessage> messages) {
-		LOG.info("sending messages to clickatell: " + messages.size());
+		LOG.debug("sending messages to clickatell: " + messages.size());
 		Iterator<SmsMessage> messageI = messages.iterator();
 		while (messageI.hasNext()) {
 			SmsMessage message = messageI.next();
@@ -73,12 +73,12 @@ public class ClickatellService implements ExternalMessageSending {
 			
 			
 			HttpResponse response = HttpRESTUtils.fireRequest("http://api.clickatell.com/http/sendmsg", Method.POST, params);
-			LOG.info(response.responseCode);
+			LOG.debug(response.responseCode);
 			String body = response.responseBody;
-			LOG.info(body);
+			LOG.debug(body);
 			if (body != null && body.startsWith("ID:")) {
 				String id = body.substring(body.indexOf(":") +1).trim() ;
-				LOG.info("got id of " + id + " len:" + id.length());
+				LOG.debug("got id of " + id + " len:" + id.length());
 				message.setDateDelivered(new Date());
 				message.setDateSent(new Date());
 				message.setSubmitResult(true);
