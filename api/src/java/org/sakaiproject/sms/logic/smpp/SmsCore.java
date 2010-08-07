@@ -241,4 +241,9 @@ public interface SmsCore {
 	public void abortPendingTask(Long smsTaskID)
 			throws SmsTaskNotFoundException;
 
+	/**
+	 * Update the statuses of messages delivered to an external gateway
+	 */
+	public void updateExternalMessageStatuses();
+	
 }

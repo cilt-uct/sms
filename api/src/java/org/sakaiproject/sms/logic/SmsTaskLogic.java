@@ -138,4 +138,10 @@ public interface SmsTaskLogic {
 	 * @return
 	 */
 	public Session getNewHibernateSession();
+	
+	/**
+	 *  Get tasks that are not complete
+	 * @return
+	 */
+	public List<SmsTask> getTasksNotComplete();
 }

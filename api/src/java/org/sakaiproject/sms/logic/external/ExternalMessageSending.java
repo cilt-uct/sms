@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.sms.model.SmsMessage;
@@ -39,4 +40,11 @@ public interface ExternalMessageSending {
 	 * @return
 	 */
 	public String sendMessagesToService(Set<SmsMessage> messages);
+	
+	
+	/**
+	 * Query the external API to get updated message Statuses and Costs
+	 * @param messages
+	 */
+	public void UpdateMessageStatuses(List<SmsMessage> messages);
 }

@@ -21,6 +21,7 @@
 package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -411,12 +412,22 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	 * have timed out waiting for delivery reports.
 	 */
 	public List<SmsTask> getTasksNotComplete() {
-
+		Session session = null;
+		Transaction tx = null;
+		List<SmsTask> ret = new ArrayList<SmsTask>();
+		session = getHibernateLogicLocator().getSmsTaskLogic()
+		.getNewHibernateSession();
+		tx = session.beginTransaction();
 		String sql = "from SmsTask where MESSAGES_PROCESSED < GROUP_SIZE_ACTUAL and STATUS_CODE NOT IN (?,?)";
 		Object[] params1 = new Object[2];
 		params1[0] = SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED;
 		params1[1] = SmsConst_DeliveryStatus.STATUS_FAIL;
-		return smsDao.executeQuery(sql, params1, 0, 100);
+		ret = smsDao.executeQuery(sql, params1, 0, 100);
+		tx.commit();
+		session.close();
+
+		return ret;
+
 	}
 
 

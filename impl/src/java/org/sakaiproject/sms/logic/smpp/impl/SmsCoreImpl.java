@@ -38,8 +38,10 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
+import org.sakaiproject.sms.logic.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.external.ExternalEmailLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -62,6 +64,7 @@ import org.sakaiproject.sms.model.SmsMOMessage;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
+import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
@@ -1213,7 +1216,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void checkAndSetTasksCompleted() {
-
+		LOG.debug("checkAndSetTasksCompleted()");
 		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getTasksToMarkAsCompleted();
 
@@ -1241,6 +1244,23 @@ public class SmsCoreImpl implements SmsCore {
 					LOG.debug("Marking task as completed: taskId = "
 							+ smsTask.getId() + " its status was "
 							+ smsTask.getStatusCode());
+					
+					//check external messages
+					if (externalMessageSending != null) {
+						List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
+						externalMessageSending.UpdateMessageStatuses(messages);
+						
+						//we need to check the message stats
+						int delivered = smsTask.getMessagesDelivered();
+						for (int q=0; q < messages.size(); q++) {
+							SmsMessage message = messages.get(q);
+							LOG.debug("got message of status " + message.getStatusCode());
+							if (SmsConst_DeliveryStatus.STATUS_DELIVERED.equals(message.getStatusCode())) {
+								delivered++;
+							}
+						}
+						smsTask.setMessagesDelivered(delivered);
+					}
 					
 					// We need to get these values inside the transaction
 					double creditEstimate = smsTask.getCreditEstimate();
@@ -1493,5 +1513,38 @@ public class SmsCoreImpl implements SmsCore {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.SECOND, offset); 
 		return new Date();
+	}
+
+	public void updateExternalMessageStatuses() {
+		if (externalMessageSending == null) {
+			return;
+		}
+		LOG.info("updateExternalMessageStatuses()");
+		
+		//we need all tasks in progress
+		SearchFilterBean searchBean  = new SearchFilterBean();
+		searchBean.setStatus(SmsConst_DeliveryStatus.STATUS_SENT);
+
+		
+		List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic().getTasksNotComplete();
+		LOG.info("got a list of " + tasks.size() + " tasks");
+		for (int i =0; i < tasks.size(); i++) {
+			SmsTask task = tasks.get(i);
+			List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
+			LOG.info("checking " + messages.size() + " from task " + task.getId());
+			externalMessageSending.UpdateMessageStatuses(messages);
+			//we need to update the task details for the message
+			int delivered = task.getMessagesDelivered();
+			for (int q=0; q < messages.size(); q++) {
+				SmsMessage message = messages.get(q);
+				if (SmsConst_DeliveryStatus.STATUS_DELIVERED.equals(message.getStatusCode())) {
+					delivered++;
+				}
+			}
+			
+			task.setMessagesDelivered(delivered);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
+		}
+
 	}
 }

@@ -145,6 +145,11 @@ public class SmsCoreStub implements SmsCore {
 		
 	}
 
+	public void updateExternalMessageStatuses() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }
