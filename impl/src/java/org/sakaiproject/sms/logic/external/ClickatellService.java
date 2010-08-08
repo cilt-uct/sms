@@ -110,7 +110,7 @@ public class ClickatellService implements ExternalMessageSending {
 		return params;
 	}
 
-	public void UpdateMessageStatuses(List<SmsMessage> messages) {
+	public void updateMessageStatuses(List<SmsMessage> messages) {
 		Iterator<SmsMessage> iter = messages.iterator();
 		while (iter.hasNext()) {
 			SmsMessage message = iter.next();

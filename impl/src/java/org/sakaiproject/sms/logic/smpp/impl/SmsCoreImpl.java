@@ -1248,7 +1248,7 @@ public class SmsCoreImpl implements SmsCore {
 					//check external messages
 					if (externalMessageSending != null) {
 						List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
-						externalMessageSending.UpdateMessageStatuses(messages);
+						externalMessageSending.updateMessageStatuses(messages);
 						
 						//we need to check the message stats
 						int delivered = smsTask.getMessagesDelivered();
@@ -1532,7 +1532,7 @@ public class SmsCoreImpl implements SmsCore {
 			SmsTask task = tasks.get(i);
 			List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
 			LOG.info("checking " + messages.size() + " from task " + task.getId());
-			externalMessageSending.UpdateMessageStatuses(messages);
+			externalMessageSending.updateMessageStatuses(messages);
 			//we need to update the task details for the message
 			int delivered = task.getMessagesDelivered();
 			for (int q=0; q < messages.size(); q++) {

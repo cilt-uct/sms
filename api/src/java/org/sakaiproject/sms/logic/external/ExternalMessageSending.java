@@ -46,5 +46,5 @@ public interface ExternalMessageSending {
 	 * Query the external API to get updated message Statuses and Costs
 	 * @param messages
 	 */
-	public void UpdateMessageStatuses(List<SmsMessage> messages);
+	public void updateMessageStatuses(List<SmsMessage> messages);
 }
