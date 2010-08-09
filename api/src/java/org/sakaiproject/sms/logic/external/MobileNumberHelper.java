@@ -54,7 +54,7 @@ public interface MobileNumberHelper {
 	/**
 	 * Retrieve userIds for users who have mobile numbers
 	 * @param userids
-	 * @return
+	 * @return a list of userIds for users who have mobile numbers
 	 */
 	List<String> getUsersWithMobileNumbers(Set<String> userids);
 }

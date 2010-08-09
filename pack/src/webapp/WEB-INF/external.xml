@@ -28,12 +28,76 @@
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
     </bean>
 
+
+
+
     <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
         <property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
         <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
     </bean>
+ 
+ <!-- Uncomment to use the Ldap mobile number helper remember to comment out the default bean above -->
+    <!-- 
+    <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.LdapMobileNumberHelper" init-method="init">
+        <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
+        <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
+        <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService"/>
+        <property name="ldapHost">
+			<value>ldapserver.name</value>
+		</property>
+		<property name="ldapPort">
+			<value>636</value>
+		</property>
+		<property name="secureConnection">
+			<value>true</value>
+		</property>
+		<property name="basePath">
+			<value>o=org</value>
+		</property>
+		<property name="operationTimeout">
+			<value>5000</value>
+		</property>
+		<property name="attributeMappings">
+			<map>
+				<entry key="login">
+					<value>cn</value>
+				</entry>
+				<entry key="distinguishedName">
+					<value>dn</value>
+				</entry>
+				<entry key="firstName">
+					<value>givenName</value>
+				</entry>
+				<entry key="lastName">
+					<value>sn</value>
+				</entry>
+				<entry key="email">
+					<value>mail</value>
+				</entry>
+				<entry key="groupMembership">
+					<value>groupMembership</value>
+				</entry>
+				<entry key="mobileNumber">
+					<value>mobileNumber</value>
+				</entry>
+			</map>
+		</property>
+	</bean>-->
+	<!-- cache config for ldap lookup -->
+		<!-- defaults for cache -->
+    <bean id="org.sakaiproject.sms.logic.external.LdapMobileNumberHelper.userCache"
+          class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+       <property name="cacheManager">
+           <ref bean="org.sakaiproject.memory.api.MemoryService.cacheManager"/>
+       </property>
+       <property name="cacheName" value="org.sakaiproject.sms.logic.external.LdapMobileNumberHelper.userCache"/>
+       <property name="maxElementsInMemory" value="10000"/>
+       <property name="timeToIdle" value="300000"/>
+       <property name="timeToLive" value="300000"/>
+    </bean>
+
 
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
