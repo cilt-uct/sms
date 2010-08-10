@@ -91,6 +91,7 @@ public class ClickatellService implements ExternalMessageSending {
 				
 			} else {
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
+				LOG.warn("message sending failed: " + body);
 				message.setFailReason(body);
 			}
 

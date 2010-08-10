@@ -131,7 +131,8 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
 	public void sendEmailTemplate(String from, List<String> to, String templateKey,
 			Map<String, String>replacementValues) {
-		emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
+	    if (emailTemplateService == null) return;
+	    emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
 		
 	}
 
