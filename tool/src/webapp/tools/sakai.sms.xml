@@ -3,7 +3,5 @@
 	<tool id="sakai.sms.admin"
 		title="SMS Admin"
 		description="For managing SMS accounts and messages">
-		<category name="course" />
-		<category name="project" />
 	</tool>	
 </registration>
