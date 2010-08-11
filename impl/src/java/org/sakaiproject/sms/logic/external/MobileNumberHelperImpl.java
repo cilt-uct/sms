@@ -113,7 +113,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		userSet = filterUserListForPreference(userSet);
 		Map<String, SakaiPerson> userMap = sakaiPersonManager.getSakaiPersons(userSet, sakaiPersonManager.getUserMutableType());
 		
-		//there'a possiblity we have an empty map
+		//there'a possibility we have an empty map
 		if(userMap== null || userMap.size() == 0)
 			return userMobileMap;
 
