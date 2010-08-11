@@ -24,7 +24,7 @@
 		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
 	</bean>
 	
-    <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl">
+    <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl" init-method="init">
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
     </bean>
 
