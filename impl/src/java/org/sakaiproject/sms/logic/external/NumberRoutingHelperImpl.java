@@ -66,7 +66,7 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 		
 		// We know mobile numbers in South Africa are 11 digits (international form)
 		// TODO - generalize this, so country / length mappings can be set in a properties file.
-		if (mobileNumber.startsWith(getCountryCode()) && mobileNumber.length() != 11) {
+		if (mobileNumber.startsWith("27") && mobileNumber.length() != 11) {
 			return false;
 		}
 		
