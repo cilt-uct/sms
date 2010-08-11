@@ -1,11 +1,17 @@
 package org.sakaiproject.sms.logic.external;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
 public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 
+	private static final Log LOG = LogFactory
+	.getLog(NumberRoutingHelper.class);
+	
+	
 	private ServerConfigurationService serverConfigurationService = null;
 
 	public void setServerConfigurationService(
@@ -53,6 +59,7 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	}
 	
 	public boolean isNumberRoutable(String mobileNumber) {
+		LOG.debug("isNumberRoutable(" + mobileNumber + ")");
 		if (mobileNumber == null || "".equals(mobileNumber)) {
 			return false;
 		}

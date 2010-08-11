@@ -818,10 +818,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 			for (Member member : allMembers) {
 				if ( member.isActive() ) {
 					activeUserIds.add(member.getUserId());
+					
 				}
 			}
+			LOG.debug("got a list of " + activeUserIds.size() + " active users");
 			if( !activeUserIds.isEmpty() ){
 				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
+				LOG.debug("got a list of: " + userIds.size() + " active users with mobile numbers");
 			}
 			if( !userIds.isEmpty() ){
 				users = userDirectoryService.getUsers(userIds);

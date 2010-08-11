@@ -157,6 +157,7 @@ public class LdapMobileNumberHelper implements MobileNumberHelper {
 	}
 
 	public String getUserMobileNumber(String userid) {
+		
 		//don't accept wildcards
 		if (userid.equals("*")) 
 		{
@@ -231,6 +232,7 @@ public class LdapMobileNumberHelper implements MobileNumberHelper {
 	}
 
 	public List<String> getUsersWithMobileNumbers(Set<String> userids) {
+		LOG.info("getUsersWithMobileNumbers");
 		List<String> ret = new ArrayList<String>();
 		Iterator<String> iter = userids.iterator();
 		while (iter.hasNext()) {

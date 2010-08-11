@@ -135,10 +135,11 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 *@see MobileNumberHelper#getUserMobileNumbers(List)
 	 */
 	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
-		
+		LOG.debug("getUsersWithMobileNumbers()");
 		List<String> result = new ArrayList<String>();
 		
         Set<String> usersWhoWantSMS = filterUserListForPreference(userIds);
+        LOG.debug("filtered list size is" + usersWhoWantSMS.size());
         if( usersWhoWantSMS.size() > 0){
 			Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(usersWhoWantSMS, sakaiPersonManager.getUserMutableType());
 			Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
@@ -147,7 +148,8 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	        	SakaiPerson sp = pairs.getValue();
 	        	if (sp != null) {
 	        		String mobile = numberRoutingHelper.normalizeNumber(sp.getMobile());
-	                if (mobile != null && !"".equals(mobile) && numberRoutingHelper.isNumberRoutable(mobile)) {
+	                LOG.debug("got a number " + mobile + " for user " + sp.getUid() );
+	        		if (mobile != null && !"".equals(mobile) && numberRoutingHelper.isNumberRoutable(mobile)) {
 	        			result.add( sp.getUid() );
 	        		}
 	        	}
@@ -218,13 +220,16 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	
 	
 	private Set<String> filterUserListForPreference(Set<String> userids) {
+		LOG.debug("filterUserListForPreference");
 		List<User> users = userDirectoryService.getUsers(userids);
+		LOG.debug("got a list of " + users.size() + " users");
 		Set<String> ret = new HashSet<String>();
 		if (users == null)
 			return ret;
 		
 		for (int i = 0; i < users.size(); i++) {
 			User u = users.get(i);
+			LOG.debug("checking " + u.getEid());
 			try {
 				boolean wantsSMS = u.getProperties().getBooleanProperty(PREF_SMS_NOTIFICATIONS);
 				if (wantsSMS) {
@@ -245,7 +250,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			}
 			
 		}
-		
+		LOG.debug("returning list of " + ret.size());
 		return ret;
 	}
 
@@ -255,13 +260,15 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @return
 	 */
 	private boolean userTypeToSMS(String type) {
-		String typesToSms = serverConfigurationService.getString("sms.usertypes.allow");
+		String typesToSms = serverConfigurationService.getString("sms.usertypes.allow", null);
 		if (typesToSms == null) {
+			LOG.debug("No user types defined allowing all");
 			return true;
 		}
 		
 		List<String> types = Arrays.asList(typesToSms.split(","));
 		if (types.contains(type)) {
+			LOG.debug("Type:" + type + " found in prefs list");
 			return true;
 		}
 		return false;
