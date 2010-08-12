@@ -44,7 +44,7 @@ import com.novell.ldap.LDAPSearchConstraints;
 import com.novell.ldap.LDAPSearchResults;
 import com.novell.ldap.LDAPSocketFactory;
 
-public class LdapMobileNumberHelper implements MobileNumberHelper {
+public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	private static Log LOG = LogFactory.getLog(LdapMobileNumberHelper.class);
 
 	private String ldapHost = ""; //address of ldap server
@@ -61,6 +61,9 @@ public class LdapMobileNumberHelper implements MobileNumberHelper {
 
 	private MemoryService memoryService;
 	private Cache userCache;
+	
+	private boolean checkProviderFirst = true;
+	
 	
 	public void init() {
 		LOG.info("init");
@@ -157,6 +160,26 @@ public class LdapMobileNumberHelper implements MobileNumberHelper {
 	}
 
 	public String getUserMobileNumber(String userid) {
+		String ret = null;
+		if (checkProviderFirst) {
+			ret = getUserMobileNumberFromLdap(userid);
+			if (ret == null) {
+				ret = super.getUserMobileNumber(userid);
+			}
+		} else {
+			ret = super.getUserMobileNumber(userid);
+			if (ret == null) {
+				ret = getUserMobileNumberFromLdap(userid);
+			}
+
+		}
+
+
+
+		return ret;
+	}
+
+	private String getUserMobileNumberFromLdap(String userid) {
 		
 		//don't accept wildcards
 		if (userid.equals("*")) 
