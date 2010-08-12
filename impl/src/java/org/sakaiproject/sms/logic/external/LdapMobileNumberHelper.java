@@ -271,7 +271,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	}
 
 	public List<String> getUsersWithMobileNumbers(Set<String> userids) {
-		LOG.info("getUsersWithMobileNumbers");
+		LOG.debug("getUsersWithMobileNumbers");
 		List<String> ret = new ArrayList<String>();
 		Iterator<String> iter = userids.iterator();
 		while (iter.hasNext()) {
