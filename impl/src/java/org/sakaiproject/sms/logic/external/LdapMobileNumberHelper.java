@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sms.logic.external;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,6 +64,10 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	private Cache userCache;
 	
 	private boolean checkProviderFirst = true;
+
+	private String ldapUser = null;
+
+	private String ldapPassword = null;
 	
 	
 	public void init() {
@@ -71,9 +76,8 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 			LOG.debug("Keystore is at: " + System.getenv("javax.net.ssl.trustStore"));
 			LDAPSocketFactory ssf = new LDAPJSSESecureSocketFactory();
 			LDAPConnection.setSocketFactory(ssf);
-			
-			userCache = memoryService.newCache("org.sakaiproject.sms.logic.external.LdapMobileNumberHelper.userCache");
 		}
+		userCache = memoryService.newCache("org.sakaiproject.sms.logic.external.LdapMobileNumberHelper.userCache");
 	}
 
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
@@ -193,6 +197,13 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 			return number;
 		}
 		
+		String userEid = null;
+		try {
+			userEid = userDirectoryService.getUserEid(userid);
+		} catch (UserNotDefinedException e1) {
+			return null;
+		}
+		
 		// create new ldap connection
 		LDAPConnection conn = new LDAPConnection();	
 		LDAPConstraints cons = new LDAPConstraints();
@@ -201,7 +212,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 		conn.setConstraints(cons);
 
 		// filter to find user
-		String sFilter = (String)attributeMappings.get("login") + "=" + userid	;
+		String sFilter = (String)attributeMappings.get("login") + "=" + userEid	;
 
 		// string array of attribs to get from the directory
 		String[] attrList = new String[] {	
@@ -215,14 +226,18 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 		String mobile = null;
 		try {
 			conn.connect( ldapHost, ldapPort );
-
+			LOG.debug("going to search for: " + sFilter);
 
 			// get entry from directory
 			LDAPEntry userEntry = getEntryFromDirectory(sFilter,attrList,conn);
-
-			//mobile No is"
-			mobile = numberRoutingHelper.normalizeNumber(userEntry.getAttribute("mobileNumber").getStringValue());
-			userCache.put(userid, mobile);
+			if (userEntry != null) {
+				//mobile No is"
+				LOG.debug("got an ldap entry for " + userEid);
+				mobile = numberRoutingHelper.normalizeNumber(userEntry.getAttribute(attributeMappings.get("mobileNumber")).getStringValue());
+				userCache.put(userid, mobile);
+			} else {
+				LOG.debug("this user has no ldap entry: " + userEid);
+			}
 
 		} catch (LDAPException e) {
 			// TODO Auto-generated catch block
@@ -307,7 +322,8 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 		LDAPSearchConstraints cons = new LDAPSearchConstraints();
 		cons.setDereference(LDAPSearchConstraints.DEREF_NEVER);		
 		cons.setTimeLimit(operationTimeout);
-
+		
+		LOG.debug("seaching for " + searchFilter + " in " + getBasePath());
 		LDAPSearchResults searchResults =
 			conn.search(getBasePath(),
 					LDAPConnection.SCOPE_SUB,
@@ -316,6 +332,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 					false,
 					cons);
 
+		LOG.debug("found: " + searchResults.getCount() + " results");
 		if(searchResults.hasMore()){
 			nextEntry = searchResults.next();            
 		}
@@ -328,6 +345,13 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	throws LDAPException
 	{
 		
+		if (ldapUser != null && ldapPassword != null) {
+			try {
+				conn.bind(LDAPConnection.LDAP_V3, this.ldapUser, ldapPassword.getBytes("utf8"));
+			} catch (UnsupportedEncodingException e) {
+				LOG.error("failed to encode user password");
+			}
+		}
 		LDAPSearchConstraints cons = new LDAPSearchConstraints();
 		cons.setDereference(LDAPSearchConstraints.DEREF_NEVER);		
 		cons.setTimeLimit(operationTimeout);
@@ -379,16 +403,32 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	
 	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
 		this.numberRoutingHelper = numberRoutingHelper;
+		super.setNumberRoutingHelper(numberRoutingHelper);
 	}
 
 	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
 		this.userDirectoryService = userDirectoryService;
+		super.setUserDirectoryService(userDirectoryService);
 	}
 
 	public void setMemoryService(MemoryService memoryService) {
 		this.memoryService = memoryService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setLdapUser(String ldapUser) {
+		this.ldapUser = ldapUser;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setLdapPassword(String ldapPassword) {
+		this.ldapPassword = ldapPassword;
+	}
 	
 
 
