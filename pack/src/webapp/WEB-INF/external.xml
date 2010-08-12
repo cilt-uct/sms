@@ -41,7 +41,9 @@
  <!-- Uncomment to use the Ldap mobile number helper remember to comment out the default bean above -->
     <!-- 
     <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.LdapMobileNumberHelper" init-method="init">
+       <property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
         <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
+        <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
         <property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService"/>
         <property name="ldapHost">
