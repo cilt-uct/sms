@@ -237,6 +237,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 				userCache.put(userid, mobile);
 			} else {
 				LOG.debug("this user has no ldap entry: " + userEid);
+				userCache.put(userid, null);
 			}
 
 		} catch (LDAPException e) {
@@ -322,6 +323,14 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 		LDAPSearchConstraints cons = new LDAPSearchConstraints();
 		cons.setDereference(LDAPSearchConstraints.DEREF_NEVER);		
 		cons.setTimeLimit(operationTimeout);
+		
+		if (ldapUser != null && ldapPassword != null) {
+			try {
+				conn.bind(LDAPConnection.LDAP_V3, this.ldapUser, ldapPassword.getBytes("utf8"));
+			} catch (UnsupportedEncodingException e) {
+				LOG.error("failed to encode user password");
+			}
+		}
 		
 		LOG.debug("seaching for " + searchFilter + " in " + getBasePath());
 		LDAPSearchResults searchResults =
