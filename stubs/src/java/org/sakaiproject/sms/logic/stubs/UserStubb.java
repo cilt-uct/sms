@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.logic.stubs;
 
+import java.util.Date;
 import java.util.Stack;
 
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -89,6 +90,12 @@ public class UserStubb implements UserEdit {
 		return null;
 	}
 
+	
+	public Date getCreatedDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public String getDisplayId() {
 		// TODO Auto-generated method stub
 		return null;
@@ -128,6 +135,13 @@ public class UserStubb implements UserEdit {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
+	public Date getModifiedDate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	public String getSortName() {
 		// TODO Auto-generated method stub
