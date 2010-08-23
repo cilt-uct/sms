@@ -21,9 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import org.apache.commons.math.util.MathUtils;
 import org.sakaiproject.sms.logic.SmsConfigLogic;
 import org.sakaiproject.sms.model.SmsConfig;
-import org.sakaiproject.sms.tool.util.commons.MathUtils;
+
 
 import uk.org.ponder.beanutil.BeanLocator;
 
