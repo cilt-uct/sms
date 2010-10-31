@@ -36,6 +36,7 @@ import org.sakaiproject.memory.api.MemoryService;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
+import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPConstraints;
 import com.novell.ldap.LDAPEntry;
@@ -233,8 +234,13 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 			if (userEntry != null) {
 				//mobile No is"
 				LOG.debug("got an ldap entry for " + userEid);
-				mobile = numberRoutingHelper.normalizeNumber(userEntry.getAttribute(attributeMappings.get("mobileNumber")).getStringValue());
-				userCache.put(userid, mobile);
+				LDAPAttribute attr = userEntry.getAttribute(attributeMappings.get("mobileNumber"));
+				if (attr != null) {
+					String ldapNumber = attr.getStringValue();
+
+					mobile = numberRoutingHelper.normalizeNumber(ldapNumber);
+					userCache.put(userid, mobile);
+				}
 			} else {
 				LOG.debug("this user has no ldap entry: " + userEid);
 				userCache.put(userid, null);
