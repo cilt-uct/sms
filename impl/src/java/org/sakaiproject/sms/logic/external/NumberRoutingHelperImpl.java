@@ -101,7 +101,13 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	
 	public String normalizeNumber(String mobileNumber, final String intprefix, final String localprefix, final String countrycode) {
 
+		
 		if (mobileNumber == null || "".equals(mobileNumber)) {
+			return mobileNumber;
+		}
+		
+		//a space would cause a index out of bounds bellow
+		if (mobileNumber.trim().length() == 0) {
 			return mobileNumber;
 		}
 		
