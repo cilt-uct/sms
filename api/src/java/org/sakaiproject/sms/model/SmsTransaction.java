@@ -236,6 +236,8 @@ public class SmsTransaction extends BaseModel {
 			return true;
 		if (obj == null)
 			return false;
+		if (!(obj instanceof SmsTransaction))
+			return false;
 		SmsTransaction other = (SmsTransaction) obj;
 		if (creditBalance != other.creditBalance) {
 				return false;
