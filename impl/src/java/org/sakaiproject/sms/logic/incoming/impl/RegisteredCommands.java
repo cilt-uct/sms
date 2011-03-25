@@ -22,10 +22,12 @@ package org.sakaiproject.sms.logic.incoming.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
@@ -95,8 +97,10 @@ public class RegisteredCommands {
 	
 	public List<ShortMessageCommand> getCommands() {
 		List<ShortMessageCommand> ret = new ArrayList<ShortMessageCommand>();
-		for (int i = 0; i < commands.size(); i++) {
-			ShortMessageCommand cmd = commands.get(i);
+		Iterator<Entry<String, ShortMessageCommand>> it = commands.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, ShortMessageCommand> entry = it.next();
+			ShortMessageCommand cmd = entry.getValue();
 			ret.add(cmd);
 		}
 		return ret;

@@ -222,11 +222,12 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	private Set<String> filterUserListForPreference(Set<String> userids) {
 		LOG.debug("filterUserListForPreference");
 		List<User> users = userDirectoryService.getUsers(userids);
-		LOG.debug("got a list of " + users.size() + " users");
+		
 		Set<String> ret = new HashSet<String>();
 		if (users == null)
 			return ret;
 		
+		LOG.debug("got a list of " + users.size() + " users");
 		for (int i = 0; i < users.size(); i++) {
 			User u = users.get(i);
 			LOG.debug("checking " + u.getEid());
