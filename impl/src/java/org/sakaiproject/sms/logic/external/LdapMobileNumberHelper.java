@@ -59,7 +59,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	
 	private NumberRoutingHelper numberRoutingHelper;
 	/* Hashmap of attribute mappings */
-	private HashMap<String, String> attributeMappings = new HashMap<String, String>();
+	private Map<String, String> attributeMappings = new HashMap<String, String>();
 
 	private MemoryService memoryService;
 	private Cache userCache;
@@ -392,7 +392,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 	 * @param attributeMappings The attributeMappings to set.
 	 */
 	public void setAttributeMappings(Map<String, String> attributeMappings) {
-		this.attributeMappings = (HashMap)attributeMappings;
+		this.attributeMappings = (Map)attributeMappings;
 	}
 
 	/**
