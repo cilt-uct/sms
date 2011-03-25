@@ -356,11 +356,11 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		SmsAccount toAccount = smsAccountLogic.getSmsAccount(toAccountId);
 		if (fromAccountId == null) {
 			throw new IllegalArgumentException(
-					"No account found to transfer FROM, given id: "  + fromAccountId);
+					"No account found to transfer FROM, given id: NULL");
 		}
 		if (toAccountId == null) {
 			throw new IllegalArgumentException(
-					"No account found to transfer TO, given id: "  + toAccountId);
+					"No account found to transfer TO, given id: NULL");
 		}
 		
 		if(fromAccount == toAccount){
