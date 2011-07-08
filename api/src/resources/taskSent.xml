@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>An exception occurred while processing task number ${taskId}</subject>
+	<message>There was an error processing the task, the service returned:
+	
+		${moreInfo}</message>
+	<key>sms.taskSent</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Mobile Origionating message failure</subject>
+	<message>The current account balance of ${creditsAvailable} exceeded the overdraft limit by  1 credit. No further sms deliveries will be made.</message>
+	<key>sms.taskOverQuotaMO</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

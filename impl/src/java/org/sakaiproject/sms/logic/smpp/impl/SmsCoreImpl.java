@@ -1016,162 +1016,90 @@ public class SmsCoreImpl implements SmsCore {
 		// TODO - Use the EmailTemplateService to construct message bodies
 
 		Map<String, String> repValues = new HashMap<String, String>();
+		repValues.put("taskId", smsTask.getId().toString());
+		
+		
 		String templateKey = null;
 		
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("creditsRequired", creditsRequired);
 			repValues.put("creditsAvailable", creditsAvailable);
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_STARTED;
-			/*
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectStarted", smsTask.getId()
-							.toString());
-			body = MessageCatalog.getMessage(
-					"messages.notificationBodyStarted", creditsRequired,
-					creditsAvailable);
-			*/
+			
 		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
-			repValues.put("creditsRequired", creditsRequired);
-			repValues.put("creditsAvailable", creditsAvailable);
+			repValues.put("messagesProcessed", Integer.valueOf(smsTask.getMessagesProcessed()).toString());
+			repValues.put("messagesDelivered", Integer.valueOf(smsTask.getMessagesDelivered()).toString());
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_SENT;
 			
-			/*
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectSent", smsTask.getId()
-							.toString());
-			body = MessageCatalog.getMessage("messages.notificationBodySent",
-					creditsRequired, creditsAvailable);
-					*/
-
-		} else if (taskMessageType
+			} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_EXCEPTION)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
-			templateKey = ExternalEmailLogic.TEMPLATE_TASK_EXCEPTION;
 			
-			/*subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectException", smsTask.getId()
-							.toString());
-			body = additionInformation;
-			*/
+			templateKey = ExternalEmailLogic.TEMPLATE_TASK_EXCEPTION;
+			repValues.put("moreInfo", additionInformation);
+			
 		} else if (taskMessageType
 				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("creditsAvailable", creditsAvailable);
-			repValues.put("overQuota?", String.valueOf((-1)
-							* (account.getOverdraftLimit() + account
-									.getCredits())));
+			repValues.put("overDraftLimit", String.valueOf(account.getOverdraftLimit()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_OVER_QUOTA;
 			
-			/*subject = MessageCatalog
-					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
-			body = MessageCatalog.getMessage(
-					"messages.notificationOverdraftLimitExceeded", String
-							.valueOf(account.getCredits()), String.valueOf((-1)
-							* (account.getOverdraftLimit() + account
-									.getCredits())));
-			*/
 		} else if (taskMessageType
 				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("creditsAvailable", String.valueOf(account.getCredits()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_OVER_QUOTA_MO;
-			/*
-			subject = MessageCatalog
-					.getMessage("messages.notificationSubjectOverdraftLimitExceeded");
-			body = MessageCatalog.getMessage(
-					"messages.notificationMOSubjectOverdraftLimitExceeded",
-					String.valueOf(account.getCredits()));
-					*/
+			
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_EXPIRED;
-			/*
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectExpired", smsTask.getId()
-							.toString());
-			body = MessageCatalog
-					.getMessage("messages.notificationBodyExpired");
-					*/
+			
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_COMPLETED)) {
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("messagesProccessed", String.valueOf(smsTask.getMessagesProcessed()));
 			repValues.put("messagesDelivered", String.valueOf(smsTask.getMessagesDelivered()));
 			
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_COMPLETED;
-			/*
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectCompleted", smsTask.getId()
-							.toString());
-			body = MessageCatalog.getMessage(
-					"messages.notificationBodyCompleted", String
-							.valueOf(smsTask.getMessagesProcessed()), String
-							.valueOf(smsTask.getMessagesDelivered()));
-							
-							*/
+			
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_ABORTED)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("SenderName", smsTask.getSenderUserName());
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_ABORTED;
-			/*
 			
-			subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectAborted", smsTask.getId()
-							.toString());
-			body = MessageCatalog.getMessage(
-					"messages.notificationBodyAborted", smsTask
-							.getSenderUserName());
-							*/
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_FAILED)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
+			
 			repValues.put("maxTried", String.valueOf(configSystem.getSmsRetryMaxCount()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_FAILED;
 			
 			
-			/*subject = MessageCatalog.getMessage(
-					"messages.notificationSubjectFailed", smsTask.getId()
-							.toString());
-			body = MessageCatalog.getMessage("messages.notificationBodyFailed",
-					String.valueOf(configSystem.getSmsRetryMaxCount()));
-					*/
+			
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_INSUFFICIENT_CREDITS)) {
 			
-			repValues.put("taskId", smsTask.getId().toString());
-			repValues.put("overDraftLimit", String.valueOf(account.getOverdraftLimit()));
-			repValues.put("???", String
+			
+			repValues.put("required", String.valueOf(smsTask.getCreditCost()));
+			repValues.put("available", String
 					.valueOf(account.getOverdraftLimit()
 							+ account.getCredits()));
 		
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_INSUFICIENT_CREDITS;
-			
-			
-			/*
-			subject = MessageCatalog
-					.getMessage("messages.notificationSubjectTaskInsufficientCredits");
-			body = MessageCatalog.getMessage(
-					"messages.notificationBodyTaskInsufficientCredits", String
-							.valueOf(account.getOverdraftLimit()), String
-							.valueOf(account.getOverdraftLimit()
-									+ account.getCredits()));
-									*/
 
 		}
 		boolean accountNotification = false;

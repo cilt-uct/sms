@@ -36,58 +36,81 @@ public interface ExternalEmailLogic {
 	/**
 	 * The template key for a task in progress
 	 */
-	public static final String TEMPLATE_TASK_STARTED = "template.taskStarted";
+	public static final String TEMPLATE_TASK_STARTED = "sms.taskStarted";
+	
+	
+	public static final String FILE_TEMPLATE_TASK_STARTED = "taskStarted.xml";
 	
 	/**
 	 * Template for task sent notification
 	 */
-	public static final String TEMPLATE_TASK_SENT = "template.taskSent";
+	public static final String TEMPLATE_TASK_SENT = "sms.taskSent";
+	
+	
+	
+	public static final String FILE_TEMPLATE_TASK_SENT = "taskSent.xml";
+	
+	
 	
 	
 	/**
 	 * Template for task exception notification
 	 */
-	public static final String TEMPLATE_TASK_EXCEPTION = "template.taskException";
+	public static final String TEMPLATE_TASK_EXCEPTION = "sms.taskException";
+	
+	
+	public static final String FILE_TEMPLATE_TASK_EXCEPTION = "taskException.xml";
 	
 	/**
 	 * Template for task expired notification
 	 */
-	public static final String TEMPLATE_TASK_EXPIRED = "template.taskExpired";
+	public static final String TEMPLATE_TASK_EXPIRED = "sms.taskExpired";
+	
+	public static final String FILE_TEMPLATE_TASK_EXPIRED = "taskExpired.xml";
 	
 	/**
 	 * Template for task over quota
 	 */
-	public static final String TEMPLATE_TASK_OVER_QUOTA="template.taskOverQuota";
+	public static final String TEMPLATE_TASK_OVER_QUOTA="sms.taskOverQuota";
+	
+	public static final String FILE_TEMPLATE_TASK_OVER_QUOTA="taskOverQuota.xml";
 	
 	
 	/**
 	 * Template for task over quota MO
 	 */
-	public static final String TEMPLATE_TASK_OVER_QUOTA_MO="template.taskOverQuotaMO";
+	public static final String TEMPLATE_TASK_OVER_QUOTA_MO="sms.taskOverQuotaMO";
 	
+	public static final String FILE_TEMPLATE_TASK_OVER_QUOTA_MO="taskOverQuotaMO.xml";
 	
 	/**
 	 * Template for task Completed
 	 */
-	public static final String TEMPLATE_TASK_COMPLETED="template.taskCompleted";
+	public static final String TEMPLATE_TASK_COMPLETED="sms.taskCompleted";
+	
+	public static final String FILE_TEMPLATE_TASK_COMPLETED="taskCompleted.xml";
 
 
 	/**
 	 * Template for task Aborted
 	 */
-	public static final String TEMPLATE_TASK_ABORTED = "template.taskAborted";
+	public static final String TEMPLATE_TASK_ABORTED = "sms.taskAborted";
+	public static final String FILE_TEMPLATE_TASK_ABORTED = "taskAborted.xml";
 	
 	
 	/**
 	 * Template for task Failed 
 	 */
-	public static final String TEMPLATE_TASK_FAILED = "template.taskFailed";
+	public static final String TEMPLATE_TASK_FAILED = "sms.taskFailed";
+	
+	public static final String FILE_TEMPLATE_TASK_FAILED = "taskFailed.xml";
 	
 	
 	/**
 	 * Template for task Failed
 	 */
-	public static final String TEMPLATE_TASK_INSUFICIENT_CREDITS = "template.taskInsuficientCredits";
+	public static final String TEMPLATE_TASK_INSUFICIENT_CREDITS = "sms.taskInsuficientCredits";
+	public static final String FILE_TEMPLATE_TASK_INSUFICIENT_CREDITS = "taskInsuficientCredits.xml";
 	
 	
 	/**

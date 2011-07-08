@@ -84,6 +84,7 @@
 				<directory>${basedir}/src/resources</directory>
 				<includes>
 					<include>hibernate-mappings.hbm.xml</include>
+					<include>*.xml</include>
 				</includes>
 			</resource>
 		</resources>

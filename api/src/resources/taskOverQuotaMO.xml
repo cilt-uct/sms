@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Sms task ${taskId} started</subject>
+	<message>The task is being processed now. Estimated cost:
+		${creditsRequired}, Credits available: ${creditsAvailable}</message>
+	<key>sms.taskStarted</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

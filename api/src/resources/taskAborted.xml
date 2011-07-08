@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Sms task ${taskId} was aborted</subject>
+	<message>The task was aborted by "${SenderName}"</message>
+	<key>sms.taskAborted</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Sms task ${taskId} expired</subject>
+	<message>Task could not be processed in the required time frame</message>
+	<key>sms.taskExpired</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

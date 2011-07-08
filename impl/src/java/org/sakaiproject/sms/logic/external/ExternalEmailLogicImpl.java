@@ -19,7 +19,7 @@ import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
 	private static final Log LOG = LogFactory.getLog(ExternalEmailLogicImpl.class);
-	
+
 	/*
 	 * Setters and injected services
 	 */
@@ -27,7 +27,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
 	}
-	
+
 	private ServerConfigurationService serverConfigurationService = null;
 
 	public void setServerConfigurationService(
@@ -35,7 +35,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		this.serverConfigurationService = serverConfigurationService;
 	}
 
-	
+
 	private EmailTemplateService emailTemplateService;	
 	public void setEmailTemplateService(EmailTemplateService emailTemplateService) {
 		this.emailTemplateService = emailTemplateService;
@@ -43,6 +43,23 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
 
 
+
+	public void init() {
+		LOG.info("init()");
+		List<String> templatePaths = new ArrayList<String>();
+		templatePaths.add(FILE_TEMPLATE_TASK_STARTED);
+		templatePaths.add(FILE_TEMPLATE_TASK_SENT);
+		templatePaths.add(FILE_TEMPLATE_TASK_EXCEPTION);
+		templatePaths.add(FILE_TEMPLATE_TASK_OVER_QUOTA);
+		templatePaths.add(FILE_TEMPLATE_TASK_OVER_QUOTA_MO);
+		templatePaths.add(FILE_TEMPLATE_TASK_EXPIRED);
+		templatePaths.add(FILE_TEMPLATE_TASK_COMPLETED);
+		templatePaths.add(FILE_TEMPLATE_TASK_ABORTED);
+		templatePaths.add(FILE_TEMPLATE_TASK_FAILED);
+		templatePaths.add(FILE_TEMPLATE_TASK_INSUFICIENT_CREDITS);
+		emailTemplateService.processEmailTemplates(templatePaths);
+
+	}
 
 	/*
 	 * 
@@ -58,10 +75,10 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		sendEmails(from, new String[] { toAddress }, subject, body);
 		return true;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * @see ExternalLogic#sendEmails(String, String[], String, String)
 	 */
@@ -83,7 +100,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		}
 
 		return sendEmails(fromAddress, toEmails, subject, message);
-		
+
 	}
 
 	/**
@@ -96,7 +113,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 			LOG.debug("Enable notification is disabled (sms.notify.email=false in sakai.properties)");
 			return new String[0];
 		}
-		
+
 		InternetAddress[] replyTo = new InternetAddress[1];
 		List<InternetAddress> listAddresses = new ArrayList<InternetAddress>();
 		EmailValidator emailValidator = EmailValidator.getInstance();
@@ -131,11 +148,11 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
 	public void sendEmailTemplate(String from, List<String> to, String templateKey,
 			Map<String, String>replacementValues) {
-	    if (emailTemplateService == null) return;
-	    emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
-		
+		if (emailTemplateService == null) return;
+		emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
+
 	}
 
-	
-	
+
+
 }

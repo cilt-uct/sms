@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Sms task ${taskId} sent</subject>
+	<message>The task is completed. Number of messages processed: ${messagesProcessed}, Messages successfully delivered: ${messagesDelivered}</message>
+	<key>sms.taskException</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

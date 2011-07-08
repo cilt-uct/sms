@@ -118,7 +118,8 @@
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 	</bean>
 
-	<bean id="org.sakaiproject.sms.logic.external.ExternalEmailLogic" class="org.sakaiproject.sms.logic.external.ExternalEmailLogicImpl">
+	<bean id="org.sakaiproject.sms.logic.external.ExternalEmailLogic" class="org.sakaiproject.sms.logic.external.ExternalEmailLogicImpl" init-method="init">
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
+		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.service.EmailTemplateService"/>
 	</bean>
 	</beans>

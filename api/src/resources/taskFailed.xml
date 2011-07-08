@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Sms delivery failed for task ${taskId}</subject>
+	<message>Task could not be delivered after ${maxTried} attempts.</message>
+	<key>sms.taskFailed</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>

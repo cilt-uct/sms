@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<emailTemplate>
+	<locale></locale>
+	<subject>Insufficient credits in account</subject>
+	<message>Insufficient credits. Available funds: ${available} required ${required}</message>
+	<key>sms.taskInsuficientCredits</key>
+	<version>1</version>
+	<owner>admin</owner>
+</emailTemplate>
