@@ -103,6 +103,7 @@
   <bean class="org.sakaiproject.sms.tool.producers.BillingAdminProducer" >
   	<property name="smsAccountLogic" ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
   	<property name="navBarRenderer" ref="navBarRenderer" />
+  	<property name="externalLogic" ref="org.sakaiproject.sms.logic.external.ExternalLogic"/>
   </bean>
 
   <bean id="taskListProducer" class="org.sakaiproject.sms.tool.producers.TaskListProducer">

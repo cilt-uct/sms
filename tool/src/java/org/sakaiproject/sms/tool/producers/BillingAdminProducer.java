@@ -21,6 +21,7 @@ import java.text.NumberFormat;
 import java.util.List;
 
 import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.tool.params.IdParams;
 import org.sakaiproject.sms.tool.renderers.NavBarRenderer;
@@ -40,6 +41,7 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	private SmsAccountLogic smsAccountLogic;
 	private NavBarRenderer navBarRenderer;
+	private ExternalLogic externalLogic;
 
 	/**
 	 * @see uk.org.ponder.rsf.view.ComponentProducer#fillComponents(uk.org.ponder.rsf.components.UIContainer,
@@ -79,8 +81,8 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 		List<SmsAccount> accounts = smsAccountLogic.getAllSmsAccounts();
 
-		// get number format for default locale
-		NumberFormat nf = NumberFormat.getInstance();
+		// get number format for user's locale
+		NumberFormat nf = NumberFormat.getInstance(externalLogic.getUserLocale(externalLogic.getCurrentUserId()));
 
 		for (SmsAccount account : accounts) {
 
@@ -103,6 +105,7 @@ public class BillingAdminProducer implements ViewComponentProducer {
 			double overdraftLimit = account.getOverdraftLimit();
 			UIOutput.make(entry, "overdraft-limit", nf.format(overdraftLimit));
 			UIOutput.make(entry, "credits", nf.format(account.getCredits()));
+			
 		}
 	}
 
@@ -119,5 +122,9 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 	public void setNavBarRenderer(NavBarRenderer navBarRenderer) {
 		this.navBarRenderer = navBarRenderer;
+	}
+
+	public void setExternalLogic(ExternalLogic externalLogic) {
+		this.externalLogic = externalLogic;
 	}
 }
