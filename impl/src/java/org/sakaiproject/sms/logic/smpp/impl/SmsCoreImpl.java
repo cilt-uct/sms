@@ -525,6 +525,8 @@ public class SmsCoreImpl implements SmsCore {
 		String smsMessageReplyBody = "";
 				
 		ParsedMessage parsedMessage = getSmsIncomingLogicManager().process(smsMessagebody, mobileNumber);
+		//TODO we need to know if the message failed permanantly or transiently at this point
+		
 		
 		if (parsedMessage == null) {
 			// We don't ever expect a null return value here

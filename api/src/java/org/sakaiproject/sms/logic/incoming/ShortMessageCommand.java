@@ -20,10 +20,12 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming;
 
+import org.sakaiproject.sms.logic.exception.SMSCommandException;
+
 /**
  * Interface for incoming short message commands to be implemented by specific tool
  */
-public interface ShortMessageCommand {
+public interface ShortMessageCommand  {
 
 	public static final String MESSAGE_TYPE_SMS = "sms";
 	public static final String MESSAGE_TYPE_XMPP = "xmpp";
@@ -57,7 +59,7 @@ public interface ShortMessageCommand {
 	 * @param sourceAddress A source address of the appropriate type for messageType
 	 * @return
 	 */
-	String execute(ParsedMessage message, String messageType, String sourceAddress);
+	String execute(ParsedMessage message, String messageType, String sourceAddress) throws SMSCommandException;
 
 	/**
 	 * Can the message be executed? Can be used to verify permissions to resolve ambiguous
