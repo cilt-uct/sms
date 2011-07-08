@@ -70,9 +70,8 @@
 		
 		<!-- Sakai util -->
         <dependency>
-            <groupId>org.sakaiproject</groupId>
-            <artifactId>sakai-util</artifactId>
-            <version>2.5.3</version>
+            <groupId>org.sakaiproject.kernel</groupId>
+            <artifactId>sakai-kernel-util</artifactId>
         </dependency>
 		
 		<!-- Spring dependency -->
