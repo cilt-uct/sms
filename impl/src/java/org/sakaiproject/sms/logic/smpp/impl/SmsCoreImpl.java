@@ -41,7 +41,6 @@ import org.hibernate.Transaction;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
-import org.sakaiproject.sms.logic.exception.SmsSearchException;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.external.ExternalEmailLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -64,7 +63,6 @@ import org.sakaiproject.sms.model.SmsMOMessage;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
-import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
@@ -969,10 +967,7 @@ public class SmsCoreImpl implements SmsCore {
 			additionInformation = "";
 		}
 
-		String subject = null;
-		String body = null;
 		String ownerToAddress = null;
-		String ownerRef = null;
 		String notiToAddress = null;
 
 		SmsConfig configSystem = hibernateLogicLocator.getSmsConfigLogic()
@@ -1008,7 +1003,7 @@ public class SmsCoreImpl implements SmsCore {
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
 
-		ownerRef = externalLogic.getSakaiUserRefFromId(smsTask.getSenderUserId());
+		
 		
 		// Email address for the Account
 		String notiUser = account.getNotificationUserId();
