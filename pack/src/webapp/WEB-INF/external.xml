@@ -116,16 +116,10 @@
 		<property name="preferencesService" ref="org.sakaiproject.user.api.PreferencesService"/>
 		<property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService"/>
 		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
-		<property name="smsCommandQueue" ref="org.sakaiproject.sms.logic.external.SmsCommandQueue"/>
 	</bean>
 
 	<bean id="org.sakaiproject.sms.logic.external.ExternalEmailLogic" class="org.sakaiproject.sms.logic.external.ExternalEmailLogicImpl" init-method="init">
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
 		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.service.EmailTemplateService"/>
 	</bean>
-	
-	<bean id="org.sakaiproject.sms.logic.external.SmsCommandQueue" class="org.sakaiproject.sms.logic.external.CommanndQueueImpl" />
-		
-	
-	
 	</beans>

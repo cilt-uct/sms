@@ -36,7 +36,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.sms.logic.exception.SMSCommandException;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
@@ -343,13 +342,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public String executeCommand(ShortMessageCommand command, ParsedMessage msg, String mobileNr) {
-		try {
-			return command.execute(msg, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNr);
-		} catch (SMSCommandException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
-		}
+		return command.execute(msg, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNr);
 	}
 
 	public String getBestUserMatch(String siteId, List<String> userIds,

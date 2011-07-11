@@ -57,8 +57,6 @@ import org.sakaiproject.i18n.InternationalizedMessages;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.sms.logic.command.SmsRestCommand;
-import org.sakaiproject.sms.logic.exception.SMSCommandException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.SmsMessage;
@@ -174,20 +172,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		preferencesService = ps;
 	}
 
-	private SmsCommandQueue smsCommandQueue;
-	public void setSmsCommandQueue(SmsCommandQueue smsCommandQueue) {
-		this.smsCommandQueue = smsCommandQueue;
-	}
-
-
 	public void init() {
 		LOG.debug("init");
 		// register Sakai permissions for this tool
 
 		functionManager.registerFunction(SMS_SEND);
 	}
-	
-	
+
 	/**
 	 * @see ExternalLogic#getCurrentUserId()
 	 */
@@ -1019,14 +1010,8 @@ public class ExternalLogicImpl implements ExternalLogic {
 			// Execute
 			reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
 
-		} catch (SMSCommandException e) {
+		} catch (Exception e) {
 			LOG.warn("Error executing incoming SMS command: ", e);
-			
-			if (command instanceof SmsRestCommand && e.isTransient()) {
-				//if this is a rest command we need to queue the message for later
-				smsCommandQueue.addUpdateCommand(command);
-			}
-			
 		} finally {
 			securityService.popAdvisor();
 		}

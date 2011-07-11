@@ -30,7 +30,6 @@ import org.sakaiproject.entitybroker.util.http.HttpResponse;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpIOException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.HttpRequestException;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
-import org.sakaiproject.sms.logic.exception.SMSCommandException;
 import org.sakaiproject.sms.logic.incoming.AccountSpecifiedCommand;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
@@ -65,7 +64,7 @@ public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedComm
 		this.commandKey = commandKey;
 	}
 
-	public String execute(ParsedMessage msg, String messageType, String sourceAddress) throws SMSCommandException {
+	public String execute(ParsedMessage msg, String messageType, String sourceAddress) {
 	
 		LOG.debug("Settings for this command: " + 
 				" requiresSiteId=" + requiresSiteId + 
@@ -121,7 +120,6 @@ public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedComm
 				returnStr = resp.getResponseBody();
 			} else {
 				LOG.warn("Command: " + commandKey + " gave a response code: " + resp.getResponseCode() + ": " + resp.responseMessage);
-				throw new SMSCommandException(resp.getResponseCode(), true);
 			}
 		}
 		
