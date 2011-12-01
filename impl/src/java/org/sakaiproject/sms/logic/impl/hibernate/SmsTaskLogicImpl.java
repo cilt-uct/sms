@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.impl.hibernate;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +49,7 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
+import org.sakaiproject.sms.util.GsmCharset;
 
 /**
  * The data service will handle all sms task database transactions for the sms
@@ -132,9 +134,32 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		if (smsTask.getSmsAccountId() == null) {
 			throw new IllegalArgumentException("SmsAccountId can't be null");
 		}
+		
+		//message can't be longer than 160 chars
+		if (smsTask.getMessageBody() != null && smsTask.getMessageBody().length() >= 160) {
+			throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
+		}
+		
+		//check the GSM encoded length is > 160
+		if (smsTask.getMessageBody() != null) {
+			GsmCharset charSet = new GsmCharset();
+			String encoded;
+			try {
+				encoded = charSet.gsmToUtf(smsTask.getMessageBody().getBytes("utf8"));
+				LOG.debug("message: " + encoded + " length is " + encoded.length());
+				if (encoded.length() >= 160) {
+					throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
+				}
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
 		if (smsTask.getAttemptCount() == null) {
 			smsTask.setAttemptCount(0);
 		}
+		
 		
 		
 		persist(smsTask);

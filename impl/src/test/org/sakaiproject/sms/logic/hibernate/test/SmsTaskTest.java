@@ -143,6 +143,39 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 	}
 
+	
+	public void testAddLongMessage() {
+		SmsTask longMessageTask = createTestTask();
+		String text = "this is a message that will be way beyond the 160 character limit. We would not expect to be able to send it! It would be ridiculous to assume that users will never bee too verbose!";
+		longMessageTask.setMessageBody(text);
+		try {
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(longMessageTask);
+			fail();
+		}
+		catch (IllegalArgumentException ex) {
+			
+		} 
+		catch (Exception e) {
+			fail();
+		}
+		
+		SmsTask encodedTask = createTestTask();
+		//this looks short but will encode above the limit
+		encodedTask.setMessageBody("UCT supports the national Student Laptop Initiative which offers big savings on the latest laptops. For more see www.icts.uct.ac.za | Student Laptop Initiative");
+		try {
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(encodedTask);
+			fail();
+		}
+		catch (IllegalArgumentException ex) {
+			
+		} 
+		catch (Exception e) {
+			fail();
+		}
+		
+	}
+	
+	
 	/**
 	 * Test delete sms task.
 	 */
