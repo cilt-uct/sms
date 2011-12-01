@@ -136,7 +136,7 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		}
 		
 		//message can't be longer than 160 chars
-		if (smsTask.getMessageBody() != null && smsTask.getMessageBody().length() >= 160) {
+		if (smsTask.getMessageBody() != null && smsTask.getMessageBody().length() > 160) {
 			throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
 		}
 		
@@ -144,8 +144,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		if (smsTask.getMessageBody() != null) {
 			GsmCharset charSet = new GsmCharset();
 			byte[] encoded = charSet.utfToGsm(smsTask.getMessageBody());
-			LOG.debug("message length is " + encoded.length);
-			if (encoded.length >= 160) {
+			LOG.debug("message " + smsTask.getMessageBody() + " length is " + encoded.length);
+			if (encoded.length > 160) {
 				throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
 			}
 

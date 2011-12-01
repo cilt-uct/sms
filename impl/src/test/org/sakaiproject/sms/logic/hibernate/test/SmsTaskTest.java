@@ -161,7 +161,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		
 		SmsTask encodedTask = createTestTask();
 		//this looks short but will encode above the limit
-		encodedTask.setMessageBody("UCT supports the national Student Laptop Initiative which offers big savings on the latest laptops.  For more see www.icts.uct.ac.za | Student Laptop Initiative");
+		String borderLine = "UCT supports the national Student Laptop Initiative which offers big savings on the latest laptops.  For more see www.icts.uct.ac.za | Student Laptop Initiative";
+		encodedTask.setMessageBody(borderLine);
 		try {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(encodedTask);
 			fail();
