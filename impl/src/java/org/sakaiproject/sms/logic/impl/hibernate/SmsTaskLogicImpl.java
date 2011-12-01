@@ -143,17 +143,12 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		//check the GSM encoded length is > 160
 		if (smsTask.getMessageBody() != null) {
 			GsmCharset charSet = new GsmCharset();
-			String encoded;
-			try {
-				encoded = charSet.gsmToUtf(smsTask.getMessageBody().getBytes("utf8"));
-				LOG.debug("message: " + encoded + " length is " + encoded.length());
-				if (encoded.length() >= 160) {
-					throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
-				}
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+			byte[] encoded = charSet.utfToGsm(smsTask.getMessageBody());
+			LOG.debug("message length is " + encoded.length);
+			if (encoded.length >= 160) {
+				throw new IllegalArgumentException("Message body can't be longer than 160 chars!");
 			}
-			
+
 		}
 		
 		if (smsTask.getAttemptCount() == null) {
