@@ -74,14 +74,22 @@ public class SecurityServiceStubb implements SecurityService {
 		return false;
 	}
 
-	public boolean unlock(String arg0, String arg1, String arg2, Collection arg3) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 	public List<User> unlockUsers(String arg0, String arg1) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public SecurityAdvisor popAdvisor(SecurityAdvisor arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean unlock(String arg0, String arg1, String arg2,
+			Collection<String> arg3) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

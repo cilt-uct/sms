@@ -156,8 +156,8 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return ret;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<User> getUsers(Collection arg0) {
+	
+	public List<User> getUsers(Collection<String> arg0) {
 		List<User> ret = new ArrayList<User>();
 		Iterator<String> it = arg0.iterator();
 		while (it.hasNext()) {
@@ -258,6 +258,11 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 	public boolean willArchiveMerge() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public List<User> searchExternalUsers(String arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
