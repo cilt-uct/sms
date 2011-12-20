@@ -1,6 +1,8 @@
 /**
  * JS library for the SMS User Tool Utilities.
  * @author lovemore.nalube@uct.ac.za
+ *
+ * Edited By edmore.moyo@uct.ac.za
  **/
 
 var smsUtils = (function($) {
@@ -92,8 +94,29 @@ var smsUtils = (function($) {
                 //log(true);
                 return true;
 
-            };
+            },
 
+
+            // @memberof smsUtils
+            // @description Get the count of the number of Escape-encoded GSM characters
+            // @author edmore.moyo@uct.ac.za
+
+            numberOfEscapeEncodedGSMChars = function(utfString){
+                var utfChars = utfString.split(''),
+                    GSMEscaped = [0x000C, 0x005E, 0x007B, 0x007D, 0x005C, 0x005B, 0x007E, 0x005D, 0x007C, 0x20AC],
+                    i,j,
+                    count = 0;
+
+                    outer: for(var j = 0; j < utfChars.length; j+=1){
+                        for (var i = 0; i < GSMEscaped.length; i+=1) {
+                            if (String.fromCharCode( GSMEscaped[i] ) === utfChars[j]) {
+                                count+=1;
+                                continue outer;
+                            }
+                        }
+                    }
+                    return count;
+            };
 
     //public methods
     return {
@@ -108,6 +131,7 @@ var smsUtils = (function($) {
         },
         isEncodeableInGsm0338: function(utfString){
            return _isEncodeableInGsm0338(utfString);
-        }
+        },
+        numberOfEscapeEncodedGSMChars: numberOfEscapeEncodedGSMChars
     };
 })($);

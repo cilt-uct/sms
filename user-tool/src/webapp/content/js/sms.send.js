@@ -1,6 +1,9 @@
 /**
  * JS Onload code for the SMS User Tool's Send view.
  * @Author lovemore.nalube@uct.ac.za
+ *
+ * Edited By edmore.moyo@uct.ac.za
+ *
  **/
 
 $(document).ready(function() {
@@ -8,7 +11,7 @@ $(document).ready(function() {
         history.go(-1);
         return false;
     });
-    
+
     //Counter for the SMS Textarea
 
         $("#messageBody")
@@ -36,14 +39,20 @@ $(document).ready(function() {
                 few:    "#5C0002",
                 fewer:  "#D40D12"
             },
+            countOfEscapedChars = 0,
             lengthLeft = 160;
             if (len > 0) {
                 //SMS-170: When entering an SMS message, detect non-GSM chars and adjust max length to 70
                 //sms has 140 bytes. if it's utf-16, that's 70 chars, if it's gsm alphabet, 160 chars are packed into 140 bytes (because the alphabet is 7bit)
 
                 limit = !smsUtils.isEncodeableInGsm0338(boxValue) ? 70 : 160;
-
                 lengthLeft = limit - len;
+
+                // Get a count of the escape-encoded GSM characters in the string
+                if( limit === 160 ){
+                    countOfEscapedChars = smsUtils.numberOfEscapeEncodedGSMChars(boxValue);
+                    lengthLeft = lengthLeft - countOfEscapedChars;
+                }
 
                 if( lengthLeft >= 20 ){
                     $('#smsBoxCounter').css("color", counterColour.enough);
@@ -55,10 +64,10 @@ $(document).ready(function() {
             }
 
             $('#smsBoxCounter').text(lengthLeft);
-            
+
             //is message is too long?
             smsUtils.error.isMessageLengthValid = lengthLeft >= 0;
-            
+
             $.fn.SMS.set.setSubmitTaskButton();
         });
 
