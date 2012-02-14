@@ -77,6 +77,37 @@ sub getUserByEid($$$) {
     return ($json_text->{id}, $json_text->{email});
 }
 
+## Get user's id and email address
+
+sub getUserNameEmail($$$) {
+
+    my $ua = shift;
+    my $host = shift;
+    my $userid = shift;
+
+    $response = $ua->get("$host/direct/user/$userid.json");
+
+    ## Return the userid and email address if successful, otherwise empty string
+
+    if ($debug) {
+        print "getUserEmail status: " . $response->status_line . "\n";
+    }
+
+    if ($response->code ne "200") {
+        return ("", "");
+    }
+
+    ## Parse the JSON
+
+    my $json = new JSON;
+    my $json_text = $json->decode($response->content);
+
+    return ($json_text->{email}, $json_text->{displayName});
+}
+
+
+
+
 ## Get user's eid given email address, if the email address is unique
 
 sub getUserByEmail($$$) {
