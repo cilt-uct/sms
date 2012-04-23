@@ -30,41 +30,8 @@
 			<artifactId>sakai-kernel-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>		
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.groboutils</groupId>
-			<artifactId>groboutils-core</artifactId>
-			
-		</dependency>
-		<dependency>
-			<groupId>com.google.code</groupId>
-			<artifactId>jsmpp</artifactId>
-			
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>1.0.1B</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>quartz</groupId>
-			<artifactId>quartz</artifactId>
-			<version>1.5.2</version>
 		</dependency>
 		<dependency>
         	<groupId>commons-lang</groupId>
