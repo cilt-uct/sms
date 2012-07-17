@@ -49,7 +49,28 @@ sub getSiteName($$$) {
     return $json_text->{title};
 }
 
-## Get user's id and email address
+## Get user info given an eid or email address. Return eid, email
+
+sub getUser($$$) {
+
+    my $ua = shift;
+    my $host = shift;
+    my $userInfo = shift;
+
+    my $try_email = isValidEmailSyntax($userInfo);
+  
+    # Either an eid or it could be a guest user where the eid looks like an email addr 
+    (my $id, my $email) = getUserByEid($ua, $host, $userInfo);
+
+    if (($id eq "") && $try_email) {
+	($id, $eid) = getUserByEmail($ua, $host, $userInfo);
+	return ($eid, $userInfo);
+    } else {
+	return ($userInfo, $email);
+    }
+}
+
+## Get user's id and email address. Returns ID and email
 
 sub getUserByEid($$$) {
 
@@ -105,9 +126,6 @@ sub getUserNameEmail($$$) {
     return ($json_text->{email}, $json_text->{displayName});
 }
 
-
-
-
 ## Get user's eid given email address, if the email address is unique
 
 sub getUserByEmail($$$) {
@@ -140,6 +158,15 @@ sub getUserByEmail($$$) {
     ## Not found or not unique
 
     return ("", "");
+}
+
+## Does it look like an email address?
+
+sub isValidEmailSyntax($) {
+  my $addr = shift;
+
+  ## Simple regexp from http://www.webmasterworld.com/forum13/251.htm
+  return ($addr =~ /^(\w|\-|\_|\.)+\@((\w|\-|\_)+\.)+[a-zA-Z]{2,}$/);
 }
 
 return 1;
