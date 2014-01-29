@@ -1,6 +1,7 @@
 package org.sakaiproject.sms.logic.stubs;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.sakaiproject.component.api.ServerConfigurationService;
@@ -134,6 +135,41 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 	}
 
 	public String getUserHomeUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Locale[] getSakaiLocales() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Locale getLocaleFromString(String localeString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <T> T getConfig(String name, T defaultValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ConfigItem getConfigItem(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ConfigItem registerConfigItem(ConfigItem configItem) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void registerListener(ConfigurationListener configurationListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ConfigData getConfigData() {
 		// TODO Auto-generated method stub
 		return null;
 	}
