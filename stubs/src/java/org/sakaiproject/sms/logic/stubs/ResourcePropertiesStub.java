@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.logic.stubs;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -245,8 +246,15 @@ public class ResourcePropertiesStub implements ResourceProperties {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public Element toXml(Document arg0, Stack arg1) {
+
+	public Date getDateProperty(String arg0)
+			throws EntityPropertyNotDefinedException,
+			EntityPropertyTypeException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Element toXml(Document arg0, Stack<Element> arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}

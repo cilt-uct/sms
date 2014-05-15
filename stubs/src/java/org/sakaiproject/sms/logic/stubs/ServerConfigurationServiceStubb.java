@@ -174,4 +174,24 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		return null;
 	}
 
+	public List<String> getCategoryGroups(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<String> getToolGroup(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean toolGroupIsRequired(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean toolGroupIsSelected(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

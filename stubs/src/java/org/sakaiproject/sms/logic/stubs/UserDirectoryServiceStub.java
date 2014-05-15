@@ -12,6 +12,7 @@ import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.HttpAccess;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.user.api.PasswordPolicyProvider;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserAlreadyDefinedException;
 import org.sakaiproject.user.api.UserDirectoryService;
@@ -243,12 +244,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public String merge(String arg0, Element arg1, String arg2, String arg3,
-			Map arg4, Map arg5, Set arg6) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public boolean parseEntityReference(String arg0, Reference arg1) {
 		// TODO Auto-generated method stub
@@ -261,6 +257,23 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 	}
 
 	public List<User> searchExternalUsers(String arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public String merge(String arg0, Element arg1, String arg2, String arg3,
+			Map<String, String> arg4, Map<String, String> arg5, Set<String> arg6) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public PasswordPolicyProvider getPasswordPolicy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public PasswordRating validatePassword(String arg0, User arg1) {
 		// TODO Auto-generated method stub
 		return null;
 	}

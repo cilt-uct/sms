@@ -707,4 +707,54 @@ public class SakaiPersonStub implements SakaiPerson {
 		
 	}
 
+	public String getAcademicProfileUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getBusinessBiography() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getPublications() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getStaffProfile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getUniversityProfileUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setAcademicProfileUrl(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setBusinessBiography(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setPublications(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStaffProfile(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setUniversityProfileUrl(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
