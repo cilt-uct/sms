@@ -3,6 +3,9 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
@@ -18,24 +21,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 	private final static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 
-	/**
-	 * Instantiates a new sms transaction test.
-	 */
-	public SmsTransactionTest() {
-
-	}
-
-	/**
-	 * Instantiates a new sms transaction test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsTransactionTest(String name) {
-		super(name);
-	}
-
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -46,6 +33,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms transaction by id.
 	 */
+    @Test
 	public void testGetSmsTransactionById() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -83,6 +71,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test insert transaction
 	 */
+    @Test
 	public void testInsertTransaction() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -126,6 +115,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms transactions.
 	 */
+    @Test
 	public void testGetSmsTransactions() {
 		List<SmsTransaction> transactions = hibernateLogicLocator
 				.getSmsTransactionLogic().getAllSmsTransactions();
@@ -136,6 +126,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Tests the getMessagesForCriteria method
 	 */
+    @Test
 	public void testGetTransactionsForCriteria() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -196,6 +187,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test get tasks for criteria_ paging.
 	 */
+    @Test
 	public void testGetTasksForCriteria_Paging() {
 
 		int recordsToInsert = 93;
@@ -273,6 +265,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test delete sms transaction.
 	 */
+    @Test
 	public void testDeleteSmsTransaction() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -311,6 +304,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms transactions for account id.
 	 */
+    @Test
 	public void testGetSmsTransactionsForAccountId() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -360,6 +354,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms transactions for task id.
 	 */
+    @Test
 	public void testGetSmsTransactionsForTaskId() {
 
 		SmsAccount smsAccount = new SmsAccount();
@@ -403,6 +398,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		}
 	}
 
+    @Test
 	public void testGetSmsCancelTransactionForTask() {
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("testGetSmsCancelTransactionForTask");

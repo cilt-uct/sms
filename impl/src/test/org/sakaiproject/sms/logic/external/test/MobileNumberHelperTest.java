@@ -3,9 +3,9 @@ package org.sakaiproject.sms.logic.external.test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
-
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.sakaiproject.sms.logic.external.MobileNumberHelperImpl;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl;
@@ -13,17 +13,15 @@ import org.sakaiproject.sms.logic.stubs.SakaiPersonManagerStub;
 import org.sakaiproject.sms.logic.stubs.ServerConfigurationServiceStubb;
 import org.sakaiproject.sms.logic.stubs.UserDirectoryServiceStub;
 
-public class MobileNumberHelperTest extends TestCase {
+public class MobileNumberHelperTest {
 
 	private MobileNumberHelperImpl mobileNumberHelper;
 	private NumberRoutingHelperImpl numberRoutingHelper;
 	
-	@Override
+	@Before
 	public void setUp() {
-		
 		numberRoutingHelper = new NumberRoutingHelperImpl();
 		numberRoutingHelper.setServerConfigurationService(new ServerConfigurationServiceStubb());
-		
 		mobileNumberHelper = new MobileNumberHelperImpl();
 		mobileNumberHelper.setSakaiPersonManager(new SakaiPersonManagerStub());
 		mobileNumberHelper.setUserDirectoryService(new UserDirectoryServiceStub());
@@ -31,16 +29,19 @@ public class MobileNumberHelperTest extends TestCase {
 		mobileNumberHelper.setNumberRoutingHelper(numberRoutingHelper);
 	}
 
+    @Test
 	public void testGetMobile() {
 		String number = mobileNumberHelper.getUserMobileNumber("test");
 		assertEquals("27123456789", number);
 	}
 
+    @Test
 	public void testNullGetMobile() {
 		String number = mobileNumberHelper.getUserMobileNumber(null);
 		assertEquals(null, number);
 	}
 
+    @Test
 	public void testMultiple() {
 		List<String> userids = new ArrayList<String>();
 		userids.add("test1");
@@ -54,6 +55,7 @@ public class MobileNumberHelperTest extends TestCase {
 		assertEquals("27123456789", numbers.get("test3"));
 	}
 
+    @Test
 	public void testMultipleWithNull() {
 		List<String> userids = new ArrayList<String>();
 		userids.add("test1");
@@ -67,6 +69,7 @@ public class MobileNumberHelperTest extends TestCase {
 		assertEquals("27123456789", numbers.get("test3"));
 	}
 	
+    @Test
 	public void testNormalizeNumber() {
 		
 		// South Africa (00 / 0 / 27)

@@ -2,12 +2,14 @@ package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.Date;
 import java.util.List;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.exception.DuplicateUniqueFieldException;
-import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
-import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
 import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
@@ -29,7 +31,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 
 	private static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 
-	static {
+    @BeforeClass()
+    public static void setupBeforeClass() {
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -66,30 +69,30 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		insertSmsTransaction2.setTransactionTypeCode("TTC");
 		insertSmsTransaction2.setSmsTaskId(1L);
 	}
-
-	/**
-	 * Instantiates a new sms account test.
-	 */
-	public SmsAccountTest() {
-	}
-
-	/**
-	 * Instantiates a new sms account test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsAccountTest(String name) {
-		super(name);
-	}
+    
+    /**
+     * Make sure the insertSmsAccount is persisted before every test.
+     */
+    @Before
+    public void setup(){
+        //reset the id
+        insertSmsAccount.setId(null);
+        hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(insertSmsAccount);
+    }
+    
+    /**
+     * Make sure the insertSmsAccount is deleted after every test.
+     */
+    @After
+    public void teardown(){
+        hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(insertSmsAccount);
+    }
 
 	/**
 	 * Test insert sms account.
 	 */
+    @Test
 	public void testInsertSmsAccount() {
-
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
-				insertSmsAccount);
 		// Check the record was created on the DB... an id will be assigned.
 		assertTrue("Object not persisted", insertSmsAccount.exists());
 	}
@@ -97,9 +100,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test insertion of account with duplicate site id
 	 */
+    @Test
 	public void testInsertSmsAccountDuplicateSiteId() {
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
-				insertSmsAccount);
 		// Check the record was created on the DB... an id will be assigned.
 		assertTrue("Object not persisted", insertSmsAccount.exists());
 
@@ -124,9 +126,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test insertion of account with duplicate user id
 	 */
+    @Test
 	public void testInsertSmsAccountDuplicateUserId() {
-		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
-				insertSmsAccount);
 		// Check the record was created on the DB... an id will be assigned.
 		assertTrue("Object not persisted", insertSmsAccount.exists());
 
@@ -151,6 +152,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms account by id.
 	 */
+    @Test
 	public void testGetSmsAccountById() {
 		SmsAccount getSmsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
@@ -162,6 +164,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test update sms account.
 	 */
+    @Test
 	public void testUpdateSmsAccount() {
 		SmsAccount smsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
@@ -178,6 +181,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms accounts.
 	 */
+    @Test
 	public void testGetSmsAccounts() {
 		List<SmsAccount> accounts = hibernateLogicLocator.getSmsAccountLogic()
 				.getAllSmsAccounts();
@@ -188,6 +192,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test delete sms account.
 	 */
+    @Test
 	public void testDeleteSmsAccount() {
 		hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(
 				hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
@@ -202,9 +207,10 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms account by sakai site id.
 	 */
+    @Test
 	public void testGetSmsAccount_sakaiSiteId() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+2);
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(1000);
 		account.setCredits(5000);
@@ -218,11 +224,12 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * Test get sms account byt sakai user id.
+	 * Test get sms account by sakai user id.
 	 */
+    @Test
 	public void testGetSmsAccount_sakaiUserId() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiUserId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID);
+		account.setSakaiUserId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_USER_ID + 1);
 		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 1);
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(1000);
@@ -237,10 +244,10 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		assertEquals(retAccount, account);
 	}
 	
-	
+    @Test
 	public void testGestSMSAccountsForOwner() {
 		SmsAccount account = new SmsAccount();
-		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 2);
+		account.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID+3);
 		account.setMessageTypeCode("12345");
 		account.setOverdraftLimit(1000);
 		account.setCredits(5000);
@@ -253,7 +260,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		
 		List<SmsAccount> one = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("admin");
 		assertNotNull(one);
-		assertEquals(1, one.size());
+        //the insertSmsAccount and the account in this method
+		assertEquals(2, one.size());
 		
 		List<SmsAccount> two = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("wegwerg");
 		assertNotNull(two);

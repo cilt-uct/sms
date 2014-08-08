@@ -21,6 +21,9 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsSmppImpl;
@@ -53,8 +56,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/** The test credits. */
 	public final int testCredits = 100;
 
-	static {
-
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -77,34 +80,9 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	}
 
 	/**
-	 * Instantiates a new sms billing test.
-	 */
-	public SmsBillingTest() {
-
-	}
-
-	/**
-	 * Instantiates a new sms billing test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsBillingTest(String name) {
-		super(name);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-	}
-
-	/**
 	 * Test check sufficient credits are not available.
 	 */
+    @Test
 	public void testCheckSufficientCredits_False() {
 
 		int creditsRequired = 11;
@@ -117,6 +95,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test check sufficient credits are available from overdraft.
 	 */
+    @Test
 	public void testCheckSufficientCredits_OverdraftFacility() {
 
 		int creditsRequired = 11;
@@ -148,6 +127,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test check sufficient credits are available.
 	 */
+    @Test
 	public void testCheckSufficientCredits_True() {
 
 		int creditsRequired = 1;
@@ -182,6 +162,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test convert amount to credits.
 	 */
+    @Test
 	public void testConvertAmountToCredits() {
 		double amount = smsBillingImpl.convertCreditsToAmount(testCredits);
 		double credits = smsBillingImpl.convertAmountToCredits(amount);
@@ -191,6 +172,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test convert credits to amount.
 	 */
+    @Test
 	public void testConvertCreditsToAmount() {
 		smsBillingImpl.convertAmountToCredits(testAmount);
 
@@ -200,6 +182,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test recalculate account balance.
 	 */
+    @Test
 	public void testRecalculateAccountBalance() {
 		SmsAccount smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("1");
@@ -233,6 +216,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test reserve credits.
 	 */
+    @Test
 	public void testReserveCredits() {
 
 		int creditEstimate = 50;
@@ -281,6 +265,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test settle credit difference.
 	 */
+    @Test
 	public void testSettleCreditDifference() {
 		int creditEstimate = 50;
 		Long originalAccBalance = 150l;
@@ -339,6 +324,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test cancel pending request.
 	 */
+    @Test
 	public void testCancelPendingRequest() {
 		Long originalCreditBalance = 100L;
 		int creditEstimate = 50;
@@ -392,6 +378,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test credit late message.
 	 */
+    @Test
 	public void testDebitLateMessage() {
 		Long origionalAccountBalance = 100L;
 		int creditEstimate = 50;
@@ -436,6 +423,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test debit account.
 	 */
+    @Test
 	public void testCreditAccount() {
 		Long origionalCreditBalance = 0L;
 
@@ -493,6 +481,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	/**
 	 * Test check sufficient credits when account is enddated
 	 */
+    @Test
 	public void testCheckSufficientCredits_Enddated() {
 
 		int creditsRequired = 11;

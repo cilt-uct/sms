@@ -23,6 +23,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
@@ -61,7 +66,8 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/** The account. */
 	private SmsAccount account;
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -73,7 +79,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	@Override
+	@Before
 	public void setUp() {
 		uniquenesIDNumber++;
 		// Inject the required impl's into core impl for testing
@@ -120,7 +126,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		errors = new ArrayList<String>();
 	}
 
-	@Override
+	@After
 	public void tearDown() {
 		hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(account);
 	}
@@ -128,6 +134,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test account id.
 	 */
+    @Test
 	public void testAccountId() {
 
 		// account exists
@@ -140,6 +147,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test date created.
 	 */
+    @Test
 	public void testDateCreated() {
 
 		// null
@@ -152,6 +160,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test date to send.
 	 */
+    @Test
 	public void testDateToSend() {
 
 		// null
@@ -164,6 +173,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test max time to live.
 	 */
+    @Test
 	public void testMaxTimeToLive() {
 		// null
 		smsTask.setMaxTimeToLive(null);
@@ -183,6 +193,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test empty message body.
 	 */
+    @Test
 	public void testMessageBody_empty() {
 		smsTask.setMessageBody("");
 		errors = validator.validateInsertTask(smsTask);
@@ -193,6 +204,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test null message body.
 	 */
+    @Test
 	public void testMessageBody_null() {
 		smsTask.setMessageBody(null);
 		errors = validator.validateInsertTask(smsTask);
@@ -203,6 +215,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test too long message body.
 	 */
+    @Test
 	public void testMessageBody_tooLong() {
 		smsTask.setMessageBody(VALID_MSG_BODY + VALID_MSG_BODY);
 		assertTrue(msg.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH);
@@ -214,6 +227,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test empty message body (with whitespace).
 	 */
+    @Test
 	public void testMessageBody_whitespace() {
 		smsTask.setMessageBody("   ");
 		errors = validator.validateInsertTask(smsTask);
@@ -224,6 +238,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test message type id.
 	 */
+    @Test
 	public void testMessageTypeId() {
 		// null
 		smsTask.setMessageTypeId(null);
@@ -235,6 +250,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test sakai site id.
 	 */
+    @Test
 	public void testSakaiSiteId() {
 
 		// null
@@ -262,6 +278,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test sender user name.
 	 */
+    @Test
 	public void testSenderUserName() {
 
 		// null
@@ -289,6 +306,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test status code.
 	 */
+    @Test
 	public void testStatusCode() {
 
 		// null
@@ -310,6 +328,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		assertEquals(ValidationConstants.TASK_STATUS_CODE_EMPTY, errors.get(0));
 	}
 
+    @Test
 	public void testExpiredBeforeSend() {
 		smsTask.setDateToSend(new Date());
 		Calendar cal = new GregorianCalendar();
@@ -322,7 +341,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 		
 	}
 	
-	
+    @Test
 	public void testExpiredEqualsSend() {
 		Date date = new Date();
 		smsTask.setDateToSend(date);
@@ -340,6 +359,7 @@ public class SmsTaskValidationTest extends AbstractBaseTestCase {
 	/**
 	 * Test valid message.
 	 */
+    @Test
 	public void testValidMessage() {
 		errors = validator.validateInsertTask(smsTask);
 		assertFalse(errors.size() > 0);

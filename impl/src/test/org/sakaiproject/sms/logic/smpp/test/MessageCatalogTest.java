@@ -17,6 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
@@ -33,6 +35,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 	/**
 	 * Test message catelog.
 	 */
+    @Test
 	public void testMessageCatalog() {
 		String subject = null;
 		String body = null;
@@ -48,6 +51,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 		System.out.println("Body" + body);
 	}
 
+    @Test
 	public void testMessageCatalog_MessageNotFound() {
 		String message = null;
 		try {

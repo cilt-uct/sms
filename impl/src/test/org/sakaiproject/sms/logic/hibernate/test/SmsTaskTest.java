@@ -11,6 +11,11 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.exception.SmsSearchException;
@@ -19,6 +24,8 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import static org.sakaiproject.sms.util.AbstractBaseTestCase.hibernateLogicLocator;
+import org.springframework.dao.DataIntegrityViolationException;
 
 /**
  * A task consists of a series of rules and must be executed on the scheduled
@@ -45,7 +52,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	@SuppressWarnings("unused")
 	private static SmsMessage insertMessage2;
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -97,41 +105,17 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		return testTask;
 
 	}
-
-	/**
-	 * Instantiates a new sms task test.
-	 */
-	public SmsTaskTest() {
-
-	}
-
-	/**
-	 * Instantiates a new sms task test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsTaskTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Test add sms messages to task_set messages.
-	 */
-	public void testAddSmsMessagesToTask_setMessages() {
-
-		SmsMessage insertMessage1 = new SmsMessage();
-		insertMessage1.setMobileNumber("0721998919");
-		insertMessage1.setSmscMessageId("smscGetID1");
-		insertMessage1.setSakaiUserId("sakaiUserId");
-		insertMessage1.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-		//
-		SmsMessage insertMessage2 = new SmsMessage();
-		insertMessage2.setMobileNumber("0823450983");
-		insertMessage2.setSmscMessageId("smscGetID2");
-		insertMessage2.setSakaiUserId("sakaiUserId");
-		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-
+    
+    /**
+     * Make sure the testTask and messages are persisted before every test.
+     */
+    @Before
+    public void setup(){
+        //reset the id
+        insertTask.setId(null);
+        insertMessage1.setId(null);
+        insertMessage2.setId(null);
+        
 		insertMessage1.setSmsTask(insertTask);
 		insertMessage2.setSmsTask(insertTask);
 
@@ -141,9 +125,21 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 		insertTask.setSmsMessagesOnTask(messages);
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
-	}
+        hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(insertMessage1);
+        hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(insertMessage2);
+    }
+    
+    /**
+     * Make sure the testTask and messages are deleted after every test.
+     */
+    @After
+    public void teardown(){
+        hibernateLogicLocator.getSmsMessageLogic().deleteSmsMessage(insertMessage2);
+        hibernateLogicLocator.getSmsMessageLogic().deleteSmsMessage(insertMessage1);
+        hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
+    }
 
-	
+    @Test
 	public void testAddLongMessage() {
 		SmsTask longMessageTask = createTestTask();
 		String text = "this is a message that will be way beyond the 160 character limit. We would not expect to be able to send it! It would be ridiculous to assume that users will never bee too verbose!";
@@ -180,8 +176,17 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test delete sms task.
 	 */
+    @Test
 	public void testDeleteSmsTask() {
-		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
+        try{
+    		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
+            fail("Should throw integrity constraint violation exception");
+        }catch(DataIntegrityViolationException e){
+            //great
+        }catch(Exception e){
+            fail("Should be a DataIntegrityViolationException");
+        }
+        teardown();
 		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask.getId());
 		assertNull("Object not removed", getSmsTask);
@@ -191,6 +196,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * Test get next sms task. Checks if it is the oldest task to process (Being
 	 * the next task to process)
 	 */
+    @Test
 	public void testGetNextSmsTask() {
 		/*
 		 * SmsTask nextTask = logic.getNextSmsTask();
@@ -216,6 +222,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms task by id.
 	 */
+    @Test
 	public void testGetSmsTaskById() {
 		SmsTask taskToPersist = createTestTask();
 		taskToPersist.setDeliveryGroupName("Maths department");
@@ -229,6 +236,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms tasks.
 	 */
+    @Test
 	public void testGetSmsTasks() {
 		List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getAllSmsTask();
@@ -239,6 +247,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Tests the getMessagesForCriteria method.
 	 */
+    @Test
 	public void testGetTasksForCriteria() {
 		SmsTask insertTask = new SmsTask();
 		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
@@ -287,6 +296,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test get tasks for criteria_ paging.
 	 */
+    @Test
 	public void testGetTasksForCriteria_Paging() {
 
 		int recordsToInsert = 93;
@@ -358,7 +368,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	 * Tests the incrementing of messages processed and the updating of the
 	 * tasks status to complete.
 	 */
-
+    @Test
 	public void testMessagesProcessedAndGetTaskToMarkComplete() {
 
 		// SmsTask testTask = createTestTask();
@@ -384,6 +394,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test insert sms task.
 	 */
+    @Test
 	public void testInsertSmsTask() {
 		SmsTask testTask = createTestTask();
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(testTask);
@@ -393,6 +404,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	/**
 	 * Test update sms task.
 	 */
+    @Test
 	public void testUpdateSmsTask() {
 
 		SmsTask testTask = createTestTask();
@@ -407,6 +419,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		assertEquals("newSakaiSiteId", smsTask.getSakaiSiteId());
 	}
 
+    @Test
 	public void testSaveDeliveryMobileNumbers() throws Exception {
 
 		SmsTask taskToSave = createTestTask();
@@ -434,6 +447,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 				MOBILE_NUMBER_3));
 	}
 	
+    @Test
 	public void testSaveNullFields() {
 		//this has a null site Id
 		SmsTask task = new SmsTask();

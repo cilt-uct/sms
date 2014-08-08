@@ -1,5 +1,8 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
+import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.SmsPropertyReader;
@@ -9,7 +12,8 @@ import org.sakaiproject.sms.util.SmsPropertyReader;
  */
 public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -22,24 +26,9 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 	private final static String TEST_PROPERTY_VALUE = "value";
 
 	/**
-	 * Instantiates a new sms account test.
-	 */
-	public SmsPropertyReaderTest() {
-	}
-
-	/**
-	 * Instantiates a new sms account test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsPropertyReaderTest(String name) {
-		super(name);
-	}
-
-	/**
 	 * Test get message_ found.
 	 */
+    @Test
 	public void testGetMessage_Found() {
 		String propertyValue = SmsPropertyReader
 				.getProperty(TEST_PROPERTY_NAME);
@@ -53,6 +42,7 @@ public class SmsPropertyReaderTest extends AbstractBaseTestCase {
 	/**
 	 * Test get message_ not found.
 	 */
+    @Test
 	public void testGetMessage_NotFound() {
 		String propertyValue = SmsPropertyReader.getProperty("non-existent");
 		assertFalse("Property file not found", propertyValue

@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Level;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Test;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsConfigLogicImpl;
 import org.sakaiproject.sms.logic.smpp.SmsTaskValidationException;
@@ -40,6 +43,7 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 	 * This tests will insert 3 tasks to to processed.The test succeeds if no
 	 * tasks remain after 1 min.
 	 */
+    @Test
 	public void testTaskProcessing() {
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
@@ -153,8 +157,8 @@ public class SmsSchedulerTest extends AbstractBaseTestCase {
 		assertTrue(smsCoreImpl.getNextSmsTask() == null);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		smsSchedulerImpl.stopSmsScheduler();
 		smsCoreImpl.smsSmpp.disconnectGateWay();
 	}

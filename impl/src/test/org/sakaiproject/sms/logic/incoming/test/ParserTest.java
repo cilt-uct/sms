@@ -17,7 +17,8 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming.test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.SmsMessageParser;
@@ -27,11 +28,11 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 /**
  * Unit test for incoming message parsing
  */
-public class ParserTest extends TestCase {
+public class ParserTest{
 
 	private final SmsMessageParser parser = new SmsMessageParserImpl();
 
-
+    @Test
 	public void testParseStandard() throws ParseException {
 		
 		ParsedMessage parsed = new ParsedMessage();
@@ -47,6 +48,7 @@ public class ParserTest extends TestCase {
 		assertEquals("body", parsed.getBodyParameters()[0]);
 	}
 
+    @Test
 	public void testParseStandardNoSite() throws ParseException {
 		
 		ParsedMessage parsed = new ParsedMessage();
@@ -59,7 +61,7 @@ public class ParserTest extends TestCase {
 		assertEquals("body", parsed.getBodyParameters()[0]);
 	}
 
-
+    @Test
 	public void testParseMultipleBody() throws ParseException {
 
 		ParsedMessage parsed = new ParsedMessage();
@@ -75,6 +77,7 @@ public class ParserTest extends TestCase {
 		
 	}
 
+    @Test
 	public void testParseMultipleNoSite() throws ParseException {
 		ParsedMessage parsed = new ParsedMessage();
 		parsed.setBody("command body has multiple");
@@ -89,6 +92,7 @@ public class ParserTest extends TestCase {
 		assertEquals("multiple", parsed.getBodyParameters()[2]);		
 	}
 
+    @Test
 	public void testSingleCommand() throws ParseException {
 		ParsedMessage parsed = new ParsedMessage();
 		parsed.setBody("command");
@@ -98,7 +102,7 @@ public class ParserTest extends TestCase {
 		assertEquals("command", parsed.getCommand());
 	}
 
-
+    @Test
 	public void testParseNoBody() throws ParseException {
 		ParsedMessage parsed = new ParsedMessage();
 		parsed.setBody("command site");
@@ -110,7 +114,7 @@ public class ParserTest extends TestCase {
 		assertEquals("command", parsed.getCommand());
 	}
 
-
+    @Test
 	public void testMissingParams() throws ParseException {
 		ParsedMessage parsed = new ParsedMessage();
 		parsed.setBody("command site");
@@ -131,7 +135,7 @@ public class ParserTest extends TestCase {
 		assertTrue("should have failed", false);
 	}
 
-
+    @Test
 	public void testInvalidNull() {
 		try {
 			ParsedMessage parsed = new ParsedMessage();
@@ -142,6 +146,7 @@ public class ParserTest extends TestCase {
 		}
 	}
 
+    @Test
 	public void testInvalidEmpty() {
 		try {
 			ParsedMessage parsed = new ParsedMessage();
@@ -154,6 +159,7 @@ public class ParserTest extends TestCase {
 		}
 	}
 
+    @Test
 	public void testHelpCommand() throws ParseException {
 
 		ParsedMessage parsed = new ParsedMessage();
@@ -167,7 +173,7 @@ public class ParserTest extends TestCase {
 		assertEquals("HELP", parsed.getCommand());
 	}
 
-
+    @Test
 	public void testParseBodyInvalid() {
 
 		ParsedMessage parsed = new ParsedMessage();		

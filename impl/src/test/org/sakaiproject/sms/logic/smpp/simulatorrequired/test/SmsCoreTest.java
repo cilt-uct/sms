@@ -22,6 +22,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Level;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
@@ -66,7 +70,8 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
 			.getLogger(SmsCoreTest.class);
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -119,19 +124,12 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	}
 
-	public SmsCoreTest() {
-	}
-
-	public SmsCoreTest(String name) {
-		super(name);
-	}
-
 	/**
 	 * The tearDown method safely calls disconnectGateWay at the end of every
 	 * test.
 	 */
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		smsSmppImpl.disconnectGateWay();
 	}
 
@@ -145,6 +143,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * NOTE: Make sure that the SMS_TASK table is empty before running this
 	 * test, else it will fail.
 	 */
+    @Test
 	public void testProcessNextTask() {
 		smsSmppImpl.connectToGateway();
 		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
@@ -275,6 +274,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	/**
 	 * In this test the updating of the tasks statuses are tested.
 	 */
+    @Test
 	public void testTaskStatuses() {
 		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
 				.getSmsTaskLogic().getAllSmsTask();
@@ -366,6 +366,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	 * executed 5 times to simulate the scheduler retrying and eventually
 	 * failing.
 	 */
+    @Test
 	public void testProcessTaskFail() {
 		List<SmsTask> smsTasks = smsCoreImpl.getHibernateLogicLocator()
 				.getSmsTaskLogic().getAllSmsTask();
@@ -411,6 +412,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsSmppImpl.connectToGateway();
 	}
 
+    @Test
 	public void testProcessIncomingMessage() {
 		smsSmppImpl.connectToGateway();
 		SmsMOMessage inMsg = new SmsMOMessage();
@@ -423,6 +425,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	/**
 	 * Test insert task for validation errors.
 	 */
+    @Test
 	public void testInsertTask_ValidationErrors() {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId("testInsertTask_ValidationErrors");
@@ -468,6 +471,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	/**
 	 * Test insert task for validation errors.
 	 */
+    @Test
 	public void testInsertTask_InsuficientCredit() {
 		SmsAccount account = new SmsAccount();
 		account.setSakaiSiteId("testInsertTask_InsuficientCredit");
@@ -519,6 +523,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	/**
 	 * Tests the aborting of a task
 	 */
+    @Test
 	public void testAbortTask() {
 
 		SmsTask insertTask = new SmsTask();
@@ -564,6 +569,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 	}
 
+    @Test
 	public void testSmsSendDisabled() {
 		SmsConfig config = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSmsConfigBySakaiSiteId(smsAccount.getSakaiSiteId());

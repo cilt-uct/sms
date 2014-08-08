@@ -20,18 +20,18 @@ package org.sakaiproject.sms.logic.incoming.test;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.sakaiproject.sms.logic.command.SmsRestCommand;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.DuplicateCommandKeyException;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
-import org.sakaiproject.sms.logic.incoming.helper.SmsCommandRegisterHelper;
 import org.sakaiproject.sms.logic.incoming.impl.SmsIncomingLogicManagerImpl;
 import org.sakaiproject.sms.logic.incoming.impl.SmsMessageParserImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
@@ -48,7 +48,7 @@ import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
  * Unit test for registering of commands.This unit test must be run from
  * Eclipse.
  */
-public class IncomingLogicManagerTest extends TestCase {
+public class IncomingLogicManagerTest{
 
 	private static final String LOWERCASE_STRING = "lowercaseString";
 	private SmsIncomingLogicManagerImpl manager;
@@ -64,7 +64,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	private static String TEST_MOBILE = "1234";
 	private static String TEST_SITE = SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID;
 
-	@Override
+	@Before
 	public void setUp() {
 		manager = new SmsIncomingLogicManagerImpl();
 		externalLogic = new ExternalLogicStub();
@@ -92,6 +92,7 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
+    @Test
 	public void testRegisterLogic() {
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertTrue(manager.isValidCommand("UPDATE"));
@@ -100,6 +101,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("SOMETHING"));
 	}
 
+    @Test
 	public void testCaseInsensitivity() {
 		assertTrue(manager.isValidCommand("cReAtE"));
 		assertTrue(manager.isValidCommand("update"));
@@ -110,6 +112,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		
 	}
 
+    @Test
 	public void testDuplicateNotReplace() {
 		ParsedMessage msg = manager.process("create test body", TEST_MOBILE);
 		assertTrue(manager.isValidCommand("CREATE"));
@@ -152,12 +155,14 @@ public class IncomingLogicManagerTest extends TestCase {
 
 	}
 
+    @Test
 	public void testProcess() {
 		ParsedMessage msg = manager.process("updat test", TEST_MOBILE);
 		assertEquals("UPDATE", msg.getCommand());
 
 	}
 
+    @Test
 	public void testPossibleMatches() {
 		List<String> validCommands = Arrays.asList(parseCSVFile(loadPropertiesFile("ValidCommands.txt")));
 		List<String> commandsToMatch = Arrays.asList(parseCSVFile(loadPropertiesFile("CommandsToMatch.txt")));
@@ -175,6 +180,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		}
 	}
 	/* not sure how we can test with resourceloader
+    @Test
 	public void testHelpCommand() {
 		assertTrue(manager.isValidCommand("help"));
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
@@ -183,6 +189,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 
 	
+    @Test
 	public void testGenerateAssistMessage() {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add("CREATE");
@@ -195,6 +202,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	}
 	*/
 
+    @Test
 	public void testClearCommands() {
 		assertTrue(manager.isValidCommand("CREATE"));
 		assertTrue(manager.isValidCommand("UPDATE"));
@@ -205,6 +213,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertFalse(manager.isValidCommand("DELETE"));
 	}
 
+    @Test
 	public void testCommandHelpMessage() {
 		ParsedMessage msg = manager.process("CREATE " + TEST_SITE, TEST_MOBILE);
 		System.out.println("expected help: " + createCmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS));
@@ -215,6 +224,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals(updateCmd.getHelpMessage(ShortMessageCommand.MESSAGE_TYPE_SMS), msg.getBodyReply());
 	}
 
+    @Test
 	public void testMultipleBody() {
 		ParsedMessage msg = manager.process("MULTIPLE " + TEST_SITE
 				+ " PARAM1 PARAM2", TEST_MOBILE);
@@ -223,6 +233,7 @@ public class IncomingLogicManagerTest extends TestCase {
 		assertEquals("PARAM2", multipleCmd.param2);
 	}
 
+    @Test
 	public void testMultipleBodyInvalid() {
 		ParsedMessage msg = manager.process(
 				"MULTIPLE " + TEST_SITE + " PARAM1", TEST_MOBILE);
@@ -233,6 +244,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	 * Hidden command must not show up command list
 	 */
 	/*
+    @Test
 	public void testHiddenSmsCommandHelp() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("help", TEST_MOBILE);
@@ -243,6 +255,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must not return help
 	 */
+    @Test
 	public void testHiddenSmsCommandNullBodyNoMessage() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE, TEST_MOBILE);
@@ -252,6 +265,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must not return help
 	 */
+    @Test
 	public void testHiddenSmsCommandNotEnoughBodyNoMessage() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE + " param1",
@@ -262,6 +276,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Hidden commands must be processed
 	 */
+    @Test
 	public void testHiddenSmsCommandValidProcess() {
 		manager.register("TEST", hiddenCmd);
 		ParsedMessage msg = manager.process("hidden " + TEST_SITE
@@ -272,6 +287,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests "" incomming commmands
 	 */
+    @Test
 	public void testBlankMessage() {
 		ParsedMessage msg = manager.process("", TEST_MOBILE);
 		assertEquals(null, msg.getCommand());
@@ -280,6 +296,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests null incomming commmands
 	 */
+    @Test
 	public void testNullMessage() {
 		ParsedMessage msg = manager.process(null, TEST_MOBILE);
 		assertEquals(null, msg.getCommand());
@@ -288,6 +305,7 @@ public class IncomingLogicManagerTest extends TestCase {
 	/**
 	 * Tests null incomming commmands
 	 */
+    @Test
 	public void testInvalidMessage() {
 		ParsedMessage msg = manager.process("ssdfsdfsdfsdfsdfsdfsdfSDF",
 				TEST_MOBILE);

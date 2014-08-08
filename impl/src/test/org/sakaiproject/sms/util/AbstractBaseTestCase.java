@@ -17,8 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.util;
 
-import junit.framework.TestCase;
-
+import org.junit.BeforeClass;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
@@ -42,14 +41,22 @@ import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
  * @version 1.0
  * @created 05-Dec-2008
  */
-public abstract class AbstractBaseTestCase extends TestCase {
+public abstract class AbstractBaseTestCase {
 
 	public static HibernateLogicLocator hibernateLogicLocator;
 	public static StandaloneSmsDaoImpl smsDao;
 	public static SmsBillingImpl smsBilling;
 
 	// Tells HibernateUtil to use the test configuration files
-	static {
+	@BeforeClass
+    // In http://junit.org/apidocs/org/junit/BeforeClass.html it states:
+    //The @BeforeClass methods of superclasses will be run before those of the current class
+    // So it is fine to have a BeforeClass here and in subclasses.
+    public static void setupBeforeTests() {
+        //shortcut
+        if(hibernateLogicLocator != null)
+            return;
+        
 		hibernateLogicLocator = new HibernateLogicLocator();
 		smsDao = new StandaloneSmsDaoImpl("hibernate-test.properties");
 		smsBilling = new SmsBillingImpl();
@@ -89,22 +96,4 @@ public abstract class AbstractBaseTestCase extends TestCase {
 
 		hibernateLogicLocator.setExternalLogic(new ExternalLogicStub());
 	}
-
-	/**
-	 * Instantiates a new abstract base test case.
-	 */
-	public AbstractBaseTestCase() {
-
-	}
-
-	/**
-	 * Instantiates a new abstract base test case.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public AbstractBaseTestCase(String name) {
-		super(name);
-	}
-
 }

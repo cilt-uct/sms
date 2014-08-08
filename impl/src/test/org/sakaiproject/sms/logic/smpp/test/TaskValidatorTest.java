@@ -4,6 +4,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsCoreImpl;
@@ -39,15 +44,16 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 
 	List<String> errors = null;
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		errors = new ArrayList<String>();
 		account = new SmsAccount();
 		account.setSakaiSiteId("TaskValidatorTest"
@@ -84,8 +90,8 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 		msg.setSmsTask(smsTask);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		hibernateLogicLocator.getSmsAccountLogic().deleteSmsAccount(account);
 
 	}
@@ -93,6 +99,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test valid message.
 	 */
+    @Test
 	public void testValidMessage() {
 		errors = smsTaskValidator.validateInsertTask(smsTask);
 		assertTrue(errors.size() == 0);
@@ -101,6 +108,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test date created.
 	 */
+    @Test
 	public void testDateCreated() {
 
 		// null
@@ -113,6 +121,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test date to send.
 	 */
+    @Test
 	public void testDateToSend() {
 
 		// null
@@ -125,6 +134,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test max time to live.
 	 */
+    @Test
 	public void testMaxTimeToLive() {
 		// null
 		smsTask.setMaxTimeToLive(null);
@@ -144,6 +154,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test empty message body.
 	 */
+    @Test
 	public void testMessageBody_empty() {
 		smsTask.setMessageBody(null);
 		errors = smsTaskValidator.validateInsertTask(smsTask);
@@ -154,6 +165,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test null message body.
 	 */
+    @Test
 	public void testMessageBody_null() {
 		smsTask.setMessageBody(null);
 		errors = smsTaskValidator.validateInsertTask(smsTask);
@@ -164,6 +176,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test too long message body.
 	 */
+    @Test
 	public void testMessageBody_tooLong() {
 		smsTask.setMessageBody(VALID_MSG_BODY + VALID_MSG_BODY);
 		assertTrue(msg.getMessageBody().length() > SmsConstants.MAX_SMS_LENGTH);
@@ -175,6 +188,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test message type id.
 	 */
+    @Test
 	public void testMessageTypeId() {
 		// null
 		smsTask.setMessageTypeId(null);
@@ -186,6 +200,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test sakai site id.
 	 */
+    @Test
 	public void testSakaiSiteId() {
 
 		// null
@@ -213,6 +228,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test sender user name.
 	 */
+    @Test
 	public void testSenderUserName() {
 
 		// null
@@ -240,6 +256,7 @@ public class TaskValidatorTest extends AbstractBaseTestCase {
 	/**
 	 * Test status code.
 	 */
+    @Test
 	public void testStatusCode() {
 
 		// null

@@ -2,6 +2,11 @@ package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.Calendar;
 import java.util.Date;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.SmsTask;
@@ -24,7 +29,8 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 	/** The sms task. */
 	private static SmsTask smsTask;
 
-	static {
+	@BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -44,19 +50,30 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
 		smsTask.setDateToExpire(cal.getTime());
 	}
-
-	/**
-	 * Instantiates a new sms hibernate stress test.
-	 */
-	public SmsDatabaseStressTest() {
-
-	}
+    
+    /**
+     * Make sure the smsTask is persisted before every test.
+     */
+    @Before
+    public void setup(){
+        //reset the id
+        smsTask.setId(null);
+        hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
+    }
+    
+    /**
+     * Make sure the smsTask is deleted after every test.
+     */
+    @After
+    public void teardown(){
+        hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
+    }
 
 	/**
 	 * Test many messages insert.
 	 */
+    @Test
 	public void testInsertManyMessages() {
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		for (int i = 0; i < MESSAGECOUNT; i++) {
 			final SmsMessage smsMessage = new SmsMessage();
 			smsMessage.setMobileNumber("0823450983");
@@ -71,24 +88,16 @@ public class SmsDatabaseStressTest extends AbstractBaseTestCase {
 
 		assertTrue("Not all messages returned",
 				smsTask.getSmsMessages().size() == MESSAGECOUNT);
-	}
-
-	// TODO: Careful, the attached task read all the messages attached to it, we
-	// don't want this here!
-
-	/**
-	 * Test get task messages.
-	 */
-	public void testGetTaskMessages() {
+        
+        
 		final SmsTask theSmsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(smsTask.getId());
-
 		assertNotNull("theSmsTask may not be null", theSmsTask);
-
-		;
-		assertTrue("Message size not correct", hibernateLogicLocator
-				.getSmsMessageLogic().getSmsMessagesForTask(theSmsTask.getId())
-				.size() == MESSAGECOUNT);
-
+		assertEquals("Message size not correct", MESSAGECOUNT, 
+                hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesForTask(theSmsTask.getId()).size());
+        
+        for(SmsMessage m: hibernateLogicLocator.getSmsMessageLogic().getAllSmsMessages()){
+            hibernateLogicLocator.getSmsMessageLogic().deleteSmsMessage(m);
+        }
 	}
 }

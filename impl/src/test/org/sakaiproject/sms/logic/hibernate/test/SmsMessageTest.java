@@ -5,6 +5,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.After;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
@@ -14,6 +19,7 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
+import static org.sakaiproject.sms.util.AbstractBaseTestCase.hibernateLogicLocator;
 
 /**
  * The Class SmsMessageTest.
@@ -29,7 +35,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/** The insert message2. */
 	private static SmsMessage insertMessage2;
 
-	static {
+    @BeforeClass
+	public static void beforeClass(){
 		if (!SmsConstants.isDbSchemaCreated) {
 			smsDao.createSchema();
 			SmsConstants.isDbSchemaCreated = true;
@@ -41,8 +48,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
 		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		insertTask.setAttemptCount(2);
-		insertTask
-				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
+		insertTask.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
 		insertTask.setSenderUserName("senderUserName");
 		insertTask.setMaxTimeToLive(1);
 		Calendar cal = Calendar.getInstance();
@@ -65,35 +71,41 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage2.setSakaiUserId("sakaiUserId");
 		insertMessage2.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 	}
-
-	/**
-	 * Instantiates a new sms message test.
-	 */
-	public SmsMessageTest() {
-	}
-
-	/**
-	 * Instantiates a new sms message test.
-	 * 
-	 * @param name
-	 *            the name
-	 */
-	public SmsMessageTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * Test insert sms message.
-	 */
-	public void testInsertSmsMessage() {
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
-		assertTrue("Task for message not created", insertTask.exists());
+    
+    /**
+     * Make sure the insertTask is persisted before every test.
+     */
+    @Before
+    public void setup(){
+        //reset the id
+        insertTask.setId(null);
+        insertMessage1.setId(null);
+        insertMessage2.setId(null);
+        hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 		insertMessage1.setSmsTask(insertTask);
 		insertMessage2.setSmsTask(insertTask);
 		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 				insertMessage1);
 		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 				insertMessage2);
+    }
+    
+    /**
+     * Make sure the insertTask is deleted after every test.
+     */
+    @After
+    public void teardown(){
+        hibernateLogicLocator.getSmsMessageLogic().deleteSmsMessage(insertMessage2);
+        hibernateLogicLocator.getSmsMessageLogic().deleteSmsMessage(insertMessage1);
+        hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
+    }
+
+	/**
+	 * Test insert sms message.
+	 */
+    @Test
+	public void testInsertSmsMessage() {
+		assertTrue("Task for message not created", insertTask.exists());
 		assertTrue("Object not persisted", insertMessage1.exists());
 		assertTrue("Object not persisted", insertMessage2.exists());
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
@@ -109,6 +121,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms message by id.
 	 */
+    @Test
 	public void testGetSmsMessageById() {
 		SmsMessage getSmsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessage(insertMessage1.getId());
@@ -121,6 +134,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Test update sms message.
 	 */
+    @Test
 	public void testUpdateSmsMessage() {
 		SmsMessage smsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessage(insertMessage1.getId());
@@ -132,8 +146,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		assertEquals("newSakaiUserId", smsMessage.getSakaiUserId());
 	}
 
+    @Test
 	public void testGetallMessagesFormTask() {
-
 		assertTrue("Collection returned has no objects",
 				hibernateLogicLocator.getSmsMessageLogic()
 						.getSmsMessagesForTask(insertTask.getId()) != null);
@@ -149,24 +163,24 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Tests the getMessagesForCriteria method
 	 */
+    @Test
 	public void testGetMessagesForCriteria() {
-
-		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
-		insertTask.setSmsAccountId(1l);
-		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
-		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
-		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		insertTask.setAttemptCount(2);
-		insertTask
+		SmsTask smsTask = new SmsTask();
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		smsTask.setSmsAccountId(1l);
+		smsTask.setDateCreated(new Date(System.currentTimeMillis()));
+		smsTask.setDateToSend(new Date(System.currentTimeMillis()));
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		smsTask.setAttemptCount(2);
+		smsTask
 				.setMessageBody(SmsConstants.SMS_DEV_DEFAULT_SMS_MESSAGE_BODY);
-		insertTask.setSenderUserName("messageCrit");
-		insertTask.setSakaiToolName("sakaiToolName");
-		insertTask.setMaxTimeToLive(1);
+		smsTask.setSenderUserName("messageCrit");
+		smsTask.setSakaiToolName("sakaiToolName");
+		smsTask.setMaxTimeToLive(1);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(insertTask.getDateToSend());
-		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
-		insertTask.setDateToExpire(cal.getTime());
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
 
 		SmsMessage insertMessage = new SmsMessage();
 		insertMessage.setMobileNumber("0721998919");
@@ -174,12 +188,12 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage.setSakaiUserId("criterai");
 		insertMessage.setDateDelivered(new Date(System.currentTimeMillis()));
 		insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
-		insertMessage.setSmsTask(insertTask);
-		insertTask.getSmsMessages().add(insertMessage);
+		insertMessage.setSmsTask(smsTask);
+		smsTask.getSmsMessages().add(insertMessage);
 
 		try {
 
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 					insertMessage);
 
@@ -187,8 +201,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			bean.setStatus(insertMessage.getStatusCode());
 			bean.setDateFrom((new Date()));
 			bean.setDateTo((new Date()));
-			bean.setToolName(insertTask.getSakaiToolName());
-			bean.setSender(insertTask.getSenderUserName());
+			bean.setToolName(smsTask.getSakaiToolName());
+			bean.setSender(smsTask.getSenderUserName());
 			bean.setNumber(insertMessage.getMobileNumber());
 			bean.setCurrentPage(1);
 
@@ -210,23 +224,23 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 
 	}
 
+    @Test
 	public void testGetMessageWithNullDeliveryDate() {
-
-		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
-		insertTask.setSmsAccountId(1l);
-		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
-		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
-		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageCrit");
-		insertTask.setSenderUserName("messageCrit");
-		insertTask.setSakaiToolName("sakaiToolName");
-		insertTask.setMaxTimeToLive(1);
+		SmsTask smsTask = new SmsTask();
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		smsTask.setSmsAccountId(1l);
+		smsTask.setDateCreated(new Date(System.currentTimeMillis()));
+		smsTask.setDateToSend(new Date(System.currentTimeMillis()));
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		smsTask.setAttemptCount(2);
+		smsTask.setMessageBody("messageCrit");
+		smsTask.setSenderUserName("messageCrit");
+		smsTask.setSakaiToolName("sakaiToolName");
+		smsTask.setMaxTimeToLive(1);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(insertTask.getDateToSend());
-		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
-		insertTask.setDateToExpire(cal.getTime());
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
 
 		SmsMessage insertMessage = new SmsMessage();
 		insertMessage.setMobileNumber("0721998919");
@@ -235,10 +249,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		insertMessage.setDateDelivered(null);
 		insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_TIMEOUT);
 
-		insertMessage.setSmsTask(insertTask);
-		insertTask.getSmsMessages().add(insertMessage);
+		insertMessage.setSmsTask(smsTask);
+		smsTask.getSmsMessages().add(insertMessage);
 
-		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 				insertMessage);
 
@@ -246,8 +260,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 		bean.setStatus(insertMessage.getStatusCode());
 		bean.setDateFrom(null);
 		bean.setDateTo(null);
-		bean.setToolName(insertTask.getSakaiToolName());
-		bean.setSender(insertTask.getSenderUserName());
+		bean.setToolName(smsTask.getSakaiToolName());
+		bean.setSender(smsTask.getSenderUserName());
 		bean.setNumber(insertMessage.getMobileNumber());
 		bean.setCurrentPage(1);
 
@@ -266,25 +280,25 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Tests the getMessagesForCriteria method
 	 */
+    @Test
 	public void testGetMessagesForCriteria_Paging() {
-
 		int recordsToInsert = 93;
 
-		SmsTask insertTask = new SmsTask();
-		insertTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
-		insertTask.setSmsAccountId(1l);
-		insertTask.setDateCreated(new Date(System.currentTimeMillis()));
-		insertTask.setDateToSend(new Date(System.currentTimeMillis()));
-		insertTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
-		insertTask.setAttemptCount(2);
-		insertTask.setMessageBody("messageCrit");
-		insertTask.setSenderUserName("messageCrit");
-		insertTask.setSakaiToolName("sakaiToolName");
-		insertTask.setMaxTimeToLive(1);
+		SmsTask smsTask = new SmsTask();
+		smsTask.setSakaiSiteId(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID);
+		smsTask.setSmsAccountId(1l);
+		smsTask.setDateCreated(new Date(System.currentTimeMillis()));
+		smsTask.setDateToSend(new Date(System.currentTimeMillis()));
+		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
+		smsTask.setAttemptCount(2);
+		smsTask.setMessageBody("messageCrit");
+		smsTask.setSenderUserName("messageCrit");
+		smsTask.setSakaiToolName("sakaiToolName");
+		smsTask.setMaxTimeToLive(1);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(insertTask.getDateToSend());
-		cal.add(Calendar.SECOND, insertTask.getMaxTimeToLive());
-		insertTask.setDateToExpire(cal.getTime());
+		cal.setTime(smsTask.getDateToSend());
+		cal.add(Calendar.SECOND, smsTask.getMaxTimeToLive());
+		smsTask.setDateToExpire(cal.getTime());
 
 		for (int i = 0; i < recordsToInsert; i++) {
 			SmsMessage insertMessage = new SmsMessage();
@@ -292,17 +306,17 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			insertMessage.setSmscMessageId("criterai");
 			insertMessage.setSakaiUserId("crit");
 			insertMessage.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-			insertMessage.setSmsTask(insertTask);
-			insertTask.getSmsMessages().add(insertMessage);
+			insertMessage.setSmsTask(smsTask);
+			smsTask.getSmsMessages().add(insertMessage);
 			insertMessage.setSmscMessageId("" + i);// To make unique
 			insertMessage
 					.setDateDelivered(new Date(System.currentTimeMillis()));
 		}
 
 		try {
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
-			for (SmsMessage sms : insertTask.getSmsMessages()) {
+			for (SmsMessage sms : smsTask.getSmsMessages()) {
 
 				hibernateLogicLocator.getSmsMessageLogic().persistSmsMessage(
 						sms);
@@ -312,8 +326,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			bean.setStatus(SmsConst_DeliveryStatus.STATUS_ERROR);
 			bean.setDateFrom(new Date(System.currentTimeMillis() - 10000));
 			bean.setDateTo(new Date());
-			bean.setToolName(insertTask.getSakaiToolName());
-			bean.setSender(insertTask.getSenderUserName());
+			bean.setToolName(smsTask.getSakaiToolName());
+			bean.setSender(smsTask.getSenderUserName());
 			bean.setNumber("0721998919");
 
 			bean.setCurrentPage(2);
@@ -351,6 +365,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Test get new test sms message instance.
 	 */
+    @Test
 	public void testGetNewTestSmsMessageInstance() {
 		SmsMessage message = hibernateLogicLocator.getSmsMessageLogic()
 				.getNewTestSmsMessageInstance("0721999988", "Message body");
@@ -365,6 +380,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms message by smsc message id.
 	 */
+    @Test
 	public void testGetSmsMessageBySmscMessageId() {
 		SmsMessage smsMessage = hibernateLogicLocator
 				.getSmsMessageLogic()
@@ -378,6 +394,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	/**
 	 * Test get sms messages.
 	 */
+    @Test
 	public void testGetSmsMessages() {
 		List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic()
 				.getAllSmsMessages();
@@ -389,8 +406,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	 * Tests getSmsMessagesWithStatus returns only messages with the specifed
 	 * status codes
 	 */
+    @Test
 	public void testGetSmsMessagesWithStatus() {
-
 		// Assert that messages exist for this task that have a status other
 		// than PENDING
 
