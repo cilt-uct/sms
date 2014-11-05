@@ -78,6 +78,7 @@ import org.jsmpp.util.DeliveryReceiptState;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
 import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
 import org.sakaiproject.sms.logic.smpp.SmsCore;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
@@ -595,6 +596,9 @@ public class SmsSmppImpl implements SmsSmpp {
 					}
 				});
 				LOG.info("Bind successful");
+				hibernateLogicLocator.getExternalLogic().postEvent(ExternalLogic.SMS_EVENT_SMPP_BIND, 
+					smsSmppProperties.getSMSCAddress() + ":" + smsSmppProperties.getSMSCPort(), null);
+
 			} catch (Exception e) {
 				LOG.error("Bind operation failed. " + e);
 				gatewayBound = false;

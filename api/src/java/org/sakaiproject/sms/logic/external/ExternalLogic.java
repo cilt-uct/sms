@@ -52,6 +52,10 @@ public interface ExternalLogic {
 	public final static String SMS_EVENT_ACCOUNT_REVISE = "sms.account.revise";
 	public final static String SMS_EVENT_ACCOUNT_CREDIT = "sms.account.credit";
 	public final static String SMS_EVENT_ACCOUNT_TRANSFER = "sms.account.transfer";
+
+	// Events for SMPP events
+
+	public final static String SMS_EVENT_SMPP_BIND = "sms.smpp.bind";
 	
 	// Permissions for SMS
 
