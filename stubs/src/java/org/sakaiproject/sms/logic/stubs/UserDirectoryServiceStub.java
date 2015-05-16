@@ -278,4 +278,8 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return null;
 	}
 
+	public boolean checkDuplicatedEmail(User user) {
+		return false;
+	}
+
 }
