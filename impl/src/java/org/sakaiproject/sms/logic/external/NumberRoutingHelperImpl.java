@@ -73,10 +73,9 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	
 	public boolean isNumberRoutable(String mobileNumber) {
 		LOG.debug("isNumberRoutable(" + mobileNumber + ")");
-		if (mobileNumber == null || "".equals(mobileNumber)) {
+		if (mobileNumber == null || "".equals(mobileNumber) || mobileNumber.length() < 3) {
 			return false;
 		}
-		
 		
 		String code = mobileNumber.substring(0, 2);
 		LOG.debug("country code is " + code);
