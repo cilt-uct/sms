@@ -10,7 +10,7 @@
 	</organization>
 	<inceptionYear>2008</inceptionYear>
 	<packaging>pom</packaging>
-	<version>2.0-SNAPSHOT</version><!--Sms.version-->
+	<version>11-SNAPSHOT</version><!--Sms.version-->
 	<description>The SMS service provides SMS (short message service or
 		texting) capablities to Sakai.The module consists of 1) A SMPP service
 		to forward messages to an SMPP complient gateway. 2) An admin tool to
@@ -19,7 +19,7 @@
 	<parent>
 		<artifactId>master</artifactId>
 		<groupId>org.sakaiproject</groupId>
-		<version>10-SNAPSHOT</version>
+		<version>11-SNAPSHOT</version>
 		<relativePath>../master/pom.xml</relativePath>
 	</parent>
 	<profiles>
@@ -66,23 +66,23 @@
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-api</artifactId>
-				<version>2.0-SNAPSHOT</version>
+				<version>11-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-util</artifactId>
-				<version>2.0-SNAPSHOT</version>
+				<version>11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-impl</artifactId>
-				<version>2.0-SNAPSHOT</version>
+				<version>11-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sakaiproject.sms</groupId>
 				<artifactId>sms-stubs</artifactId>
-				<version>2.0-SNAPSHOT</version>
+				<version>11-SNAPSHOT</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -109,16 +109,6 @@
 			<url>http://source.sakaiproject.org/maven2</url>
 		</repository>
 		<repository>
-			<id>opensymphony</id>
-			<url>http://maven2.opensymphony.com</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>honestyworks</id>
 			<name>honestyworks Maven Repository</name>
 			<url>http://my.honestyworks.jp/maven2/</url>
@@ -126,23 +116,11 @@
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
-			<id>codehaus snapshot repository</id>
-			<url>http://snapshots.repository.codehaus.org/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
 			<id>Sakai Plugin Repo</id>
 			<url>http://source.sakaiproject.org/maven2</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>xebia-maven2</id>
-			<name>Xebia Maven2 Repository</name>
-			<url>http://mojo.os.xebia.com/repository</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<issueManagement>

@@ -281,5 +281,12 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 	public boolean checkDuplicatedEmail(User user) {
 		return false;
 	}
+	public User getUserByAid(String aid) throws UserNotDefinedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+        public boolean updateUserId(String eId,String newEmail) {
+		return false;
+	}
 
 }
