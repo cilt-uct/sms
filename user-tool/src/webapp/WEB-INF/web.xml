@@ -5,6 +5,11 @@
 	<display-name>sakai.sms.user</display-name>
 	<description>Sakai SMS user facing tool</description>
 
+  <context-param>
+    <param-name>resourceurlbase</param-name>
+    <param-value>/sms-user-tool/</param-value>
+  </context-param>
+
   <!-- Configure standard Spring application contexts. Be sure to mention
     rsf config files first, so any overrides may be processed. The first two
     config files are loaded from inside the rsfutil.jar  -->
