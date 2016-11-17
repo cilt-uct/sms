@@ -113,6 +113,11 @@
 			<name>honestyworks Maven Repository</name>
 			<url>http://my.honestyworks.jp/maven2/</url>
 		</repository>
+		<repository>
+			<id>OSGeo</id>
+			<name>OSGeo Download Server</name>
+			<url>http://download.osgeo.org/webdav/geotools/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
