@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-  "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<beans>
 <!-- tool entity providers -->
 	<bean
 		parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider"
@@ -13,8 +13,8 @@
     <bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
         <property name="messageSource">
             <bean
-                class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-		depends-on="TLABPostProcessorLoader">
+				class="org.sakaiproject.util.ResourceLoaderMessageSource"
+				depends-on="TLABPostProcessorLoader">
                 <property name="basename"
                     value="classpath:org/sakaiproject/sms/tool/bundle/messages" />
                 <property name="cacheSeconds" value="10" />
