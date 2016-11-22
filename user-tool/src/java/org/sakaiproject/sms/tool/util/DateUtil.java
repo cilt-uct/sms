@@ -1,6 +1,7 @@
 package org.sakaiproject.sms.tool.util;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -9,7 +10,10 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 
 import uk.org.ponder.localeutil.LocaleGetter;
 
-public class DateUtil {
+public class DateUtil {	
+
+	private static final String ISO8601_DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(ISO8601_DATE_FORMAT_STRING);
 
 	private ExternalLogic externalLogic;
 	public void setExternalLogic(ExternalLogic externalLogic) {
@@ -45,4 +49,11 @@ public class DateUtil {
 			return df.format(date);
 		}
 	}	
+	
+	public String getISO8601FormattedDateStr(Date date) {
+		if(date == null){
+	        return DATE_FORMAT.format(new Date());
+		}
+        return DATE_FORMAT.format(date);
+    }
 }

@@ -3,8 +3,8 @@
  * @Author lovemore.nalube@uct.ac.za
  **/
 $(document).ready(function() {
-    $("input[@rel=task]").task();
-    $("input[@rel=back]").bind('click', function() {
+    $("input[rel=task]").task();
+    $("input[rel=back]").bind('click', function() {
         history.go(-1);
         return false;
     });

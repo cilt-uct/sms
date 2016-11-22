@@ -471,7 +471,7 @@
                         $("#peopleListNamesSuggest")
                                 .removeClass('first acfb-holder')
                                 .html(renderPeopleAsCheckboxes("Names"));
-                        $('#peopleListNamesSuggest > div[@rel=Names] input').click(function() {
+                        $('#peopleListNamesSuggest > div[rel=Names] input').click(function() {
                             var id = $(this).val();
                             $.fn.SMS.get.selectionsHaveChanged = true;
                             //Fn for the check event
@@ -568,7 +568,7 @@
         //Bind checkbox event listeners
 
         //for the Roles Tab
-        $('#peopleListRoles > div[@rel=Roles] input').bind('click', function() {
+        $('#peopleListRoles > div[rel=Roles] input').bind('click', function() {
             $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {
@@ -599,7 +599,7 @@
         });
 
         //for the Groups Tab
-        $('#peopleListGroups > div[@rel=Groups] input').bind('click', function() {
+        $('#peopleListGroups > div[rel=Groups] input').bind('click', function() {
             $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {

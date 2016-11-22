@@ -7,7 +7,7 @@
  **/
 
 $(document).ready(function() {
-    $("input[@rel=back]").bind('click', function() {
+    $("input[rel=back]").bind('click', function() {
         history.go(-1);
         return false;
     });
@@ -175,10 +175,10 @@ $(document).ready(function() {
         $("#peopleList").tabs();
 
         //disable tabs that contain no entries in them eg. if there are no groups in site
-        if ( $('#peopleListRoles > div[@rel=Roles] input').length === 0 ){
+        if ( $('#peopleListRoles > div[rel=Roles] input').length === 0 ){
             $.fn.SMS.set.disableTab('peopleTabsRoles', 'error-no-roles');
             }
-        if ( $('#peopleListGroups > div[@rel=Groups] input').length === 0 ){
+        if ( $('#peopleListGroups > div[rel=Groups] input').length === 0 ){
             $.fn.SMS.set.disableTab('peopleTabsGroups', 'error-no-groups');
            }
 

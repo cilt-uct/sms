@@ -214,20 +214,14 @@ public class SendSMSProducer implements ViewComponentProducer,
 								.getCostEstimate())));
 					}
 
-					dateEvolver
-							.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
-
-					UIInput scheduleDate = UIInput.make(form,
-							"smsDatesScheduleDate:",
-							"dummyBean.smsDatesScheduleDate");
-
+					dateEvolver.setStyle(FormatAwareDateInputEvolver.DATE_TIME_INPUT);
 					if (smsTask.getDateToSend() == null) {
 						UIBoundBoolean boolSchedule = UIBoundBoolean.make(form,
 								"booleanSchedule", Boolean.FALSE);
 						UIMessage.make(form, "booleanSchedule-label",
 								"ui.send.date.schedule").decorate(
 								new UILabelTargetDecorator(boolSchedule));
-						dateEvolver.evolveDateInput(scheduleDate, new Date());
+						UIInput dateToSend = UIInput.make(form, "smsDatesScheduleDate-iso8601", dateUtil.getISO8601FormattedDateStr(smsTask.getDateToSend()));
 					} else {
 						UIOutput.make(form, "schedule.date", dateUtil.formatDate(smsTask
 								.getDateToSend()) );
@@ -235,14 +229,10 @@ public class SendSMSProducer implements ViewComponentProducer,
 								"booleanSchedule", Boolean.TRUE);
 						UIMessage.make(form, "booleanSchedule-label",
 								"ui.send.date.schedule").decorate(
-								new UILabelTargetDecorator(boolSchedule));
-						dateEvolver.evolveDateInput(scheduleDate, smsTask
-								.getDateToSend());
+								new UILabelTargetDecorator(boolSchedule));						
+						UIInput dateToSend = UIInput.make(form, "smsDatesScheduleDate-iso8601", dateUtil.getISO8601FormattedDateStr(smsTask.getDateToSend()));
 					}
-
-					UIInput expireDate = UIInput.make(form,
-							"smsDatesExpiryDate:",
-							"dummyBean.smsDatesScheduleDate");
+					
 					if (smsTask.getDateToExpire() == null) {
 						UIBoundBoolean boolSchedule = UIBoundBoolean.make(form,
 								"booleanExpiry", Boolean.FALSE);
@@ -257,7 +247,7 @@ public class SendSMSProducer implements ViewComponentProducer,
 						cal.setTime(new Date());
 						cal.add(Calendar.SECOND, siteConfig
 								.getSmsTaskMaxLifeTime());
-						dateEvolver.evolveDateInput(expireDate, cal.getTime());
+						UIInput expireDate = UIInput.make(form, "smsDatesExpiryDate-iso8601", dateUtil.getISO8601FormattedDateStr(cal.getTime()));
 					} else {
 						UIOutput.make(form, "expiry.date", dateUtil.formatDate(smsTask.getDateToExpire()) );
 						UIBoundBoolean boolExpiry = UIBoundBoolean.make(form,
@@ -265,8 +255,7 @@ public class SendSMSProducer implements ViewComponentProducer,
 						UIMessage.make(form, "booleanExpiry-label",
 								"ui.send.date.expiry").decorate(
 								new UILabelTargetDecorator(boolExpiry));
-						dateEvolver.evolveDateInput(expireDate, smsTask
-								.getDateToExpire());
+						UIInput expireDate = UIInput.make(form, "smsDatesExpiryDate-iso8601", dateUtil.getISO8601FormattedDateStr(smsTask.getDateToExpire()));
 					}
 
 					if (smsTask.getId() != null) {
