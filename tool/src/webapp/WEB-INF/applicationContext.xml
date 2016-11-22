@@ -7,7 +7,7 @@
 	<bean id="messageLocator" class="uk.org.ponder.springutil.SpringMessageLocator">
 		<property name="messageSource">
 			<bean
-				class="org.sakaiproject.util.ResourceLoaderMessageSource"
+				class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
 				depends-on="TLABPostProcessorLoader">
 				<property name="basename">
 					<value>WEB-INF/bundle/messages</value>
@@ -263,12 +263,12 @@
 	</bean>
 
 	<!-- Custom request cycle for downloads -->
-	<!-- bean parent="handlerHookParent">
+	<bean parent="handlerHookParent">
 		<property name="value">
 			<bean parent="RSACBridgeProxy">
 				<property name="targetBeanName" value="reportHandlerHook" />
 			</bean>
 		</property>
-	</bean -->
+	</bean>
 
 </beans>
