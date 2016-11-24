@@ -7,6 +7,9 @@
  **/
 
 $(document).ready(function() {
+    var smsPopup = new SmsPopup();
+    document.body.appendChild(smsPopup.createPopup());
+    
     $("input[rel=back]").bind('click', function() {
         history.go(-1);
         return false;
@@ -79,9 +82,7 @@ $(document).ready(function() {
 
     $("#smsAddRecipients").bind('click', function() {
         if(! $.fn.SMS.set.isRecipientsLinkClicked ){
-            if ($.fn.SMS.get.preserveDomSelections && $.fn.SMS.get.selectionsHaveChanged && $("#facebox").length !== 0) {
-                //Stop binding facebox onload events
-                $(document).unbind('afterReveal.facebox');
+            if ($.fn.SMS.get.preserveDomSelections && $.fn.SMS.get.selectionsHaveChanged && $("#smsPopup").length !== 0) {
                 //Keep latest selections in case we want to restore them later on
                 $.fn.SMS.get.previousSelectionsRoles = $.fn.SMS.get.getSelectedRecipientsListIDs("roles");
                 $.fn.SMS.get.previousSelectionsNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs("numbers");
@@ -90,20 +91,17 @@ $(document).ready(function() {
                 $("#recipientsCmd")
                         .attr("disabled", "disabled")
                         .removeClass("active");
-                $("#facebox").fadeIn('fast');
             } else {
-                $(document).unbind('afterReveal.facebox');
-                $(document).bind('afterReveal.facebox', function(){
-                    triggerFaceboxOnloadEvents();
-                });
-                $.facebox({ajax: this.href});
+                smsPopup.displayPopup({url: this.href, selector: '#chooseForm'}, triggerPopupEvents);
             }
             $.fn.SMS.set.isRecipientsLinkClicked = true;
+        } else {
+          smsPopup.showPopupToUser();
         }
         return false;
     });
 
-    $("#smsSend").bind('click', function() {
+    $("#smsSend").on('click', function() {
         //Bind EB submit action
         $(".loadingImage").show();
         var domElements = [ "messageBody", "sakaiUserIds", "deliveryEntityList", "deliveryMobileNumbersSet", "sakaiSiteId", "dateToSend"];
@@ -168,36 +166,38 @@ $(document).ready(function() {
             });
         });
 
-    //Move all facebox onload events to  this function to fix SMS-45
-
-    function triggerFaceboxOnloadEvents(){
-        $("#facebox .body .header").text($("#chooseTitle").text());
-        $("#peopleList").tabs();
+    //Attach events after popup is created and populated
+    function triggerPopupEvents(){
+        $('#peopleList ul a').each(function(i, el) {
+          $(el).on('click', smsPopup.switchView);
+          if (i == 0) $(el).click();
+        });
 
         //disable tabs that contain no entries in them eg. if there are no groups in site
-        if ( $('#peopleListRoles > div[rel=Roles] input').length === 0 ){
+        if ( smsPopup.getElements('#peopleList div[rel="Roles"] input').length === 0 ){
             $.fn.SMS.set.disableTab('peopleTabsRoles', 'error-no-roles');
-            }
-        if ( $('#peopleListGroups > div[rel=Groups] input').length === 0 ){
+        }
+        if ( smsPopup.getElements('#peopleListGroups div[rel=Groups] input').length === 0 ){
             $.fn.SMS.set.disableTab('peopleTabsGroups', 'error-no-groups');
-           }
-
+        }
         //Start membership loading event action
         $.fn.SMS.get.peopleByName(); //trigger event to populate the people lists ie:individuals
 
-        $("#calculateCmd").bind('click', function(){
+        $("#calculateCmd").on('click', function(){
             var domElements = ["sakaiUserIds", "sakaiSiteId","deliveryEntityList", "deliveryMobileNumbersSet"];
             $.fn.SMS.set.processCalculate(domElements, this);
         });
-        $("[rel=closeFB]").click(function(){
-            $(document).trigger("close.facebox");
+        $("[rel=closeFB]").on('click', function(e){
+            e.preventDefault();
+            smsPopup.closePopup();
             $.fn.SMS.get.preserveDomSelections = false;
             $.fn.SMS.get.preserveNewDomSelections = true;
             $.fn.SMS.set.isRecipientsLinkClicked = false;
             return false;
+            //TODO: remove selections on cancel?
         });
-        $("#recipientsCmd").bind('click', function(){
-            $("#facebox").hide('fast');
+        $("#recipientsCmd").on('click', function(){
+            smsPopup.closePopup();
             $.fn.SMS.set.isRecipientsLinkClicked = false;
             $.fn.SMS.get.preserveDomSelections = true;
             $.fn.SMS.set.setSubmitTaskButton(this);
@@ -208,13 +208,49 @@ $(document).ready(function() {
             //Extract edit text from rel attribute and use that for new link text.
             $("#smsAddRecipients").text($("#smsAddRecipients").attr("rel").split(",")[1]);
         });
-       //envoke checkbox bindings
-        $.fn.SMS.get.people();
+       //invoke checkbox bindings
+        $('div[id^="peopleList"] input[type=checkbox]').on('click', function() {
+            $.fn.SMS.get.selectionsHaveChanged = true;
+            var listType = this.getAttribute('data-listtype');
+            var listUCfirst = listType.charAt(0).toUpperCase() + listType.substring(1);
+            //Fn for the check event
+            if (this.checked) {
+                $.fn.SMS.set.setEntityBoxAction(this, listType);
+            } else
+            //Fn for the UNcheck event
+            {
+                var typeLabel = listUCfirst + 'Id';
+                var thisId = $(this).parent().find('label').attr(typeLabel);
+                //Remove data from selectedRecipientsList
+                $.each($.fn.SMS.get.getSelectedRecipientsListIDs(listType), function(i, parent) {
+                    if (parent) {
+                        //$.each(parent, function(n, item) {
+                        if (parent === thisId) {
+                            var func = 'removeRecipientFrom' + listUCfirst + 'ByIndex';
+                            if ($.fn.SMS.set[func]) {
+                              $.fn.SMS.set[func](Number(i));
+                            }
+                        }
+                    }
+                });
+                //Refresh {selectedRecipients} Number on TAB
+                if ($.fn.SMS.get.getSelectedRecipientsListIDs(listType).length > 0){
+                  //  var recipientTotal = 99;
+                    $('#peopleTabs' + listUCfirst + ' span[rel=recipientsSum]').text($.fn.SMS.get.getSelectedRecipientsListIDs(listType).length);
+                }
+                else{
+                    $('#peopleTabs' + listUCfirst + ' span[rel=recipientsSum]').fadeOut();
+                }
+                 $.fn.SMS.set.disableContinue();
+            }
+
+        });
        //Re-select saved selections
         if ($.fn.SMS.get.preserveNewDomSelections){
             $.fn.SMS.set.restoreSelections();
         }
 
+        //TODO: see if there is a need for this
         if($("#statusType").length !== 0 ){
             if($("#statusType").val() === "EDIT" || $("#statusType").val() === "REUSE"){
                 $.fn.SMS.get.preserveDomSelections = true;
@@ -231,6 +267,130 @@ $(document).ready(function() {
         var preload1 = new Image(12,12);
         preload1.src = $.fn.SMS.settings.images.deleteAutocompleteImage;
 
-    }
+        $('#checkNumbers').on('click', function(e) {
+            function showSelectedNumbersInDOM() {
+              var currentNumberList = $.fn.SMS.get.getSelectedRecipientsListIDs('numbers');
+              if (currentNumberList.length > 0) {
+                //Log report on valid numbers
+                  var realText = $("#peopleListNumbersLogText").text().replace('XXX', currentNumberList.length);
+                  $('#peopleListNumbersLog')
+                        .fadeIn('fast')
+                        .text(realText);
+                //Refresh {selectedRecipients} Number on TAB
+                  $('#peopleTabsNumbers span[rel=recipientsSum]').fadeIn().text(currentNumberList.length);
+              } else{
+                $('#peopleTabsNumbers span[rel=recipientsSum]').fadeOut();
+                $("#numbersValid").fadeOut();
+                $("#numbersInvalid .msg").fadeOut();
+                $("#peopleListNumbersLog").fadeOut();
+                //hide duplicate notice
+                $("#peopleListNumbersDuplicates").fadeOut("fast");
+              }
+            }
+            e.preventDefault();
+            var that = $('#peopleListNumbersBox'),
+            that2 = $('#peopleListNumbersBox2'),
+            strippedNumbers = [];
+            //hide duplicate notice
+            $("#peopleListNumbersDuplicates").fadeOut("fast");
+            $.fn.SMS.get.selectionsHaveChanged = true;
+            if (that.val()) {
+                var numbers = that.val().split("\n"),
+                nums_invalid = [];
 
+                $.each(numbers, function(i, item) {
+                    var num = item.split(' ').join('');
+                    if (num.length > 9 && ((num.match(/^[0-9]/) || num.match(/^[+]/) || num.match(/^[(]/)) && (num.split('-').join('').split('(').join('').split(')').join('').match(/^[+]?\d+$/)))) {
+                        //verify the unformattd version of the number is not a duplicate
+                        var found = false,
+                        strippedItem = item.replace(/[+]/g, "").replace(/[\-]/g, "").replace(/[ ]/g, "").replace(/[(]/g, "").replace(/[)]/g, "");//unformat the number
+                        for (var x = 0; x < strippedNumbers.length; x++){
+                           if ( strippedItem === strippedNumbers[x] ){
+                               found = true;
+                           }
+                        }
+                        if (! found){
+                            strippedNumbers.push(strippedItem); // add to simple format numbers list
+                            $.fn.SMS.set.addSelectedRecipientsListByType('numbers', item); //add to real numbers list
+                        }else{
+                            //number is a duplicate  - tell the user
+                            $("#peopleListNumbersDuplicates").fadeIn("fast");
+                            //log("User entered this duplicate number: " + item);
+                        }
+                    } else {
+                        nums_invalid.push(item);
+                    }
+
+                });
+
+                //TODO: Remove duplicates
+ //               $.fn.SMS.get.getSelectedRecipientsListIDs('numbers') = unique(selectedRecipientsList.numbers);
+
+                //Log report on valid numbers
+                var currentNumbers = $.fn.SMS.get.getSelectedRecipientsListIDs('numbers');
+                if (currentNumbers.length > 0) {
+                    showSelectedNumbersInDOM();
+
+                    $.fn.SMS.set.disableContinue();
+
+                    //log(nums_invalid.length);
+                    if (nums_invalid.length > 0) {
+                        that.val(nums_invalid.toString().split(',').join('\n'));
+                        $("#numbersInvalid .msg").fadeIn('fast', function() {
+                            $(this).effect("highlight", 'slow');
+                        });
+                        //log('Not empty');
+                    } else {
+                        that.val('');
+                        $("#numbersInvalid .msg").fadeOut();
+                    }                                                                                                       
+                    var temp = "";
+                    $.each(currentNumbers, function(i, item) {
+                        temp += '<li class="acfb-data"><span>' + item + '</span> <img class="numberDel" rel="' + item + '" src="' + $.fn.SMS.settings.images.deleteAutocompleteImage + '"/></li>';
+                    });
+                    that2
+                            .show()
+                            .addClass('numbers-holder')
+                            .html(temp);
+
+                    $("#numbersValid")
+                            .addClass('smsMessageSuccess')
+                            .fadeIn('fast', function() {
+                        $(this).effect("highlight", 'slow');
+                    });
+
+                    //bind delete image event
+                    that2.on('click', 'li img.numberDel', function() {
+                        var number = $(this).attr('rel');
+                        $.each(currentNumbers, function(i, item) {
+                            if (item && item == number) {
+                              $.fn.SMS.set.removeRecipientByTypeAndIndex('numbers', i);
+                            }
+                        });
+                        $(this).parent().fadeOut(function() {
+                            $(this).remove();
+                        });
+                       showSelectedNumbersInDOM();
+                         $.fn.SMS.set.disableContinue();
+                        that.focus();
+                        //log(selectedRecipientsList.numbers.toString());
+                    });
+                } else {
+                    $("#numbersInvalid .msg").fadeIn('fast');
+                    //hide duplicate notice
+                    $("#peopleListNumbersDuplicates").fadeOut("fast");
+                    that.focus();
+                }
+            } else {
+                $("#numbersInvalid .msg").fadeOut('fast');
+                //hide duplicate notice
+                $("#peopleListNumbersDuplicates").fadeOut("fast");
+                that.focus();
+            }
+            //log(selectedRecipientsList.numbers.toString());
+            return false;
+        });
+
+
+    }
 });

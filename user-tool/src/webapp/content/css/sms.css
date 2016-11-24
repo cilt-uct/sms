@@ -153,7 +153,7 @@ text-align:right;
 **/
 
 .tabsNumber{
-	position: absolute;
+/*	position: absolute;
 	margin-top: -13px;
 	margin-left: -75px;
 	font-size: 18px;
@@ -164,11 +164,11 @@ text-align:right;
 	padding-right: 2px;
 	padding-left: 2px;
 	filter: Alpha(Opacity=70);
-	opacity: 0.7;
+	opacity: 0.7;*/
 }
 #peopleListGroups {
 	/*height: 100%;JS set actual height depending on content*/
-	overflow: auto;
+	/*overflow: auto;*/
 }
 .Counter {
     margin-top:-28px;
@@ -180,9 +180,9 @@ text-align:right;
 
 /* all DIV tags with an ID starting with peopleList */
 div[id^='peopleList'] {
-    height: 200px;
+/*    height: 200px;
     margin-bottom:55px;
-width:542px;
+width:542px;*/
 }
 /* all spans tags with a class starting with console */
 span[class^='console-'] {

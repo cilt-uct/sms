@@ -8,9 +8,9 @@
         // build main options before class instantiation
         $.extend({}, $.fn.SMS.defaults, options);
     };
-
     // define and expose our format function
     $.fn.SMS.get = {
+        otherthing: 'yes',
         preserveDomSelections: false,
         preserveNewDomSelections: false,
         selectionsHaveChanged: false,
@@ -29,6 +29,10 @@
         },
         getSelectedRecipientsListNames : function() {
             getSelectedRecipientsList.length('names');
+        },
+        getSelectedRecipientsListRoles : function() {
+          return selectedRecipientsList;
+          //  getSelectedRecipientsList.length('names');
         },
         getSelectedRecipientsListIDs : function(filter) {
             var type = getSelectedRecipientsList.array(filter);
@@ -204,6 +208,11 @@
             selectedRecipientsList.names.push([array[1],array[0]]);
             return true;
         },
+        addSelectedRecipientsListByType: function(_type, recipientString) {
+          if (selectedRecipientsList[_type] && Array.isArray(selectedRecipientsList[_type])) {
+            selectedRecipientsList[_type].push(recipientString);
+          }
+        },
         restoreTaskSelections: function() {
             $.fn.SMS.set.init();
             var entities = ( $("#savedEntityList").length !== 0 && $("#savedEntityList").val() !== null ) ? $("#savedEntityList").val().toString().split(',') : null;
@@ -301,9 +310,12 @@
                 }
             }
         },
+        setEntityBoxAction: function(el, elType) {
+           checkEntityboxAction(el, elType);
+        },
         frameGrow: function(height, updown) {
         var _height = height === "" ? 280 : Number(height) + 40;
-        var frame = parent.document.getElementById(window.name);
+        var frame = (parent ? parent.document.getElementById(window.name) : null);
         try {
             if (frame) {
                 var clientH = '';
@@ -318,22 +330,45 @@
         } catch(e) {
         }
     },
+        removeRecipientByTypeAndIndex: function(_type, index) {
+          try {
+            if (selectedRecipientsList[_type] && Array.isArray(selectedRecipientsList[_type]) && index < selectedRecipientsList[_type].length) {
+              selectedRecipientsList[_type].splice(index, 1);
+            }
+          } catch(e) {
+          }
+        },
+        removeRecipientFromRolesByIndex: function(i) {
+          try {
+             selectedRecipientsList.roles.splice(i, 1);
+          } catch(e) {
+          }
+        },
+        removeRecipientFromGroupsByIndex: function(i) {
+          try {
+             selectedRecipientsList.groups.splice(i, 1);
+          } catch(e) {
+          }
+        },
         disableTab: function(tabName, tabErrorElement){
             var err = $('#'+ tabErrorElement ).text() === "" ? $('#'+ tabErrorElement ).val() : $('#'+ tabErrorElement ).text();
             $('#' + tabName + ' a')
-                    .css($.fn.SMS.settings.css.tabDisabled)
+         //           .css($.fn.SMS.settings.css.tabDisabled)
                     .attr('title', err);
-            $('#' + tabName + ' a')
+  /*          $('#' + tabName + ' a')
 			 		.unbind('click')
                     .bind('click', function(){
                 return false;
-            });
+            });*/
         },
         disableContinue: function(){
             //Disable the continue button and force user to calculate before saving any new changes
             $("#recipientsCmd")
                     .attr("disabled", "disabled")
                     .removeClass("active");
+        },
+        displaySelectedNumbersInDOM: function() {
+          showSelectedNumbersInDOM();
         },
         isRecipientsLinkClicked: false
     };
@@ -566,9 +601,8 @@
 
     function renderPeople() {
         //Bind checkbox event listeners
-
         //for the Roles Tab
-        $('#peopleListRoles > div[rel=Roles] input').bind('click', function() {
+        $('#peopleListRoles input[type=checkbox]').on('click', function() {
             $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {
@@ -597,9 +631,8 @@
             }
 
         });
-
         //for the Groups Tab
-        $('#peopleListGroups > div[rel=Groups] input').bind('click', function() {
+        $('#peopleListGroups input[type=checkbox]').on('click', function() {
             $.fn.SMS.get.selectionsHaveChanged = true;
             //Fn for the check event
             if (this.checked) {
@@ -630,7 +663,7 @@
         });
 
         //Clear selectedRecipientsList
-        $(document).bind('selections.clear', function() {
+        $(document).on('selections.clear', function() {
             if (selectedRecipientsList.roles.length > 0) {
                 selectedRecipientsList.roles = [];
             }
@@ -660,7 +693,7 @@
 
         //Events for the Numbers textarea
 
-        $('#checkNumbers').bind('click', function() {
+        $('#checkNumbers').on('click', function() {
             var that = $('#peopleListNumbersBox'),
             that2 = $('#peopleListNumbersBox2'),
             strippedNumbers = [];
@@ -870,10 +903,10 @@
         }
         //send through a schedule date if dateToSend is included in @param domElements.
         if( includeSendDate ){
-            tempParams.push({name:"dateToSend", value:$("[id=smsDatesScheduleDate:1:true-date]").val()});
+            tempParams.push({name:"dateToSend", value:$("#booleanScheduleDate input").val()});
         }
         if ($("#booleanExpiry:checked").length !== 0) {
-            tempParams.push({name:"dateToExpire", value:$("[id=smsDatesExpiryDate:1:true-date]").val()});
+            tempParams.push({name:"dateToExpire", value:$("#booleanExpiryDate input").val()});
         }
         return $.param(tempParams);
     }
@@ -914,7 +947,7 @@
 
     function validateDates(){
         if ($("#booleanSchedule:checked").length !== 0 && $("#booleanExpiry:checked").length !== 0 ){
-            return parseIsoToTimestamp($("[id=smsDatesScheduleDate:1:true-date]").val()) <= parseIsoToTimestamp($("[id=smsDatesExpiryDate:1:true-date]").val());
+            return parseIsoToTimestamp($("#booleanScheduleDate input").val()) <= parseIsoToTimestamp($("#booleanExpiryDate input").val());
         }
         return true;
     }
