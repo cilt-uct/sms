@@ -145,7 +145,7 @@ public class MainProducer implements ViewComponentProducer, DefaultView {
 		}else{
 			if ( hasCredits ){
 				//Top links
-				userNavBarRenderer.makeNavBar(tofill, "navIntraTool:", VIEW_ID, currentUserId, currentSiteId);
+				userNavBarRenderer.makeNavBar(tofill, "actions:", VIEW_ID, currentUserId, currentSiteId);
 				if ( hasSendPermission ){
 					UIOutput.make(tofill, "send");
 					UIInternalLink.make(tofill, "send-link", UIMessage.make("ui.create.sms.header"), new SmsParams(SendSMSProducer.VIEW_ID, null, StatusUtils.statusType_NEW));

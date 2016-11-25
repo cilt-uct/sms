@@ -25,6 +25,7 @@ import java.util.List;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.model.SmsAccount;
+import org.sakaiproject.sms.tool.producers.MainProducer;
 import org.sakaiproject.sms.tool.producers.CreditTransferProducer;
 import org.sakaiproject.sms.tool.producers.SmsPermissions;
 
@@ -59,17 +60,23 @@ public class UserNavBarRenderer {
 	public void makeNavBar(UIContainer tofill, String divID,
 			String currentViewID, String currentUserId, String currentSiteId) {
 		if ( (currentSiteId != null && currentUserId !=null ) && externalLogic.isUserAllowedSiteUpdate(currentUserId, currentSiteId )){
-		UIJointContainer joint = new UIJointContainer(tofill, divID,
-				"sms-navigation:");
+			UIJointContainer joint = new UIJointContainer(tofill, divID,
+					"sms-navigation:");
 		
-		List<SmsAccount> accounts = smsAccountLogic.getSmsAccountsForOwner(currentUserId);
-		if ( (accounts != null && accounts.size() > 1) || externalLogic.isUserAdmin(currentUserId)){
-		renderBranch(joint, "1", currentViewID, CreditTransferProducer.VIEW_ID,
-				"sms.navbar.transfer", true);
-		}		
+			List<SmsAccount> accounts = smsAccountLogic.getSmsAccountsForOwner(currentUserId);
+
+
+			if ( (accounts != null && accounts.size() > 1) || externalLogic.isUserAdmin(currentUserId)){
+	
+				renderBranch(joint, "1", currentViewID, MainProducer.VIEW_ID,
+						"sms.navbar.messages", true);
+
+				renderBranch(joint, "2", currentViewID, CreditTransferProducer.VIEW_ID,
+						"sms.navbar.transfer", true);
 		
-		renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
-				"sms.navbar.permissions", false);
+				renderBranch(joint, "3", currentViewID, SmsPermissions.VIEW_ID,
+						"sms.navbar.permissions", false);
+			}
 		}
 	}
 	

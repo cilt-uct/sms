@@ -123,6 +123,7 @@
                         return false;
                     },
                     error: function(xhr) {
+                        console.log(xhr);
                         smsUtils.error.server(xhr, $(_this), "errorFacebox");
                         $("#recipientsCmd")
                                 .attr("disabled", "disabled")

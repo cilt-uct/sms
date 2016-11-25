@@ -14,9 +14,8 @@
 </head>
 <body>
 <div class="portletBody">
-  <div rsf:id="navIntraTool:" class="navIntraTool"/>
-  <h3 rsf:id="send" class="insColor clear addItem insBak insBorder"><a rsf:id="send-link" href="create-sms.html">Create SMS
-  </a></h3>
+  <ul rsf:id="actions:" class="navIntraTool"/>
+  <h3 rsf:id="send" class="insColor clear addItem insBak insBorder"><a rsf:id="send-link" href="create-sms.html"></a></h3>
   <div rsf:id="message-for:*" class="alertMessage">
     <ul style="margin:0px;">
       <li>Message for user here</li>
@@ -41,8 +40,8 @@
 	</div>
   </div>
   <h3 rsf:id="tasks-title" >Your sms messages</h3>
-  <table rsf:id="tasks-table" class="listHier lines" id="reportTable">
-    <thead>
+  <table rsf:id="tasks-table" class="table table-hover table-striped table-bordered" id="reportTable">
+    <tbody>
       <tr>
         <th width="38%"><span rsf:id="tasks-message">SMS</span></th>
         <th width="5%"><span rsf:id="tasks-status">Status</span></th>
@@ -50,8 +49,6 @@
         <th width="23%"><span rsf:id="tasks-time">Date/Time</span></th>
         <th width="12%"><span rsf:id="tasks-recipients">Recipients</span></th>
       </tr>
-    </thead>
-    <tbody>
       <tr rsf:id="task-row:">
         <td rel="title"><a rsf:id="task-message" href="#">Which alters when it alteration finds, it is the star to every wand'ring bark, oh, no, it is an ever fixed mark....</a></td>
         <td rel="status"><img rsf:id="task-status" src="../images/calx.gif" alt="" /></td>
