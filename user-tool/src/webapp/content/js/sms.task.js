@@ -4,7 +4,7 @@
  **/
 $(document).ready(function() {
     $("input[rel=task]").task();
-    $("input[rel=back]").bind('click', function() {
+    $("input[rel=back]").on('click', function() {
         history.go(-1);
         return false;
     });
@@ -16,7 +16,7 @@ $(document).ready(function() {
         $.extend({}, $.fn.task.defaults, options);
 
         return this.each(function() {
-            $(this).bind('click', function() {
+            $(this).on('click', function() {
                 init(this);
             });
         });

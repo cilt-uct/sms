@@ -9,7 +9,7 @@ SmsPopup.prototype = {
         //Create sms popup elements, append as necessary
         var popup = this.generateElement('div', {id: 'smsPopup'});
         var heading = this.generateElement('h4', {text: 'Choose Recipients'});
-        var closeButton = this.generateElement('div', {class: 'closeButton'});
+        var closeButton = this.generateElement('div', {class: 'closeButton', title: 'Close Popup'});
         var popupContent = this.generateElement('div', {id: 'smsContent'});
       
         popup.appendChild(heading);

@@ -9,11 +9,12 @@
 <link href="/library/skin/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all"/>
 <link href="/library/skin/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet"
           media="all"/>
-<link rel="stylesheet" href="../css/sms.css" type="text/css"/>
+<link rel="stylesheet" href="/sms-user-tool/content/css/sms.css" type="text/css"/>
+		<script type="text/javascript">includeLatestJQuery('user-sms');</script>
     <script type="text/javascript" language="JavaScript"
-                        src="../js/sms.utils.js"></script>
+                        src="/sms-user-tool/content/js/sms.utils.js"></script>
 <script type="text/javascript" language="JavaScript"
-                src="../js/sms.task.js"></script>
+                src="/sms-user-tool/content/js/sms.task.js"></script>
 <title rsf:id="page-title">Sent SMS Detail</title>
 </head>
 <body>
@@ -137,7 +138,7 @@
     <input rsf:id="abortCode" type="hidden" value="" name="abortCode"/>
     <input rsf:id="edit" type="submit" value="Edit and resend" class="active"/>                      
     <input rsf:id="delete" id="smsDelete" type="button" value="Delete SMS" rel="task"/>
-    <input rsf:id="back" type="button" value="Back" rel="back"/>
+    <input rsf:id="back" type="button" value="Back" rel="back" onclick="history.go(-1);"/>
   </div>
   </form>
   </div>

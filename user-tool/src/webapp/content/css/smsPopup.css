@@ -10,13 +10,14 @@
       top: 15%;
       left: 50%;
       width: 600px;
-      min-height: 480px;
-      padding: 0.5rem;
       background: white;
       z-index: 2;
       margin-left: -300px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2),
-                  inset 0 0 1px black;
+      -webkit-box-shadow: 8px 8px 10px rgba(0,0,0,0.2);
+      -moz-box-shadow: 8px 8px 10px rgba(0,0,0,0.2);
+      -ms-box-shadow: 8px 8px 10px rgba(0,0,0,0.2);
+      -o-box-shadow: 8px 8px 10px rgba(0,0,0,0.2);
+      box-shadow: 8px 8px 10px rgba(0,0,0,0.2);
       visibility: hidden;
       opacity: 0;
       -webkit-transition: visibility 0s 0.35s, opacity 0.35s;
@@ -24,7 +25,7 @@
       -ms-transition: visibility 0s 0.35s, opacity 0.35s;
       -o-transition: visibility 0s 0.35s, opacity 0.35s;
       transition: visibility 0s 0.35s, opacity 0.35s;
-      
+      border-color: #414649;
     }
     #smsPopup.active {
       visibility: visible;
@@ -44,20 +45,25 @@
       height: 100%;
     }
     #smsPopup h4 {
-      background: #e9e9e9;
-      border: 1px solid #999;
+      background: #414649;
       margin: 0;
       padding: 0 0.5rem;
+      font-weight: 600;
+      color: white;
       line-height: 3.5rem;
-      font-weight: normal;
-      border-radius: 0.25rem;
-    }
+      -webkit-border-top-left-radius: 0.4rem;
+      -webkit-border-top-right-radius: 0.4rem;
+      -moz-border-radius-topleft: 0.4rem;
+      -moz-border-radius-topright: 0.4rem;
+      border-top-left-radius: 0.4rem;
+      border-top-right-radius: 0.4rem;
+}
     #smsPopup .closeButton {
       position: absolute;
       width: 2.5rem; 
       height: 2.5rem;
-      right: 1rem;
-      top: 1rem;
+      right: 0.5rem;
+      top: 0.5rem;
       margin-top: 1px;
       background: transparent;
       cursor: pointer;
@@ -67,7 +73,7 @@
     #smsPopup .closeButton:after {
       width: 2px;
       height: 2rem;
-      background: #aaa;
+      background: white;
       content: '';
       transform: rotate(45deg);
       position: absolute;
@@ -84,7 +90,7 @@
     }
     #smsPopup .closeButton:hover:before,
     #smsPopup .closeButton:hover:after {
-      background: #fe0001;
+      background: #414649;
     }
     
     .transitionVisibility {
@@ -141,6 +147,16 @@
       transform: translate(-50%, -50%);
       border: 10px solid #2a94c0;
       border-radius: 50%;
+    }
+    #smsContent {
+      border: 2px solid #414649;
+      padding: 0.5rem;
+      -webkit-border-bottom-left-radius: 0.4rem;
+      -webkit-border-bottom-right-radius: 0.4rem;
+      -moz-border-radius-bottomleft: 0.4rem;
+      -moz-border-radius-bottomright: 0.4rem;
+      border-bottom-left-radius: 0.4rem;
+      border-bottom-right-radius: 0.4rem;
     }
 #peopleList > ul {
   list-style: none;
