@@ -62,7 +62,8 @@ public class SmsPermissions implements ViewComponentProducer,ViewParamsReporter,
 	}
 
 	public void fillComponents(UIContainer tofill, ViewParameters viewparams, ComponentChecker checker) {	
-	  externalLogic.setUpSessionPermissions(perm_Prefix); 
+	  externalLogic.setUpSessionPermissions(perm_Prefix);
+ 
 	  UIOutput.make(tofill, HelperViewParameters.HELPER_ID, HELPER);
 	  UICommand.make(tofill, HelperViewParameters.POST_HELPER_BINDING, "", null);
 	}
