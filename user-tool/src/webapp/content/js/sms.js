@@ -175,7 +175,6 @@
             }
         }   ,
         setSubmitTaskButton: function() {
-            //log($("#messageBody").val().length);
             if ($.fn.SMS.get.preserveNewDomSelections) {
                 $.fn.SMS.set.restoreSelections();
             }

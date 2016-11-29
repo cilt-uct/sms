@@ -255,3 +255,9 @@ textarea {
     overflow:auto;
 }
 
+
+.smsInstruction {
+  display: block;
+  color: #555;
+  line-height:2.5rem;
+}

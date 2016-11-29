@@ -68,13 +68,10 @@ public class UserNavBarRenderer {
 
 			if ( (accounts != null && accounts.size() > 1) || externalLogic.isUserAdmin(currentUserId)){
 	
-				renderBranch(joint, "1", currentViewID, MainProducer.VIEW_ID,
-						"sms.navbar.messages", true);
-
-				renderBranch(joint, "2", currentViewID, CreditTransferProducer.VIEW_ID,
+				renderBranch(joint, "1", currentViewID, CreditTransferProducer.VIEW_ID,
 						"sms.navbar.transfer", true);
 		
-				renderBranch(joint, "3", currentViewID, SmsPermissions.VIEW_ID,
+				renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
 						"sms.navbar.permissions", false);
 			}
 		}

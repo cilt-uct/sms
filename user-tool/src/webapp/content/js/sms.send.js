@@ -10,9 +10,9 @@ $(document).ready(function() {
     var smsPopup = new SmsPopup();
     document.body.appendChild(smsPopup.createPopup());
     
-    $("input[rel=back]").bind('click', function() {
-        history.go(-1);
-        return false;
+    $("input[rel=back]").on('click', function(e) {
+        e.preventDefault();
+        window.location = "../";
     });
 
     //Counter for the SMS Textarea
@@ -68,8 +68,8 @@ $(document).ready(function() {
 
             $('#smsBoxCounter').text(lengthLeft);
 
-            //is message is too long?
-            smsUtils.error.isMessageLengthValid = lengthLeft >= 0;
+            //is message is too long or empty?
+            smsUtils.error.isMessageLengthValid = lengthLeft >= 0 && lengthLeft < 160;
 
             $.fn.SMS.set.setSubmitTaskButton();
         });

@@ -73,7 +73,7 @@
     <input rsf:id="abortMessage" type="hidden" value="" name="abortMessage"/>
     <input rsf:id="edit" type="submit" value="Edit" class="active" />
     <input rsf:id="delete" type="button" value="Delete" rel="task"/>
-    <input rsf:id="back" type="button" value="Back" rel="back" onclick="history.go(-1);"/>
+    <input rsf:id="back" type="button" value="Back" rel="back" onclick="window.location = '../';"/>
   </div>
   </form>
   </div>
@@ -87,15 +87,13 @@
   </h2>
   <div rsf:id="sms-sent">Sending completed: 10/12/2009 11.15pm</div>
   <h3 rsf:id="recipients">Recipients: 54 of 67</h3>
-  <table width="274" class="listHier lines" id="smsTable">
-    <thead>
+  <table class="table table-hover table-striped table-bordered" id="smsTable">
+    <tbody>
       <tr>
         <th width="40%"><span rsf:id="recipient-header">Recipient Name</span></th>
         <th width="40%"><span rsf:id="username-header">Username</span></th>
         <th width="20%"><span rsf:id="status-header">Status</span></th>
       </tr>
-    </thead>
-    <tbody>
       <tr rsf:id="sms-row:">
         <td rsf:id="sms-recipient" rel="Recipient">Bloggs Joe</td>
         <td rsf:id="sms-recipient-username" rel="Recipient Username">----</td>

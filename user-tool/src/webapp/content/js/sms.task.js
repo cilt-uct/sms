@@ -4,9 +4,9 @@
  **/
 $(document).ready(function() {
     $("input[rel=task]").task();
-    $("input[rel=back]").on('click', function() {
-        history.go(-1);
-        return false;
+    $("input[rel=back]").on('click', function(e) {
+        e.peventDefault();
+        window.location = "../";
     });
 });
 
