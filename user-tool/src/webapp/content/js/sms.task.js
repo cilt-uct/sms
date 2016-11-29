@@ -5,7 +5,7 @@
 $(document).ready(function() {
     $("input[rel=task]").task();
     $("input[rel=back]").on('click', function(e) {
-        e.peventDefault();
+        e.preventDefault();
         window.location = "../";
     });
 });

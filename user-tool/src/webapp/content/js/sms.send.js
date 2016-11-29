@@ -120,7 +120,7 @@ $(document).ready(function() {
             $("#booleanScheduleDate").hide();
             $("#booleanExpiryDate").hide();
             //bind change date events
-            $("#editScheduleChange").bind('click', function(){
+            $("#editScheduleChange").on('click', function(){
                 $("#editSchedule").hide();
                 $("#newSchedule").show();
                 $("#booleanSchedule").triggerHandler('click');
@@ -142,7 +142,7 @@ $(document).ready(function() {
 
     // setup the Date listners
         $.each(["booleanSchedule", "booleanExpiry"], function(i, item) {
-            $("#" + item).bind('click', function() {
+            $("#" + item).on('click', function() {
                 if (this.checked) {
                     $("#" + item + "Date").slideDown('normal');
                     $.fn.SMS.set.frameGrow(70, 'grow');
