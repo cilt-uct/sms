@@ -169,7 +169,7 @@ var smsTransfer = function($){
 
                 $("#account-select").change(function(){
                     var thisAccountId = this.options[this.selectedIndex].value;
-                    $("tr[id=\"acc:\"]:hidden").fadeIn(0);
+                    $("tr[id^=\"acc:\"]:hidden").fadeIn(0);
                     $("#alert").hide();
                     $("#account-balance-parent").removeAttr("class");
                     if(thisAccountId !== "null"){
