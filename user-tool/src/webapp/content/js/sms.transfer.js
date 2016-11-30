@@ -150,35 +150,35 @@ var smsTransfer = function($){
                     rowTemp.find("input[name=acc-id]").val(a.id);
                     rowTemp.find("td[name=acc-credits]").text(a.credits);
                     rowTemp.find("td[name=acc-credits]").attr("id", "acc-credits-for:" + a.id);
-                    rowTemp.find("td input[id*=\"acc-transfer-amount-for:\"]").attr("id", "acc-transfer-amount-for:" + a.id);
+                    rowTemp.find("td input[id^=\"acc-transfer-amount-for:\"]").attr("id", "acc-transfer-amount-for:" + a.id);
                     //add to dom
                     table.find("tbody").append(rowTemp);
                 }
 
-                $("input[id*=\"acc-transfer-amount-for:\"]").val('');
+                $("input[id=\"acc-transfer-amount-for:\"]").val('');
 
                 if(accounts.length === 1){
                     $("#loading").hide();
                     $("#accounts-body").show();
                     $("div.act").hide();
                     $("#account-from").hide();
-                    $("input[id*=\"acc-transfer-amount-for:\"]").attr("disabled", "disabled");
+                    $("input[id=\"acc-transfer-amount-for:\"]").attr("disabled", "disabled");
                     error(messageLocator("ui.transfer.js.serverOneAccount"));
                     return false;    //exit
                 }
 
                 $("#account-select").change(function(){
                     var thisAccountId = this.options[this.selectedIndex].value;
-                    $("tr[id*=acc:]:hidden").fadeIn(0);
+                    $("tr[id=\"acc:\:]:hidden").fadeIn(0);
                     $("#alert").hide();
                     $("#account-balance-parent").removeAttr("class");
                     if(thisAccountId !== "null"){
                         selectedFromAccount = thisAccountId;
                         selectedFromAccountBalance  = this.options[this.selectedIndex].getAttribute("name");
                         if(selectedFromAccountBalance > 0){
-                            $("input[id*=\"acc-transfer-amount-for:\"]").removeAttr("disabled");
-                            $("tr[id=acc:"+thisAccountId+"]").fadeOut(0);
-                            $("tr[id=acc:"+thisAccountId+"] input[type=text]").val("");
+                            $("input[id=\"acc-transfer-amount-for:\"]").removeAttr("disabled");
+                            $("tr[id=\"acc:"+thisAccountId+"\"]").fadeOut(0);
+                            $("tr[id=\"acc:"+thisAccountId+"\"] input[type=text]").val("");
                             $("#account-balance").text(selectedFromAccountBalance);
                             $("#account-balance-parent").fadeIn("fast");
                         }else{
@@ -194,7 +194,7 @@ var smsTransfer = function($){
 
                 //Bind event for live validation of transfer amount.
                 //check input boxes for non-numbers
-                $("td input[id*=\"acc-transfer-amount-for:\"]").bind("keyup", function(){
+                $("td input[id=\"acc-transfer-amount-for:\"]").bind("keyup", function(){
                     selectedFromAccountBalance = $("#account-select option:selected").attr("name");
                     if(selectedFromAccountBalance === "choose"){
                         warn(messageLocator("ui.transfer.js.chooseFromAccount"));
@@ -290,9 +290,9 @@ var smsTransfer = function($){
                                 status = accountREF.status;
                                 if( status === 200 || status === 201 || status === 204 ){
                                     //update this to account
-                                    var creditsCell = $("td[id=acc-credits-for:"+ selectedToAccounts[a][0] +"]"),
+                                    var creditsCell = $("td[id=\"acc-credits-for:"+ selectedToAccounts[a][0] +"\"]"),
                                         newCredits = creditsCell.text() *1 + selectedToAccounts[a][1]*1;
-                                    $("input[id=\"acc-transfer-amount-for:\""+ selectedToAccounts[a][0] +"]").val('');
+                                    $("input[id=\"acc-transfer-amount-for:"+ selectedToAccounts[a][0] +"\"]").val('');
                                     creditsCell.text(newCredits);
                                     $("#account-select option[value="+selectedToAccounts[a][0]+"]").attr("name", newCredits);
                                     //log("saved account: " + selectedToAccounts[a]);
@@ -306,7 +306,7 @@ var smsTransfer = function($){
                         }
                     });
                     //update selected account balance
-                    var selectedCell = $("td[id=acc-credits-for:"+ selectedFromAccount[0] +"]"),
+                    var selectedCell = $("td[id=\"acc-credits-for:"+ selectedFromAccount[0] +"\"]"),
                         newSelectedCredits = selectedCell.text() *1 - (creditsTotalToTransfer *1 - failedTransfers *1);
                     $.getJSON(
                             "/direct/sms-account/"+selectedFromAccount[0]+".json?_id=" + new Date().getTime(),
@@ -328,7 +328,7 @@ var smsTransfer = function($){
                         //highlight rows affected
                         var errorSites = [];
                         for(var e in errors){
-                            _highlight($("tr[id=acc:"+errors[e]+"]"));
+                            _highlight($("tr[id=\"acc:"+errors[e]+"\"]"));
                             for(var a in accounts){
                                 if(errors[e]*1 === accounts[a].id*1){
                                     errorSites.push(accounts[a].siteName);
@@ -345,7 +345,7 @@ var smsTransfer = function($){
                             msg = "",
                             tempMsg = "";
                         for(var e in errors){
-                            _highlight($("tr[id=acc:"+errors[e]+"]"));
+                            _highlight($("tr[id=\"acc:"+errors[e]+"\"]"));
                             for(var a in accounts){
                                 if(errors[e]*1 === accounts[a].id*1){
                                     errorSites.push(accounts[a].siteName);
@@ -410,7 +410,7 @@ var smsTransfer = function($){
 
             _getTotalUserEntered = function(){
                 var total = 0;
-                $("input[id*=\"acc-transfer-amount-for:\"]").each(function(i, t){
+                $("input[id=\"acc-transfer-amount-for:\"]").each(function(i, t){
                     total = total*1 + this.value*1;
                 });
                 return total;
