@@ -155,14 +155,14 @@ var smsTransfer = function($){
                     table.find("tbody").append(rowTemp);
                 }
 
-                $("input[id=\"acc-transfer-amount-for:\"]").val('');
+                $("input[id^=\"acc-transfer-amount-for:\"]").val('');
 
                 if(accounts.length === 1){
                     $("#loading").hide();
                     $("#accounts-body").show();
                     $("div.act").hide();
                     $("#account-from").hide();
-                    $("input[id=\"acc-transfer-amount-for:\"]").attr("disabled", "disabled");
+                    $("input[id^=\"acc-transfer-amount-for:\"]").attr("disabled", "disabled");
                     error(messageLocator("ui.transfer.js.serverOneAccount"));
                     return false;    //exit
                 }
@@ -176,7 +176,7 @@ var smsTransfer = function($){
                         selectedFromAccount = thisAccountId;
                         selectedFromAccountBalance  = this.options[this.selectedIndex].getAttribute("name");
                         if(selectedFromAccountBalance > 0){
-                            $("input[id=\"acc-transfer-amount-for:\"]").removeAttr("disabled");
+                            $("input[id^=\"acc-transfer-amount-for:\"]").removeAttr("disabled");
                             $("tr[id=\"acc:"+thisAccountId+"\"]").fadeOut(0);
                             $("tr[id=\"acc:"+thisAccountId+"\"] input[type=text]").val("");
                             $("#account-balance").text(selectedFromAccountBalance);
@@ -194,7 +194,7 @@ var smsTransfer = function($){
 
                 //Bind event for live validation of transfer amount.
                 //check input boxes for non-numbers
-                $("td input[id=\"acc-transfer-amount-for:\"]").bind("keyup", function(){
+                $("td input[id^=\"acc-transfer-amount-for:\"]").bind("keyup", function(){
                     selectedFromAccountBalance = $("#account-select option:selected").attr("name");
                     if(selectedFromAccountBalance === "choose"){
                         warn(messageLocator("ui.transfer.js.chooseFromAccount"));
@@ -410,7 +410,7 @@ var smsTransfer = function($){
 
             _getTotalUserEntered = function(){
                 var total = 0;
-                $("input[id=\"acc-transfer-amount-for:\"]").each(function(i, t){
+                $("input[id^=\"acc-transfer-amount-for:\"]").each(function(i, t){
                     total = total*1 + this.value*1;
                 });
                 return total;
