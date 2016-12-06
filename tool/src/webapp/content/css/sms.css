@@ -3,3 +3,12 @@
   color:#3333FF; 
   text-decoration: underline;
 }
+
+.navIntraTool a.inactive {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navIntraTool li span a {
+	border-bottom: 1px solid #e0e0e0;
+}

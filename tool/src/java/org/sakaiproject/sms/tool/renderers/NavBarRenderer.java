@@ -32,6 +32,7 @@ import uk.org.ponder.rsf.components.UIInternalLink;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
+import uk.org.ponder.rsf.components.decorators.UIStyleDecorator;
 import uk.org.ponder.rsf.viewstate.SimpleViewParameters;
 
 public class NavBarRenderer {
@@ -76,14 +77,11 @@ public class NavBarRenderer {
 			String currentViewID, String linkViewID, String message,
 			boolean renderSeperator) {
 
-		UIBranchContainer cell = UIBranchContainer.make(joint,
-				"navigation-cell:", id);
+		UIBranchContainer cell = UIBranchContainer.make(joint, "navigation-cell:", id);		
+		UIInternalLink link = UIInternalLink.make(cell, "item-link", UIMessage.make(message), new SimpleViewParameters(linkViewID));
 
-		if (currentViewID.equals(linkViewID)) {
-			UIMessage.make(cell, "item-text", message);
-		} else {
-			UIInternalLink.make(cell, "item-link", UIMessage.make(message),
-					new SimpleViewParameters(linkViewID));
+		if (currentViewID != null && currentViewID.equals(linkViewID)) {
+			link.decorate( new UIStyleDecorator("inactive"));
 		}
 
 		if (renderSeperator) {
