@@ -12,3 +12,8 @@
 .navIntraTool li span a {
 	border-bottom: 1px solid #e0e0e0;
 }
+
+.newAccount {
+	background:transparent url(/library/image/silk/add.png) no-repeat scroll left center;
+	padding-left:1.5em;
+}

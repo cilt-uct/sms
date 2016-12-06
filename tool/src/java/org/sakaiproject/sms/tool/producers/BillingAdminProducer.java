@@ -56,7 +56,8 @@ public class BillingAdminProducer implements ViewComponentProducer {
 
 		// TODO: Make it link to add new account screen. Perhaps a specific
 		// permission must be checked?
-		UIInternalLink.make(tofill, "new-account", new SimpleViewParameters(
+		UIOutput.make(tofill, "account");
+		UIInternalLink.make(tofill, "new-account", UIMessage.make("sms.billing-admin.new-account"), new SimpleViewParameters(
 				AccountProducer.VIEW_ID));
 
 		UIMessage.make(tofill, "accounts-heading",
