@@ -65,15 +65,16 @@ public class UserNavBarRenderer {
 		
 			List<SmsAccount> accounts = smsAccountLogic.getSmsAccountsForOwner(currentUserId);
 
-
+			// Show Accounts menu for account owners
 			if ( (accounts != null && accounts.size() > 1) || externalLogic.isUserAdmin(currentUserId)){
 	
 				renderBranch(joint, "1", currentViewID, CreditTransferProducer.VIEW_ID,
 						"sms.navbar.transfer", true);
-		
-				renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
-						"sms.navbar.permissions", false);
 			}
+
+			// Show Permissions menu for all site owners
+			renderBranch(joint, "2", currentViewID, SmsPermissions.VIEW_ID,
+						"sms.navbar.permissions", false);
 		}
 	}
 	
