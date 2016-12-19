@@ -12,12 +12,33 @@
 <body>
 <!-- everything outside this div is thrown away -->
 <div rsf:id="search-component:">
-<script type="text/javascript">
-		function initClearDateInput(dateInputId) {
-			var dateInput = document.getElementById(dateInputId);
-			dateInput.value = '';
-		}
-</script>
+	<script type="text/javascript">
+			function initClearDateInput(dateInputId) {
+				var dateInput = document.getElementById(dateInputId);
+				dateInput.value = '';
+			}
+	</script>
+		
+	<script type="text/javascript">
+
+		$( document ).ready(function() {
+			localDatePicker({
+				input:'#searchDateFrom',
+				useTime:1,
+				parseFormat: 'YYYY-MM-DD HH:mm:ss',
+				getval: '#searchCriteria\\:\\:dateFrom-iso8601',
+				ashidden: { iso8601: 'dateFrom-iso8601' }
+			});
+			localDatePicker({
+				input:'#searchDateTo',
+				useTime:1,
+				parseFormat: 'YYYY-MM-DD HH:mm:ss',
+				getval: '#searchCriteria\\:\\:dateTo-iso8601',
+				ashidden: { iso8601: 'dateTo-iso8601' }
+			});
+		});
+		
+	</script>  
 <fieldset><legend>Search / Filter</legend>
 <form action="#" method="get" rsf:id="search-criteria">
 <table class="shorttext" border="0">
@@ -36,17 +57,17 @@
 		</td>
 		<td>Date From:</td>
 		<td>
-			<span rsf:id="date-from:"> <input type="text"
-			id="start_date_dummy" name="start_date_dummy" value="YYYY/MM/DD"
-			size="12" maxlength="10" /> <img src="../images/calendar.gif"
-			alt="calendar" /> </span>
+			<input rsf:id="dateFrom-iso8601" type="hidden"
+				id="dateFrom" name="dateFrom" value="YYYY/MM/DD"
+				size="25" maxlength="25" /> 
+			<input type="text" id="searchDateFrom" name="searchDateFrom"/>		
 		</td>
 		<td>Date To:</td>
 		<td>
-			<span rsf:id="date-to:"> <input type="text"
-			id="start_date_dummy" name="start_date_dummy" value="YYYY/MM/DD"
-			size="12" maxlength="10" /> <img src="../images/calendar.gif"
-			alt="calendar" /> </span>
+			<input rsf:id="dateTo-iso8601" type="hidden"
+				id="dateTo" name="dateTo" value="YYYY/MM/DD"
+				size="25" maxlength="25" /> 
+			<input type="text" id="searchDateTo" name="searchDateTo"/>	
 		</td>
 
 		<td rsf:id="task-id-label">Task ID:</td>

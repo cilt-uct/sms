@@ -90,13 +90,24 @@ public class SearchCriteriaRenderer {
 		if (labelDropDown.indexOf("Message") != -1)
 			createMessageDropDown(searchForm);
 
-		UIInput dateFrom = UIInput.make(searchForm, "date-from:",
-				searchBeanName + "." + "dateFrom");
-		dateEvolver.evolveDateInput(dateFrom);
 
-		UIInput dateTo = UIInput.make(searchForm, "date-to:", searchBeanName
-				+ "." + "dateTo");
-		dateEvolver.evolveDateInput(dateTo);
+		String dateFromStr = null;
+		if ((ELEvaluator.getBean(searchBeanName) != null) && ELEvaluator.getBean(searchBeanName + ".dateFromStr") != null) {
+			dateFromStr = (String) ELEvaluator.getBean(searchBeanName + ".dateFromStr");
+		}
+		UIInput dateFrom = UIInput.make(searchForm, "dateFrom-iso8601", null, dateFromStr);
+		
+//		UIInput dateFrom = UIInput.make(searchForm, "date-from:", searchBeanName + "." + "dateFrom");
+//		dateEvolver.evolveDateInput(dateFrom);
+
+		String dateToStr = null;
+		if ((ELEvaluator.getBean(searchBeanName) != null) && ELEvaluator.getBean(searchBeanName + ".dateToStr") != null) {
+			dateToStr = (String) ELEvaluator.getBean(searchBeanName + ".dateToStr");
+		}
+		UIInput dateTo = UIInput.make(searchForm, "dateTo-iso8601", null, dateToStr);
+		
+//		UIInput dateTo = UIInput.make(searchForm, "date-to:", searchBeanName + "." + "dateTo");
+//		dateEvolver.evolveDateInput(dateTo);
 
 		// Task ID field on message log + Transaction
 		if (labelDropDown.indexOf("Message") != -1
@@ -131,7 +142,7 @@ public class SearchCriteriaRenderer {
 		command.addParameter(new UIDeletionBinding(
 				"#{destroyScope.searchScope}"));
 
-		clearDates(tofill);
+//		clearDates(tofill);
 
 	}
 

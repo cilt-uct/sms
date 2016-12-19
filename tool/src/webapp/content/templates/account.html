@@ -5,6 +5,11 @@
 	<title rsf:id="page-title">SMS Account</title>
 
 	<script rsf:id="scr=portal-matter" type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+	
+	<script type="text/javascript">includeLatestJQuery('user-sms');</script>
+	<link href="/library/webjars/jquery-ui/1.11.3/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="/library/js/lang-datepicker/lang-datepicker.js"></script>
+		
 	<link href="../css/tool_base.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
     <link href="../css/default/tool.css" rsf:id="scr=portal-matter" type="text/css" rel="stylesheet" media="all" />
     <link rel="stylesheet" href="/sms-tool/content/css/sms.css" type="text/css"/>
@@ -15,6 +20,20 @@
 			dateInput.value = '';
 		}
 	</script>
+	
+	<script type="text/javascript">
+
+		$( document ).ready(function() {
+			localDatePicker({
+				input:'#accountEndDate',
+				useTime:1,
+				parseFormat: 'YYYY-MM-DD HH:mm:ss',
+				getval: '#enddate-iso8601',
+				ashidden: { iso8601: 'enddate-iso8601' }
+			});
+		});
+		
+	</script>  
 </head>
 
 <body style="margin-left : 5px;">
@@ -71,10 +90,10 @@
 			<label rsf:id="end-date-label">
 				End Date
 			</label>
-			<span rsf:id="endDate:"> <input type="text"
-			id="start_date_dummy" name="start_date_dummy" value="YYYY/MM/DD"
-			size="12" maxlength="10" /> <img src="../images/calendar.gif"
-			alt="calendar" /> </span>
+			<input rsf:id="enddate-iso8601" type="hidden"
+				id="enddate" name="enddate" value="YYYY/MM/DD"
+				size="25" maxlength="25" /> 
+			<input type="text" id="accountEndDate" name="accountEndDate"/>	
 		</p>
 
 		<div class="act">

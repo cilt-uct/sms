@@ -41,6 +41,9 @@ public final class DateUtil {
 	private static final SimpleDateFormat SDF = new SimpleDateFormat(
 			DATE_TIME_FORMAT_STRING);
 
+	private static final String ISO8601_DATE_FORMAT_STRING = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final SimpleDateFormat ISO8601_DATE_FORMAT = new SimpleDateFormat(ISO8601_DATE_FORMAT_STRING);
+    
 	private DateUtil() {
 
 	}
@@ -173,5 +176,14 @@ public final class DateUtil {
 	public static Date getCurrentDate() {
 		return getUsableDate(new Date(System.currentTimeMillis()));
 	}
-
+	
+	/**
+	 * Returns ISO8601_DATE_FORMAT SimpleDateFormat
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static SimpleDateFormat getISO8601SimpleDateFormat() {
+        return ISO8601_DATE_FORMAT;
+    }
 }

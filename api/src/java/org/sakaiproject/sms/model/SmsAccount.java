@@ -20,11 +20,13 @@
  **********************************************************************************/
 package org.sakaiproject.sms.model;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.sakaiproject.sms.util.DateUtil;
 
 /**
  * Each Sakai site will have its own set of accounts for billing outgoing
@@ -78,6 +80,8 @@ public class SmsAccount extends BaseModel {
 	 * used, even if they contain funds.
 	 */
 	private Date enddate;
+	
+	private String enddateStr;
 
 	/**
 	 * Specifies if the sms account is enabled or disabled .If disabled no
@@ -198,6 +202,24 @@ public class SmsAccount extends BaseModel {
 
 	public void setEnddate(Date enddate) {
 		this.enddate = enddate;
+	}	
+
+	public void setEnddateStr(String value) {
+		try {
+			Date parsedDate = DateUtil.getISO8601SimpleDateFormat().parse(value);
+			if (parsedDate != null) {
+				enddate = parsedDate;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getEnddateStr() {
+		if(enddate != null){
+			return DateUtil.getISO8601SimpleDateFormat().format(enddate);
+		}
+		return null;
 	}
 
 	/**

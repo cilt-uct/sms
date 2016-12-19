@@ -37,7 +37,6 @@ import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIELBinding;
 import uk.org.ponder.rsf.components.UIForm;
-import uk.org.ponder.rsf.components.UIInitBlock;
 import uk.org.ponder.rsf.components.UIInput;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UISelect;
@@ -136,8 +135,6 @@ public class AccountProducer implements ViewComponentProducer,
 		UIMessage.make(form, "sakai-owner-id-label",
 		"sms.sms-account.sakai-owner-id");
 		UIInput.make(form, "sakai-owner-id", accountOTP + ".ownerId");
-		
-
 
 		UIMessage.make(form, "overdraft-limit-label",
 		"sms.sms-account.overdraft-limit");
@@ -148,19 +145,15 @@ public class AccountProducer implements ViewComponentProducer,
 
 		UIMessage.make(form, "end-date-label", "sms.sms-account.end-date");
 
-		UIInput endDate = UIInput.make(form, "endDate:", accountOTP
-				+ ".enddate");
-
-		dateEvolver.evolveDateInput(endDate);
-
-		// to clear date input field
-		if ((ELEvaluator.getBean(accountOTP) == null)
-				|| ELEvaluator.getBean(accountOTP + ".enddate") == null) {
-			UIInitBlock.make(tofill, "init-clear-date-input",
-					"initClearDateInput",
-					new Object[] { "endDate:1:date-field" });
+		String endDateStr = null;
+		if ((ELEvaluator.getBean(accountOTP) != null) && ELEvaluator.getBean(accountOTP + ".enddateStr") != null) {
+			endDateStr = (String) ELEvaluator.getBean(accountOTP + ".enddateStr");
 		}
-
+		UIInput enddate = UIInput.make(form, "enddate-iso8601", accountOTP	+ ".enddateStr", endDateStr);
+		// to clear date input field
+//		if ((ELEvaluator.getBean(accountOTP) == null) || ELEvaluator.getBean(accountOTP + ".enddate") == null) {
+//			UIInitBlock.make(tofill, "init-clear-date-input", "initClearDateInput", new Object[] { "endDate:1:date-field" });
+//		}
 		UICommand cmd = UICommand.make(form, "save-btn",
 				SmsAccountLocator.LOCATOR_NAME + ".saveAll");
 

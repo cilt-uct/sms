@@ -21,6 +21,7 @@
 
 package org.sakaiproject.sms.bean;
 
+import java.text.ParseException;
 import java.util.Date;
 
 import org.sakaiproject.sms.model.constants.SmsConstants;
@@ -44,9 +45,11 @@ public class SearchFilterBean {
 
 	/** The date from. */
 	private Date dateFrom;
+	private String dateFromStr;
 
 	/** The date to. */
 	private Date dateTo;
+	private String dateToStr;
 
 	/** The Task ID (on Messages Log) */
 	private String taskId;
@@ -203,6 +206,13 @@ public class SearchFilterBean {
 		return dateFrom;
 	}
 
+	public String getDateFromStr() {
+		if(dateFrom != null){
+			return DateUtil.getISO8601SimpleDateFormat().format(dateFrom);
+		}
+		return null;
+	}
+
 	/**
 	 * Sets the date from.
 	 * 
@@ -211,6 +221,17 @@ public class SearchFilterBean {
 	 */
 	public void setDateFrom(Date dateFrom) {
 		this.dateFrom = dateFrom;
+	}
+
+	public void setDateFromStr(String value) {
+		try {
+			Date parsedDate = DateUtil.getISO8601SimpleDateFormat().parse(value);
+			if (parsedDate != null) {
+				dateFrom = parsedDate;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -230,6 +251,24 @@ public class SearchFilterBean {
 	 */
 	public void setDateTo(Date dateTo) {
 		this.dateTo = dateTo;
+	}
+
+	public void setDateToStr(String value) {
+		try {
+			Date parsedDate = DateUtil.getISO8601SimpleDateFormat().parse(value);
+			if (parsedDate != null) {
+				dateTo = parsedDate;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getDateToStr() {
+		if(dateTo != null){
+			return DateUtil.getISO8601SimpleDateFormat().format(dateTo);
+		}
+		return null;
 	}
 
 	/**
