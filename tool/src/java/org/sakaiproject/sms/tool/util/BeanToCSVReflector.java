@@ -122,7 +122,7 @@ public class BeanToCSVReflector {
 	}
 
 	private String convertFieldValue(Method method, String value) {
-		log.info("got method "  + method.getName() + " for value: " + value);
+		log.trace("got method "  + method.getName() + " for value: " + value);
 		if (externalLogic == null ) {
 			log.error("external logic is null!");
 		} else {
