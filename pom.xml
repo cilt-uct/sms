@@ -22,6 +22,9 @@
 		<version>11-SNAPSHOT</version>
 		<relativePath>../master/pom.xml</relativePath>
 	</parent>
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
 	<profiles>
 		<profile>
 			<id>full</id>
