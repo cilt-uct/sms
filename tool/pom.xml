@@ -17,16 +17,16 @@
 	    <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>11-SNAPSHOT</version><!--Sms.version-->
+        <version>12-SNAPSHOT</version>
     </parent>
     
 	<dependencies>
 
 		<!-- email dependencies -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-		</dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>
 
 		<!--  For sending email -->
 		<dependency>
