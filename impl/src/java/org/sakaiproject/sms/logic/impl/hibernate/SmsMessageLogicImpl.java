@@ -30,6 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.type.StringType;
+import org.hibernate.type.DateType;
+import org.hibernate.type.LongType;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -216,8 +219,8 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		String hql = "from SmsMessage mes where mes.smscMessageId = :smscMessageId and mes.smscId = :smscID";
 
 		List<SmsMessage> messages = smsDao.runQuery(hql, new QueryParameter(
-				"smscMessageId", smscMessageId, Hibernate.STRING),
-				new QueryParameter("smscID", smscID, Hibernate.STRING));
+				"smscMessageId", smscMessageId, StringType.INSTANCE),
+				new QueryParameter("smscID", smscID, StringType.INSTANCE));
 		if (messages != null && !messages.isEmpty()) {
 			return messages.get(0);
 		}
@@ -240,7 +243,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 				.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 						+ hql.toString());
 		QueryParameter[] queryParameters = { new QueryParameter("smsTaskId",
-				smsTaskId, Hibernate.LONG) };
+				smsTaskId, LongType.INSTANCE) };
 
 		List theMessages = smsDao.runQuery(hql.toString(), queryParameters);
 		if (theMessages != null && !theMessages.isEmpty()) {
@@ -357,11 +360,11 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			}
 
 			queryParameters[0] = new QueryParameter("statusCodes", statusCodes,
-					Hibernate.STRING);
+					StringType.INSTANCE);
 
 			if (smsTaskId != null) {
 				queryParameters[1] = new QueryParameter("smsTaskId", smsTaskId,
-						Hibernate.LONG);
+						LongType.INSTANCE);
 			}
 			messages = smsDao.runQuery(hql.toString(), queryParameters);
 		}
@@ -375,10 +378,10 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		QueryParameter[] queryParameters = new QueryParameter[2];
 
 		queryParameters[0] = new QueryParameter("statusCode", 
-				SmsConst_DeliveryStatus.STATUS_SENT, Hibernate.STRING);
+				SmsConst_DeliveryStatus.STATUS_SENT, StringType.INSTANCE);
 
 		queryParameters[1] = new QueryParameter("cutoffTime", 
-				cutoffTime, Hibernate.DATE);
+				cutoffTime, DateType.INSTANCE);
 
 		return smsDao.runQuery(hql, queryParameters);
 	}

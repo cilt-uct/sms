@@ -1,8 +1,10 @@
 package org.sakaiproject.sms.logic.stubs;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.sakaiproject.component.api.ServerConfigurationService;
 
@@ -193,5 +195,20 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+        public Collection<String> getServerNameAliases() {
+                // TODO Auto-generated method stub
+                return null;
+        }
+
+        public List<String> getStringList(String name, List<String> dflt) {
+                // TODO Auto-generated method stub
+                return null;
+        }
+
+        public List<Pattern> getPatternList(String name, List<String> dflt) {
+                // TODO Auto-generated method stub
+                return null;
+        }
 
 }

@@ -30,6 +30,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.type.StringType;
+import org.hibernate.type.TimestampType;
+import org.hibernate.type.IntegerType;        
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -177,14 +180,14 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		hql.append(" order by task.dateToSend, task.id");
 		final List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 				new QueryParameter("today", getDelayedCurrentDate(10),
-						Hibernate.TIMESTAMP), new QueryParameter(
+						TimestampType.INSTANCE), new QueryParameter(
 						"messageTypeId",
 						SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING,
-						Hibernate.INTEGER), new QueryParameter("statusCodes",
+						IntegerType.INSTANCE), new QueryParameter("statusCodes",
 						new Object[] { SmsConst_DeliveryStatus.STATUS_PENDING,
 								SmsConst_DeliveryStatus.STATUS_INCOMPLETE,
 								SmsConst_DeliveryStatus.STATUS_RETRY },
-						Hibernate.STRING));
+						StringType.INSTANCE));
 
 		LOG.debug("getNextSmsTask() HQL: " + hql);
 		
@@ -459,14 +462,14 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 		hql.append(" order by task.messageTypeId ,task.dateToSend");
 		List<SmsTask> tasks = smsDao.runQuery(hql.toString(),
 				new QueryParameter("today", getDelayedCurrentDate(10),
-						Hibernate.TIMESTAMP), new QueryParameter("statusCodes",
+						TimestampType.INSTANCE), new QueryParameter("statusCodes",
 						new Object[] {
 
 						SmsConst_DeliveryStatus.STATUS_RETRY },
 
-						Hibernate.STRING), new QueryParameter("messageTypeId",
+						StringType.INSTANCE), new QueryParameter("messageTypeId",
 						SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING,
-						Hibernate.INTEGER));
+						IntegerType.INSTANCE));
 
 		LOG.debug("processMOTasks() HQL: " + hql);
 		if (tasks != null && !tasks.isEmpty()) {

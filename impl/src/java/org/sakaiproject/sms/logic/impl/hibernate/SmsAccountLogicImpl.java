@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Hibernate;
+import org.hibernate.type.StringType;
+import org.hibernate.type.DateType;
 import org.quartz.impl.jdbcjobstore.InvalidConfigurationException;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
@@ -92,7 +94,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 	 * 
 	 * @param Long
 	 *            sms account id
-	 * @return sms congiguration
+	 * @return sms configuration
 	 */
 	public SmsAccount getSmsAccount(Long smsAccountId) {
 		return (SmsAccount) findById(SmsAccount.class, smsAccountId);
@@ -310,8 +312,8 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		hql.append(" and (account.sakaiSiteId = :sakaiSiteId)");
 		List<SmsAccount> accounts = smsDao
 				.runQuery(hql.toString(), new QueryParameter("sakaiSiteId",
-						sakaiSiteId, Hibernate.STRING), new QueryParameter(
-						"today", new Date(), Hibernate.DATE));
+						sakaiSiteId, StringType.INSTANCE), new QueryParameter(
+						"today", new Date(), DateType.INSTANCE));
 
 		if (accounts != null && !accounts.isEmpty()) {
 			account = accounts.get(0);
@@ -339,8 +341,8 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		hql.append(" and (account.sakaiUserId = :sakaiUserId)");
 		List<SmsAccount> accounts = smsDao
 				.runQuery(hql.toString(), new QueryParameter("today",
-						new Date(), Hibernate.DATE), new QueryParameter(
-						"sakaiUserId", sakaiUserId, Hibernate.STRING));
+						new Date(), DateType.INSTANCE), new QueryParameter(
+						"sakaiUserId", sakaiUserId, StringType.INSTANCE));
 		if (accounts != null && !accounts.isEmpty()) {
 			account = accounts.get(0);
 		}
