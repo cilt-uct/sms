@@ -1,5 +1,6 @@
 package org.sakaiproject.sms.logic.stubs;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -258,5 +259,10 @@ public class ResourcePropertiesStub implements ResourceProperties {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+        public Instant getInstantProperty(String name) throws EntityPropertyNotDefinedException, EntityPropertyTypeException {
+		// TODO Auto-generated method stub
+		return null;
+        }
 
 }
