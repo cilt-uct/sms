@@ -25,10 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.sakaiproject.genericdao.hibernate.HibernateGeneralGenericDao;
 import org.sakaiproject.sms.logic.QueryParameter;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -108,9 +111,8 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	}
 
-	public HibernateTemplate getTheHibernateTemplate() {
-		return getHibernateTemplate();
-
+	public Session getTheHibernateTemplateSession() {
+                return getHibernateTemplate().getSessionFactory().openSession();
 	}
 
 }

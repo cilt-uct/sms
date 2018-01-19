@@ -480,7 +480,8 @@ public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 	}
 
 	public Session getNewHibernateSession() {
-		return smsDao.getTheHibernateTemplate().getSessionFactory()
-				.openSession();
+		return smsDao.getTheHibernateTemplateSession();
+                        //getTheHibernateTemplate().getSessionFactory()
+			//	.openSession();
 	}
 }

@@ -28,7 +28,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.type.StringType;
 import org.hibernate.type.DateType;
@@ -62,7 +64,7 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
 	private static final Log LOG = LogFactory.getLog(SmsMessageLogicImpl.class);
-
+        
 	private ExternalLogic externalLogic;
 
 	public void setExternalLogic(ExternalLogic externalLogic) {
@@ -408,8 +410,8 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	}
 
 	public Session getNewHibernateSession() {
-		return smsDao.getTheHibernateTemplate().getSessionFactory()
-				.openSession();
+                
+		return smsDao.getTheHibernateTemplateSession();//smsDao.getTheHibernateTemplate().getSessionFactory().openSession();
 	}
 
 	public void updateStatusForMessages(Long smsTaskId, String oldStatus, String newStatus) {

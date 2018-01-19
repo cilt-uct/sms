@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.sakaiproject.genericdao.api.GeneralGenericDao;
 import org.sakaiproject.sms.logic.QueryParameter;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.hibernate.Session;
 
 public interface SmsDao extends GeneralGenericDao {
 
@@ -40,5 +40,5 @@ public interface SmsDao extends GeneralGenericDao {
 
 	public int executeUpdate(String hql, Object value);
 
-	public HibernateTemplate getTheHibernateTemplate();
+	public Session getTheHibernateTemplateSession();
 }
