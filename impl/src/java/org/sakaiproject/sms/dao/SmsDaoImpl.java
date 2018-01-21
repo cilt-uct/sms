@@ -84,7 +84,8 @@ public class SmsDaoImpl extends HibernateGeneralGenericDao implements SmsDao {
 
 	@SuppressWarnings("unused")
 	private Query buildQuery(String hql, QueryParameter... queryParameters) {
-		Query query = getSession().createQuery(hql);
+		Session session = getSessionFactory().getCurrentSession();
+		Query query = session.createQuery(hql);
 
 		for (QueryParameter queryParameter : queryParameters) {
 			if (queryParameter.val instanceof Object[]) {
