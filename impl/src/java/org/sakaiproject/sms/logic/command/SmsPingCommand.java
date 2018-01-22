@@ -20,20 +20,21 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.command;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.constants.SmsConstants;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This returns the same message back to the sender. Useful for testing character set 
  * encoding/decoding issues and verifying connectivity.
  * 
  */
+@Slf4j
 public class SmsPingCommand implements ShortMessageCommand {
 
-	private static final Log LOG = LogFactory.getLog(SmsPingCommand.class);
+
 
 	public String execute(ParsedMessage msg, String messageType, String sourceAddress) {
 	
@@ -43,7 +44,7 @@ public class SmsPingCommand implements ShortMessageCommand {
 			return SmsConstants.SMS_MO_EMPTY_REPLY_BODY;
 		}
 		
-		LOG.debug("ping-pong to " + sourceAddress + ": " + body[0]);
+		log.debug("ping-pong to " + sourceAddress + ": " + body[0]);
 		
 		return "pong " + body[0];
 	}

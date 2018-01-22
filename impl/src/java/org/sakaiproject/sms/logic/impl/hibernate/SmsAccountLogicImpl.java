@@ -26,9 +26,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Hibernate;
-import org.hibernate.type.StringType;
 import org.hibernate.type.DateType;
+import org.hibernate.type.StringType;
 import org.quartz.impl.jdbcjobstore.InvalidConfigurationException;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;

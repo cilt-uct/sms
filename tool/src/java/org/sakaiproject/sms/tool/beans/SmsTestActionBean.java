@@ -18,22 +18,20 @@
 
 package org.sakaiproject.sms.tool.beans;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.smpp.SmsSmpp;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.tool.otp.SmsMessageLocator;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
 /**
  * The Class SmsTestActionBean.
  */
+@Slf4j
 public class SmsTestActionBean {
 
-	/** The log. */
-	private static final Log LOG = LogFactory.getLog(SmsTestActionBean.class);
 
 	/** The sms message locator. */
 	private SmsMessageLocator smsMessageLocator;
@@ -63,7 +61,7 @@ public class SmsTestActionBean {
 			messages.addMessage(new TargettedMessage("sms.errors.send-error",
 					null, TargettedMessage.SEVERITY_ERROR));
 
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 
 		return ActionResults.SUCCESS;

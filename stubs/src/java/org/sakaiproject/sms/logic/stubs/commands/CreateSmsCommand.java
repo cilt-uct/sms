@@ -1,13 +1,12 @@
 package org.sakaiproject.sms.logic.stubs.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
-public class CreateSmsCommand implements ShortMessageCommand {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Log LOG = LogFactory.getLog(CreateSmsCommand.class);
+@Slf4j
+public class CreateSmsCommand implements ShortMessageCommand {
 
 	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 	
@@ -20,7 +19,7 @@ public class CreateSmsCommand implements ShortMessageCommand {
 				concatBody += "," + arg;
 			}
 		}
-		LOG.debug(getCommandKey() + " command called with parameters: ("
+		log.debug(getCommandKey() + " command called with parameters: ("
 				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + concatBody + ")");
 		return getCommandKey();
 	}

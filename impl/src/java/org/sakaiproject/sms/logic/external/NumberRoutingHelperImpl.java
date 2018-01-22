@@ -3,16 +3,15 @@ package org.sakaiproject.sms.logic.external;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 
-	private static final Log LOG = LogFactory
-	.getLog(NumberRoutingHelper.class);
 	
 	
 	private Map<String, Integer> countryLength = new HashMap<String,Integer>();
@@ -72,13 +71,13 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	}
 	
 	public boolean isNumberRoutable(String mobileNumber) {
-		LOG.debug("isNumberRoutable(" + mobileNumber + ")");
+		log.debug("isNumberRoutable(" + mobileNumber + ")");
 		if (mobileNumber == null || "".equals(mobileNumber) || mobileNumber.length() < 3) {
 			return false;
 		}
 		
 		String code = mobileNumber.substring(0, 2);
-		LOG.debug("country code is " + code);
+		log.debug("country code is " + code);
 		if (countryLength.containsKey(code)) {
 			if (mobileNumber.startsWith(code) && mobileNumber.length() != countryLength.get(code)) {
 				return false;

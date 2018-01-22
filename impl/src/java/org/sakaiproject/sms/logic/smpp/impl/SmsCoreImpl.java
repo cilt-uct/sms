@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -68,15 +66,17 @@ import org.sakaiproject.sms.model.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
 import org.sakaiproject.sms.util.SmsMessageUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Handle all core logic regarding SMPP gateway communication.
  * 
  * @author etienne@psybergate.co.za
  * 
  */
+@Slf4j
 public class SmsCoreImpl implements SmsCore {
 
-	private static final Log LOG = LogFactory.getLog(SmsCoreImpl.class);
 
 	private static final int MO_OVERDRAFT_EMAIL_INTERVAL = 2;
 
@@ -284,7 +284,7 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setSmsAccountId(smsBilling.getAccountID(sakaiSiteID,
 					sakaiSenderID));
 		} catch (SmsAccountNotFoundException e) {
-			LOG.error("Sms account not found  for sakaiSiteID:=" + sakaiSiteID
+			log.error("Sms account not found  for sakaiSiteID:=" + sakaiSiteID
 					+ " sakaiSenderID:= " + sakaiSenderID);
 			return null;
 		}
@@ -337,7 +337,7 @@ public class SmsCoreImpl implements SmsCore {
 				smsTask.setSmsAccountId(smsBilling
 						.getAccountID(sakaiSiteID, ""));
 			} catch (SmsAccountNotFoundException e) {
-				LOG.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 
 			}
 		}
@@ -353,7 +353,7 @@ public class SmsCoreImpl implements SmsCore {
 	}
 
 	public void init() {
-		LOG.info("SmsCoreImpl online");
+		log.info("SmsCoreImpl online");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -425,7 +425,7 @@ public class SmsCoreImpl implements SmsCore {
 					errors,
 					MessageCatalog
 							.getMessage("messages.sms.errors.task.validationFailed"));
-			LOG.error(MessageCatalog
+			log.error(MessageCatalog
 					.getMessage("messages.sms.errors.task.validationFailed")
 					+ ": " + validationException.getErrorMessagesAsBlock());
 			throw validationException;
@@ -481,7 +481,7 @@ public class SmsCoreImpl implements SmsCore {
 							.getErrorMessagesAsBlock());
 
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			LOG.error(MessageCatalog
+			log.error(MessageCatalog
 					.getMessage("messages.sms.errors.task.validationFailed")
 					+ ": " + validationException.getErrorMessagesAsBlock());
 
@@ -528,7 +528,7 @@ public class SmsCoreImpl implements SmsCore {
 		
 		if (parsedMessage == null) {
 			// We don't ever expect a null return value here
-			LOG.error("Error parsing incoming message from " + mobileNumber);
+			log.error("Error parsing incoming message from " + mobileNumber);
 
 			billIncomingMessage(routingCredits, defaultBillingSite, null, null, null);
 			return;		
@@ -539,7 +539,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (parsedMessage.getBodyReply() == null
 			|| parsedMessage.getBodyReply().equals(
 						SmsConstants.SMS_MO_EMPTY_REPLY_BODY)) {
-			LOG.debug("No reply to this incoming message.");
+			log.debug("No reply to this incoming message.");
 
 			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null, parsedMessage.getAccountId());
 			return;
@@ -547,7 +547,7 @@ public class SmsCoreImpl implements SmsCore {
 		
 		smsMessageReplyBody = parsedMessage.getBodyReply();
 			
-		LOG.debug((parsedMessage.getCommand() != null ? "Command "
+		log.debug((parsedMessage.getCommand() != null ? "Command "
 					+ parsedMessage.getCommand() : "System")
 					+ " answered back with: " + smsMessageReplyBody);
 
@@ -596,11 +596,11 @@ public class SmsCoreImpl implements SmsCore {
 		try {
 			outTask = insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
-			LOG.error("Task validation failed: ", e);
+			log.error("Task validation failed: ", e);
 		} catch (SmsSendDeniedException e) {
-			LOG.error(getExceptionStackTraceAsString(e), e);
+			log.error(getExceptionStackTraceAsString(e), e);
 		} catch (SmsSendDisabledException e) {
-			LOG.error(getExceptionStackTraceAsString(e), e);
+			log.error(getExceptionStackTraceAsString(e), e);
 		}
 		
 		billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(),
@@ -631,7 +631,7 @@ public class SmsCoreImpl implements SmsCore {
 			if (account != null) {
 				smsBilling.debitIncomingMessage(account, credits, taskId);
 			} else {
-				LOG.warn("Unable to debit cost of incoming message");
+				log.warn("Unable to debit cost of incoming message");
 			}
 		}
 		
@@ -648,7 +648,7 @@ public class SmsCoreImpl implements SmsCore {
 					.getNextSmsTask();
 
 			if (smsTask != null) {
-				LOG.debug("Processing next task");
+				log.debug("Processing next task");
 				processTaskInThread(smsTask, smsThreadGroup);
 			}
 		}
@@ -684,7 +684,7 @@ public class SmsCoreImpl implements SmsCore {
 		
 		if (smsTask.getDateToExpire().before(new Date())) {
 
-			LOG.info("Task expired: id = " + 
+			log.info("Task expired: id = " + 
 					smsTask.getId() + " expiry time " + smsTask.getDateToExpire());
 			
 			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
@@ -710,7 +710,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (smsTask.getAttemptCount() >= systemConfig.getSmsRetryMaxCount()) {
 
-			LOG.info("Task exceeded retry count: id = " + 
+			log.info("Task exceeded retry count: id = " + 
 					smsTask.getId() + " attempts = " + smsTask.getAttemptCount());
 
 			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
@@ -732,7 +732,7 @@ public class SmsCoreImpl implements SmsCore {
 			
 		// Send the task's messages
 
-		LOG.info("Processing task: " + smsTask.getId());
+		log.info("Processing task: " + smsTask.getId());
 
 		Session session = null;
 		Transaction tx = null;
@@ -829,7 +829,7 @@ public class SmsCoreImpl implements SmsCore {
 			
 		} catch (Exception e) {
 			
-			LOG.error(getExceptionStackTraceAsString(e), e);
+			log.error(getExceptionStackTraceAsString(e), e);
 			
 			if (tx != null) {
 				tx.rollback();
@@ -869,14 +869,14 @@ public class SmsCoreImpl implements SmsCore {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.SECOND, -1 * systemConfig.getDelReportTimeoutDuration());
 
-		LOG.debug("Timing out SENT messages older than " + cal.getTime());
+		log.debug("Timing out SENT messages older than " + cal.getTime());
 		
 		List<SmsMessage> smsMessages = hibernateLogicLocator
 				.getSmsMessageLogic().getSmsMessagesForTimeout(cal.getTime());
 
 		if (smsMessages != null && !smsMessages.isEmpty()) {
 
-			LOG.debug("Updating " + smsMessages.size() + " messages from SENT to TIMEOUT");
+			log.debug("Updating " + smsMessages.size() + " messages from SENT to TIMEOUT");
 
 			Session session = getHibernateLogicLocator().getSmsMessageLogic()
 				.getNewHibernateSession();
@@ -902,7 +902,7 @@ public class SmsCoreImpl implements SmsCore {
 						tx.rollback();
 					}
 				} catch (HibernateException e) {
-					LOG.error("Error processing late delivery report for message "
+					log.error("Error processing late delivery report for message "
 									+ message.getId() + ": ", e);
 					if (tx != null && tx.isActive()) {
 						tx.rollback();
@@ -948,20 +948,20 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null || smsTask.getMessageBody() == null
 				|| smsTask.getMessageBody().equals("")
 				|| taskMessageType == null) {
-			LOG
+			log
 					.error("sendEmailNotification: smsTask or taskMessageType may not to null");
 			return false;
 		}
 
 		if (!smsTask.getMessageTypeId().equals(
 				SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
-			LOG
+			log
 					.debug("Email notifications only sent for system originating messages, ignoring task id = "
 							+ smsTask.getId());
 			return false;
 		}
 
-		LOG.debug("sendEmailNotification: task id = " + smsTask.getId());
+		log.debug("sendEmailNotification: task id = " + smsTask.getId());
 
 		if (additionInformation == null) {
 			additionInformation = "";
@@ -977,7 +977,7 @@ public class SmsCoreImpl implements SmsCore {
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsTask.getSmsAccountId());
 		if (account == null) {
-			LOG
+			log
 					.debug("No account associated with task id = "
 							+ smsTask.getId());
 			return false;
@@ -1134,12 +1134,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
-		LOG.debug("Processing task in realtime: task id = " + smsTask.getId());			
+		log.debug("Processing task in realtime: task id = " + smsTask.getId());			
 		processTaskInThread(smsTask, smsThreadGroup);
 	}
 
 	public void checkAndSetTasksCompleted() {
-		LOG.debug("checkAndSetTasksCompleted()");
+		log.debug("checkAndSetTasksCompleted()");
 		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getTasksToMarkAsCompleted();
 
@@ -1158,13 +1158,13 @@ public class SmsCoreImpl implements SmsCore {
 
 				SmsTask smsTask = (SmsTask) session.get(SmsTask.class, task
 						.getId(), LockMode.UPGRADE);
-				LOG.debug(smsTask.getId() + " was in status : "
+				log.debug(smsTask.getId() + " was in status : "
 						+ smsTask.getStatusCode());
 
 				if (smsTask.getStatusCode().equals(
 						SmsConst_DeliveryStatus.STATUS_SENT)) {
 					
-					LOG.debug("Marking task as completed: taskId = "
+					log.debug("Marking task as completed: taskId = "
 							+ smsTask.getId() + " its status was "
 							+ smsTask.getStatusCode());
 					
@@ -1177,7 +1177,7 @@ public class SmsCoreImpl implements SmsCore {
 						int delivered = smsTask.getMessagesDelivered();
 						for (int q=0; q < messages.size(); q++) {
 							SmsMessage message = messages.get(q);
-							LOG.debug("got message of status " + message.getStatusCode());
+							log.debug("got message of status " + message.getStatusCode());
 							if (SmsConst_DeliveryStatus.STATUS_DELIVERED.equals(message.getStatusCode())) {
 								delivered++;
 							}
@@ -1224,7 +1224,7 @@ public class SmsCoreImpl implements SmsCore {
 				}
 
 			} catch (HibernateException e) {
-				LOG.error("Error checking task " + task.getId() + ": ", e);
+				log.error("Error checking task " + task.getId() + ": ", e);
 				if (tx != null) {
 					tx.rollback();
 				}
@@ -1243,7 +1243,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (smsTasks != null && !smsTasks.isEmpty()) {
 
-			LOG.debug("Adjusting billing for late deliveries for " + smsTasks.size() + " tasks");
+			log.debug("Adjusting billing for late deliveries for " + smsTasks.size() + " tasks");
 			
 			for (SmsTask task : smsTasks) {
 
@@ -1277,7 +1277,7 @@ public class SmsCoreImpl implements SmsCore {
 					}
 
 				} catch (HibernateException e) {
-					LOG.error("Error updating billing for task " + task.getId() + ": ", e);
+					log.error("Error updating billing for task " + task.getId() + ": ", e);
 					if (tx != null) {
 						tx.rollback();
 					}
@@ -1372,7 +1372,7 @@ public class SmsCoreImpl implements SmsCore {
 					processTaskInThread(smsTask, smsThreadGroup);
 				
 			} catch (HibernateException e) {
-				LOG.error("Error processing MO Message: ", e);
+				log.error("Error processing MO Message: ", e);
 				if (tx != null) {
 					tx.rollback();
 				}
@@ -1385,7 +1385,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void processTaskInThread(SmsTask smsTask, ThreadGroup threadGroup) {
 
-		LOG.debug("Number of active threads in processTaskInThread:"
+		log.debug("Number of active threads in processTaskInThread:"
 				+ threadGroup.activeCount());
 		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
@@ -1394,7 +1394,7 @@ public class SmsCoreImpl implements SmsCore {
 		} else {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			LOG.debug("Maximum allowed SMS threads of " + maxThreadCount
+			log.debug("Maximum allowed SMS threads of " + maxThreadCount
 					+ " reached. Task will be scheduled for later processing.");
 		}
 
@@ -1442,7 +1442,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (externalMessageSending == null) {
 			return;
 		}
-		LOG.info("updateExternalMessageStatuses()");
+		log.info("updateExternalMessageStatuses()");
 		
 		//we need all tasks in progress
 		SearchFilterBean searchBean  = new SearchFilterBean();
@@ -1450,11 +1450,11 @@ public class SmsCoreImpl implements SmsCore {
 
 		
 		List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic().getTasksNotComplete();
-		LOG.info("got a list of " + tasks.size() + " tasks");
+		log.info("got a list of " + tasks.size() + " tasks");
 		for (int i =0; i < tasks.size(); i++) {
 			SmsTask task = tasks.get(i);
 			List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
-			LOG.info("checking " + messages.size() + " from task " + task.getId());
+			log.info("checking " + messages.size() + " from task " + task.getId());
 			externalMessageSending.updateMessageStatuses(messages);
 			//we need to update the task details for the message
 			int delivered = task.getMessagesDelivered();

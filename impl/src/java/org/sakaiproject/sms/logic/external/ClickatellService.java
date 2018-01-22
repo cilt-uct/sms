@@ -28,20 +28,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils;
-import org.sakaiproject.entitybroker.util.http.HttpResponse;
 import org.sakaiproject.entitybroker.util.http.HttpRESTUtils.Method;
+import org.sakaiproject.entitybroker.util.http.HttpResponse;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ClickatellService implements ExternalMessageSending {
 
-	private final static Log LOG = LogFactory.getLog(ClickatellService.class);
+
 
 
 	private static final String CLICKATELL_API_URL = "http://api.clickatell.com/http";
@@ -60,7 +61,7 @@ public class ClickatellService implements ExternalMessageSending {
 	}
 
 	public String sendMessagesToService(Set<SmsMessage> messages) {
-		LOG.debug("sending messages to clickatell: " + messages.size());
+		log.debug("sending messages to clickatell: " + messages.size());
 		Iterator<SmsMessage> messageI = messages.iterator();
 		while (messageI.hasNext()) {
 			SmsMessage message = messageI.next();
@@ -74,12 +75,12 @@ public class ClickatellService implements ExternalMessageSending {
 			
 			
 			HttpResponse response = HttpRESTUtils.fireRequest( CLICKATELL_API_URL + "/sendmsg", Method.POST, params);
-			LOG.debug(response.responseCode);
+			log.debug(new Integer(response.responseCode).toString());
 			String body = response.responseBody;
-			LOG.debug(body);
+			log.debug(body);
 			if (body != null && body.startsWith("ID:")) {
 				String id = body.substring(body.indexOf(":") +1).trim() ;
-				LOG.debug("got id of " + id + " len:" + id.length());
+				log.debug("got id of " + id + " len:" + id.length());
 				message.setDateDelivered(new Date());
 				message.setDateSent(new Date());
 				message.setSubmitResult(true);
@@ -91,7 +92,7 @@ public class ClickatellService implements ExternalMessageSending {
 				
 			} else {
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-				LOG.warn("message sending failed: " + body);
+				log.warn("message sending failed: " + body);
 				message.setFailReason(body);
 			}
 
@@ -119,17 +120,17 @@ public class ClickatellService implements ExternalMessageSending {
 			params.put("apimsgid", message.getSmscMessageId());
 			HttpResponse response2 = HttpRESTUtils.fireRequest( CLICKATELL_API_URL + "/getmsgcharge", Method.POST, params);
 			String body = response2.responseBody;
-			LOG.debug("body" + body);
+			log.debug("body" + body);
 			if (body != null && body.contains("charge")) {
 				String charge = body.substring(body.indexOf("charge:") + 8, body.indexOf("charge:") + 10 ).trim();
-				LOG.debug("charge: " + charge);
+				log.debug("charge: " + charge);
 				
 				String status = body.substring(body.indexOf("status:") + 8).trim();
-				LOG.debug("status: "  + status);
+				log.debug("status: "  + status);
 				if ("002".equals(status)) {
-					LOG.debug("message is queued");
+					log.debug("message is queued");
 				} else if ("003".equals(status) || "004".equals(status)) {
-					LOG.debug("message has been delivered");
+					log.debug("message has been delivered");
 					message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.DELIVERED);
 					message.setStatusCode(SmsConst_DeliveryStatus.STATUS_DELIVERED);
 					message.setCredits(Double.valueOf(charge));

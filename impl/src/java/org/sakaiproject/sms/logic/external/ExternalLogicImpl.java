@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.alias.api.Alias;
 import org.sakaiproject.alias.api.AliasService;
 import org.sakaiproject.authz.api.AuthzGroup;
@@ -76,12 +74,14 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.ResourceLoader;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Implementation of {@link ExternalLogic} for Sakai-specific code.
  */
+@Slf4j
 public class ExternalLogicImpl implements ExternalLogic {
 
-	private static final Log LOG = LogFactory.getLog(ExternalLogicImpl.class);
 
 	public final static String NO_LOCATION = "noLocationAvailable";
 
@@ -173,7 +173,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	}
 
 	public void init() {
-		LOG.debug("init");
+		log.debug("init");
 		// register Sakai permissions for this tool
 
 		functionManager.registerFunction(SMS_SEND);
@@ -229,7 +229,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public boolean isUserAllowedInLocation(String userId, String permission,
 			String locationId) {
 
-		LOG.debug("isUserAllowedInLocation(" + userId + ", " + permission
+		log.debug("isUserAllowedInLocation(" + userId + ", " + permission
 				+ ", " + locationId + ")");
 
 		if (permission == null || locationId == null) {
@@ -245,13 +245,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		} else {
 			allowed = securityService.unlock(userId, permission, locationRef);
 		}
-		LOG.debug("allowed: " + allowed);
+		log.debug("allowed: " + allowed);
 
 		return allowed;
 	}
 
 	public String getSakaiMobileNumber(String userId) {
-		LOG.debug("Getting mobile number for userid " + userId);
+		log.debug("Getting mobile number for userid " + userId);
 		return mobileNumberHelper.getUserMobileNumber(userId);
 	}
 
@@ -270,7 +270,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				session.setUserEid(userDirectoryService.getUser(userId)
 						.getEid());
 			} catch (UserNotDefinedException e) {
-				LOG.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 			}
 		}
 		
@@ -316,7 +316,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					}
 					
 				}else{
-					LOG.debug("Could not find group with id: " + groupId);
+					log.debug("Could not find group with id: " + groupId);
 				}
 			}
 		}
@@ -332,7 +332,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		setupSession(smsTask.getSenderUserId());
 		Set members = getMembersForEntityRef(entityReference);
 
-		LOG.debug("Getting group members for : " + entityReference + " (size = "
+		log.debug("Getting group members for : " + entityReference + " (size = "
 				+ members.size() + ")");
 		for (Object oObject : members) {
 			addMemberToDelList = true;
@@ -371,13 +371,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		}
 		
 		if (smsTask.getId() == null) {
-			LOG.debug("Getting recipient numbers for preliminary task ");
+			log.debug("Getting recipient numbers for preliminary task ");
 		} else {
-			LOG.debug("Getting recipient numbers for task " + smsTask.getId());
+			log.debug("Getting recipient numbers for task " + smsTask.getId());
 		}
 		
 		if (smsTask.getDeliveryEntityList() != null) {
-			LOG.debug("Adding numbers for entity reference list");
+			log.debug("Adding numbers for entity reference list");
 			// list of references to groups, roles etc.
 			for (String reference : smsTask.getDeliveryEntityList()) {
 				messages.addAll(getSakaiEntityMembersAsMessages(smsTask,
@@ -385,14 +385,14 @@ public class ExternalLogicImpl implements ExternalLogic {
 			}
 		}
 		if (smsTask.getDeliveryGroupId() != null) {
-			LOG.debug("Adding numbers for single group id");
+			log.debug("Adding numbers for single group id");
 			// a single group reference
 			messages.addAll(getSakaiEntityMembersAsMessages(smsTask, smsTask
 					.getDeliveryGroupId(), getMobileNumbers));
 
 		}
 		if (smsTask.getDeliveryMobileNumbersSet() != null) {
-			LOG.debug("Adding numbers from list of mobile numbers");
+			log.debug("Adding numbers from list of mobile numbers");
 
 			// a list of mobile numbers, not necessarily from Sakai users
 			for (String mobileNumber : smsTask.getDeliveryMobileNumbersSet()) {
@@ -417,7 +417,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 					.getDeliveryUserId(), getMobileNumbers));
 		}
 		if (smsTask.getSakaiUserIds() != null) {
-			LOG.debug("Adding numbers from list of user ids");
+			log.debug("Adding numbers from list of user ids");
 			for (String userId : smsTask.getSakaiUserIdsList()) {
 				String mobileNr = getSakaiMobileNumber(userId);
 				if (mobileNr != null && !"".equals(mobileNr)) {
@@ -431,18 +431,18 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 		}
 
-		if (LOG.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			if (messages.isEmpty()) {
-				LOG.debug("Message list for task " + smsTask.getId()
+				log.debug("Message list for task " + smsTask.getId()
 						+ " is empty.");
 			} else {
 				for (SmsMessage message : messages) {
 					if (smsTask.getId() == null) {
-						LOG.debug("Returning message for preliminary task "
+						log.debug("Returning message for preliminary task "
 								+ " userid=" + message.getSakaiUserId()
 								+ " number=" + message.getMobileNumber());
 					} else {
-						LOG.debug("Returning message for  task: "
+						log.debug("Returning message for  task: "
 								+ smsTask.getId() + " userid="
 								+ message.getSakaiUserId() + " number="
 								+ message.getMobileNumber());
@@ -468,7 +468,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 							.getUser(userId).getDisplayId();
 				}
 			} catch (UserNotDefinedException e) {
-				LOG
+				log
 				.warn("Cannot getSakaiUserDisplayName for user id "
 						+ userId);
 			}
@@ -489,7 +489,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			name = userDirectoryService.getUserEid(userId);
 		} catch (UserNotDefinedException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			return null;
 		}
 		return name;
@@ -540,7 +540,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			return userDirectoryService.getUser(userId).getEmail();
 		} catch (UserNotDefinedException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 		return null;
 
@@ -548,12 +548,12 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	public SmsSmppProperties getSmppProperties(SmsSmppProperties smsSmppProperties) {
 
-		LOG.debug("Reading properties from ServerConfigurationService");
+		log.debug("Reading properties from ServerConfigurationService");
 
 		String smscAddress = serverConfigurationService.getString(
 		"sms.SMSCAddress").trim();
 		if (smscAddress == null || "".equals(smscAddress)) {
-			LOG.debug("sms.SMSCAddress not found");
+			log.debug("sms.SMSCAddress not found");
 		} else {
 			smsSmppProperties.setSMSCAddress(smscAddress);
 		}
@@ -562,13 +562,13 @@ public class ExternalLogicImpl implements ExternalLogic {
 		"sms.SMSCPort").trim();
 
 		if (smscPort == null || "".equals(smscPort)) {
-			LOG.debug("sms.SMSCPort not found");
+			log.debug("sms.SMSCPort not found");
 		} else {
 			try {
 				smsSmppProperties.setSMSCPort(Integer.valueOf(smscPort));
 			}
 			catch (NumberFormatException nfe) {
-				LOG.error("Value supplied for sms.SMSPort is not a valid Interger: " + smscPort);
+				log.error("Value supplied for sms.SMSPort is not a valid Interger: " + smscPort);
 			}
 
 		}
@@ -577,7 +577,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		"sms.SMSCUserName").trim();
 
 		if (smscUserName == null || "".equals(smscUserName)) {
-			LOG.debug("sms.SMSCUserName not found");
+			log.debug("sms.SMSCUserName not found");
 		} else {
 			smsSmppProperties.setSMSCUsername(smscUserName);
 		}
@@ -586,7 +586,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		"sms.SMSCPassword").trim();
 
 		if (smscPassword == null || "".equals(smscPassword)) {
-			LOG.debug("sms.SMSCPassword not found");
+			log.debug("sms.SMSCPassword not found");
 		} else {
 			smsSmppProperties.setSMSCPassword(smscPassword);
 		}
@@ -601,7 +601,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		
 		String systemType = serverConfigurationService.getString("sms.systemType").trim();
 		if (systemType == null || "".equals(systemType)) {
-			LOG.debug("systemType not found");
+			log.debug("systemType not found");
 		} else {
 			smsSmppProperties.setSystemType(systemType);
 		}
@@ -636,7 +636,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			smsSmppProperties.setServiceType(serviceType);
 		}
 		
-		LOG.debug("Read properties from ServerConfigurationService");
+		log.debug("Read properties from ServerConfigurationService");
 
 		return smsSmppProperties;
 	}
@@ -649,15 +649,15 @@ public class ExternalLogicImpl implements ExternalLogic {
 			String target = getSiteId(aliasService.getTarget(alias));
 			
 			if (isValidSite(target)) {
-				LOG.debug("Found site from alias " + alias + ": " + target);
+				log.debug("Found site from alias " + alias + ": " + target);
 				return target;
 			} else {
-				LOG.debug("Invalid site from alias " + alias + ": " + target);
+				log.debug("Invalid site from alias " + alias + ": " + target);
 				return null;				
 			}
 			
 		} catch (IdUnusedException e) {
-			LOG.info("Undefined alias used: " + alias);
+			log.info("Undefined alias used: " + alias);
 			return null;
 		}
 
@@ -697,7 +697,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				result = userDirectoryService.getUser(sakaiUserId)
 				.getSortName();
 			} catch (UserNotDefinedException e) {
-				LOG.warn("Cannot getSakaiUserSortName for user id "
+				log.warn("Cannot getSakaiUserSortName for user id "
 						+ sakaiUserId);
 			}
 		}
@@ -718,7 +718,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				groups.put(grp.getReference(), grp.getTitle());
 			}
 		} catch (IdUnusedException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 		return groups;
 	}
@@ -734,7 +734,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				roles.put(siteReference + "/role/" + r.getId(), r.getId());
 			}
 		} catch (IdUnusedException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 		return roles;
 	}
@@ -747,7 +747,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 				Group group = site.getGroup(groupId);
 				return group.getTitle();
 			} catch (IdUnusedException e) {
-				LOG.warn("Group: " + groupId + " was not found in site: "
+				log.warn("Group: " + groupId + " was not found in site: "
 						+ siteId);
 			}
 		}
@@ -797,7 +797,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			// should
 			// handle.
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: " + getCurrentLocationId());
+			log.warn("Site not found for id: " + getCurrentLocationId());
 		}
 	}
 
@@ -810,7 +810,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Site site = siteService.getSite(siteId);
 
 			// Fetch the site
-			LOG.debug( "Fetching members for site:" + siteId );
+			log.debug( "Fetching members for site:" + siteId );
 			Set<Member> allMembers = site.getMembers();
 			Set<String> activeUserIds = new HashSet<String>();
 
@@ -821,16 +821,16 @@ public class ExternalLogicImpl implements ExternalLogic {
 					
 				}
 			}
-			LOG.debug("got a list of " + activeUserIds.size() + " active users");
+			log.debug("got a list of " + activeUserIds.size() + " active users");
 			if( !activeUserIds.isEmpty() ){
 				userIds = mobileNumberHelper.getUsersWithMobileNumbers( activeUserIds );
-				LOG.debug("got a list of: " + userIds.size() + " active users with mobile numbers");
+				log.debug("got a list of: " + userIds.size() + " active users with mobile numbers");
 			}
 			if( !userIds.isEmpty() ){
 				users = userDirectoryService.getUsers(userIds);
 			}
 		} catch (IdUnusedException e) {
-			LOG.warn("Site not found for id: "+ getCurrentLocationId());
+			log.warn("Site not found for id: "+ getCurrentLocationId());
 		}
 		return users;
 	}
@@ -914,10 +914,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 	         String region = System.getProperty("user.region");
 
 	         if (region != null) {
-	            LOG.debug("getting system locale for: " + lang + "_" + region);
+	            log.debug("getting system locale for: " + lang + "_" + region);
 	            loc = new Locale(lang,region);
 	         } else { 
-	            LOG.debug("getting system locale for: " + lang );
+	            log.debug("getting system locale for: " + lang );
 	            loc = new Locale(lang);
 	         }
 	      }
@@ -954,7 +954,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		String oldEid = null;
 		Session session = null;
 		
-		LOG.debug("Executing command: " + command.getCommandKey() + " for " + mobileNumber + " with " + message);
+		log.debug("Executing command: " + command.getCommandKey() + " for " + mobileNumber + " with " + message);
 				
 		if (message.getIncomingUserId() != null) {
 
@@ -977,10 +977,10 @@ public class ExternalLogicImpl implements ExternalLogic {
 				message.setIncomingUserEid(u.getEid());
 			} catch (UserNotDefinedException e) {
 				// Shouldn't ever happen as we should be passed a valid user
-				LOG.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 			}
 				
-			LOG.debug("Set session for command execution to userid: " + sessionManager.getCurrentSessionUserId());
+			log.debug("Set session for command execution to userid: " + sessionManager.getCurrentSessionUserId());
 		}
 
 		// Set up a security advisor for the case where the user is anonymous
@@ -1011,7 +1011,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			reply = command.execute(message, ShortMessageCommand.MESSAGE_TYPE_SMS, mobileNumber);
 
 		} catch (Exception e) {
-			LOG.warn("Error executing incoming SMS command: ", e);
+			log.warn("Error executing incoming SMS command: ", e);
 		} finally {
 			securityService.popAdvisor();
 		}
@@ -1033,7 +1033,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 	public String getBestUserMatch(String siteId, List<String> userIds,
 			ShortMessageCommand cmd) {
 		
-		LOG.debug("Finding users with access to site " + siteId + " from list " + userIds);
+		log.debug("Finding users with access to site " + siteId + " from list " + userIds);
 		
 		// Find users who have access to the site
 		
@@ -1070,7 +1070,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			Site s = siteService.getSite(siteId);
 			title = s.getTitle();
 		} catch (IdUnusedException e) {
-			LOG.debug("Unknown site id: " + siteId);
+			log.debug("Unknown site id: " + siteId);
 		}
 				
 		return title;
@@ -1080,7 +1080,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 		try {
 			return userDirectoryService.getUserEid(userId);
 		} catch (UserNotDefinedException e) {
-			LOG.debug("no eid found for userId: " + userId);
+			log.debug("no eid found for userId: " + userId);
 		}
 		return userId;
 	}
@@ -1090,7 +1090,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			userDirectoryService.getUser(userId);
 			return true;
 		} catch (UserNotDefinedException e) {
-			LOG.debug("userId: " + userId + " not found");
+			log.debug("userId: " + userId + " not found");
 		}
 		return false;
 	}
@@ -1101,7 +1101,7 @@ public class ExternalLogicImpl implements ExternalLogic {
 			User u = userDirectoryService.getUser(userId);
 			return new SmsUser(userId, u.getEmail(), u.getFirstName(), u.getLastName(), u.getDisplayName(), u.getEid());
 		} catch (UserNotDefinedException e) {
-			LOG.debug("user not found for id: " + userId);
+			log.debug("user not found for id: " + userId);
 		}
 		return null;
 	}

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.SmsMessageLogic;
 import org.sakaiproject.sms.logic.SmsTaskLogic;
@@ -23,6 +21,7 @@ import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 import org.sakaiproject.user.api.User;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UICommand;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -42,11 +41,11 @@ import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 import uk.org.ponder.rsf.viewstate.ViewParamsReporter;
 
+@Slf4j
 public class SmsDetailProducer implements ViewComponentProducer, ViewParamsReporter {
 	
-public static final String VIEW_ID = "sms";
-	
-	public static Log log = LogFactory.getLog(SmsDetailProducer.class);
+	public static final String VIEW_ID = "sms";
+
 		
 	public String getViewID() {
 		return VIEW_ID;

@@ -40,8 +40,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -91,9 +89,11 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 import org.sakaiproject.sms.util.GsmCharset;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SmsSmppImpl implements SmsSmpp {
 
-	private final static Log LOG = LogFactory.getLog(SmsSmppImpl.class);
 	private Map<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
 	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
@@ -184,18 +184,18 @@ public class SmsSmppImpl implements SmsSmpp {
 		public void work() {
 			while (true) {
 				if (allDone) {
-					LOG.debug("This thread is done.");
+					log.debug("This thread is done.");
 					return;
 				}
 				try {
-					LOG.info("Trying to rebind");
+					log.info("Trying to rebind");
 					connectToGateway();
 					Thread.sleep(smsSmppProperties.getBindThreadTimer());
 				} catch (InterruptedException e) {
 
 				} catch (Exception e) {
-					LOG.error("BindThread encountered an error:");
-					LOG.error(e.getMessage());
+					log.error("BindThread encountered an error:");
+					log.error(e.getMessage());
 				}
 
 			}
@@ -214,24 +214,24 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		public void run() {
 			work();
-			LOG.debug("Finished.");
+			log.debug("Finished.");
 		}
 
 		public void work() {
 			//we need to slow down the Initial run to avoid proccesing messages before commands are registered
 			try {
-				LOG.info("sleeping for " + INITIAL_MO_SLEEP + "ms to avoid binding before task registration");
+				log.info("sleeping for " + INITIAL_MO_SLEEP + "ms to avoid binding before task registration");
 				Thread.sleep(INITIAL_MO_SLEEP);
 			} catch (InterruptedException e1) {
-				LOG.debug("sleep interupeted");
+				log.debug("sleep interupeted");
 			}
 			while (!allDone) {
 				try {
 
-					if (LOG.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						int qsize = receivedMOmessages.size();
 						if (qsize > 0) {
-							LOG.debug("Processing MO-Message queue of "
+							log.debug("Processing MO-Message queue of "
 									+ qsize + " messages with "
 									+ moReceivingThread.activeCount() + " threads running");
 						}
@@ -254,8 +254,8 @@ public class SmsSmppImpl implements SmsSmpp {
 					}
 
 				} catch (Exception e) {
-					LOG.error("MOmessageQueueThread encountered an error:");
-					LOG.error(e.getMessage());
+					log.error("MOmessageQueueThread encountered an error:");
+					log.error(e.getMessage());
 				}
 				
 			} // (!allDone)
@@ -301,10 +301,10 @@ public class SmsSmppImpl implements SmsSmpp {
 			while (!allDone) {
 				try {
 
-					if (LOG.isDebugEnabled()) {
+					if (log.isDebugEnabled()) {
 						int qsize = receivedDeliveryReports.size();
 						if (qsize >= 10 && qsize % 10 == 0)
-							LOG.debug("Delivery report queue has " + qsize
+							log.debug("Delivery report queue has " + qsize
 									+ " message(s)");
 					}
 
@@ -317,7 +317,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					}
 
 				} catch (Exception e) {
-					LOG.error("DeliveryReportQueueThread encountered an error", e);
+					log.error("DeliveryReportQueueThread encountered an error", e);
 				}
 			}
 		}
@@ -346,13 +346,13 @@ public class SmsSmppImpl implements SmsSmpp {
 			if (MessageType.SMSC_DEL_RECEIPT.containedIn(deliverSm
 					.getEsmClass())) {
 
-				LOG.debug("Queuing delivery receipt from: "
+				log.debug("Queuing delivery receipt from: "
 						+ deliverSm.getSourceAddr());
 
 				receivedDeliveryReports.add(deliverSm);
 
 			} else {
-				LOG.info("Queuing MO message from: " + deliverSm.getSourceAddr() + 
+				log.info("Queuing MO message from: " + deliverSm.getSourceAddr() + 
 						" with data coding " + deliverSm.getDataCoding());
 				SmsMOMessage moMessage = new SmsMOMessage();
 				
@@ -372,7 +372,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					
 					int alphabet = ((deliverSm.getDataCoding() & 12) >> 2);
 
-					LOG.debug("Message alphabet is " + alphabet);
+					log.debug("Message alphabet is " + alphabet);
 					
 					if (alphabet == 0 )  {
 						// GSM
@@ -382,7 +382,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						try {
 							messageBody = new String(deliverSm.getShortMessage(), "UTF-16BE");
 						} catch (UnsupportedEncodingException e) {
-							LOG.warn("Unsupported encoding UTF-16BE");
+							log.warn("Unsupported encoding UTF-16BE");
 							messageBody = new String(deliverSm.getShortMessage());
 						}
 					} else {
@@ -390,7 +390,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						messageBody = new String(deliverSm.getShortMessage());
 					}
 
-					LOG.debug("message body: " + messageBody);
+					log.debug("message body: " + messageBody);
 					
 				}
 				moMessage.setSmsMessagebody(messageBody);
@@ -418,14 +418,14 @@ public class SmsSmppImpl implements SmsSmpp {
 				notifyDeliveryReportRemotely(deliveryReceipt);
 				return;
 			}
-			LOG.info("Processing delivery receipt from "
+			log.info("Processing delivery receipt from "
 					+ deliverSm.getSourceAddr() + " : " + deliveryReceipt);
 			SmsMessage smsMsg = hibernateLogicLocator.getSmsMessageLogic()
 					.getSmsMessageBySmscMessageId(deliveryReceipt.getId(),
 							SmsConstants.SMSC_ID);
 			if (smsMsg == null) {
 				for (int i = 0; i < 5; i++) {
-					LOG.warn("SMSC_DEL_RECEIPT retry " + i
+					log.warn("SMSC_DEL_RECEIPT retry " + i
 							+ " out of 5 for messageSmscID"
 							+ deliveryReceipt.getId());
 					smsMsg = hibernateLogicLocator.getSmsMessageLogic()
@@ -438,14 +438,14 @@ public class SmsSmppImpl implements SmsSmpp {
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {
-						LOG.error(e.getMessage(), e);
+						log.error(e.getMessage(), e);
 					}
 				}
 
 			}
 			
 			if (smsMsg == null) {
-				LOG.error("Delivery report received for message not in database. MessageSMSCID="
+				log.error("Delivery report received for message not in database. MessageSMSCID="
 								+ deliveryReceipt.getId());
 			} else {
 
@@ -496,7 +496,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					tx.commit();
 					session.close();
 				} catch (HibernateException e) {
-					LOG.error("Error handling delivery report: "
+					log.error("Error handling delivery report: "
 									+ deliverSm, e);
 					if (tx != null) {
 						tx.rollback();
@@ -512,7 +512,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 			}
 		} catch (InvalidDeliveryReceiptException e) {
-			LOG.error("Failed getting delivery receipt" + e);
+			log.error("Failed getting delivery receipt" + e);
 		}
 	}
 
@@ -528,11 +528,11 @@ public class SmsSmppImpl implements SmsSmpp {
 		if (!gatewayBound) {
 
 			if (!smsSmppProperties.isBindThisNode()) {
-				LOG.info("This node is set not to connect to an SMPP gateway");
+				log.info("This node is set not to connect to an SMPP gateway");
 				return false;
 			}
 
-			LOG.info("Binding to " + smsSmppProperties.getSMSCAddress()
+			log.info("Binding to " + smsSmppProperties.getSMSCAddress()
 					+ " on port " + smsSmppProperties.getSMSCPort()
 					+ " with username " + smsSmppProperties.getSMSCUsername());
 
@@ -559,14 +559,14 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 				
 				gatewayBound = true;
-				LOG.info("EnquireLinkTimer is set to "
+				log.info("EnquireLinkTimer is set to "
 						+ smsSmppProperties.getEnquireLinkTimeOut()
 						+ " milliseconds");
 				session.setEnquireLinkTimer(smsSmppProperties
 						.getEnquireLinkTimeOut());
 
 				gatewayBound = true;
-				LOG.info("TransactionTimer is set to "
+				log.info("TransactionTimer is set to "
 						+ smsSmppProperties.getTransactionTimer()
 						+ " milliseconds");
 				session.setTransactionTimer(smsSmppProperties
@@ -581,7 +581,7 @@ public class SmsSmppImpl implements SmsSmpp {
 						if ((arg0.equals(SessionState.CLOSED) || arg0
 								.equals(SessionState.UNBOUND))
 								&& (!disconnectGateWayCalled)) {
-							LOG.warn("SMSC session lost Status-" + arg0);
+							log.warn("SMSC session lost Status-" + arg0);
 							gatewayBound = false;
 							session.unbindAndClose();
 							if (arg0.equals(SessionState.CLOSED)
@@ -595,17 +595,17 @@ public class SmsSmppImpl implements SmsSmpp {
 						}
 					}
 				});
-				LOG.info("Bind successful");
+				log.info("Bind successful");
 				hibernateLogicLocator.getExternalLogic().postEvent(ExternalLogic.SMS_EVENT_SMPP_BIND, 
 					smsSmppProperties.getSMSCAddress() + ":" + smsSmppProperties.getSMSCPort(), null);
 
 			} catch (Exception e) {
-				LOG.error("Bind operation failed. " + e);
+				log.error("Bind operation failed. " + e);
 				gatewayBound = false;
 				session.unbindAndClose();
 				synchronized (rebindLock) {
 					if (!appserverShuttingDown && reBindThread == null) {
-						LOG.info("Starting Binding thread");
+						log.info("Starting Binding thread");
 						reBindThread = new BindThread();
 					}
 				}
@@ -644,11 +644,11 @@ public class SmsSmppImpl implements SmsSmpp {
 	public boolean getConnectionStatus() {
 
 		if (gatewayBound) {
-			LOG.info("The server is currently binded to "
+			log.info("The server is currently binded to "
 					+ smsSmppProperties.getSMSCAddress() + "  "
 					+ smsSmppProperties.getSMSCPort());
 		} else {
-			LOG.info("The server is not currently binded");
+			log.info("The server is not currently binded");
 		}
 
 		return gatewayBound;
@@ -667,7 +667,7 @@ public class SmsSmppImpl implements SmsSmpp {
 	}
 
 	public void init() {
-		LOG.info("init()");
+		log.info("init()");
 
 		loadPropertiesFile();
 		loadSmsSmppProperties();
@@ -681,33 +681,33 @@ public class SmsSmppImpl implements SmsSmpp {
 		connectToGateway();
 		setupStatusBridge();
 		
-		LOG.debug("SmsSmpp implementation is started");
+		log.debug("SmsSmpp implementation is started");
 	}
 
 	public void destroy() {
-		LOG.info("destroy()");
+		log.info("destroy()");
 		disconnectGateWay();
 		appserverShuttingDown = true;
 		if (reBindThread != null) {
-			LOG.debug("Stopping Bind Thread....");
+			log.debug("Stopping Bind Thread....");
 			reBindThread.allDone = true;
 			reBindThread.stop();
 			reBindThread = null;
-			LOG.debug("Stopped....");
+			log.debug("Stopped....");
 
 		}
 		if (mOmessageQueueThread != null) {
-			LOG.debug("Stopping MO MessageQueueThread....");
+			log.debug("Stopping MO MessageQueueThread....");
 			mOmessageQueueThread.allDone = true;
 			mOmessageQueueThread = null;
-			LOG.debug("Stopped....");
+			log.debug("Stopped....");
 
 		}
 		if (deliveryReportQueueThread != null) {
-			LOG.debug("Stopping DeliveryReportQueueThread....");
+			log.debug("Stopping DeliveryReportQueueThread....");
 			deliveryReportQueueThread.allDone = true;
 			deliveryReportQueueThread = null;
-			LOG.debug("Stopped....");
+			log.debug("Stopped....");
 
 		}
 
@@ -764,8 +764,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				}
 
 			} catch (PropertyZeroOrSmallerException e) {
-				LOG.error(e.getMessage(), e);
-				LOG.warn("SMSC Port defaulting to port "
+				log.error(e.getMessage(), e);
+				log.warn("SMSC Port defaulting to port "
 						+ SmsSmppProperties.DEFAULT_SMSC_PORT);
 
 				smsSmppProperties
@@ -773,8 +773,8 @@ public class SmsSmppImpl implements SmsSmpp {
 
 			} catch (NumberFormatException e) {
 
-				LOG.error(e.getMessage(), e);
-				LOG.warn("SMSC Port defaulting to port "
+				log.error(e.getMessage(), e);
+				log.warn("SMSC Port defaulting to port "
 						+ SmsSmppProperties.DEFAULT_SMSC_PORT);
 
 				smsSmppProperties
@@ -822,8 +822,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new PropertyZeroOrSmallerException("EnquireLinkTimeOut");
 			}
 		} catch (PropertyZeroOrSmallerException e) {
-			LOG.error(e.getMessage(), e);
-			LOG.warn("EnquireLinkTimeOut defaulting to  "
+			log.error(e.getMessage(), e);
+			log.warn("EnquireLinkTimeOut defaulting to  "
 					+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
 					+ " seconds");
 
@@ -831,8 +831,8 @@ public class SmsSmppImpl implements SmsSmpp {
 					.setEnquireLinkTimeOut(SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT * 1000);
 
 		} catch (NumberFormatException e) {
-			LOG.error(e.getMessage(), e);
-			LOG.warn("EnquireLinkTimeOut defaulting to  "
+			log.error(e.getMessage(), e);
+			log.warn("EnquireLinkTimeOut defaulting to  "
 					+ SmsSmppProperties.DEFAULT_ENQUIRELINK_TIMEOUT
 					+ " seconds");
 
@@ -847,16 +847,16 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new PropertyZeroOrSmallerException("BindThreadTimer");
 			}
 		} catch (PropertyZeroOrSmallerException e) {
-			LOG.error(e);
-			LOG.warn("BindThreadTimer defaulting to  "
+			log.error(e.toString());
+			log.warn("BindThreadTimer defaulting to  "
 					+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER + " seconds");
 
 			smsSmppProperties
 					.setBindThreadTimer((SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER) * 1000);
 
 		} catch (NumberFormatException e) {
-			LOG.error(e);
-			LOG.warn("BindThreadTimer defaulting to  "
+			log.error(e.toString());
+			log.warn("BindThreadTimer defaulting to  "
 					+ SmsSmppProperties.DEFAULT_BINDTHREAD_TIMER + " seconds");
 
 			smsSmppProperties
@@ -874,8 +874,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new PropertyZeroOrSmallerException("TransactionTimer");
 			}
 		} catch (PropertyZeroOrSmallerException e) {
-			LOG.error(e);
-			LOG.warn("TransactionTimer defaulting to  "
+			log.error(e.getLocalizedMessage(), e);
+			log.warn("TransactionTimer defaulting to  "
 					+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
 					+ " seconds");
 
@@ -883,8 +883,8 @@ public class SmsSmppImpl implements SmsSmpp {
 					.setTransactionTimer(SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL * 1000);
 
 		} catch (NumberFormatException e) {
-			LOG.error(e);
-			LOG.warn("TransactionTimer defaulting to  "
+			log.error(e.getMessage(), e);
+			log.warn("TransactionTimer defaulting to  "
 					+ SmsSmppProperties.DEFAULT_TRANSACTION_TIMER_INTERVAL
 					+ " seconds");
 
@@ -900,8 +900,8 @@ public class SmsSmppImpl implements SmsSmpp {
 				throw new PropertyZeroOrSmallerException("SendingDelay");
 			}
 		} catch (PropertyZeroOrSmallerException e) {
-			LOG.error(e);
-			LOG
+			log.error(e.getLocalizedMessage(), e);
+			log
 					.warn("SendingDelay defaulting to  "
 							+ SmsSmppProperties.DEFAULT_SENDING_DELAY
 							+ " milliseconds");
@@ -910,8 +910,8 @@ public class SmsSmppImpl implements SmsSmpp {
 					.setSendingDelay(SmsSmppProperties.DEFAULT_SENDING_DELAY);
 
 		} catch (NumberFormatException e) {
-			LOG.error(e);
-			LOG
+			log.error(e.getLocalizedMessage(), e);
+			log
 					.warn("SendingDelay defaulting to  "
 							+ SmsSmppProperties.DEFAULT_SENDING_DELAY
 							+ " milliseconds");
@@ -943,9 +943,9 @@ public class SmsSmppImpl implements SmsSmpp {
 				inputStream.close();
 			}
 		} catch (FileNotFoundException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -968,7 +968,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			long timeStart = System.currentTimeMillis();
 			SmsMessage deliverMessage = sendMessageToGateway(message);
 			long timeToSend = System.currentTimeMillis() - timeStart;
-			LOG.debug("Message processed in " + timeToSend + "ms");
+			log.debug("Message processed in " + timeToSend + "ms");
 			// Because we get back a different object, copy across the fields we need
 			
 			message.setStatusCode(deliverMessage.getStatusCode());
@@ -996,7 +996,7 @@ public class SmsSmppImpl implements SmsSmpp {
 					Thread.sleep(sendDelay);
 				}
 			} catch (InterruptedException e) {
-				LOG.error(e);
+				log.error(e.getLocalizedMessage(), e);
 			}
 			
 		}
@@ -1031,7 +1031,7 @@ public class SmsSmppImpl implements SmsSmpp {
 
 		// Not gateway bound
 		if (!gatewayBound) {
-			LOG.debug("Sms gateway not bound on this node queueing message");
+			log.debug("Sms gateway not bound on this node queueing message");
 			return message;
 		}
 
@@ -1052,7 +1052,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				.getNewHibernateSession();
 		
 		if (hibernateSession == null) {
-			LOG.error("Cannot open database session");
+			log.error("Cannot open database session");
 			return message;
 		}
 
@@ -1089,7 +1089,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				// TODO - When should we use Alphabet.ALPHA_8_BIT ?
 				
 				DataCoding messageEncoding = new GeneralDataCoding(false, false, MessageClass.CLASS0, alphabet);
-				LOG.debug("Encoding is " + messageEncoding);
+				log.debug("Encoding is " + messageEncoding);
 
 				/*
 				// For testing failure cases not generated by the simulator
@@ -1141,7 +1141,7 @@ public class SmsSmppImpl implements SmsSmpp {
 				message.setStatusCode(SmsConst_DeliveryStatus.STATUS_SENT);
 				message.setSmscDeliveryStatusCode(SmsConst_SmscDeliveryStatus.ENROUTE);
 				long timeToSend = System.currentTimeMillis() - timeStart;
-				LOG.info("Message submitted, smsc_id = " + messageId
+				log.info("Message submitted, smsc_id = " + messageId
 						+ " MessageID = " + message.getId()
 						+ " Number = " + message.getMobileNumber()
 						+ " TaskID = " + message.getSmsTask().getId()
@@ -1158,21 +1158,21 @@ public class SmsSmppImpl implements SmsSmpp {
 			// Invalid PDU parameter
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-			LOG.error(e);
+			log.error(e.getLocalizedMessage(), e);
 
 		} catch (ResponseTimeoutException e) {
 
 			// Response timeout
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-			LOG.error(e);
+			log.error(e.getLocalizedMessage(), e);
 
 		} catch (InvalidResponseException e) {
 
 			// Invalid response
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
-			LOG.error(e);
+			log.error(e.getLocalizedMessage(), e);
 
 		} catch (NegativeResponseException e) {
 
@@ -1184,7 +1184,7 @@ public class SmsSmppImpl implements SmsSmpp {
 		} catch (IOException e) {
 			
 			// Probably a dropped connection / network issue. Transient.	
-			LOG.warn("I/O error delivering message to gateway: "+ e);
+			log.warn("I/O error delivering message to gateway: "+ e);
 
 		} catch (Exception e) {
 			
@@ -1192,7 +1192,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			message.setFailReason(e.getMessage());
 			message.setStatusCode(SmsConst_DeliveryStatus.STATUS_ERROR);
 			
-			LOG.error("Unknown error delivering message to gateway: ", e);
+			log.error("Unknown error delivering message to gateway: ", e);
 
 		} finally {
 			
@@ -1202,7 +1202,7 @@ public class SmsSmppImpl implements SmsSmpp {
 			} catch (ConstraintViolationException cve) {
 				// This should not happen unless the SMSC returns duplicate message IDs
 				// (which can happen in some testing / simulator scenarios)
-				LOG.warn("Cannot update SMSC id for message id=" + message.getId() + ". Delivery status will not be recorded.");
+				log.warn("Cannot update SMSC id for message id=" + message.getId() + ". Delivery status will not be recorded.");
 				message.setSmscMessageId(null);
 				hibernateSession.update(message);
 				tx.commit();

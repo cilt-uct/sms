@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.exception.SmsAccountNotFoundException;
 import org.sakaiproject.sms.logic.exception.SmsInsufficientCreditsException;
@@ -42,6 +40,8 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * The billing service will handle all financial functions for the sms tool in
  * Sakai.
@@ -50,12 +50,12 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
  * @version 1.0
  * @created 12-Dec-2008
  */
+@Slf4j
 public class SmsBillingImpl implements SmsBilling {
 
 	// Transaction Type properties
 	private final static Properties PROPERTIES = new Properties();
 
-	private final static Log LOG = LogFactory.getLog(SmsBillingImpl.class);
 
 	private HibernateLogicLocator hibernateLogicLocator;
 
@@ -94,9 +94,9 @@ public class SmsBillingImpl implements SmsBilling {
 				inputStream.close();
 			}
 		} catch (FileNotFoundException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 		}
 	}
 

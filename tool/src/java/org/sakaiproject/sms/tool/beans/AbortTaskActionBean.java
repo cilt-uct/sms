@@ -17,17 +17,16 @@
  **********************************************************************************/
 package org.sakaiproject.sms.tool.beans;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.exception.SmsTaskNotFoundException;
 import org.sakaiproject.sms.logic.smpp.SmsService;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.messageutil.TargettedMessage;
 import uk.org.ponder.messageutil.TargettedMessageList;
 
+@Slf4j
 public class AbortTaskActionBean {
 
-	private static final Log LOG = LogFactory.getLog(AbortTaskActionBean.class);
 
 	private String taskToAbort;
 	private SmsService smsService;
@@ -57,7 +56,7 @@ public class AbortTaskActionBean {
 					new Object[] { taskToAbort },
 					TargettedMessage.SEVERITY_INFO));
 		} catch (SmsTaskNotFoundException e) {
-			LOG.error(e);
+			log.error(e.getLocalizedMessage(), e);
 			messages.addMessage(new TargettedMessage(
 					"sms.abort-task.invalid-task", null,
 					TargettedMessage.SEVERITY_ERROR));

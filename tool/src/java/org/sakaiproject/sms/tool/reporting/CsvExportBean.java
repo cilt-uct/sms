@@ -27,8 +27,6 @@ import java.util.TreeMap;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.exception.SmsSearchException;
@@ -40,9 +38,11 @@ import org.sakaiproject.sms.tool.producers.TransactionLogProducer;
 import org.sakaiproject.sms.tool.util.BeanToCSVReflector;
 import org.sakaiproject.sms.tool.util.SakaiDateFormat;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CsvExportBean {
 
-	private static Log log = LogFactory.getLog(CsvExportBean.class);
 	private final Map<String, CsvExportStrategy> csvExporters = new TreeMap<String, CsvExportStrategy>();
 	private SakaiDateFormat sakaiDateFormat;
 

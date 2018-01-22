@@ -22,10 +22,9 @@ package org.sakaiproject.sms.tool.renderers;
 
 import java.util.List;
 
-import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.SmsAccountLogic;
+import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.SmsAccount;
-import org.sakaiproject.sms.tool.producers.MainProducer;
 import org.sakaiproject.sms.tool.producers.CreditTransferProducer;
 import org.sakaiproject.sms.tool.producers.SmsPermissions;
 

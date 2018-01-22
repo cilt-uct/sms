@@ -19,16 +19,15 @@ package org.sakaiproject.sms.tool.reporting;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.tool.params.DownloadReportViewParams;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.rsf.processor.HandlerHook;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
+@Slf4j
 public class ReportHandlerHook implements HandlerHook {
 
-	private static Log log = LogFactory.getLog(ReportHandlerHook.class);
 
 	private CsvExportBean csvExportBean;
 	private HttpServletResponse response;

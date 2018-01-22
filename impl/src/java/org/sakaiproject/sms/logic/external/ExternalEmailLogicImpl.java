@@ -9,16 +9,16 @@ import java.util.Map;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.validator.EmailValidator;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
-	private static final Log LOG = LogFactory.getLog(ExternalEmailLogicImpl.class);
 
 	/*
 	 * Setters and injected services
@@ -45,7 +45,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
 
 	public void init() {
-		LOG.info("init()");
+		log.info("init()");
 		List<String> templatePaths = new ArrayList<String>();
 		templatePaths.add(FILE_TEMPLATE_TASK_STARTED);
 		templatePaths.add(FILE_TEMPLATE_TASK_SENT);
@@ -69,7 +69,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 	public boolean sendEmail(String toAddress, String subject,
 			String body) {
 
-		LOG.debug("Sending email to:" + toAddress + " subject:" + subject
+		log.debug("Sending email to:" + toAddress + " subject:" + subject
 				+ " body:" + body);
 		String from = "smstesting@sakai";
 		sendEmails(from, new String[] { toAddress }, subject, body);
@@ -110,7 +110,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 			Collection<String> toEmails, String subject, String message) {
 
 		if (!serverConfigurationService.getBoolean("sms.notify.email", false)) {
-			LOG.debug("Enable notification is disabled (sms.notify.email=false in sakai.properties)");
+			log.debug("Enable notification is disabled (sms.notify.email=false in sakai.properties)");
 			return new String[0];
 		}
 
@@ -126,7 +126,7 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 					listAddresses.add(toAddress);
 				}
 			} catch (AddressException e) {
-				LOG.warn("Invalid to address: " + email
+				log.warn("Invalid to address: " + email
 						+ ", cannot send email", e);
 			}
 		}

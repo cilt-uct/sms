@@ -15,8 +15,6 @@ import java.util.Map;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,14 +28,17 @@ import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.SmsUser;
+
+import lombok.extern.slf4j.Slf4j;
 /**
  * Notifies account owners of activity on their jobs
  * 
  * @author dhorwitz
  *
  */
+@Slf4j
 public class AccountActivityNotification implements Job {
-	private static final Log LOG = LogFactory.getLog(AccountActivityNotification.class);
+
 	
 	private SmsAccountLogic smsAccountLogic;
 	private ExternalLogic externalLogic;
@@ -89,7 +90,7 @@ public class AccountActivityNotification implements Job {
 			}
 			
 			if (userTo == null) {
-				LOG.warn("can't resolve owner of account " + account.getId().toString() );
+				log.warn("can't resolve owner of account " + account.getId().toString() );
 				continue;
 			}
 			
@@ -104,11 +105,11 @@ public class AccountActivityNotification implements Job {
 				csv.append("\"" + transaction.getTransactionCredits() + "\",");
 				csv.append("\"" + transaction.getCreditBalance() + "\"\r\n");
 			}
-			LOG.debug("going to send sms to: " + to);
-			LOG.debug(csv.toString());
+			log.debug("going to send sms to: " + to);
+			log.debug(csv.toString());
 			//we need a file for this
 			String filePath = System.getProperty("java.io.tmpdir") + File.separator + "accountstatement.csv";
-			LOG.info(filePath);
+			log.info(filePath);
 			File csvAttach = new File(filePath);
 			Writer output = null;
 			
@@ -136,7 +137,7 @@ public class AccountActivityNotification implements Job {
 				}
 				
 			}
-			LOG.debug("file of size: " + csvAttach.length());
+			log.debug("file of size: " + csvAttach.length());
 			
 			Map<String, String> repVals = new HashMap<String, String>();
 			repVals.put("recipientFirst", userTo.getFirstName());
@@ -160,7 +161,7 @@ public class AccountActivityNotification implements Job {
 			}
 			
 			if (!csvAttach.delete()) {
-				LOG.warn("couldn't delete temp file!");
+				log.warn("couldn't delete temp file!");
 			}
 			
 			
