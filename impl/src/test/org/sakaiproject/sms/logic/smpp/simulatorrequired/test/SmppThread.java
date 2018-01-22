@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.groboutils.junit.v1.TestRunnable;
-
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
@@ -41,13 +39,16 @@ import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.groboutils.junit.v1.TestRunnable;
+
 /**
  * The Class SmppSession. Used in the threading test.
  */
+@Slf4j
 public class SmppThread extends TestRunnable {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmppThread.class);
+
 	/** some private stuff for each thread. */
 	public int reportsRemainingAfterSleep, sent_count, message_count;
 

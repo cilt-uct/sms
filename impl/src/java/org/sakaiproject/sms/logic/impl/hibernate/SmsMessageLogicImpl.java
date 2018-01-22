@@ -26,15 +26,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.type.StringType;
 import org.hibernate.type.DateType;
 import org.hibernate.type.LongType;
+import org.hibernate.type.StringType;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -52,6 +47,8 @@ import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * The data service will handle all sms Message database transactions for the
  * sms tool in Sakai.
@@ -60,10 +57,10 @@ import org.sakaiproject.sms.util.DateUtil;
  * @version 1.0
  * @created 25-Nov-2008
  */
+@Slf4j
 @SuppressWarnings("unchecked")
 public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
-	private static final Log LOG = LogFactory.getLog(SmsMessageLogicImpl.class);
         
 	private ExternalLogic externalLogic;
 
@@ -182,7 +179,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 				getPageSize());
 		con.setTotalResultSetSize(Long.valueOf(messages.size()));
 		con.calculateAndSetPageResults(messages, searchBean.getCurrentPage());
-		LOG.debug(con.toString());
+		log.debug(con.toString());
 
 		return con;
 	}
@@ -241,7 +238,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		if (smsTaskId != null) {
 			hql.append(" and message.smsTask.id = :smsTaskId ");
 		}
-		LOG
+		log
 				.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 						+ hql.toString());
 		QueryParameter[] queryParameters = { new QueryParameter("smsTaskId",
@@ -257,7 +254,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 	private List<SmsMessage> getSmsMessagesForCriteria(
 			SearchFilterBean searchBean) throws SmsSearchException {
 		Search search = new Search();
-		LOG.debug(searchBean.toString());
+		log.debug(searchBean.toString());
 		try {
 			// Message status
 			if (searchBean.getStatus() != null
@@ -350,7 +347,7 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 			}
 			hql.append(" and message.statusCode IN (:statusCodes) ");
 
-			LOG.debug("getSmsTasksFilteredByMessageStatus() HQL: "
+			log.debug("getSmsTasksFilteredByMessageStatus() HQL: "
 					+ hql.toString());
 
 			QueryParameter[] queryParameters;

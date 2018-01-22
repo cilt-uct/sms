@@ -1,5 +1,12 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,11 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.PropertyValueException;
 import org.junit.After;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,8 +28,9 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import static org.sakaiproject.sms.util.AbstractBaseTestCase.hibernateLogicLocator;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A task consists of a series of rules and must be executed on the scheduled
@@ -34,9 +39,10 @@ import org.springframework.dao.DataIntegrityViolationException;
  * inserted into SMS_MESSAGE with status PENDING. As delivery reports come in,
  * the message statuses will be updated.
  */
+@Slf4j
 public class SmsTaskTest extends AbstractBaseTestCase {
 
-	private static final Log log = LogFactory.getLog(SmsTaskTest.class);
+
 	private static final String MOBILE_NUMBER_1 = "082 345 6789";
 	private static final String MOBILE_NUMBER_2 = "083 345 6789";
 	private static final String MOBILE_NUMBER_3 = "084 345 6789";

@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Hibernate;
-import org.hibernate.type.StringType;
 import org.hibernate.type.LongType;
+import org.hibernate.type.StringType;
 import org.sakaiproject.genericdao.api.search.Restriction;
 import org.sakaiproject.genericdao.api.search.Search;
 import org.sakaiproject.sms.bean.SearchFilterBean;

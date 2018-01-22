@@ -26,7 +26,6 @@ import org.sakaiproject.sms.tool.renderers.SearchCriteriaRenderer;
 import org.sakaiproject.sms.tool.renderers.SearchResultsRenderer;
 import org.sakaiproject.sms.tool.renderers.TablePagerRenderer;
 import org.sakaiproject.sms.tool.util.SakaiDateFormat;
-import org.springframework.util.Assert;
 
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -83,8 +82,6 @@ public abstract class AbstractSearchListProducer implements
 	}
 
 	public void init() {
-		Assert.notNull(searchCriteriaRenderer);
-		Assert.notNull(searchResultsRenderer);
 		searchResultsRenderer.setSearchFilterBean(searchFilterBean);
 	}
 

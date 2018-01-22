@@ -26,9 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.model.constants.SmsConstants;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Util class for reading properties from property files
@@ -37,9 +37,9 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
  * @version 1.0
  * @created 20-Jan-2009
  */
+@Slf4j
 public abstract class SmsPropertyReader {
 
-	private static final Log LOG = LogFactory.getLog(SmsPropertyReader.class);
 
 	/** The property file name. */
 	private static Properties properties = new Properties();
@@ -57,10 +57,10 @@ public abstract class SmsPropertyReader {
 		try {
 			loadProperties();
 		} catch (FileNotFoundException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			return SmsConstants.PROPERTY_FILE_NOT_FOUND;
 		}
 

@@ -35,11 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.azeckoski.reflectutils.transcoders.JSONTranscoder;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.entitybroker.DeveloperHelperService;
@@ -75,9 +73,11 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoRegisterEntityProvider, RESTful, Statisticable {
 
-	private static Log log = LogFactory.getLog(SmsTaskEntityProvider.class);
 
 	/**
 	 *	Permission to send SMS messages in a site, therefore also create and manage the resulting tasks  

@@ -27,11 +27,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.common.edu.person.SakaiPerson;
 import org.sakaiproject.api.common.edu.person.SakaiPersonManager;
 import org.sakaiproject.component.api.ServerConfigurationService;
@@ -42,17 +40,18 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Default implementation of {@link MobileNumberHelper}. Mobile numbers retrieved
  * from Profile Tool, with user opt-in / opt-out preference from user property.
  * 
  */
+@Slf4j
 public class MobileNumberHelperImpl implements MobileNumberHelper {
 
 	private static final String PREF_SMS_NOTIFICATIONS = "smsnotifications";
 
-	private static final Log LOG = LogFactory
-			.getLog(MobileNumberHelperImpl.class);
 
 	private NumberRoutingHelper numberRoutingHelper;
 	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
@@ -79,7 +78,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumber(String)
 	 */
 	public String getUserMobileNumber(String userid) {
-		LOG.debug("getMobileNumber(" + userid + ")");
+		log.debug("getMobileNumber(" + userid + ")");
 		
 		//first check that the user migh want SMS
 		if (!userWantsSms(userid))
@@ -89,7 +88,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 				userid, sakaiPersonManager.getUserMutableType());
 		if (sakaiPerson == null) {
 			// this is to be expected as not all Sakai Users have profiles
-			LOG.debug("Profile not found for userid: " + userid);
+			log.debug("Profile not found for userid: " + userid);
 		} else {
 			String mobile = numberRoutingHelper.normalizeNumber(sakaiPerson.getMobile());
 			if (numberRoutingHelper.isNumberRoutable(mobile)) {
@@ -104,7 +103,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 * @see MobileNumberHelper#getUserMobileNumbers(List)
 	 */
 	public Map<String, String> getUserMobileNumbers(List<String> userids) {
-		LOG.debug("getUserMobileNumbers()");
+		log.debug("getUserMobileNumbers()");
 		
 
 		final Map<String, String> userMobileMap = new HashMap<String, String>();
@@ -135,11 +134,11 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 *@see MobileNumberHelper#getUserMobileNumbers(List)
 	 */
 	public List<String> getUsersWithMobileNumbers(Set<String> userIds) {
-		LOG.debug("getUsersWithMobileNumbers()");
+		log.debug("getUsersWithMobileNumbers()");
 		List<String> result = new ArrayList<String>();
 		
         Set<String> usersWhoWantSMS = filterUserListForPreference(userIds);
-        LOG.debug("filtered list size is" + usersWhoWantSMS.size());
+        log.debug("filtered list size is" + usersWhoWantSMS.size());
         if( usersWhoWantSMS.size() > 0){
 			Map<String, SakaiPerson> userMobileMap = sakaiPersonManager.getSakaiPersons(usersWhoWantSMS, sakaiPersonManager.getUserMutableType());
 			Iterator<Entry<String, SakaiPerson>> selector = userMobileMap.entrySet().iterator();
@@ -148,7 +147,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	        	SakaiPerson sp = pairs.getValue();
 	        	if (sp != null) {
 	        		String mobile = numberRoutingHelper.normalizeNumber(sp.getMobile());
-	                LOG.debug("got a number " + mobile + " for user " + sp.getUid() );
+	                log.debug("got a number " + mobile + " for user " + sp.getUid() );
 	        		if (mobile != null && !"".equals(mobile) && numberRoutingHelper.isNumberRoutable(mobile)) {
 	        			result.add( sp.getUid() );
 	        		}
@@ -164,7 +163,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	 */
 	
 	public List<String> getUserIdsFromMobileNumber(String mobileNumber) {
-		LOG.debug("getUserIdsFromMobileNumber(" + mobileNumber + ")");
+		log.debug("getUserIdsFromMobileNumber(" + mobileNumber + ")");
 		final SakaiPerson example = sakaiPersonManager.getPrototype();
 		example.setNormalizedMobile(numberRoutingHelper.normalizeNumber(mobileNumber));
 		example.setTypeUuid(sakaiPersonManager.getUserMutableType().getUuid());
@@ -173,7 +172,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		
 		final List<SakaiPerson> list = sakaiPersonManager.findSakaiPerson(example);
 		
-		LOG.debug("Found " + list.size() + " matches against normalized numbers");
+		log.debug("Found " + list.size() + " matches against normalized numbers");
 		
 		for (SakaiPerson person : list) {
 			toReturn.add(person.getUid());
@@ -185,7 +184,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 
 		final List<SakaiPerson> list1 = sakaiPersonManager.findSakaiPerson(example1);
 		
-		LOG.debug("Found " + list1.size() + " matches against non-normalized numbers");
+		log.debug("Found " + list1.size() + " matches against non-normalized numbers");
 		
 		for (SakaiPerson person : list1) {
 			toReturn.add(person.getUid());
@@ -196,7 +195,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	
 	
 	private boolean userWantsSms(String userId) {
-		LOG.debug("userWantsSms(" + userId);
+		log.debug("userWantsSms(" + userId);
 		if (userId == null)
 			return false;
 		
@@ -207,9 +206,9 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			ResourceProperties rp = u.getProperties();
 			return rp.getBooleanProperty(PREF_SMS_NOTIFICATIONS);
 		} catch (UserNotDefinedException e) {
-			LOG.info("user: " + userId + " does not exist");
+			log.info("user: " + userId + " does not exist");
 		} catch (EntityPropertyNotDefinedException e) {
-			LOG.debug("user: " + userId + " has no defined sms preference");
+			log.debug("user: " + userId + " has no defined sms preference");
 		} catch (EntityPropertyTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -220,17 +219,17 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	
 	
 	private Set<String> filterUserListForPreference(Set<String> userids) {
-		LOG.debug("filterUserListForPreference");
+		log.debug("filterUserListForPreference");
 		List<User> users = userDirectoryService.getUsers(userids);
 		
 		Set<String> ret = new HashSet<String>();
 		if (users == null)
 			return ret;
 		
-		LOG.debug("got a list of " + users.size() + " users");
+		log.debug("got a list of " + users.size() + " users");
 		for (int i = 0; i < users.size(); i++) {
 			User u = users.get(i);
-			LOG.debug("checking " + u.getEid());
+			log.debug("checking " + u.getEid());
 			try {
 				boolean wantsSMS = u.getProperties().getBooleanProperty(PREF_SMS_NOTIFICATIONS);
 				if (wantsSMS) {
@@ -238,7 +237,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 						ret.add(u.getId());
 					}
 				}else{
-					LOG.debug("User: " + u.getSortName() + " doesn't want to get SMS messages!");
+					log.debug("User: " + u.getSortName() + " doesn't want to get SMS messages!");
 				}
 				
 			} catch (EntityPropertyNotDefinedException e) {
@@ -251,7 +250,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 			}
 			
 		}
-		LOG.debug("returning list of " + ret.size());
+		log.debug("returning list of " + ret.size());
 		return ret;
 	}
 
@@ -263,13 +262,13 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	private boolean userTypeToSMS(String type) {
 		String typesToSms = serverConfigurationService.getString("sms.usertypes.allow", null);
 		if (typesToSms == null) {
-			LOG.debug("No user types defined allowing all");
+			log.debug("No user types defined allowing all");
 			return true;
 		}
 		
 		List<String> types = Arrays.asList(typesToSms.split(","));
 		if (types.contains(type)) {
-			LOG.debug("Type:" + type + " found in prefs list");
+			log.debug("Type:" + type + " found in prefs list");
 			return true;
 		}
 		return false;

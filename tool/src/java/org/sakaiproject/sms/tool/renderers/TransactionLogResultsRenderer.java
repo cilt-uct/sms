@@ -18,8 +18,6 @@
 
 package org.sakaiproject.sms.tool.renderers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.SmsTransactionLogic;
@@ -30,16 +28,17 @@ import org.sakaiproject.sms.tool.params.SortPagerViewParams;
 import org.sakaiproject.sms.tool.util.NullHandling;
 import org.springframework.util.Assert;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIJointContainer;
 import uk.org.ponder.rsf.components.UIMessage;
 import uk.org.ponder.rsf.components.UIOutput;
 
+@Slf4j
 public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 
-	private static Log LOG = LogFactory
-			.getLog(TransactionLogResultsRenderer.class);
+
 
 	private SearchResultContainer<SmsTransaction> smsTransactions = new SearchResultContainer<SmsTransaction>(
 			SmsUiConstants.NO_RESULTS_PAGING_SIZE);
@@ -81,7 +80,7 @@ public class TransactionLogResultsRenderer implements SearchResultsRenderer {
 					.getPagedSmsTransactionsForCriteria(searchFilterBean);
 			sortViewParams.current_count = smsTransactions.getNumberOfPages();
 		} catch (SmsSearchException e) {
-			LOG.error(e);
+			log.error(e.getLocalizedMessage(), e);
 			fail = true;
 		}
 

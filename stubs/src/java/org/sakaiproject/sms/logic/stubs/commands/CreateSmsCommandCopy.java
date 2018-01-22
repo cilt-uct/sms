@@ -1,20 +1,19 @@
 package org.sakaiproject.sms.logic.stubs.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class CreateSmsCommandCopy implements ShortMessageCommand {
 
-	private static final Log LOG = LogFactory
-			.getLog(CreateSmsCommandCopy.class);
 
 	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 		
 		String[] body = msg.getBodyParameters();
 		
-		LOG.debug(getCommandKey() + " command called with parameters: ("
+		log.debug(getCommandKey() + " command called with parameters: ("
 				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + body[0] + ")");
 		return getCommandKey() + " COPY";
 	}

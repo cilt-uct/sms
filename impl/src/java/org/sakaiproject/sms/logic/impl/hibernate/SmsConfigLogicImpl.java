@@ -23,7 +23,6 @@ package org.sakaiproject.sms.logic.impl.hibernate;
 
 import java.util.List;
 
-import org.hibernate.Hibernate;
 import org.hibernate.type.StringType;
 import org.sakaiproject.sms.logic.QueryParameter;
 import org.sakaiproject.sms.logic.SmsConfigLogic;

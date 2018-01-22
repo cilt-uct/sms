@@ -21,8 +21,6 @@
 
 package org.sakaiproject.sms.logic.smpp.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.ExternalMessageSending;
@@ -31,6 +29,9 @@ import org.sakaiproject.sms.logic.smpp.SmsScheduler;
 import org.sakaiproject.sms.model.SmsConfig;
 import org.springframework.util.Assert;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SmsSchedulerImpl implements SmsScheduler {
 
 	private SmsConfig smsConfig = null;
@@ -45,7 +46,6 @@ public class SmsSchedulerImpl implements SmsScheduler {
 
 	private boolean schedulerEnabled = true;// for unit testing only
 
-	private static final Log LOG = LogFactory.getLog(SmsSchedulerImpl.class);
 
 	public SmsCore smsCore = null;
 
@@ -78,12 +78,12 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		Assert.notNull(smsCore);
 		setSmsConfig(hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig());
-		LOG.info("externalLogic: " + externalMessageSending);
+		log.info("externalLogic: " + externalMessageSending);
 		if (externalLogic.isNodeBindToGateway() || externalMessageSending != null) {
 			smsSchedulerThread = new SmsSchedulerThread();
-			LOG.info("init() - scheduler started");
+			log.info("init() - scheduler started");
 		} else {	
-			LOG.info("init() - this node not binding to SMPP gateway, scheduler NOT started");
+			log.info("init() - this node not binding to SMPP gateway, scheduler NOT started");
 		}
 	}
 
@@ -141,7 +141,7 @@ public class SmsSchedulerImpl implements SmsScheduler {
 					smsCore.checkAndSetTasksCompleted();
 					smsCore.adjustLateDeliveryBilling();
 				} catch (Exception e) {
-					LOG.error("SoScheduler encountered an error : "
+					log.error("SoScheduler encountered an error : "
 							+ e.getMessage(), e);
 				}
 				

@@ -17,12 +17,16 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Level;
-import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +53,8 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
 import org.sakaiproject.sms.util.DateUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This test also send messages to the smpp simulator but it check the specific
  * statuses of sent messages. It also test the retrieval of the next sms task
@@ -58,6 +64,7 @@ import org.sakaiproject.sms.util.DateUtil;
  * 
  */
 
+@Slf4j
 public class SmsCoreTest extends AbstractBaseTestCase {
 
 	static SmsSmppImpl smsSmppImpl = null;
@@ -67,8 +74,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 	static SmsBillingImpl smsBillingImpl = new SmsBillingImpl();
 	static SmsConfig SmsConfigImpl = new SmsConfig();
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(SmsCoreTest.class);
+
 
 	@BeforeClass
 	public static void beforeClass(){
@@ -103,7 +109,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 
 		smsCoreImpl.setSmsSmpp(smsSmppImpl);
 
-		LOG.setLevel(Level.WARN);
+		//log.setLevel(Level.WARN);
 		smsAccount = new SmsAccount();
 		smsAccount.setSakaiUserId("SMSCoreTest"
 				+ externalLogic.getCurrentUserId());
@@ -389,7 +395,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_PENDING);
 		smsTask.setAttemptCount(0);
 
-		LOG.info("Disconnecting from server for fail test ");
+		log.info("Disconnecting from server for fail test ");
 		smsSmppImpl.disconnectGateWay();
 		for (int i = 0; i < 5; i++) {
 			smsCoreImpl.processTask(smsTask);
@@ -408,7 +414,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 				SmsConst_DeliveryStatus.STATUS_FAIL).size() > 0);
 
 		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(smsTask);
-		LOG.info("Reconnecting to server after fail test ");
+		log.info("Reconnecting to server after fail test ");
 		smsSmppImpl.connectToGateway();
 	}
 
@@ -460,7 +466,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			fail("Excpected validation exception");
 		} catch (SmsTaskValidationException e1) {
 			assertTrue(e1.getErrorMessages().size() > 0);
-			LOG.debug(e1.getErrorMessagesAsBlock());
+			log.debug(e1.getErrorMessagesAsBlock());
 		} catch (SmsSendDeniedException se) {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {
@@ -512,7 +518,7 @@ public class SmsCoreTest extends AbstractBaseTestCase {
 			assertTrue(e1.getErrorMessages().size() > 0);
 			assertTrue(e1.getErrorMessages().get(0).indexOf(
 					"sms.errors.task.credit.insufficient") > -1);
-			LOG.debug(e1.getErrorMessagesAsBlock());
+			log.debug(e1.getErrorMessagesAsBlock());
 		} catch (SmsSendDeniedException se) {
 			fail("SmsSendDeniedException caught");
 		} catch (SmsSendDisabledException sd) {

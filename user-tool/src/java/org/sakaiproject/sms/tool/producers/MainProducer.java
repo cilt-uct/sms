@@ -24,8 +24,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.SmsTaskLogic;
@@ -40,6 +38,7 @@ import org.sakaiproject.sms.tool.util.CurrencyUtil;
 import org.sakaiproject.sms.tool.util.DateUtil;
 import org.sakaiproject.sms.tool.util.StatusUtils;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.org.ponder.rsf.components.UIBranchContainer;
 import uk.org.ponder.rsf.components.UIContainer;
 import uk.org.ponder.rsf.components.UIInternalLink;
@@ -54,11 +53,12 @@ import uk.org.ponder.rsf.view.DefaultView;
 import uk.org.ponder.rsf.view.ViewComponentProducer;
 import uk.org.ponder.rsf.viewstate.ViewParameters;
 
+
+@Slf4j
 public class MainProducer implements ViewComponentProducer, DefaultView {
 	
 	public static final String VIEW_ID = "index";
 	
-	public static final Log log = LogFactory.getLog(MainProducer.class);
 		
 	public String getViewID() {
 		return VIEW_ID;

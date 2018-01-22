@@ -1,13 +1,13 @@
 package org.sakaiproject.sms.logic.stubs.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
 import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DeleteSmsCommand implements ShortMessageCommand {
 
-	private static final Log LOG = LogFactory.getLog(DeleteSmsCommand.class);
 
 	public String execute(ParsedMessage msg, String messageType, String mobileNr) {
 
@@ -21,7 +21,7 @@ public class DeleteSmsCommand implements ShortMessageCommand {
 				concatBody += "," + arg;
 			}
 		}
-		LOG.debug(getCommandKey() + " command called with parameters: ("
+		log.debug(getCommandKey() + " command called with parameters: ("
 				+ msg.getSite() + ", " + msg.getIncomingUserId() + ", " + body[0] + ")");
 		return getCommandKey();
 	}
