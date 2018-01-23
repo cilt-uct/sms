@@ -210,8 +210,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 		} catch (EntityPropertyNotDefinedException e) {
 			log.debug("user: " + userId + " has no defined sms preference");
 		} catch (EntityPropertyTypeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		}
 		
 		return true;
@@ -245,8 +244,7 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 					ret.add(u.getId());
 				}
 			} catch (EntityPropertyTypeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 			
 		}

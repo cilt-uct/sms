@@ -43,6 +43,8 @@ import org.sakaiproject.sms.model.SmsConfig;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * The data service will handle all sms Account database transactions for the
  * sms tool in Sakai.
@@ -52,6 +54,7 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
  * @created 25-Nov-2008 08:12:41 AM
  */
 @SuppressWarnings("unchecked")
+@Slf4j
 public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
 	private HibernateLogicLocator hibernateLogicLocator = null;
@@ -278,8 +281,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 			try {
 				persistSmsAccount(smsAccount);
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 
 			return getSmsAccount(sakaiSiteId, sakaiUserId);
@@ -389,8 +391,7 @@ public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 		try {
 			persistSmsAccount(account);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		}
 	}
 

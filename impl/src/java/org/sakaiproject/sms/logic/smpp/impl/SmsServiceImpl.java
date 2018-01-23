@@ -172,7 +172,7 @@ public class SmsServiceImpl implements SmsService {
 		try {
 			smsAcountId = smsBilling.getAccountID(sakaiSiteID, sakaiUserID);
 		} catch (SmsAccountNotFoundException e) {
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 			return false;
 		}
 		return smsBilling.checkSufficientCredits(smsAcountId, creditsRequired,

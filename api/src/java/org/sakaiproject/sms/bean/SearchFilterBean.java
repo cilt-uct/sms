@@ -27,6 +27,8 @@ import java.util.Date;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Generic search filter bean object. Will be used for the search screens as a
  * criteria object to house the search parameters
@@ -35,6 +37,7 @@ import org.sakaiproject.sms.util.DateUtil;
  * @version 1.0
  * @created 19-Nov-2008
  */
+@Slf4j
 public class SearchFilterBean {
 
 	/** The id. */
@@ -230,7 +233,7 @@ public class SearchFilterBean {
 				dateFrom = parsedDate;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -260,7 +263,7 @@ public class SearchFilterBean {
 				dateTo = parsedDate;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		}
 	}
 
