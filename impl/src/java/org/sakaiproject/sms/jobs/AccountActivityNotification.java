@@ -117,14 +117,11 @@ public class AccountActivityNotification implements Job {
 				output = new BufferedWriter(new FileWriter(csvAttach));
 				output.write(csv.toString());
 			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				log.warn(e1.getLocalizedMessage(), e1);
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 			finally {
 				try {
@@ -132,8 +129,7 @@ public class AccountActivityNotification implements Job {
 						output.close();
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getLocalizedMessage(), e);
 				}
 				
 			}
@@ -156,8 +152,7 @@ public class AccountActivityNotification implements Job {
 				String subject = template.getSubject();
 				emailService.sendMail(inetFrom, inetTo, subject, template.getRenderedMessage(), null, null, headers, attachments);
 			} catch (AddressException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 			
 			if (!csvAttach.delete()) {

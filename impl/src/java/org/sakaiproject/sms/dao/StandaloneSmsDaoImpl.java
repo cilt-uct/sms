@@ -32,6 +32,8 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.hbm2ddl.SchemaValidator;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Configures hibernate with mapping definitions and configuration properties
  * for use in the application. Implements a singleton for creating a hibernate
@@ -46,6 +48,7 @@ import org.springframework.orm.hibernate3.HibernateTransactionManager;
  * @version 1.0
  * @created 24-Nov-2008
  */
+@Slf4j
 public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 
 	public StandaloneSmsDaoImpl(String propertiesFile) {
@@ -157,11 +160,9 @@ public class StandaloneSmsDaoImpl extends SmsDaoImpl implements SmsDao {
 		try {
 			new SchemaValidator(getConfiguration()).validate();
 		} catch (HibernateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		}
 	}
 

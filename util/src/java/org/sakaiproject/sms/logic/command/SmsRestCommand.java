@@ -98,7 +98,7 @@ public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedComm
 		} catch (HttpRequestException e) {
 			log.warn("Command: " + commandKey + "threw Exception: " + e);
 			if (log.isDebugEnabled()) {
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 			
 			//TODO -  retry or queue
@@ -106,7 +106,7 @@ public class SmsRestCommand implements ShortMessageCommand, AccountSpecifiedComm
 		} catch (HttpIOException hio) {
 			log.warn("Command: " + commandKey + "threw Exception: " + hio);
 			if (log.isDebugEnabled()) {
-				hio.printStackTrace();
+				log.warn(hio.getLocalizedMessage(),hio);
 			}
 		}
 

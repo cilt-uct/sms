@@ -127,16 +127,14 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 			}
 
 		} catch (LDAPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		} 
 		finally {
 			if (conn.isConnected()) {
 				try {
 					conn.disconnect();
 				} catch (LDAPException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getLocalizedMessage(), e);
 				}
 			}
 		}
@@ -156,8 +154,7 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 					ret.add(id);
 				}
 			} catch (UserNotDefinedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn(e.getLocalizedMessage(), e);
 			}
 			
 		}
@@ -247,16 +244,14 @@ public class LdapMobileNumberHelper extends MobileNumberHelperImpl {
 			}
 
 		} catch (LDAPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e.getLocalizedMessage(), e);
 		} 
 		finally {
 			if (conn.isConnected()) {
 				try {
 					conn.disconnect();
 				} catch (LDAPException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.warn(e.getLocalizedMessage(), e);
 				}
 			}
 		}
