@@ -14,7 +14,6 @@
 	<properties>
 		<deploy.target />
 	</properties>
-
 	<!-- the base is parent -->
 	<parent>
 		<groupId>org.sakaiproject.sms</groupId>
@@ -195,7 +194,10 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
         </dependency>
-
+  <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+</dependency>
 
 	</dependencies>
 

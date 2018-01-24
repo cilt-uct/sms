@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.sakaiproject.sms.dao.StandaloneSmsDaoImpl;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsAccountLogicImpl;
@@ -217,9 +218,9 @@ public class SmppThread extends TestRunnable {
 						.getMessagesWithSmscStatus(
 								SmsConst_SmscDeliveryStatus.ENROUTE).size())
 				+ " reports");
-		assertTrue(updatedSmsTask.getMessagesWithSmscStatus(
+		Assert.assertTrue(updatedSmsTask.getMessagesWithSmscStatus(
 				SmsConst_SmscDeliveryStatus.ENROUTE).size() == 0);
-		assertTrue(updatedSmsTask.getSmsMessages().size() == message_count);
+		Assert.assertTrue(updatedSmsTask.getSmsMessages().size() == message_count);
 
 	}
 }

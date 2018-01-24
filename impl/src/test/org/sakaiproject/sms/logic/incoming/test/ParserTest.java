@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.incoming.test;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
@@ -39,13 +39,13 @@ public class ParserTest{
 		parsed.setBody("command site body");
 		
 		parser.parseCommand(parsed);
-		assertEquals("command", parsed.getCommand());
+		Assert.assertEquals("command", parsed.getCommand());
 
 		parser.parseSite(parsed);
-		assertEquals("site", parsed.getSite());
+		Assert.assertEquals("site", parsed.getSite());
 
 		parser.parseBody(parsed, 1, true);
-		assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
 	}
 
     @Test
@@ -55,10 +55,10 @@ public class ParserTest{
 		parsed.setBody("command body");
 		
 		parser.parseCommand(parsed);
-		assertEquals("command", parsed.getCommand());
+		Assert.assertEquals("command", parsed.getCommand());
 
 		parser.parseBody(parsed, 1, false);
-		assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
 	}
 
     @Test
@@ -67,13 +67,13 @@ public class ParserTest{
 		ParsedMessage parsed = new ParsedMessage();
 		parsed.setBody("command site  body has multiple");
 		parser.parseBody(parsed, 2, true);
-		assertEquals("body", parsed.getBodyParameters()[0]);
-		assertEquals("has multiple", parsed.getBodyParameters()[1]);
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("has multiple", parsed.getBodyParameters()[1]);
 		
 		parser.parseBody(parsed, 3, true);
-		assertEquals("body", parsed.getBodyParameters()[0]);
-		assertEquals("has", parsed.getBodyParameters()[1]);
-		assertEquals("multiple", parsed.getBodyParameters()[2]);
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("has", parsed.getBodyParameters()[1]);
+		Assert.assertEquals("multiple", parsed.getBodyParameters()[2]);
 		
 	}
 
@@ -83,13 +83,13 @@ public class ParserTest{
 		parsed.setBody("command body has multiple");
 		
 		parser.parseBody(parsed, 2, false);
-		assertEquals("body", parsed.getBodyParameters()[0]);
-		assertEquals("has multiple", parsed.getBodyParameters()[1]);
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("has multiple", parsed.getBodyParameters()[1]);
 		
 		parser.parseBody(parsed, 3, false);
-		assertEquals("body", parsed.getBodyParameters()[0]);
-		assertEquals("has", parsed.getBodyParameters()[1]);
-		assertEquals("multiple", parsed.getBodyParameters()[2]);		
+		Assert.assertEquals("body", parsed.getBodyParameters()[0]);
+		Assert.assertEquals("has", parsed.getBodyParameters()[1]);
+		Assert.assertEquals("multiple", parsed.getBodyParameters()[2]);		
 	}
 
     @Test
@@ -99,7 +99,7 @@ public class ParserTest{
 
 		parser.parseCommand(parsed);
 
-		assertEquals("command", parsed.getCommand());
+		Assert.assertEquals("command", parsed.getCommand());
 	}
 
     @Test
@@ -110,8 +110,8 @@ public class ParserTest{
 		parser.parseCommand(parsed);
 		parser.parseSite(parsed);
 
-		assertEquals("site", parsed.getSite());
-		assertEquals("command", parsed.getCommand());
+		Assert.assertEquals("site", parsed.getSite());
+		Assert.assertEquals("command", parsed.getCommand());
 	}
 
     @Test
@@ -121,18 +121,18 @@ public class ParserTest{
 
 		parser.parseCommand(parsed);
 		parser.parseSite(parsed);
-		assertEquals("site", parsed.getSite());
-		assertEquals("command", parsed.getCommand());
+		Assert.assertEquals("site", parsed.getSite());
+		Assert.assertEquals("command", parsed.getCommand());
 		
 		try {
 			parser.parseBody(parsed, 1, true);			
-			fail("should throw exception");
+			Assert.fail("should throw exception");
 		} catch (ParseException e) {
-			assertNotNull(e);
+			Assert.assertNotNull(e);
 			return;
 		}
 		
-		assertTrue("should have failed", false);
+		Assert.assertTrue("should have failed", false);
 	}
 
     @Test
@@ -142,7 +142,7 @@ public class ParserTest{
 			parser.parseCommand(parsed);
 			parser.parseSite(parsed);			
 		} catch (ParseException e) {
-			assertNotNull(e);
+			Assert.assertNotNull(e);
 		}
 	}
 
@@ -153,9 +153,9 @@ public class ParserTest{
 			parsed.setBody("");
 			parser.parseCommand(parsed);
 			parser.parseSite(parsed);			
-			fail("should throw exception");
+			Assert.fail("should throw exception");
 		} catch (ParseException e) {
-			assertNotNull(e);
+			Assert.assertNotNull(e);
 		}
 	}
 
@@ -166,11 +166,11 @@ public class ParserTest{
 		
 		parsed.setBody("help");
 		parser.parseCommand(parsed);
-		assertEquals("help", parsed.getCommand());
+		Assert.assertEquals("help", parsed.getCommand());
 
 		parsed.setBody("HELP");
 		parser.parseCommand(parsed);
-		assertEquals("HELP", parsed.getCommand());
+		Assert.assertEquals("HELP", parsed.getCommand());
 	}
 
     @Test
@@ -181,9 +181,9 @@ public class ParserTest{
 	
 		try {
 			parser.parseBody(parsed, 3, true);
-			fail("Should throw exception");
+			Assert.fail("Should throw exception");
 		} catch (ParseException pe) {
-			assertNotNull(pe);
+			Assert.assertNotNull(pe);
 		}
 
 	}

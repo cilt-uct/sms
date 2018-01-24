@@ -17,7 +17,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.test;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Test;
 import org.sakaiproject.sms.logic.smpp.util.MessageCatalog;
 import org.sakaiproject.sms.model.constants.SmsConstants;
@@ -45,7 +45,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 			body = MessageCatalog.getMessage(
 					"messages.notificationBodyStarted", "35", "R12.45");
 		} catch (Exception e) {
-			fail(e.getMessage());
+			Assert.fail(e.getMessage());
 		}
 		System.out.println("Subject" + subject);
 		System.out.println("Body" + body);
@@ -56,7 +56,7 @@ public class MessageCatalogTest extends AbstractBaseTestCase {
 		String message = null;
 		try {
 			message = MessageCatalog.getMessage("messages.nonexistent");
-			assertTrue(message.equals(SmsConstants.CATALOG_MESSAGE_NOT_FOUND));
+			Assert.assertTrue(message.equals(SmsConstants.CATALOG_MESSAGE_NOT_FOUND));
 		} catch (Exception e) {
 			// fail(e.getMessage());
 		}

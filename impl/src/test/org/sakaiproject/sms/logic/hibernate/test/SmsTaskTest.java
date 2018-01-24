@@ -1,12 +1,5 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +10,7 @@ import java.util.Set;
 
 import org.hibernate.PropertyValueException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -152,13 +146,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		longMessageTask.setMessageBody(text);
 		try {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(longMessageTask);
-			fail();
+			Assert.fail();
 		}
 		catch (IllegalArgumentException ex) {
 			
 		} 
 		catch (Exception e) {
-			fail();
+			Assert.fail();
 		}
 		
 		SmsTask encodedTask = createTestTask();
@@ -167,13 +161,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		encodedTask.setMessageBody(borderLine);
 		try {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(encodedTask);
-			fail();
+			Assert.fail();
 		}
 		catch (IllegalArgumentException ex) {
 			
 		} 
 		catch (Exception e) {
-			fail();
+			Assert.fail();
 		}
 		
 	}
@@ -186,16 +180,16 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	public void testDeleteSmsTask() {
         try{
     		hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
-            fail("Should throw integrity constraint violation exception");
+    		Assert.fail("Should throw integrity constraint violation exception");
         }catch(DataIntegrityViolationException e){
             //great
         }catch(Exception e){
-            fail("Should be a DataIntegrityViolationException");
+        	Assert.fail("Should be a DataIntegrityViolationException");
         }
         teardown();
 		SmsTask getSmsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(insertTask.getId());
-		assertNull("Object not removed", getSmsTask);
+		Assert.assertNull("Object not removed", getSmsTask);
 	}
 
 	/**
@@ -218,8 +212,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		 * (message.getSmsTask().getDateToSend() != null &&
 		 * message.getSmsTask().getDateToSend().getTime() < t .getTime()) { t =
 		 * message.getSmsTask().getDateToSend(); break; } }
-		 * assertNotNull("No records found", t);
-		 * assertTrue("Did not get the correct task to be processed", nextTask
+		 * Assert.assertNotNull("No records found", t);
+		 * Assert.assertTrue("Did not get the correct task to be processed", nextTask
 		 * .getDateToSend().getTime() == t.getTime());
 		 */
 
@@ -235,8 +229,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(taskToPersist);
 		SmsTask returnedSmsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(taskToPersist.getId());
-		assertNotNull(returnedSmsTask);
-		assertEquals(taskToPersist.getId(), returnedSmsTask.getId());
+		Assert.assertNotNull(returnedSmsTask);
+		Assert.assertEquals(taskToPersist.getId(), returnedSmsTask.getId());
 	}
 
 	/**
@@ -246,8 +240,8 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	public void testGetSmsTasks() {
 		List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic()
 				.getAllSmsTask();
-		assertNotNull("Returned list is null", tasks);
-		assertTrue("No records returned", tasks.size() > 0);
+		Assert.assertNotNull("Returned list is null", tasks);
+		Assert.assertTrue("No records returned", tasks.size() > 0);
 	}
 
 	/**
@@ -285,15 +279,15 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 
 			List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic()
 					.getPagedSmsTasksForCriteria(bean).getPageResults();
-			assertTrue("Collection returned has no objects", tasks.size() > 0);
-			assertEquals(1, tasks.size());
+			Assert.assertTrue("Collection returned has no objects", tasks.size() > 0);
+			Assert.assertEquals(1, tasks.size());
 
 			for (SmsTask task : tasks) {
 				// We know that only one task should be returned
-				assertTrue(task.getId().equals(insertTask.getId()));
+				Assert.assertTrue(task.getId().equals(insertTask.getId()));
 			}
 		} catch (SmsSearchException se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		} finally {
 			hibernateLogicLocator.getSmsTaskLogic().deleteSmsTask(insertTask);
 		}
@@ -343,7 +337,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			SearchResultContainer<SmsTask> con = hibernateLogicLocator
 					.getSmsTaskLogic().getPagedSmsTasksForCriteria(bean);
 			List<SmsTask> tasks = con.getPageResults();
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					tasks.size() == SmsConstants.DEFAULT_PAGE_SIZE);
 
 			// Test last page. We know there are 124 records to this should
@@ -362,11 +356,11 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 			tasks = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert
 					- (pages * SmsConstants.DEFAULT_PAGE_SIZE);
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					tasks.size() == lastPageRecordCount);
 
 		} catch (Exception se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		}
 	}
 
@@ -404,7 +398,7 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	public void testInsertSmsTask() {
 		SmsTask testTask = createTestTask();
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(testTask);
-		assertTrue("Object not persisted", testTask.exists());
+		Assert.assertTrue("Object not persisted", testTask.exists());
 	}
 
 	/**
@@ -417,12 +411,12 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(testTask);
 		SmsTask smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				testTask.getId());
-		assertFalse(smsTask.getSakaiSiteId().equals("newSakaiSiteId"));
+		Assert.assertFalse(smsTask.getSakaiSiteId().equals("newSakaiSiteId"));
 		smsTask.setSakaiSiteId("newSakaiSiteId");
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 		smsTask = hibernateLogicLocator.getSmsTaskLogic().getSmsTask(
 				smsTask.getId());
-		assertEquals("newSakaiSiteId", smsTask.getSakaiSiteId());
+		Assert.assertEquals("newSakaiSiteId", smsTask.getSakaiSiteId());
 	}
 
     @Test
@@ -443,13 +437,13 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 		SmsTask taskReturned = hibernateLogicLocator.getSmsTaskLogic()
 				.getSmsTask(taskToSave.getId());
 
-		assertEquals("Three mobile numbers should have been obtained", 3,
+		Assert.assertEquals("Three mobile numbers should have been obtained", 3,
 				taskReturned.getDeliveryMobileNumbersSet().size());
-		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
+		Assert.assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_1));
-		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
+		Assert.assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_2));
-		assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
+		Assert.assertTrue(taskReturned.getDeliveryMobileNumbersSet().contains(
 				MOBILE_NUMBER_3));
 	}
 	
@@ -467,17 +461,17 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	    task.setSmsAccountId(Long.valueOf(1));
 	    try {
 	    	hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
-	    	fail("cant save with a null siteId");
+	    	Assert.fail("cant save with a null siteId");
 	    }
 	    catch (PropertyValueException e) {
-	    	fail("cant save with a null siteId");
+	    	Assert.fail("cant save with a null siteId");
 	    }
 	    catch (IllegalArgumentException e) {
 	    	//we ecpect this!
 	    } 
 	    catch (Exception e) {
 			e.printStackTrace();
-			fail("Unkown Exception throws");
+			Assert.fail("Unkown Exception throws");
 		}
 	    
 		task = new SmsTask();
@@ -487,17 +481,17 @@ public class SmsTaskTest extends AbstractBaseTestCase {
 	    task.setSakaiSiteId("~admin");
 	    try {
 	    	hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
-	    	fail("cant save with a null siteId");
+	    	Assert.fail("cant save with a null siteId");
 	    }
 	    catch (PropertyValueException e) {
-	    	fail("cant save with a null siteId");
+	    	Assert.fail("cant save with a null siteId");
 	    }
 	    catch (IllegalArgumentException e) {
 	    	//we expect this!
 	    } 
 	    catch (Exception e) {
 			e.printStackTrace();
-			fail("Unkown Exception throws");
+			Assert.fail("Unkown Exception throws");
 		}
 	}
 

@@ -21,7 +21,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import static org.junit.Assert.*;
+
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -89,7 +90,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
-		assertFalse("Expected insufficient credit", sufficientCredits);
+		Assert.assertFalse("Expected insufficient credit", sufficientCredits);
 	}
 
 	/**
@@ -117,11 +118,11 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
-		assertFalse("Expected insufficient credit", sufficientCredits);
+		Assert.assertFalse("Expected insufficient credit", sufficientCredits);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		sufficientCredits = smsBillingImpl.checkSufficientCredits(account
 				.getId(), creditsRequired);
-		assertTrue("Expected insufficient credit", !sufficientCredits);
+		Assert.assertTrue("Expected insufficient credit", !sufficientCredits);
 	}
 
 	/**
@@ -149,13 +150,13 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		msg.setSmsTask(smsTask);
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
-		assertTrue("Expected sufficient credit", sufficientCredits);
+		Assert.assertTrue("Expected sufficient credit", sufficientCredits);
 
 		account.setCredits(0l);
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		boolean insufficientCredits = !smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
-		assertTrue("Expected insufficient credit", insufficientCredits);
+		Assert.assertTrue("Expected insufficient credit", insufficientCredits);
 
 	}
 
@@ -166,7 +167,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 	public void testConvertAmountToCredits() {
 		double amount = smsBillingImpl.convertCreditsToAmount(testCredits);
 		double credits = smsBillingImpl.convertAmountToCredits(amount);
-		assertTrue(credits == testCredits);
+		Assert.assertTrue(credits == testCredits);
 	}
 
 	/**
@@ -196,21 +197,21 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 				.persistSmsAccount(smsAccount);
 		insertTestTransactionsForAccount(smsAccount);
 
-		assertTrue(smsAccount.exists());
+		Assert.assertTrue(smsAccount.exists());
 
 		List<SmsTransaction> transactions = hibernateLogicLocator
 				.getSmsTransactionLogic().getSmsTransactionsForAccountId(
 						smsAccount.getId());
 
-		assertNotNull(transactions);
-		assertTrue(transactions.size() > 0);
+		Assert.assertNotNull(transactions);
+		Assert.assertTrue(transactions.size() > 0);
 
 		smsBillingImpl.recalculateAccountBalance(smsAccount.getId());
 
 		SmsAccount recalculatedAccount = hibernateLogicLocator
 				.getSmsAccountLogic().getSmsAccount(smsAccount.getId());
-		assertNotNull(recalculatedAccount);
-		assertTrue(recalculatedAccount.getCredits() == 6660);
+		Assert.assertNotNull(recalculatedAccount);
+		Assert.assertTrue(recalculatedAccount.getCredits() == 6660);
 	}
 
 	/**
@@ -256,10 +257,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
-		assertNotNull(smsAccount);
+		Assert.assertNotNull(smsAccount);
 
 		// Transaction did reduce the account balance
-		assertTrue(smsAccount.getCredits() < origionalAccBalance);
+		Assert.assertTrue(smsAccount.getCredits() < origionalAccBalance);
 	}
 
 	/**
@@ -305,10 +306,10 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
-		assertNotNull(smsAccount);
+		Assert.assertNotNull(smsAccount);
 
 		// Account was credited
-		assertTrue(smsAccount.getCredits() < originalAccBalance);
+		Assert.assertTrue(smsAccount.getCredits() < originalAccBalance);
 
 		smsBillingImpl.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), smsTask.getCreditsActual());
 
@@ -317,7 +318,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 
 		// Account balance was returnd to origional state since the actual
 		// groups size on the task was zero
-		assertTrue(smsAccount.getCredits() == originalAccBalance);
+		Assert.assertTrue(smsAccount.getCredits() == originalAccBalance);
 
 	}
 
@@ -364,15 +365,15 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		// Check the credits have been reserved.
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
-		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits() < originalCreditBalance);
+		Assert.assertNotNull(retAccount);
+		Assert.assertTrue(retAccount.getCredits() < originalCreditBalance);
 
 		smsBillingImpl.cancelPendingRequest(smsTask.getId());
 		// Check the credits have been reserved.
 		retAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				smsAccount.getId());
-		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits() == originalCreditBalance);
+		Assert.assertNotNull(retAccount);
+		Assert.assertTrue(retAccount.getCredits() == originalCreditBalance);
 	}
 
 	/**
@@ -416,8 +417,8 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		// Check the account balance was deducted from
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
-		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits() < origionalAccountBalance);
+		Assert.assertNotNull(retAccount);
+		Assert.assertTrue(retAccount.getCredits() < origionalAccountBalance);
 	}
 
 	/**
@@ -441,9 +442,9 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		smsBillingImpl.creditAccount(smsAccount.getId(), 100L, "something");
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
-		assertNotNull(retAccount);
-		assertTrue(retAccount.getCredits() > origionalCreditBalance);
-		assertTrue(retAccount.getCredits() == 100L);
+		Assert.assertNotNull(retAccount);
+		Assert.assertTrue(retAccount.getCredits() > origionalCreditBalance);
+		Assert.assertTrue(retAccount.getCredits() == 100L);
 	}
 
 	// ///////////////////////////////////////
@@ -492,7 +493,7 @@ public class SmsBillingTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		boolean sufficientCredits = smsBillingImpl.checkSufficientCredits(
 				account.getId(), creditsRequired);
-		assertFalse("Expected insufficient credit", sufficientCredits);
+		Assert.assertFalse("Expected insufficient credit", sufficientCredits);
 		account.setEnddate(null); // restore
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 	}
