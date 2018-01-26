@@ -249,7 +249,7 @@
 					<excludes>
 						<exclude>**/simulatorrequired/</exclude>
 						<!-- SMS-290 -->
-						<exclude>**/SmsAccountTest>AbstractBaseTestCase.*</exclude>
+						<exclude>**/SmsAccountTest.*</exclude>
 						<exclude>**/SmsAccountTest.*</exclude>
   						<exclude>**/SmsConfigTest.*</exclude>
   						<exclude>**/SmsDatabaseStressTest.*</exclude>
