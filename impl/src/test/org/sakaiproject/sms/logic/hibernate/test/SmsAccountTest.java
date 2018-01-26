@@ -2,12 +2,12 @@ package org.sakaiproject.sms.logic.hibernate.test;
 
 import java.util.Date;
 import java.util.List;
+
 import org.junit.After;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.sakaiproject.sms.logic.exception.DuplicateUniqueFieldException;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.model.SmsAccount;
@@ -94,7 +94,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
     @Test
 	public void testInsertSmsAccount() {
 		// Check the record was created on the DB... an id will be assigned.
-		assertTrue("Object not persisted", insertSmsAccount.exists());
+		Assert.assertTrue("Object not persisted", insertSmsAccount.exists());
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
     @Test
 	public void testInsertSmsAccountDuplicateSiteId() {
 		// Check the record was created on the DB... an id will be assigned.
-		assertTrue("Object not persisted", insertSmsAccount.exists());
+		Assert.assertTrue("Object not persisted", insertSmsAccount.exists());
 
 		SmsAccount newSmsAccount = new SmsAccount();
 		newSmsAccount.setSakaiSiteId(insertSmsAccount.getSakaiSiteId());
@@ -116,9 +116,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		try {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					newSmsAccount);
-			fail("DuplicateUniqueFieldException should be caught");
+			Assert.fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals("sakaiSiteId", due
+			Assert.assertEquals("sakaiSiteId", due
 					.getField());
 		}
 	}
@@ -129,7 +129,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
     @Test
 	public void testInsertSmsAccountDuplicateUserId() {
 		// Check the record was created on the DB... an id will be assigned.
-		assertTrue("Object not persisted", insertSmsAccount.exists());
+		Assert.assertTrue("Object not persisted", insertSmsAccount.exists());
 
 		SmsAccount newSmsAccount = new SmsAccount();
 		newSmsAccount.setSakaiUserId(insertSmsAccount.getSakaiUserId());
@@ -142,9 +142,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		try {
 			hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(
 					newSmsAccount);
-			fail("DuplicateUniqueFieldException should be caught");
+			Assert.fail("DuplicateUniqueFieldException should be caught");
 		} catch (DuplicateUniqueFieldException due) {
-			assertEquals("sakaiUserId", due
+			Assert.assertEquals("sakaiUserId", due
 					.getField());
 		}
 	}
@@ -156,9 +156,9 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	public void testGetSmsAccountById() {
 		SmsAccount getSmsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
-		assertTrue("Object not persisted", insertSmsAccount.exists());
-		assertNotNull(getSmsAccount);
-		assertEquals(insertSmsAccount, getSmsAccount);
+		Assert.assertTrue("Object not persisted", insertSmsAccount.exists());
+		Assert.assertNotNull(getSmsAccount);
+		Assert.assertEquals(insertSmsAccount, getSmsAccount);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 				.persistSmsAccount(smsAccount);
 		smsAccount = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				insertSmsAccount.getId());
-		assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + "new",
+		Assert.assertEquals(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + "new",
 				smsAccount.getSakaiSiteId());
 	}
 
@@ -185,8 +185,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 	public void testGetSmsAccounts() {
 		List<SmsAccount> accounts = hibernateLogicLocator.getSmsAccountLogic()
 				.getAllSmsAccounts();
-		assertNotNull("Returnend collection is null", accounts);
-		assertTrue("No records returned", accounts.size() > 0);
+		Assert.assertNotNull("Returnend collection is null", accounts);
+		Assert.assertTrue("No records returned", accounts.size() > 0);
 	}
 
 	/**
@@ -199,8 +199,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 						insertSmsAccount.getId()));
 		SmsAccount getSmsAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(insertSmsAccount.getId());
-		assertNull(getSmsAccount);
-		assertNull("Object not removed", getSmsAccount);
+		Assert.assertNull(getSmsAccount);
+		Assert.assertNull("Object not removed", getSmsAccount);
 
 	}
 
@@ -219,8 +219,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		hibernateLogicLocator.getSmsAccountLogic().persistSmsAccount(account);
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(account.getSakaiSiteId(), "");
-		assertNotNull(retAccount);
-		assertEquals(retAccount, account);
+		Assert.assertNotNull(retAccount);
+		Assert.assertEquals(retAccount, account);
 	}
 
 	/**
@@ -240,8 +240,8 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		SmsAccount retAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(SmsConstants.SMS_DEV_DEFAULT_SAKAI_SITE_ID + 1,
 						account.getSakaiUserId());
-		assertNotNull(retAccount);
-		assertEquals(retAccount, account);
+		Assert.assertNotNull(retAccount);
+		Assert.assertEquals(retAccount, account);
 	}
 	
     @Test
@@ -259,13 +259,13 @@ public class SmsAccountTest extends AbstractBaseTestCase {
 		
 		
 		List<SmsAccount> one = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("admin");
-		assertNotNull(one);
+		Assert.assertNotNull(one);
         //the insertSmsAccount and the account in this method
-		assertEquals(2, one.size());
+		Assert.assertEquals(2, one.size());
 		
 		List<SmsAccount> two = hibernateLogicLocator.getSmsAccountLogic().getSmsAccountsForOwner("wegwerg");
-		assertNotNull(two);
-		assertEquals(0, two.size());
+		Assert.assertNotNull(two);
+		Assert.assertEquals(0, two.size());
 		
 	}
 	

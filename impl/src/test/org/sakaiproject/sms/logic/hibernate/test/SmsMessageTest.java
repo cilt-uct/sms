@@ -1,16 +1,17 @@
 package org.sakaiproject.sms.logic.hibernate.test;
 
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.junit.After;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.sakaiproject.sms.bean.SearchFilterBean;
 import org.sakaiproject.sms.bean.SearchResultContainer;
 import org.sakaiproject.sms.logic.exception.SmsSearchException;
@@ -19,7 +20,6 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
-import static org.sakaiproject.sms.util.AbstractBaseTestCase.hibernateLogicLocator;
 
 /**
  * The Class SmsMessageTest.
@@ -105,15 +105,15 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	 */
     @Test
 	public void testInsertSmsMessage() {
-		assertTrue("Task for message not created", insertTask.exists());
-		assertTrue("Object not persisted", insertMessage1.exists());
-		assertTrue("Object not persisted", insertMessage2.exists());
+    	Assert.assertTrue("Task for message not created", insertTask.exists());
+    	Assert.assertTrue("Object not persisted", insertMessage1.exists());
+    	Assert.assertTrue("Object not persisted", insertMessage2.exists());
 		Set<SmsMessage> smsMessages = new HashSet<SmsMessage>();
 		smsMessages.add(insertMessage2);
 		smsMessages.add(insertMessage1);
 		insertTask.setSmsMessagesOnTask(smsMessages);
-		assertTrue("", insertTask.getSmsMessages().contains(insertMessage1));
-		assertTrue("", insertTask.getSmsMessages().contains(insertMessage2));
+		Assert.assertTrue("", insertTask.getSmsMessages().contains(insertMessage1));
+		Assert.assertTrue("", insertTask.getSmsMessages().contains(insertMessage2));
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(insertTask);
 
 	}
@@ -125,9 +125,9 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	public void testGetSmsMessageById() {
 		SmsMessage getSmsMessage = hibernateLogicLocator.getSmsMessageLogic()
 				.getSmsMessage(insertMessage1.getId());
-		assertTrue("Object not persisted", insertMessage1.exists());
-		assertNotNull(getSmsMessage);
-		assertEquals(insertMessage1, getSmsMessage);
+		Assert.assertTrue("Object not persisted", insertMessage1.exists());
+		Assert.assertNotNull(getSmsMessage);
+		Assert.assertEquals(insertMessage1, getSmsMessage);
 
 	}
 
@@ -143,18 +143,18 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				.persistSmsMessage(smsMessage);
 		smsMessage = hibernateLogicLocator.getSmsMessageLogic().getSmsMessage(
 				insertMessage1.getId());
-		assertEquals("newSakaiUserId", smsMessage.getSakaiUserId());
+		Assert.assertEquals("newSakaiUserId", smsMessage.getSakaiUserId());
 	}
 
     @Test
 	public void testGetallMessagesFormTask() {
-		assertTrue("Collection returned has no objects",
+    	Assert.assertTrue("Collection returned has no objects",
 				hibernateLogicLocator.getSmsMessageLogic()
 						.getSmsMessagesForTask(insertTask.getId()) != null);
-		assertTrue("Collection should not be null", hibernateLogicLocator
+    	Assert.assertTrue("Collection should not be null", hibernateLogicLocator
 				.getSmsMessageLogic().getSmsMessagesForTask(888888888l) != null);
 
-		assertTrue("Collection must be empty", hibernateLogicLocator
+    	Assert.assertTrue("Collection must be empty", hibernateLogicLocator
 				.getSmsMessageLogic().getSmsMessagesForTask(888888888l)
 				.isEmpty());
 
@@ -209,14 +209,14 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
 					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
-			assertTrue("Collection returned has no objects",
+			Assert.assertTrue("Collection returned has no objects",
 					messages.size() > 0);
 
 			for (SmsMessage message : messages) {
 				// We know that only one message should be returned becuase
 				// we only added one with status ERROR.
 				message.equals(insertMessage);
-				assertEquals(message, insertMessage);
+				Assert.assertEquals(message, insertMessage);
 			}
 		} catch (SmsSearchException se) {
 
@@ -269,10 +269,10 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
 					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
-			assertTrue("Message not returned", messages.size() == 1);
-			assertNull(messages.get(0).getDateDelivered());
+			Assert.assertTrue("Message not returned", messages.size() == 1);
+			Assert.assertNull(messages.get(0).getDateDelivered());
 		} catch (SmsSearchException se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		}
 
 	}
@@ -335,7 +335,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			SearchResultContainer<SmsMessage> con = hibernateLogicLocator
 					.getSmsMessageLogic().getPagedSmsMessagesForCriteria(bean);
 			List<SmsMessage> messages = con.getPageResults();
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					messages.size() == SmsConstants.DEFAULT_PAGE_SIZE);
 
 			// Test last page. We know there are 124 records to this should
@@ -354,11 +354,11 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 			messages = con.getPageResults();
 			int lastPageRecordCount = recordsToInsert
 					- (pages * SmsConstants.DEFAULT_PAGE_SIZE);
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					messages.size() == lastPageRecordCount);
 
 		} catch (SmsSearchException se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		}
 	}
 
@@ -371,9 +371,9 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				.getNewTestSmsMessageInstance("0721999988", "Message body");
 		hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(
 				message.getSmsTask());
-		assertNotNull("Message returned was null", message);
-		assertNotNull("", message.getSmsTask());
-		assertTrue("Associated SmsTask not created successfully", message
+		Assert.assertNotNull("Message returned was null", message);
+		Assert.assertNotNull("", message.getSmsTask());
+		Assert.assertTrue("Associated SmsTask not created successfully", message
 				.getSmsTask().exists());
 	}
 
@@ -386,8 +386,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				.getSmsMessageLogic()
 				.getSmsMessageBySmscMessageId(
 						insertMessage2.getSmscMessageId(), SmsConstants.SMSC_ID);
-		assertTrue(smsMessage.equals(insertMessage2));
-		assertEquals(smsMessage.getSmscMessageId(), insertMessage2
+		Assert.assertTrue(smsMessage.equals(insertMessage2));
+		Assert.assertEquals(smsMessage.getSmscMessageId(), insertMessage2
 				.getSmscMessageId());
 	}
 
@@ -398,8 +398,8 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 	public void testGetSmsMessages() {
 		List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic()
 				.getAllSmsMessages();
-		assertNotNull("Returned collection is null", messages);
-		assertTrue("No records returned", messages.size() > 0);
+		Assert.assertNotNull("Returned collection is null", messages);
+		Assert.assertTrue("No records returned", messages.size() > 0);
 	}
 
 	/**
@@ -424,7 +424,7 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 				break;
 			}
 		}
-		assertTrue(
+		Assert.assertTrue(
 				"This test requires that messages exist for this task that have a status other than PENDING",
 				otherStatusFound);
 
@@ -433,14 +433,14 @@ public class SmsMessageTest extends AbstractBaseTestCase {
 						SmsConst_DeliveryStatus.STATUS_PENDING);
 
 		// We expect some records to be returned
-		assertTrue("Expected objects in collection", messages.size() > 0);
+		Assert.assertTrue("Expected objects in collection", messages.size() > 0);
 
 		// We know there are messages for this task that have status codes other
 		// than the one specifies above
 		// So assert that the method only returned ones with the specified
 		// status.
 		for (SmsMessage message : messages) {
-			assertTrue("Incorrect value returned for object", message
+			Assert.assertTrue("Incorrect value returned for object", message
 					.getStatusCode().equals(
 							SmsConst_DeliveryStatus.STATUS_PENDING));
 		}

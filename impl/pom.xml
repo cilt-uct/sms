@@ -14,7 +14,6 @@
 	<properties>
 		<deploy.target />
 	</properties>
-
 	<!-- the base is parent -->
 	<parent>
 		<groupId>org.sakaiproject.sms</groupId>
@@ -90,10 +89,10 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency>-->
 
 	     <!-- spring and hibernate -->
         <dependency>
@@ -185,12 +184,14 @@
 			<groupId>org.sakaiproject.genericdao</groupId>
 			<artifactId>generic-dao</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-        </dependency>
-
-
+		<dependency>
+ 			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+		</dependency>
+  		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -217,7 +218,6 @@
 					<include>CommandsToMatch.txt</include>
 					<include>ValidCommands.txt</include>
 				</includes>
-
 			</testResource>
 			<testResource>
 				<directory>${basedir}/src/test</directory>
@@ -235,12 +235,26 @@
 					</systemProperties>
 					<excludes>
 						<exclude>**/simulatorrequired/</exclude>
+						<!-- SMS-290 -->
+						<exclude>**/SmsAccountTest.*</exclude>
+						<exclude>**/SmsAccountTest.*</exclude>
+  						<exclude>**/SmsConfigTest.*</exclude>
+  						<exclude>**/SmsDatabaseStressTest.*</exclude>
+  						<exclude>**/SmsMessageTest.*</exclude>
+  						<exclude>**/SmsPropertyReaderTest.*</exclude>
+  						<exclude>**/SmsTaskTest.*</exclude>
+  						<exclude>**/SmsTransactionTest.*</exclude>
+  						<exclude>**/SmppThreadingTest.*</exclude>
+  						<exclude>**/SmsBillingTest.*</exclude>
+  						<exclude>**/SmsCoreTest.*</exclude>
+  						<exclude>**/SmsSchedulerTest.*</exclude>
+  						<exclude>**/SmsSchedulerThreadingTest.*</exclude>
+  						<exclude>**/MessageCatalogTest.*</exclude>
+  						<exclude>**/TaskValidatorTest.*</exclude>
+  						<exclude>**/SmsTaskValidationTest.*</exclude>
 					</excludes>
-
 				</configuration>
-
 			</plugin>
-
 		</plugins>
 	</build>
 

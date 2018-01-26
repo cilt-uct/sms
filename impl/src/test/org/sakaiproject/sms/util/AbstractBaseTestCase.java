@@ -27,6 +27,7 @@ import org.sakaiproject.sms.logic.impl.hibernate.SmsTaskLogicImpl;
 import org.sakaiproject.sms.logic.impl.hibernate.SmsTransactionLogicImpl;
 import org.sakaiproject.sms.logic.smpp.impl.SmsBillingImpl;
 import org.sakaiproject.sms.logic.stubs.ExternalLogicStub;
+import org.mockito.Mockito;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,7 +58,7 @@ public abstract class AbstractBaseTestCase {
         if(hibernateLogicLocator != null)
             return;
         
-		hibernateLogicLocator = new HibernateLogicLocator();
+		//hibernateLogicLocator = new HibernateLogicLocator();
 		smsDao = new StandaloneSmsDaoImpl("hibernate-test.properties");
 		smsBilling = new SmsBillingImpl();
 		smsBilling.setHibernateLogicLocator(hibernateLogicLocator);

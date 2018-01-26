@@ -17,13 +17,15 @@
  **********************************************************************************/
 package org.sakaiproject.sms.logic.smpp.simulatorrequired.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.AbstractBaseTestCase;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * This class will create 2 Sms schedulers.The will run together processing the

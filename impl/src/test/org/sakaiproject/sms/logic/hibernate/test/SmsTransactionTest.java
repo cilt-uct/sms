@@ -3,7 +3,7 @@ package org.sakaiproject.sms.logic.hibernate.test;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sakaiproject.sms.bean.SearchFilterBean;
@@ -63,9 +63,9 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		SmsTransaction getSmsTransaction = hibernateLogicLocator
 				.getSmsTransactionLogic().getSmsTransaction(
 						smsTransaction.getId());
-		assertTrue("Object not persisted", smsTransaction.exists());
-		assertNotNull(getSmsTransaction);
-		assertEquals(smsTransaction, getSmsTransaction);
+		Assert.assertTrue("Object not persisted", smsTransaction.exists());
+		Assert.assertNotNull(getSmsTransaction);
+		Assert.assertEquals(smsTransaction, getSmsTransaction);
 	}
 
 	/**
@@ -98,14 +98,14 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 		hibernateLogicLocator.getSmsTransactionLogic()
 				.insertCreditAccountTransaction(smsTransaction);
-		assertTrue("Object not persisted", smsTransaction.exists());
+		Assert.assertTrue("Object not persisted", smsTransaction.exists());
 
 		// Check the record was created on the DB... an id will be assigned.
 		SmsAccount theNewAccount = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
-		assertNotNull(theNewAccount);
+		Assert.assertNotNull(theNewAccount);
 
-		assertTrue(theNewAccount.getCredits() == 666L);
+		Assert.assertTrue(theNewAccount.getCredits() == 666L);
 	}
 
 	/**
@@ -119,8 +119,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 	public void testGetSmsTransactions() {
 		List<SmsTransaction> transactions = hibernateLogicLocator
 				.getSmsTransactionLogic().getAllSmsTransactions();
-		assertNotNull("Returnend collection is null", transactions);
-		assertTrue("No records returned", transactions.size() > 0);
+		Assert.assertNotNull("Returnend collection is null", transactions);
+		Assert.assertTrue("No records returned", transactions.size() > 0);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 		try {
 
-			assertTrue("Object not created successfully", smsTransaction
+			Assert.assertTrue("Object not created successfully", smsTransaction
 					.exists());
 
 			SearchFilterBean bean = new SearchFilterBean();
@@ -169,15 +169,15 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 			List<SmsTransaction> transactions = hibernateLogicLocator
 					.getSmsTransactionLogic()
 					.getPagedSmsTransactionsForCriteria(bean).getPageResults();
-			assertTrue("Collection returned has no objects", transactions
+			Assert.assertTrue("Collection returned has no objects", transactions
 					.size() > 0);
 
 			for (SmsTransaction transaction : transactions) {
 				// We know that only one transaction should be returned
-				assertEquals(transaction, smsTransaction);
+				Assert.assertEquals(transaction, smsTransaction);
 			}
 		} catch (Exception se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		}
 		SmsAccount account = hibernateLogicLocator.getSmsAccountLogic()
 				.getSmsAccount(smsAccount.getId());
@@ -235,7 +235,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 					.getSmsTransactionLogic()
 					.getPagedSmsTransactionsForCriteria(bean);
 			List<SmsTransaction> tasks = con.getPageResults();
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					tasks.size() == SmsConstants.DEFAULT_PAGE_SIZE);
 
 			// Test last page. We know there are 124 records to this should
@@ -254,11 +254,11 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 			// int lastPageRecordCount = recordsToInsert % pages;
 			int lastPageRecordCount = recordsToInsert
 					- (pages * SmsConstants.DEFAULT_PAGE_SIZE);
-			assertTrue("Incorrect collection size returned",
+			Assert.assertTrue("Incorrect collection size returned",
 					tasks.size() == lastPageRecordCount);
 
 		} catch (Exception se) {
-			fail(se.getMessage());
+			Assert.fail(se.getMessage());
 		}
 	}
 
@@ -297,8 +297,8 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		SmsTransaction getSmsTransaction = hibernateLogicLocator
 				.getSmsTransactionLogic().getSmsTransaction(
 						smsTransaction.getId());
-		assertNull(getSmsTransaction);
-		assertNull("Object not removed", getSmsTransaction);
+		Assert.assertNull(getSmsTransaction);
+		Assert.assertNull("Object not removed", getSmsTransaction);
 	}
 
 	/**
@@ -337,15 +337,15 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		}
 
 		// Check it was crested
-		assertTrue(smsAccount.exists());
+		Assert.assertTrue(smsAccount.exists());
 		List<SmsTransaction> transactions = hibernateLogicLocator
 				.getSmsTransactionLogic().getSmsTransactionsForAccountId(
 						smsAccount.getId());
-		assertNotNull(transactions);
-		assertTrue(transactions.size() == noOfTrans);
+		Assert.assertNotNull(transactions);
+		Assert.assertTrue(transactions.size() == noOfTrans);
 		for (SmsTransaction smsTransaction : transactions) {
-			assertNotNull(smsTransaction.getSmsAccount());
-			assertTrue(smsTransaction.getSmsAccount().getId().equals(
+			Assert.assertNotNull(smsTransaction.getSmsAccount());
+			Assert.assertTrue(smsTransaction.getSmsAccount().getId().equals(
 					smsAccount.getId()));
 		}
 
@@ -386,15 +386,15 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 		}
 
 		// Check it was created
-		assertTrue(smsAccount.exists());
+		Assert.assertTrue(smsAccount.exists());
 		List<SmsTransaction> transactions = hibernateLogicLocator
 				.getSmsTransactionLogic().getSmsTransactionsForAccountId(
 						smsAccount.getId());
-		assertNotNull(transactions);
-		assertTrue(transactions.size() == noOfTrans);
+		Assert.assertNotNull(transactions);
+		Assert.assertTrue(transactions.size() == noOfTrans);
 		for (SmsTransaction smsTransaction : transactions) {
-			assertNotNull(smsTransaction.getSmsAccount());
-			assertTrue(smsTransaction.getSmsTaskId().equals(smsTaskId));
+			Assert.assertNotNull(smsTransaction.getSmsAccount());
+			Assert.assertTrue(smsTransaction.getSmsTaskId().equals(smsTaskId));
 		}
 	}
 
@@ -427,7 +427,7 @@ public class SmsTransactionTest extends AbstractBaseTestCase {
 
 		SmsTransaction cancelTransaction = hibernateLogicLocator
 				.getSmsTransactionLogic().getCancelSmsTransactionForTask(123L);
-		assertNotNull(cancelTransaction);
-		assertEquals(cancelTransaction, smsTransaction);
+		Assert.assertNotNull(cancelTransaction);
+		Assert.assertEquals(cancelTransaction, smsTransaction);
 	}
 }
