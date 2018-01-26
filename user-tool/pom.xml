@@ -34,13 +34,10 @@
 			<groupId>org.sakaiproject.sms</groupId>
 			<artifactId>sms-stubs</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
+
 
                 <!-- RSF dependencies -->
-<dependency>
+        <dependency>
             <groupId>org.sakaiproject.rsf</groupId>
             <artifactId>sakai-rsf-core</artifactId>
             <version>${project.version}</version>
