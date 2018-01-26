@@ -95,10 +95,10 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
+		</dependency>-->
 
 	     <!-- spring and hibernate -->
         <dependency>
@@ -248,12 +248,26 @@
 					</systemProperties>
 					<excludes>
 						<exclude>**/simulatorrequired/</exclude>
+						<!-- SMS-290 -->
+						<exclude>**/SmsAccountTest>AbstractBaseTestCase.*</exclude>
+						<exclude>**/SmsAccountTest.*</exclude>
+  						<exclude>**/SmsConfigTest.*</exclude>
+  						<exclude>**/SmsDatabaseStressTest.*</exclude>
+  						<exclude>**/SmsMessageTest.*</exclude>
+  						<exclude>**/SmsPropertyReaderTest.*</exclude>
+  						<exclude>**/SmsTaskTest.*</exclude>
+  						<exclude>**/SmsTransactionTest.*</exclude>
+  						<exclude>**/SmppThreadingTest.*</exclude>
+  						<exclude>**/SmsBillingTest.*</exclude>
+  						<exclude>**/SmsCoreTest.*</exclude>
+  						<exclude>**/SmsSchedulerTest.*</exclude>
+  						<exclude>**/SmsSchedulerThreadingTest.*</exclude>
+  						<exclude>**/MessageCatalogTest.*</exclude>
+  						<exclude>**/TaskValidatorTest.*</exclude>
+  						<exclude>**/SmsTaskValidationTest.*</exclude>
 					</excludes>
-
 				</configuration>
-
 			</plugin>
-
 		</plugins>
 	</build>
 
