@@ -46,10 +46,6 @@
 			<artifactId>sms-stubs</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>		
-		</dependency>
 
 		<!-- To avoid to copying jar to shared/lib -->
 		<dependency>
@@ -57,13 +53,10 @@
 			<artifactId>jsmpp</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+
 
                 <!-- RSF dependencies -->
- <!-- RSF dependencies -->
+        <!-- RSF dependencies -->
         <dependency>
             <groupId>org.sakaiproject.rsf</groupId>
             <artifactId>sakai-rsf-core</artifactId>
@@ -102,12 +95,10 @@
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.8.3</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
-			<version>1.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
