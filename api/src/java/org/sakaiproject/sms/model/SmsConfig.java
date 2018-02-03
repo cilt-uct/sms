@@ -20,7 +20,7 @@
  **********************************************************************************/
 package org.sakaiproject.sms.model;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Some site specific configuration info for the sms tool. Configuration info
