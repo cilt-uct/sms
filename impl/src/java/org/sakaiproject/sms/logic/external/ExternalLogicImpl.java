@@ -62,7 +62,7 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.SmsUser;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
-import org.sakaiproject.time.api.TimeService;
+import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
@@ -156,9 +156,9 @@ public class ExternalLogicImpl implements ExternalLogic {
 		this.aliasService = aliasService;
 	}
 
-	private TimeService timeService;
+	private UserTimeService timeService;
 
-	public void setTimeService(TimeService ts) {
+	public void setTimeService(UserTimeService ts) {
 		timeService = ts;
 	}
 
