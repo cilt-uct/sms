@@ -289,4 +289,10 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return false;
 	}
 
+		@Override
+		public boolean updateUserEid(String id, String newEid) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
 }
