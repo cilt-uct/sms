@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>12-SNAPSHOT</version>
+        <version>19-SNAPSHOT</version>
     </parent>
    <!--   --> 
    <dependencyManagement>
@@ -41,7 +41,7 @@
 		<!--  For sending email -->
 		<dependency>
 			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
+			<artifactId>javax.activation-api</artifactId>
 		</dependency>
 
 		

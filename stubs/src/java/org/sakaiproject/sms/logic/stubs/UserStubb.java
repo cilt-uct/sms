@@ -207,4 +207,16 @@ public class UserStubb implements UserEdit {
 		
 	}
 
+	@Override
+	public String getDisplayName(String context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getDisplayId(String context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

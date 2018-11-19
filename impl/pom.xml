@@ -18,7 +18,7 @@
 	<parent>
 		<groupId>org.sakaiproject.sms</groupId>
 		<artifactId>sms</artifactId>
-		<version>12-SNAPSHOT</version>
+		<version>19-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -36,7 +36,7 @@
         </dependency>
 		<dependency>
 			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
+			<artifactId>javax.activation-api</artifactId>
 		</dependency>
 		<!-- internal dependencies -->
 		<dependency>
