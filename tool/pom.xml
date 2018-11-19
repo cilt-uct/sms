@@ -17,7 +17,7 @@
 	    <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>12-SNAPSHOT</version>
+        <version>19-SNAPSHOT</version>
     </parent>
     
 	<dependencies>
@@ -31,7 +31,7 @@
 		<!--  For sending email -->
 		<dependency>
 			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
+			<artifactId>javax.activation-api</artifactId>
 		</dependency>
 
 
@@ -101,10 +101,6 @@
 			<artifactId>commons-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>oro</groupId>
 			<artifactId>oro</artifactId>
 			<version>2.0.8</version> 
@@ -115,6 +111,10 @@
 			<version>2.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
 	</dependencies>
 
