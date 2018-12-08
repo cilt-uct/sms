@@ -20,11 +20,9 @@ package org.sakaiproject.sms.tool.otp;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.apache.commons.math.util.MathUtils;
+import org.apache.commons.math3.util.Precision;
 import org.sakaiproject.sms.logic.SmsConfigLogic;
 import org.sakaiproject.sms.model.SmsConfig;
-
 
 import uk.org.ponder.beanutil.BeanLocator;
 
@@ -58,7 +56,7 @@ public class SmsSystemConfigLocator implements BeanLocator {
 			
 			// round by 2 decimal places, if logic is placed in SMSConfig a
 			// InvocationTargetException occurs
-			Double rounded = MathUtils.round(systemConfig
+			Double rounded = Precision.round(systemConfig
 					.getCreditCost(), 2);
 			
 			systemConfig.setCreditCost(rounded);
