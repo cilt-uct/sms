@@ -43,6 +43,9 @@ import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The data service will handle all sms Transaction database transactions for
  * the sms tool in Sakai.
@@ -55,22 +58,8 @@ import org.sakaiproject.sms.util.DateUtil;
 public class SmsTransactionLogicImpl extends SmsLogic implements
 		SmsTransactionLogic {
 
-	private HibernateLogicLocator hibernateLogicLocator = null;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private SmsBilling smsBilling = null;
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator = null;
+	@Setter private SmsBilling smsBilling = null;
 
 	/**
 	 * Deletes and the given entity from the DB

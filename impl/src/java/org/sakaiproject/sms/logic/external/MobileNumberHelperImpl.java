@@ -40,6 +40,7 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,26 +54,10 @@ public class MobileNumberHelperImpl implements MobileNumberHelper {
 	private static final String PREF_SMS_NOTIFICATIONS = "smsnotifications";
 
 
-	private NumberRoutingHelper numberRoutingHelper;
-	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
-		this.numberRoutingHelper = numberRoutingHelper;
-	}
-
-	private SakaiPersonManager sakaiPersonManager;
-	public void setSakaiPersonManager(SakaiPersonManager sakaiPersonManager) {
-		this.sakaiPersonManager = sakaiPersonManager;
-	}
-
-	private UserDirectoryService userDirectoryService;	
-	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
-		this.userDirectoryService = userDirectoryService;
-	}
-
-	private ServerConfigurationService serverConfigurationService;
-	public void setServerConfigurationService(
-			ServerConfigurationService serverConfigurationService) {
-		this.serverConfigurationService = serverConfigurationService;
-	}
+	@Setter private NumberRoutingHelper numberRoutingHelper;
+	@Setter private SakaiPersonManager sakaiPersonManager;
+	@Setter private UserDirectoryService userDirectoryService;	
+	@Setter private ServerConfigurationService serverConfigurationService;
 
 	/**
 	 * @see MobileNumberHelper#getUserMobileNumber(String)

@@ -24,16 +24,15 @@ import org.hibernate.HibernateException;
 import org.sakaiproject.sms.dao.SmsDao;
 import org.sakaiproject.sms.model.BaseModel;
 
+import lombok.Setter;
+
 /**
  * Base logic to retrieve from db
  */
 abstract public class BaseLogic {
 	
-	protected SmsDao smsDao;
+	@Setter protected SmsDao smsDao;
 	
-	public void setSmsDao(SmsDao smsDao) {
-		this.smsDao = smsDao;
-	}
 	
 	/**
 	 * Persists the given instance to the database. The save or update operation

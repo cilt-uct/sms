@@ -71,10 +71,8 @@ import org.jsmpp.session.DataSmResult;
 import org.jsmpp.session.MessageReceiverListener;
 import org.jsmpp.session.SMPPSession;
 import org.jsmpp.session.SessionStateListener;
-import org.jsmpp.util.AbsoluteTimeFormatter;
 import org.jsmpp.util.DeliveryReceiptState;
 import org.jsmpp.util.InvalidDeliveryReceiptException;
-import org.jsmpp.util.TimeFormatter;
 import org.sakaiproject.sms.logic.HibernateLogicLocator;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.external.NumberRoutingHelper;
@@ -89,6 +87,8 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsSmppProperties;
 import org.sakaiproject.sms.util.GsmCharset;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -96,7 +96,6 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private Map<DeliveryReceiptState, Integer> smsDeliveryStatus = null;
 	private final Properties properties = new Properties();
-	private static TimeFormatter timeFormatter = new AbsoluteTimeFormatter();
 
 	private final ThreadGroup moReceivingThread = new ThreadGroup(
 			SmsConstants.SMS_MO_RECEIVING_THREAD_GROUP);
@@ -121,34 +120,12 @@ public class SmsSmppImpl implements SmsSmpp {
 
 	private static final boolean ALLOW_PROCESS_REMOTELY = false;
 
-	private NumberRoutingHelper numberRoutingHelper;
-
 	private GsmCharset gsm = new GsmCharset();
 
-	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
-		this.numberRoutingHelper = numberRoutingHelper;
-	}
+	@Setter private NumberRoutingHelper numberRoutingHelper;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
+	@Setter @Getter private SmsCore smsCore = null;
 
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public SmsCore getSmsCore() {
-		return smsCore;
-	}
-
-	public void setSmsCore(SmsCore smsCore) {
-		this.smsCore = smsCore;
-	}
-
-	private SmsCore smsCore = null;
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
 
 	// provides access to the session for the units.
 	public SMPPSession getSession() {

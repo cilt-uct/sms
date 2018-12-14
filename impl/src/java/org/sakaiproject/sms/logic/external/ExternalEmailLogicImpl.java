@@ -14,6 +14,7 @@ import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,26 +24,9 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 	/*
 	 * Setters and injected services
 	 */
-	private EmailService emailService;
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
-	}
-
-	private ServerConfigurationService serverConfigurationService = null;
-
-	public void setServerConfigurationService(
-			ServerConfigurationService serverConfigurationService) {
-		this.serverConfigurationService = serverConfigurationService;
-	}
-
-
-	private EmailTemplateService emailTemplateService;	
-	public void setEmailTemplateService(EmailTemplateService emailTemplateService) {
-		this.emailTemplateService = emailTemplateService;
-	}
-
-
-
+	@Setter private EmailService emailService;
+	@Setter private ServerConfigurationService serverConfigurationService = null;
+	@Setter private EmailTemplateService emailTemplateService;	
 
 	public void init() {
 		log.info("init()");

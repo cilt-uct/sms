@@ -39,6 +39,8 @@ import org.sakaiproject.sms.logic.smpp.validate.SmsTaskValidator;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.SmsTask;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -52,35 +54,11 @@ import lombok.extern.slf4j.Slf4j;
 public class SmsServiceImpl implements SmsService {
 
 
-	public SmsCore smsCore = null;
+	@Setter @Getter public SmsCore smsCore = null;
+	@Setter @Getter private SmsTaskValidator smsTaskValidator = null;
+	@Setter @Getter public SmsBilling smsBilling;
 
-	private SmsTaskValidator smsTaskValidator = null;
 
-	public SmsTaskValidator getSmsTaskValidator() {
-		return smsTaskValidator;
-	}
-
-	public void setSmsTaskValidator(SmsTaskValidator smsTaskValidator) {
-		this.smsTaskValidator = smsTaskValidator;
-	}
-
-	public SmsBilling smsBilling;
-
-	public SmsBilling getSmsBilling() {
-		return smsBilling;
-	}
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
-
-	public SmsCore getSmsCore() {
-		return smsCore;
-	}
-
-	public void setSmsCore(SmsCore smsCore) {
-		this.smsCore = smsCore;
-	}
 
 
 	/**

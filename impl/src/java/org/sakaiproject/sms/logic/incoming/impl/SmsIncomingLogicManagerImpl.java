@@ -40,6 +40,8 @@ import org.sakaiproject.sms.logic.parser.exception.ParseException;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.smpp.SmsPatternSearchResult;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -51,28 +53,9 @@ public class SmsIncomingLogicManagerImpl implements SmsIncomingLogicManager {
 	private final RegisteredCommands allCommands = new RegisteredCommands();
 
 
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private ExternalLogic externalLogic;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private SmsMessageParser smsMessageParser;
-
-	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
-		this.smsMessageParser = smsMessageParser;
-	}
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
+	@Setter private ExternalLogic externalLogic;
+	@Setter private SmsMessageParser smsMessageParser;
 
 	public ParsedMessage process(String smsMessageBody, String mobileNumber) {
 

@@ -66,6 +66,8 @@ import org.sakaiproject.sms.model.constants.ValidationConstants;
 import org.sakaiproject.sms.util.DateUtil;
 import org.sakaiproject.sms.util.SmsMessageUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -80,88 +82,25 @@ public class SmsCoreImpl implements SmsCore {
 
 	private static final int MO_OVERDRAFT_EMAIL_INTERVAL = 2;
 
-	private Calendar lastSendMoOverdraftEmail = null;
 
-	public Calendar getLastSendMoOverdraftEmail() {
-		return lastSendMoOverdraftEmail;
-	}
 
-	private ExternalLogic externalLogic;
+	@Setter private ExternalLogic externalLogic;
+	@Setter private ExternalEmailLogic externalEmailLogic;	
+	@Setter private NumberRoutingHelper numberRoutingHelper = null;
+	@Setter @Getter private SmsMessageParser smsMessageParser;
+	@Setter @Getter private SmsTaskValidator smsTaskValidator;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
+	@Setter @Getter private SmsIncomingLogicManager smsIncomingLogicManager;
+	@Setter public ExternalMessageSending externalMessageSending;
+	@Setter @Getter private Calendar lastSendMoOverdraftEmail = null;
+	@Setter @Getter public SmsSmpp smsSmpp = null;
+	@Setter @Getter public SmsBilling smsBilling = null;
 
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private ExternalEmailLogic externalEmailLogic;	
-	public void setExternalEmailLogic(ExternalEmailLogic externalEmailLogic) {
-		this.externalEmailLogic = externalEmailLogic;
-	}
-
-	public void setLastSendMoOverdraftEmail(Calendar lastSendMoOverdraftEmail) {
-		this.lastSendMoOverdraftEmail = lastSendMoOverdraftEmail;
-	}
-
-	private NumberRoutingHelper numberRoutingHelper = null;
-	
-	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
-		this.numberRoutingHelper = numberRoutingHelper;
-	}
 
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
 			SmsConstants.SMS_TASK_PROCESSING_THREAD_GROUP_NAME);
 
-	private SmsMessageParser smsMessageParser;
-
-	public SmsMessageParser getSmsMessageParser() {
-		return smsMessageParser;
-	}
-
-	public void setSmsMessageParser(SmsMessageParser smsMessageParser) {
-		this.smsMessageParser = smsMessageParser;
-	}
-
-	private SmsTaskValidator smsTaskValidator;
-
-	public SmsTaskValidator getSmsTaskValidator() {
-		return smsTaskValidator;
-	}
-
-	public void setSmsTaskValidator(SmsTaskValidator smsTaskValidator) {
-		this.smsTaskValidator = smsTaskValidator;
-	}
-
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private SmsIncomingLogicManager smsIncomingLogicManager;
-
-	public void setSmsIncomingLogicManager(
-			SmsIncomingLogicManager smsIncomingLogicManager) {
-		this.smsIncomingLogicManager = smsIncomingLogicManager;
-	}
-
-	public SmsIncomingLogicManager getSmsIncomingLogicManager() {
-		return smsIncomingLogicManager;
-	}
-
-	public ExternalMessageSending externalMessageSending;	
-	public void setExternalMessageSending(
-			ExternalMessageSending externalMessageSending) {
-		this.externalMessageSending = externalMessageSending;
-	}
-
-	public SmsSmpp smsSmpp = null;
-
-	public SmsBilling smsBilling = null;
-
+	
 	public SmsTask calculateEstimatedGroupSize(final SmsTask smsTask) {
 		final Set<SmsMessage> messages = hibernateLogicLocator
 				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
@@ -342,14 +281,6 @@ public class SmsCoreImpl implements SmsCore {
 			}
 		}
 		return smsTask;
-	}
-
-	public SmsBilling getSmsBilling() {
-		return smsBilling;
-	}
-
-	public SmsSmpp getSmsSmpp() {
-		return smsSmpp;
 	}
 
 	public void init() {
@@ -1122,14 +1053,6 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 		return (accountNotification && ownerNotification);
-	}
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
-
-	public void setSmsSmpp(SmsSmpp smsSmpp) {
-		this.smsSmpp = smsSmpp;
 	}
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {

@@ -50,6 +50,8 @@ import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 import org.sakaiproject.sms.util.GsmCharset;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -65,22 +67,9 @@ import lombok.extern.slf4j.Slf4j;
 public class SmsTaskLogicImpl extends SmsLogic implements SmsTaskLogic {
 
 
-	private ExternalLogic externalLogic;
+	@Setter private ExternalLogic externalLogic;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
 
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
 
 	/**
 	 * Deletes and the given entity from the DB

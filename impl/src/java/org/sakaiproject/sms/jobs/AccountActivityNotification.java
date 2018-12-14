@@ -29,6 +29,7 @@ import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.SmsUser;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 /**
  * Notifies account owners of activity on their jobs
@@ -40,30 +41,12 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountActivityNotification implements Job {
 
 	
-	private SmsAccountLogic smsAccountLogic;
-	private ExternalLogic externalLogic;
-	private SmsTransactionLogic smsTransactionLogic;
-	private EmailTemplateService emailTemplateService;
-	private EmailService emailService;
-	
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
-	}
+	@Setter private SmsAccountLogic smsAccountLogic;
+	@Setter private ExternalLogic externalLogic;
+	@Setter private SmsTransactionLogic smsTransactionLogic;
+	@Setter private EmailTemplateService emailTemplateService;
+	@Setter private EmailService emailService;
 
-	public void setEmailTemplateService(EmailTemplateService emailTemplateService) {
-		this.emailTemplateService = emailTemplateService;
-	}
-
-	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
-		this.smsAccountLogic = smsAccountLogic;
-	}
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}	
-	public void setSmsTransactionLogic(SmsTransactionLogic smsTransactionLogic) {
-		this.smsTransactionLogic = smsTransactionLogic;
-	}
 
 	
 	public void execute(JobExecutionContext context)

@@ -40,6 +40,8 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -57,22 +59,9 @@ public class SmsBillingImpl implements SmsBilling {
 	private final static Properties PROPERTIES = new Properties();
 
 
-	private HibernateLogicLocator hibernateLogicLocator;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
+	@Setter private ExternalLogic externalLogic;
 
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	private ExternalLogic externalLogic;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
 
 	public void init() {
 		try {
