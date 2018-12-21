@@ -32,6 +32,7 @@ import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.entityprovider.search.Search;
 import org.sakaiproject.sms.logic.command.SmsRestCommand;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,17 +44,9 @@ public class SmsCommandEntityProviderImpl implements SmsCommandEntityProvider,
 		return ENTITY_PREFIX;
 	}
 
-	private DeveloperHelperService developerHelperService;
+	@Setter private DeveloperHelperService developerHelperService;
+	@Setter private SecurityService securityService;
 
-	public void setDeveloperHelperService(
-			DeveloperHelperService developerHelperService) {
-		this.developerHelperService = developerHelperService;
-	}
-
-	private SecurityService securityService;
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
 	
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {

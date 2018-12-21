@@ -74,6 +74,7 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.ResourceLoader;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -87,90 +88,21 @@ public class ExternalLogicImpl implements ExternalLogic {
 
 	private static final String SMS_BUNDLE = "messages";
 
-	private ServerConfigurationService serverConfigurationService = null;
+	@Setter private ServerConfigurationService serverConfigurationService = null;
+	@Setter private FunctionManager functionManager;
+	@Setter private SessionManager sessionManager;
+	@Setter private ToolManager toolManager;
+	@Setter private SecurityService securityService;
+	@Setter private SiteService siteService;
+	@Setter private UserDirectoryService userDirectoryService;
+	@Setter private EntityBroker entityBroker;
+	@Setter private MobileNumberHelper mobileNumberHelper;
+	@Setter private NumberRoutingHelper numberRoutingHelper;
+	@Setter private AliasService aliasService;
+	@Setter private UserTimeService timeService;
+	@Setter public EventTrackingService eventTrackingService;
+	@Setter private PreferencesService preferencesService;
 
-	public void setServerConfigurationService(
-			ServerConfigurationService serverConfigurationService) {
-		this.serverConfigurationService = serverConfigurationService;
-	}
-
-	private FunctionManager functionManager;
-
-	public void setFunctionManager(FunctionManager functionManager) {
-		this.functionManager = functionManager;
-	}
-
-	private SessionManager sessionManager;
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-
-	private ToolManager toolManager;
-
-	public void setToolManager(ToolManager toolManager) {
-		this.toolManager = toolManager;
-	}
-
-	private SecurityService securityService;
-
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
-
-	private SiteService siteService;
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-
-	private UserDirectoryService userDirectoryService;
-
-	public void setUserDirectoryService(
-			UserDirectoryService userDirectoryService) {
-		this.userDirectoryService = userDirectoryService;
-	}
-
-	private EntityBroker entityBroker;
-
-	public void setEntityBroker(EntityBroker entityBroker) {
-		this.entityBroker = entityBroker;
-	}
-
-
-	private MobileNumberHelper mobileNumberHelper;
-
-	public void setMobileNumberHelper(MobileNumberHelper mobileNumberHelper) {
-		this.mobileNumberHelper = mobileNumberHelper;
-	}
-
-	private NumberRoutingHelper numberRoutingHelper;
-	
-	public void setNumberRoutingHelper(NumberRoutingHelper numberRoutingHelper) {
-		this.numberRoutingHelper = numberRoutingHelper;
-	}
-
-	private AliasService aliasService;
-
-	public void setAliasService(AliasService aliasService) {
-		this.aliasService = aliasService;
-	}
-
-	private UserTimeService timeService;
-
-	public void setTimeService(UserTimeService ts) {
-		timeService = ts;
-	}
-
-	public EventTrackingService eventTrackingService;
-	public void setEventTrackingService(EventTrackingService eventTrackingService) {
-		this.eventTrackingService = eventTrackingService;
-	}
-
-	private PreferencesService preferencesService;
-	public void setPreferencesService(PreferencesService ps) {
-		preferencesService = ps;
-	}
 
 	public void init() {
 		log.debug("init");

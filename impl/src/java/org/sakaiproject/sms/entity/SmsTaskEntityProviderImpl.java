@@ -73,6 +73,7 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -102,51 +103,15 @@ public class SmsTaskEntityProviderImpl implements SmsTaskEntityProvider, AutoReg
 	/**
 	 * Inject services
 	 */
-	private SmsTaskLogic smsTaskLogic = null;
-	public void setSmsTaskLogic(SmsTaskLogic smsTaskLogic) {
-		this.smsTaskLogic = smsTaskLogic;
-	}
-
-	private SmsService smsService = null;
-	public void setSmsService(SmsService smsService) {
-		this.smsService = smsService;
-	}
-
-	private DeveloperHelperService developerHelperService = null;
-	public void setDeveloperHelperService(
-			DeveloperHelperService developerHelperService) {
-		this.developerHelperService = developerHelperService;
-	}
-	
-	private ExternalLogic externalLogic = null;
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private SmsMessageLogic smsMessageLogic = null;
-	public void setSmsMessageLogic(SmsMessageLogic smsMessageLogic) {
-		this.smsMessageLogic = smsMessageLogic;
-	}
-	
-	private SmsTaskValidator smsTaskValidator;
-	public void setSmsTaskValidator(SmsTaskValidator smsTaskValidator) {
-		this.smsTaskValidator = smsTaskValidator;
-	}
-
-	private SecurityService securityService;
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
-
-	private SiteService siteService;	
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-	
-	private UserDirectoryService userDirectoryService;
-	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
-		this.userDirectoryService = userDirectoryService;
-	}
+	@Setter private SmsTaskLogic smsTaskLogic = null;
+	@Setter private SmsService smsService = null;
+	@Setter private DeveloperHelperService developerHelperService = null;
+	@Setter private ExternalLogic externalLogic = null;
+	@Setter private SmsMessageLogic smsMessageLogic = null;
+	@Setter private SmsTaskValidator smsTaskValidator;
+	@Setter private SecurityService securityService;
+	@Setter private SiteService siteService;	
+	@Setter private UserDirectoryService userDirectoryService;
 
 
 	/**

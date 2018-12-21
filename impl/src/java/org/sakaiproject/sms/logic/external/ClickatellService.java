@@ -37,6 +37,7 @@ import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConst_SmscDeliveryStatus;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,17 +49,8 @@ public class ClickatellService implements ExternalMessageSending {
 	private static final String CLICKATELL_API_URL = "http://api.clickatell.com/http";
 	
 	
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public void setHibernateLogicLocator(HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private ServerConfigurationService serverConfigurationService;
-	public void setServerConfigurationService(
-			ServerConfigurationService serverConfigurationService) {
-		this.serverConfigurationService = serverConfigurationService;
-	}
+	@Setter private HibernateLogicLocator hibernateLogicLocator;
+	@Setter private ServerConfigurationService serverConfigurationService;
 
 	public String sendMessagesToService(Set<SmsMessage> messages) {
 		log.debug("sending messages to clickatell: " + messages.size());

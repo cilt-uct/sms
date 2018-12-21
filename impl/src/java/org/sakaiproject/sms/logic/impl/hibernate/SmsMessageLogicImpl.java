@@ -47,6 +47,8 @@ import org.sakaiproject.sms.model.constants.SmsConst_DeliveryStatus;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.util.DateUtil;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -62,22 +64,9 @@ import lombok.extern.slf4j.Slf4j;
 public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 
         
-	private ExternalLogic externalLogic;
+	@Setter private ExternalLogic externalLogic;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator;
 
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private HibernateLogicLocator hibernateLogicLocator;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
 
 	/**
 	 * Deletes and the given entity from the DB

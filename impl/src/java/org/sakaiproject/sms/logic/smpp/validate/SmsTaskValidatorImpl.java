@@ -28,6 +28,9 @@ import org.sakaiproject.sms.model.SmsTask;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 import org.sakaiproject.sms.model.constants.ValidationConstants;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This class is used to do various validations involving SmsTasks. It is called
  * from the UI and also when a test is persisted.
@@ -38,15 +41,8 @@ import org.sakaiproject.sms.model.constants.ValidationConstants;
  */
 public class SmsTaskValidatorImpl implements SmsTaskValidator {
 
-	private SmsBilling smsBilling = null;
+	@Setter @Getter private SmsBilling smsBilling = null;
 
-	public SmsBilling getSmsBilling() {
-		return smsBilling;
-	}
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
 
 	/**
 	 * Check sufficient credits.

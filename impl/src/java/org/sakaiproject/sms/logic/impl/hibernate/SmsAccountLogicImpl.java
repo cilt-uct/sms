@@ -43,6 +43,8 @@ import org.sakaiproject.sms.model.SmsConfig;
 import org.sakaiproject.sms.model.SmsTransaction;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -57,28 +59,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SmsAccountLogicImpl extends SmsLogic implements SmsAccountLogic {
 
-	private HibernateLogicLocator hibernateLogicLocator = null;
-
-	private ExternalLogic externalLogic = null;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private SmsBilling smsBilling = null;
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator = null;
+	@Setter private ExternalLogic externalLogic = null;
+	@Setter private SmsBilling smsBilling = null;
 
 	/**
 	 * Deletes and the given entity from the DB

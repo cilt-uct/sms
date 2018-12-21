@@ -46,6 +46,7 @@ import org.sakaiproject.sms.logic.smpp.SmsBilling;
 import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,40 +58,13 @@ public class SmsAccountEntityProviderImp implements SmsAccountEntityProvider,
 		return ENTITY_PREFIX;
 	}
 
-	private DeveloperHelperService developerHelperService;
+	@Setter	private DeveloperHelperService developerHelperService;
+	@Setter private SmsAccountLogic smsAccountLogic;
+	@Setter private ExternalLogic externalLogic;	
+	@Setter private SmsBilling smsBilling;
+	@Setter private SecurityService securityService;
+	@Setter private SiteService siteService;	
 
-	public void setDeveloperHelperService(
-			DeveloperHelperService developerHelperService) {
-		this.developerHelperService = developerHelperService;
-	}
-
-	private SmsAccountLogic smsAccountLogic;
-
-	public void setSmsAccountLogic(SmsAccountLogic smsAccountLogic) {
-		this.smsAccountLogic = smsAccountLogic;
-	}
-	
-	
-	private ExternalLogic externalLogic;	
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private SmsBilling smsBilling;
-
-	public void setSmsBilling(SmsBilling smsBilling) {
-		this.smsBilling = smsBilling;
-	}
-	
-	private SecurityService securityService;
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
-
-	private SiteService siteService;	
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
 
 	public String createEntity(EntityReference ref, Object entity,
 			Map<String, Object> params) {

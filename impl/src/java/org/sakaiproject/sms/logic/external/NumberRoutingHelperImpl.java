@@ -7,6 +7,7 @@ import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.sms.model.SmsMessage;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -16,12 +17,7 @@ public class NumberRoutingHelperImpl implements NumberRoutingHelper {
 	
 	private Map<String, Integer> countryLength = new HashMap<String,Integer>();
 	
-	private ServerConfigurationService serverConfigurationService = null;
-
-	public void setServerConfigurationService(
-			ServerConfigurationService serverConfigurationService) {
-		this.serverConfigurationService = serverConfigurationService;
-	}
+	@Setter private ServerConfigurationService serverConfigurationService = null;
 
 	public String getInternationalPrefix() {
 		return serverConfigurationService.getString(ExternalLogic.PREF_INT_PREFIX, ExternalLogic.PREF_INT_PREFIX_DEFAULT);

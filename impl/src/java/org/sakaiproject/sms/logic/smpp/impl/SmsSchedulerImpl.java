@@ -29,50 +29,22 @@ import org.sakaiproject.sms.logic.smpp.SmsScheduler;
 import org.sakaiproject.sms.model.SmsConfig;
 import org.springframework.util.Assert;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SmsSchedulerImpl implements SmsScheduler {
 
-	private SmsConfig smsConfig = null;
-
-	public SmsConfig getSmsConfig() {
-		return smsConfig;
-	}
-
-	public void setSmsConfig(SmsConfig smsConfig) {
-		this.smsConfig = smsConfig;
-	}
-
 	private boolean schedulerEnabled = true;// for unit testing only
-
-
-	public SmsCore smsCore = null;
 
 	public SmsSchedulerThread smsSchedulerThread = null;
 
-	private ExternalLogic externalLogic;
-
-	public void setExternalLogic(ExternalLogic externalLogic) {
-		this.externalLogic = externalLogic;
-	}
-
-	private HibernateLogicLocator hibernateLogicLocator = null;
-
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	public ExternalMessageSending externalMessageSending;	
-	public void setExternalMessageSending(
-			ExternalMessageSending externalMessageSending) {
-		this.externalMessageSending = externalMessageSending;
-	}
+	@Setter private ExternalLogic externalLogic;
+	@Getter @Setter private HibernateLogicLocator hibernateLogicLocator = null;
+	@Setter public ExternalMessageSending externalMessageSending;	
+	@Setter @Getter private SmsConfig smsConfig = null;
+	@Getter @Setter public SmsCore smsCore = null;
 	
 	public void init() {
 		Assert.notNull(smsCore);
@@ -92,14 +64,6 @@ public class SmsSchedulerImpl implements SmsScheduler {
 		smsSchedulerThread.stop();
 		smsSchedulerThread = null;
 
-	}
-
-	public SmsCore getSmsCore() {
-		return smsCore;
-	}
-
-	public void setSmsCore(SmsCore smsCore) {
-		this.smsCore = smsCore;
 	}
 
 	private class SmsSchedulerThread implements Runnable {

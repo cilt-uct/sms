@@ -26,6 +26,8 @@ import org.sakaiproject.sms.logic.incoming.ShortMessageCommand;
 import org.sakaiproject.sms.model.SmsAccount;
 import org.sakaiproject.sms.model.constants.SmsConstants;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,16 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SmsAdminCommand implements ShortMessageCommand {
 
 
-	public HibernateLogicLocator getHibernateLogicLocator() {
-		return hibernateLogicLocator;
-	}
-
-	public void setHibernateLogicLocator(
-			HibernateLogicLocator hibernateLogicLocator) {
-		this.hibernateLogicLocator = hibernateLogicLocator;
-	}
-
-	private HibernateLogicLocator hibernateLogicLocator = null;
+	@Setter @Getter private HibernateLogicLocator hibernateLogicLocator = null;
 
 	public String execute(ParsedMessage msg, String messageType, String sourceAddress) {
 		String[] body = msg.getBodyParameters();
