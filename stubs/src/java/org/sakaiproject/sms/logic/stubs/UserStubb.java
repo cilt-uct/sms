@@ -101,7 +101,17 @@ public class UserStubb implements UserEdit {
 		return null;
 	}
 
+	public String getDisplayId(String context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public String getDisplayName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getDisplayName(String context) {
 		// TODO Auto-generated method stub
 		return null;
 	}
