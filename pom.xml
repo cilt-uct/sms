@@ -138,9 +138,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/sms/trunk</url>
+		<connection>scm:git:git://github.com/cilt-uct/sms.git</connection>
+		<developerConnection>sscm:git:git@github.com:cilt-uct/sms.git</developerConnection>
+		<url>https://github.com/t</url>
 	</scm>
 	<distributionManagement>
 		<downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
