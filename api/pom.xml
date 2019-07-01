@@ -21,11 +21,11 @@
         <artifactId>sms</artifactId>
         <version>19-SNAPSHOT</version>
     </parent>
-	
+  
 
-	
+  
     <dependencies>
-    	<dependency>
+      <dependency>
             <groupId>org.sakaiproject.kernel</groupId>
             <artifactId>sakai-kernel-api</artifactId>
         </dependency>
@@ -37,24 +37,24 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
       </dependency>
-    	<dependency>
+      <dependency>
             <groupId>org.sakaiproject.entitybroker</groupId>
             <artifactId>entitybroker-api</artifactId>
-    	</dependency>
-	</dependencies>
+      </dependency>
+  </dependencies>
 
     <build>
-		<finalName>sms_api</finalName>
-		<sourceDirectory>${basedir}/src/java</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/resources</directory>
-				<includes>
-					<include>hibernate-mappings.hbm.xml</include>
-					<include>*.xml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
+    <finalName>sms_api</finalName>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/resources</directory>
+        <includes>
+          <include>hibernate-mappings.hbm.xml</include>
+          <include>*.xml</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 
 </project>

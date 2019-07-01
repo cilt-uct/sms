@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<name>Sakai Sms Utils</name>
-	<groupId>org.sakaiproject.sms</groupId>
-	<artifactId>sms-util</artifactId>
-	<organization>
-		<name>Sakai Project</name>
-		<url>http://sakaiproject.org/</url>
-	</organization>
-	<inceptionYear>2008</inceptionYear>
-	<description>Sms implementation</description>
-	<packaging>jar</packaging>
-	
-	<!-- the base is parent -->
+  <modelVersion>4.0.0</modelVersion>
+  <name>Sakai Sms Utils</name>
+  <groupId>org.sakaiproject.sms</groupId>
+  <artifactId>sms-util</artifactId>
+  <organization>
+    <name>Sakai Project</name>
+    <url>http://sakaiproject.org/</url>
+  </organization>
+  <inceptionYear>2008</inceptionYear>
+  <description>Sms implementation</description>
+  <packaging>jar</packaging>
+  
+  <!-- the base is parent -->
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
         <version>19-SNAPSHOT</version>
     </parent>
-	<dependencies>
-		<!-- internal dependencies -->
-		<dependency>
-			<groupId>org.sakaiproject.sms</groupId>
-			<artifactId>sms-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.sakaiproject.entitybroker</groupId>
-			<artifactId>entitybroker-utils</artifactId>
-		</dependency>
-	</dependencies>
+  <dependencies>
+    <!-- internal dependencies -->
+    <dependency>
+      <groupId>org.sakaiproject.sms</groupId>
+      <artifactId>sms-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.entitybroker</groupId>
+      <artifactId>entitybroker-utils</artifactId>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<finalName>sms_util</finalName>
-		<sourceDirectory>${basedir}/src/java</sourceDirectory>
-		<testResources>
-			<testResource>
-				<directory>${basedir}/src/resources</directory>
-				 <includes>
+  <build>
+    <finalName>sms_util</finalName>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/src/resources</directory>
+         <includes>
                <include>CommandsToMatch.txt</include>
                <include>ValidCommands.txt</include>
-            </includes>
+         </includes>
 
-			</testResource>
-			<testResource>
-				<directory>${basedir}/src/test</directory>
-			</testResource>
-		</testResources>
+      </testResource>
+      <testResource>
+        <directory>${basedir}/src/test</directory>
+      </testResource>
+    </testResources>
 
 
-	</build>
+  </build>
 
 </project>
