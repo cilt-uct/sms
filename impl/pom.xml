@@ -75,7 +75,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.code</groupId>
+      <groupId>org.jsmpp</groupId>
       <artifactId>jsmpp</artifactId>
     </dependency>
     <!-- <dependency>
