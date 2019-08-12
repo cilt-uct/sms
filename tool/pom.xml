@@ -49,7 +49,7 @@
 
     <!-- To avoid to copying jar to shared/lib -->
     <dependency>
-      <groupId>com.google.code</groupId>
+      <groupId>org.jsmpp</groupId>
       <artifactId>jsmpp</artifactId>
     </dependency>
 
