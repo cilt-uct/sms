@@ -1,216 +1,216 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<name>Sakai Sms</name>
-	<groupId>org.sakaiproject.sms</groupId>
-	<artifactId>sms</artifactId>
-	<organization>
-		<name>Sakai Project</name>
-		<url>http://sakaiproject.org/</url>
-	</organization>
-	<inceptionYear>2008</inceptionYear>
-	<packaging>pom</packaging>
-	<description>The SMS service provides SMS (short message service or
-		texting) capablities to Sakai.The module consists of 1) A SMPP service
-		to forward messages to an SMPP complient gateway. 2) An admin tool to
-		administer accounts 3) A user tool to send messages to users</description>
-	<!-- Sakai master pom is the parent -->
-	<parent>
-		<artifactId>master</artifactId>
-		<groupId>org.sakaiproject</groupId>
-		<version>19-SNAPSHOT</version>
-		<relativePath>../master/pom.xml</relativePath>
-	</parent>
-	<profiles>
-		<profile>
-			<id>full</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<modules>
-				<module>api</module>
-				<module>stubs</module>
-				<module>impl</module>
-				<module>tool</module>
-				<module>user-tool</module>
-				<module>help</module>
-				<module>util</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>tool</id>
-			<modules>
-				<module>tool</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>user-tool</id>
-			<modules>
-				<module>user-tool</module>
-			</modules>
-		</profile>
-		<profile>
-			<id>api</id>
-			<modules>
-				<module>api</module>
-			</modules>
-		</profile>
-	</profiles>
+  <modelVersion>4.0.0</modelVersion>
+  <name>Sakai Sms</name>
+  <groupId>org.sakaiproject.sms</groupId>
+  <artifactId>sms</artifactId>
+  <organization>
+    <name>Sakai Project</name>
+    <url>http://sakaiproject.org/</url>
+  </organization>
+  <inceptionYear>2008</inceptionYear>
+  <packaging>pom</packaging>
+  <description>The SMS service provides SMS (short message service or
+    texting) capablities to Sakai.The module consists of 1) A SMPP service
+    to forward messages to an SMPP complient gateway. 2) An admin tool to
+    administer accounts 3) A user tool to send messages to users</description>
+  <!-- Sakai master pom is the parent -->
+  <parent>
+    <artifactId>master</artifactId>
+    <groupId>org.sakaiproject</groupId>
+    <version>19-SNAPSHOT</version>
+    <relativePath>../master/pom.xml</relativePath>
+  </parent>
+  <profiles>
+    <profile>
+      <id>full</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <modules>
+        <module>api</module>
+        <module>stubs</module>
+        <module>impl</module>
+        <module>tool</module>
+        <module>user-tool</module>
+        <module>help</module>
+        <module>util</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>tool</id>
+      <modules>
+        <module>tool</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>user-tool</id>
+      <modules>
+        <module>user-tool</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>api</id>
+      <modules>
+        <module>api</module>
+      </modules>
+    </profile>
+  </profiles>
 
-	<!-- handles the management of all related dependencies -->
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>sms-api</artifactId>
-				<version>${project.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>sms-util</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>sms-impl</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>sms-stubs</artifactId>
-				<version>${project.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>net.sourceforge.groboutils</groupId>
-				<artifactId>groboutils-core</artifactId>
-				<version>5</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code</groupId>
-				<artifactId>jsmpp</artifactId>
-				<version>2.1.0</version>
-			</dependency>
-			<dependency>
-                <groupId>com.mobilvox.ossi.mojo</groupId>
-                <artifactId>maven-js-plugin</artifactId>
-                <version>1.3.1</version>
-             </dependency>
-		</dependencies>
-	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>Sakai</id>
-			<name>Sakai Maven Repo</name>
-			<url>http://source.sakaiproject.org/maven2</url>
-		</repository>
-		<repository>
-			<id>honestyworks</id>
-			<name>honestyworks Maven Repository</name>
-			<url>http://my.honestyworks.jp/maven2/</url>
-		</repository>
-		<repository>
-			<id>OSGeo</id>
-			<name>OSGeo Download Server</name>
-			<url>http://download.osgeo.org/webdav/geotools/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>Sakai Plugin Repo</id>
-			<url>http://source.sakaiproject.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
-	<issueManagement>
-		<system>JIRA</system>
-		<url>http://jira.sakaiproject.org/jira/browse/SMS</url>
-	</issueManagement>
-	<!-- define the license -->
-	<licenses>
-		<license>
-			<name>Educational Community License, Version 2.0</name>
-			<url>http://www.osedu.org/licenses/ECL-2.0/ecl2.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<connection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</connection>
-		<developerConnection>scm:svn:https://source.sakaiproject.org/contrib/sms/sms/trunk</developerConnection>
-		<url>https://source.sakaiproject.org/contrib/sms/sms/trunk</url>
-	</scm>
-	<distributionManagement>
-		<downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>sakai-maven-snapshots-scp</id>
-			<name>Sakai snapshot Repo</name>
-			<url>scp://source.sakaiproject.org/var/www/html/maven2-snapshots</url>
-			<layout>default</layout>
-		</snapshotRepository>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>sakai-maven2-scp</id>
-			<name>Sakai maven2 repository</name>
-			<url>scp://source.sakaiproject.org/var/www/html/maven2</url>
-			<layout>default</layout>
-		</repository>
-		<site>
-			<id>cet-site</id>
-			<name>Sakai release Site</name>
-			<url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/release/sms/sms-${project.version}</url>
-		</site>
-	</distributionManagement>
-	<developers>
-		<developer>
-			<id>etienne@psybergate.co.za</id>
-			<name>Ettiene Swanepoel</name>
-			<email>Etienne@psybergate.co.za</email>
-			<organization>Psybergate</organization>
-			<organizationUrl>http://www.psybergate.co.za</organizationUrl>
-			<timezone>+2</timezone>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>louis@psybergate.co.za</id>
-			<name>Louis Botha</name>
-			<email>louis@psybergate.co.za</email>
-			<organization>Psybergate</organization>
-			<organizationUrl>http://www.psybergate.co.za</organizationUrl>
-			<timezone>+2</timezone>
-			<roles>
-				<role>lead developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>david.horwitz@uct.ac.za</id>
-			<name>David Horwitz</name>
-			<email>david.horwitz@uct.ac.za</email>
-			<organization>Centre for Educational Technology, University of
-				Cape Town</organization>
-			<organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
-			<timezone>+2</timezone>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>lovemore.nalube@uct.ac.za</id>
-			<name>Lovemore Nalube</name>
-			<email>lovermore.nalube@uct.ac.za</email>
-			<organization>Centre for Educational Technology, University of
-				Cape Town</organization>
-			<organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
-			<timezone>+2</timezone>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
-	
+  <!-- handles the management of all related dependencies -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sms-api</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sms-util</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sms-impl</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>sms-stubs</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>net.sourceforge.groboutils</groupId>
+        <artifactId>groboutils-core</artifactId>
+        <version>5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsmpp</groupId>
+        <artifactId>jsmpp</artifactId>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.mobilvox.ossi.mojo</groupId>
+        <artifactId>maven-js-plugin</artifactId>
+        <version>1.3.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <repositories>
+    <repository>
+      <id>Sakai</id>
+      <name>Sakai Maven Repo</name>
+      <url>http://source.sakaiproject.org/maven2</url>
+    </repository>
+    <repository>
+      <id>honestyworks</id>
+      <name>honestyworks Maven Repository</name>
+      <url>http://my.honestyworks.jp/maven2/</url>
+    </repository>
+    <repository>
+      <id>OSGeo</id>
+      <name>OSGeo Download Server</name>
+      <url>http://download.osgeo.org/webdav/geotools/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>Sakai Plugin Repo</id>
+      <url>http://source.sakaiproject.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.sakaiproject.org/jira/browse/SMS</url>
+  </issueManagement>
+  <!-- define the license -->
+  <licenses>
+    <license>
+      <name>Educational Community License, Version 2.0</name>
+      <url>http://www.osedu.org/licenses/ECL-2.0/ecl2.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:git:git://github.com/cilt-uct/sms.git</connection>
+    <developerConnection>sscm:git:git@github.com:cilt-uct/sms.git</developerConnection>
+    <url>https://github.com/t</url>
+  </scm>
+  <distributionManagement>
+    <downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>sakai-maven-snapshots-scp</id>
+      <name>Sakai snapshot Repo</name>
+      <url>scp://source.sakaiproject.org/var/www/html/maven2-snapshots</url>
+      <layout>default</layout>
+    </snapshotRepository>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>sakai-maven2-scp</id>
+      <name>Sakai maven2 repository</name>
+      <url>scp://source.sakaiproject.org/var/www/html/maven2</url>
+      <layout>default</layout>
+    </repository>
+    <site>
+      <id>cet-site</id>
+      <name>Sakai release Site</name>
+      <url>scp://srvslscet001.uct.ac.za/srv/www/vhosts/source.cet.uct.ac.za/release/sms/sms-${project.version}</url>
+    </site>
+  </distributionManagement>
+  <developers>
+    <developer>
+      <id>etienne@psybergate.co.za</id>
+      <name>Ettiene Swanepoel</name>
+      <email>Etienne@psybergate.co.za</email>
+      <organization>Psybergate</organization>
+      <organizationUrl>http://www.psybergate.co.za</organizationUrl>
+      <timezone>+2</timezone>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>louis@psybergate.co.za</id>
+      <name>Louis Botha</name>
+      <email>louis@psybergate.co.za</email>
+      <organization>Psybergate</organization>
+      <organizationUrl>http://www.psybergate.co.za</organizationUrl>
+      <timezone>+2</timezone>
+      <roles>
+        <role>lead developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>david.horwitz@uct.ac.za</id>
+      <name>David Horwitz</name>
+      <email>david.horwitz@uct.ac.za</email>
+      <organization>Centre for Educational Technology, University of
+        Cape Town</organization>
+      <organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
+      <timezone>+2</timezone>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>lovemore.nalube@uct.ac.za</id>
+      <name>Lovemore Nalube</name>
+      <email>lovermore.nalube@uct.ac.za</email>
+      <organization>Centre for Educational Technology, University of
+        Cape Town</organization>
+      <organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
+      <timezone>+2</timezone>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+  
 </project>
