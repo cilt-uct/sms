@@ -16,7 +16,7 @@
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>19-SNAPSHOT</version>
+        <version>20-SNAPSHOT</version>
     </parent>
    <!--   --> 
    <dependencyManagement>
