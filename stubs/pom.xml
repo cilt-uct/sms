@@ -23,9 +23,9 @@
         <dependencies>
             <dependency>
                <groupId>org.sakaiproject.sms</groupId>
-        <artifactId>sms-stubs</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
+               <artifactId>sms-stubs</artifactId>
+               <version>${project.version}</version>
+               <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -35,7 +35,7 @@
     <!-- email dependencies -->
     <dependency>
             <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
+            <artifactId>jakarta.mail</artifactId>
         </dependency>
 
     <!--  For sending email -->

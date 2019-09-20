@@ -24,9 +24,9 @@
 
     <!-- email dependencies -->
     <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-        </dependency>
+       <groupId>com.sun.mail</groupId>
+       <artifactId>jakarta.mail</artifactId>
+    </dependency>
 
     <!--  For sending email -->
     <dependency>
