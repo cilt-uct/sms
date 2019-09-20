@@ -757,4 +757,16 @@ public class SakaiPersonStub implements SakaiPerson {
 		
 	}
 
+	@Override
+	public void setPhoneticPronunciation(String phoneticPronunciation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getPhoneticPronunciation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
