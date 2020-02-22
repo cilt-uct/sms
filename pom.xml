@@ -103,7 +103,7 @@
     <repository>
       <id>Sakai</id>
       <name>Sakai Maven Repo</name>
-      <url>http://source.sakaiproject.org/maven2</url>
+      <url>https://source.sakaiproject.org/maven2</url>
     </repository>
     <repository>
       <id>honestyworks</id>
@@ -113,7 +113,7 @@
     <repository>
       <id>OSGeo</id>
       <name>OSGeo Download Server</name>
-      <url>http://download.osgeo.org/webdav/geotools/</url>
+      <url>https://download.osgeo.org/webdav/geotools/</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -205,7 +205,6 @@
       <email>lovermore.nalube@uct.ac.za</email>
       <organization>Centre for Educational Technology, University of
         Cape Town</organization>
-      <organizationUrl>http://www.cet.uct.ac.za</organizationUrl>
       <timezone>+2</timezone>
       <roles>
         <role>developer</role>
