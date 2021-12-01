@@ -18,7 +18,7 @@
   <parent>
     <groupId>org.sakaiproject.sms</groupId>
     <artifactId>sms</artifactId>
-    <version>20-SNAPSHOT</version>
+    <version>21-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.sakaiproject.emailtemplateservice</groupId>
       <artifactId>emailtemplateservice-api</artifactId>
-      
+
     </dependency>
 
     <dependency>
@@ -116,16 +116,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
-        <!-- needed by hibernate unit tests -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
         </dependency>
-        
+
     <dependency>
       <groupId>org.sakaiproject.entitybroker</groupId>
       <artifactId>entitybroker-api</artifactId>
