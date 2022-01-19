@@ -216,4 +216,9 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
                 return null;
         }
 
+        public long getLong(String name, long dflt) {
+		return 0;
+	}
+
+
 }

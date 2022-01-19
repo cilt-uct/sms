@@ -769,4 +769,12 @@ public class SakaiPersonStub implements SakaiPerson {
 		return null;
 	}
 
+	@Override
+	public String getPronouns() {
+		return null;
+	}
+
+	public void setPronouns(String pronouns) {
+	}
+
 }
