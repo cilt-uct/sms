@@ -9,15 +9,15 @@
         <link rel="stylesheet" href="/sms-user-tool/content/css/sms.css" type="text/css"/>
         <link rel="stylesheet" href="/sms-user-tool/content/css/smsPopup.css" type="text/css"/>
         <link rel="stylesheet" href="/sms-user-tool/content/css/ui.all.css" type="text/css"/>
-        
+
         <!-- end standard on all pages -->
         <!-- script type="text/javascript" language="JavaScript" src="/library/js/jquery/jquery-1.11.3.js"></script>
         <script type="text/javascript" src="/library/js/jquery/ui/1.11.3/jquery-ui.js" -->
-        
+
 		<script type="text/javascript">includeLatestJQuery('user-sms');</script>
-		<link href="/library/webjars/jquery-ui/1.11.3/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+		<link href="/library/webjars/jquery-ui/1.12.1/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="/library/js/lang-datepicker/lang-datepicker.js"></script>
-		
+
 		<script type="text/javascript">
 
 
@@ -38,8 +38,8 @@
 					ashidden: { iso8601: 'smsDatesExpiryDate-iso8601' }
 				});
 			});
-		</script>        
-        
+		</script>
+
         <script type="text/javascript" src="../js/smsPopup.js"></script>
         <script type="text/javascript" src="../js/sms.js">
         </script>
@@ -80,9 +80,9 @@
   			<p rsf:id="error-credits" class="smsAlert">None</p><a rsf:id="error-back" href="index.html">Back</a>
             <span rsf:id="error-purchase">To purchase SMS credits, please email </span>
             <a rsf:id="error-email" href="mailto:help@vula.uct.ac.za?subject=SMS Credits" target="_blank">help@vula.uct.ac.za</a>
-            
+
             <form rsf:id="form" action="" method="post">
-            
+
                 <h4 rsf:id="msg=ui.send.message">
                     Your message:
                 </h4>
@@ -121,17 +121,17 @@
                         100
                     </span>
                     </div>
-                    
+
                  </div>
 
                  <div id="smsDates">
-                    	
+
                     <div id="smsDatesSchedule">
                     	<div id="editSchedule" class="clear">
 							<span rsf:id="msg=ui.send.schedule.edit" class="schedule">Scheduled to be sent on:</span> <span rsf:id="schedule.date" class="console-cost">04 Jun 09 13.45 pm </span>
 							<a id="editScheduleChange" rsf:id="msg=ui.send.date.change" href="#">Change</a>
 						</div>
-						<div id="newSchedule">	
+						<div id="newSchedule">
 							<h4 rsf:id="msg=ui.send.schedule.new" class="schedule">Schedule for a later date/time</h4>
 	                        <input rsf:id="booleanSchedule" type="checkbox" name="booleanSchedule" id="booleanSchedule" />
 	                        <label rsf:id="booleanSchedule-label">
@@ -141,17 +141,17 @@
                         <div id="booleanScheduleDate" name="date" style="display:none;">
                         	<input rsf:id="smsDatesScheduleDate-iso8601" type="hidden"
 								id="dateToSend" name="dateToSend" value="YYYY/MM/DD"
-								size="25" maxlength="25" /> 
-							<input type="text" id="smsDatesScheduleDate" name="smsDatesScheduleDate"/>							
+								size="25" maxlength="25" />
+							<input type="text" id="smsDatesScheduleDate" name="smsDatesScheduleDate"/>
                         </div>
                     </div>
-                    
+
                     <div id="smsDatesExpiry">
                     	<div id="editExpiry" class="clear">
 								<span rsf:id="msg=ui.send.expiry.edit" class="exipry">Message to expire on:</span> <span rsf:id="expiry.date" class="console-cost">04 Jun 09 13.45 pm </span>
 								<a id="editExpiryChange" rsf:id="msg=ui.send.date.change" href="#">Change</a>
 							</div>
-						<div id="newExpiry">	
+						<div id="newExpiry">
 	                        <h4 rsf:id="msg=ui.send.expiry.new" class="exipry">Set expiry date/time</h4>
 	                        <input rsf:id="booleanExpiry" type="checkbox" name="booleanExpiry" id="booleanExpiry" />
 	                        <label rsf:id="booleanExpiry-label">
@@ -161,8 +161,8 @@
                         <div id="booleanExpiryDate" name="date" style="display:none;">
 							<input rsf:id="smsDatesExpiryDate-iso8601" type="hidden"
 								id="dateToExpire" name="dateToExpire" value="YYYY/MM/DD"
-								size="25" maxlength="25" /> 
-							<input type="text" id="smsDatesExpiryDate" name="smsDatesExpiryDate"/>		
+								size="25" maxlength="25" />
+							<input type="text" id="smsDatesExpiryDate" name="smsDatesExpiryDate"/>
                         </div>
                     </div>
                 </div>
