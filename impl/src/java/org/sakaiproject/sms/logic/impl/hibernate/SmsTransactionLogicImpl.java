@@ -345,7 +345,7 @@ public class SmsTransactionLogicImpl extends SmsLogic implements
 		smsTransaction.setTransactionDate(new Date(System.currentTimeMillis()));
 		smsTransaction.setCreditBalance(account.getCredits()
 				+ smsTransaction.getTransactionCredits());
-		String hql = "update SmsAccount set CREDITS = (CREDITS+?)  where ACCOUNT_ID = ?";
+		String hql = "update SmsAccount set CREDITS = (CREDITS+?0)  where ACCOUNT_ID = ?1";
 		ArrayList<Object> parms = new ArrayList<Object>();
 		parms.add((smsTransaction.getTransactionCredits()));
 		parms.add(account.getId());

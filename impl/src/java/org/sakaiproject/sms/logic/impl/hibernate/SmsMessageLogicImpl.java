@@ -404,8 +404,8 @@ public class SmsMessageLogicImpl extends SmsLogic implements SmsMessageLogic {
 		
 		if (smsTaskId == null || oldStatus == null || newStatus == null)
 			return;
-		
-		String hql = "update SmsMessage set statusCode = ? where TASK_ID = ? and statusCode = ?";
+
+		String hql = "update SmsMessage set statusCode = ?0 where TASK_ID = ?1 and statusCode = ?2";
 		ArrayList<Object> parms = new ArrayList<Object>();
 		parms.add(newStatus);
 		parms.add(smsTaskId);
