@@ -1,7 +1,5 @@
 package org.sakaiproject.sms.logic.stubs;
-
-import java.time.Instant;
-import java.util.Date;
+import java.time.Instant; import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -265,4 +263,22 @@ public class ResourcePropertiesStub implements ResourceProperties {
 		return null;
         }
 
+	/**
+	 * Returns the number of defined properties
+	 *
+	 * @return the number of defined properties
+	 */
+	public int size() {
+		return 0;
+	}
+
+	/**
+	 * Returns true if there are no defined properties
+	 *
+	 * @return true if there are no defined properties
+	 */
+	public boolean isEmpty() {
+
+		return true;
+	}
 }
