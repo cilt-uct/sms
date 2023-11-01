@@ -19,42 +19,40 @@
     <parent>
         <groupId>org.sakaiproject.sms</groupId>
         <artifactId>sms</artifactId>
-        <version>21-SNAPSHOT</version>
+        <version>23-SNAPSHOT</version>
     </parent>
-  
 
-  
     <dependencies>
-      <dependency>
-            <groupId>org.sakaiproject.kernel</groupId>
-            <artifactId>sakai-kernel-api</artifactId>
+        <dependency>
+              <groupId>org.sakaiproject.kernel</groupId>
+              <artifactId>sakai-kernel-api</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-core</artifactId>
+          </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
+              <groupId>org.sakaiproject.entitybroker</groupId>
+              <artifactId>entitybroker-api</artifactId>
         </dependency>
-       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-      </dependency>
-      <dependency>
-            <groupId>org.sakaiproject.entitybroker</groupId>
-            <artifactId>entitybroker-api</artifactId>
-      </dependency>
-  </dependencies>
+    </dependencies>
 
     <build>
-    <finalName>sms_api</finalName>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/resources</directory>
-        <includes>
-          <include>hibernate-mappings.hbm.xml</include>
-          <include>*.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+        <finalName>sms_api</finalName>
+        <sourceDirectory>${basedir}/src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/resources</directory>
+                <includes>
+                    <include>hibernate-mappings.hbm.xml</include>
+                    <include>*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
 </project>
