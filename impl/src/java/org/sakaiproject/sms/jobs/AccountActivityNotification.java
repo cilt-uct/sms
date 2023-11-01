@@ -12,16 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sakaiproject.email.api.Attachment;
 import org.sakaiproject.email.api.EmailService;
-import org.sakaiproject.emailtemplateservice.model.RenderedTemplate;
-import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
+import org.sakaiproject.emailtemplateservice.api.EmailTemplateService;
+import org.sakaiproject.emailtemplateservice.api.RenderedTemplate;
 import org.sakaiproject.sms.logic.SmsAccountLogic;
 import org.sakaiproject.sms.logic.SmsTransactionLogic;
 import org.sakaiproject.sms.logic.external.ExternalLogic;
@@ -33,32 +33,29 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 /**
  * Notifies account owners of activity on their jobs
- * 
+ *
  * @author dhorwitz
  *
  */
 @Slf4j
 public class AccountActivityNotification implements Job {
 
-	
 	@Setter private SmsAccountLogic smsAccountLogic;
 	@Setter private ExternalLogic externalLogic;
 	@Setter private SmsTransactionLogic smsTransactionLogic;
 	@Setter private EmailTemplateService emailTemplateService;
 	@Setter private EmailService emailService;
 
-
-	
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
-		
+
 		List<SmsAccount> accounts = smsAccountLogic.getAllSmsAccounts();
 		for (int i = 0; i < accounts.size(); i++) {
 			SmsAccount account = accounts.get(i);
-			
+
 			//user to send to
 			String sendToUser = null;
-			
+
 			//ok we need some info on the users
 			String to = account.getNotificationEmail();
 			SmsUser userTo = null;
@@ -69,14 +66,13 @@ public class AccountActivityNotification implements Job {
 				sendToUser = "/user/" + account.getOwnerId();
 			} else {
 				//TODO - need to get the userId from the email
-				
 			}
-			
+
 			if (userTo == null) {
 				log.warn("can't resolve owner of account " + account.getId().toString() );
 				continue;
 			}
-			
+
 			//construct the transaction list
 			List<SmsTransaction> transList = smsTransactionLogic.getSmsTransactionsForAccountId(account.getId());
 			StringBuilder csv = new StringBuilder();
@@ -95,7 +91,7 @@ public class AccountActivityNotification implements Job {
 			log.info(filePath);
 			File csvAttach = new File(filePath);
 			Writer output = null;
-			
+
 			try {
 				output = new BufferedWriter(new FileWriter(csvAttach));
 				output.write(csv.toString());
@@ -114,16 +110,16 @@ public class AccountActivityNotification implements Job {
 				} catch (IOException e) {
 					log.warn(e.getLocalizedMessage(), e);
 				}
-				
 			}
+
 			log.debug("file of size: " + csvAttach.length());
-			
-			Map<String, String> repVals = new HashMap<String, String>();
+
+			Map<String, Object> repVals = new HashMap<>();
 			repVals.put("recipientFirst", userTo.getFirstName());
 			repVals.put("accountName", account.getAccountName());
 			repVals.put("accountId", account.getId().toString());
 			repVals.put("currentBalance", String.valueOf(account.getCredits()));
-			
+
 			RenderedTemplate template = emailTemplateService.getRenderedTemplateForUser("sms.accountActivity", sendToUser,repVals);
 			InternetAddress inetTo[];
 			try {
@@ -137,17 +133,11 @@ public class AccountActivityNotification implements Job {
 			} catch (AddressException e) {
 				log.warn(e.getLocalizedMessage(), e);
 			}
-			
+
 			if (!csvAttach.delete()) {
 				log.warn("couldn't delete temp file!");
 			}
-			
-			
-			
 		}
-
 	}
-
-
 
 }

@@ -157,7 +157,7 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 		return ret;
 	}
 
-	
+
 	public List<User> getUsers(Collection<String> arg0) {
 		List<User> ret = new ArrayList<User>();
 		Iterator<String> it = arg0.iterator();
@@ -198,6 +198,11 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 	}
 
 	public String userReference(String arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String idFromReference(String reference) {
 		// TODO Auto-generated method stub
 		return null;
 	}

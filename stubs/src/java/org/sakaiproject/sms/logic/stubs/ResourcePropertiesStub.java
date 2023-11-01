@@ -156,7 +156,33 @@ public class ResourcePropertiesStub implements ResourceProperties {
 		return null;
 	}
 
+	public String getNamePropNewAssignmentInputAddTimeEstimate()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getNamePropAssignmentInputAddTimeSpent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public String getNamePropNewAssignmentCheckAutoAnnounce() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getNamePropNewAssignmentCheckAddEstimate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getNamePropNewAssignmentCheckAddEstimateRequired() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getNamePropCalendarUrl() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -244,7 +270,6 @@ public class ResourcePropertiesStub implements ResourceProperties {
 		// TODO Auto-generated method stub
 
 	}
-
 
 	public Date getDateProperty(String arg0)
 			throws EntityPropertyNotDefinedException,

@@ -12,7 +12,7 @@
 		<property name="smsAccountLogic"
 			ref="org.sakaiproject.sms.logic.hibernate.SmsAccountLogic" />
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService"/>
-		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.service.EmailTemplateService"/>
+		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.api.EmailTemplateService"/>
 	</bean>
 
 	<bean
@@ -30,8 +30,5 @@
 				bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
 		</property>
 	</bean>
-
-
-
 
 </beans>

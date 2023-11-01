@@ -27,12 +27,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TimeZone;
 
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Session;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.sakaiproject.sms.logic.external.ExternalLogic;
 import org.sakaiproject.sms.logic.incoming.ParsedMessage;
@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Stub implementation of {@link ExternalLogic} for testing
- * 
+ *
  */
 @Slf4j
 public class ExternalLogicStub implements ExternalLogic {
@@ -125,7 +125,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	/**
 	 * So when running in jetty we generate a random number of users with random
 	 * mobile numbers. * @param smsTask
-	 * 
+	 *
 	 * @return
 	 */
 	private Set<SmsMessage> generateDummySmsMessages(SmsTask smsTask) {
@@ -315,7 +315,7 @@ public class ExternalLogicStub implements ExternalLogic {
 	}
 
 	public List<String> getAllSiteAliases() {
-		
+
 		List<String> siteAliases = new ArrayList<String>();
 		siteAliases.add(SMS_DEV_DEFAULT_SAKAI_SITE_ID);
 		return siteAliases;

@@ -34,6 +34,11 @@ public class SakaiPersonStub implements SakaiPerson {
 		return Boolean.valueOf(false);
 	}
 
+	public String getOrcid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public String getNotes() {
 		// TODO Auto-generated method stub
 		return null;
@@ -44,8 +49,53 @@ public class SakaiPersonStub implements SakaiPerson {
 		return null;
 	}
 
+	public String getUniqueId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public Boolean isSystemPicturePreferred() {
 		return Boolean.valueOf(false);
+	}
+
+	public String getPrincipalNamePrior() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPrincipalNamePrior(String principalNamePrior){
+		// TODO Auto-generated method stub
+
+	}
+
+	public String getScopedAffiliation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void  setScopedAffiliation(String scopedAffiliation) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public String getTargetedID(){
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setTargetedID(String targetedID) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public String getAssurance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setAssurance(String assurance) {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void setCampus(String arg0) {
@@ -83,12 +133,21 @@ public class SakaiPersonStub implements SakaiPerson {
 
 	}
 
+	public void setOrcid(String orcid) {
+		// TODO Auto-generated method stub
+	}
+
 	public void setPictureUrl(String arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public void setSystemPicturePreferred(Boolean arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setUniqueId(String uniqueId) {
 		// TODO Auto-generated method stub
 
 	}
@@ -689,12 +748,12 @@ public class SakaiPersonStub implements SakaiPerson {
 
 	public void setEducationCourse(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setEducationSubjects(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getNormalizedMobile() {
@@ -704,7 +763,7 @@ public class SakaiPersonStub implements SakaiPerson {
 
 	public void setNormalizedMobile(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getAcademicProfileUrl() {
@@ -734,33 +793,33 @@ public class SakaiPersonStub implements SakaiPerson {
 
 	public void setAcademicProfileUrl(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setBusinessBiography(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setPublications(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setStaffProfile(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setUniversityProfileUrl(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPhoneticPronunciation(String phoneticPronunciation) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

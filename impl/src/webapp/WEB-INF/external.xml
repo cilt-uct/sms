@@ -23,13 +23,10 @@
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
 		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
 	</bean>
-	
+
     <bean id="org.sakaiproject.sms.logic.external.NumberRoutingHelper" class="org.sakaiproject.sms.logic.external.NumberRoutingHelperImpl" init-method="init">
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
     </bean>
-
-
-
 
     <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.MobileNumberHelperImpl">
         <property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
@@ -37,9 +34,9 @@
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
         <property name="numberRoutingHelper" ref="org.sakaiproject.sms.logic.external.NumberRoutingHelper" />
     </bean>
- 
- <!-- Uncomment to use the Ldap mobile number helper remember to comment out the default bean above -->
-    <!-- 
+
+ 	<!-- Uncomment to use the Ldap mobile number helper remember to comment out the default bean above -->
+    <!--
     <bean id="org.sakaiproject.sms.logic.external.MobileNumberHelper" class="org.sakaiproject.sms.logic.external.LdapMobileNumberHelper" init-method="init">
        <property name="sakaiPersonManager" ref="org.sakaiproject.api.common.edu.person.SakaiPersonManager" />
         <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
@@ -101,7 +98,6 @@
        <property name="overflowToDisk" value="false"/>
     </bean>
 
-
 	<bean id="org.sakaiproject.sms.logic.external.ExternalLogic" class="org.sakaiproject.sms.logic.external.ExternalLogicImpl" init-method="init">
 		<property name="functionManager" ref="org.sakaiproject.authz.api.FunctionManager" />
 		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
@@ -121,6 +117,6 @@
 
 	<bean id="org.sakaiproject.sms.logic.external.ExternalEmailLogic" class="org.sakaiproject.sms.logic.external.ExternalEmailLogicImpl" init-method="init">
 		<property name="emailService" ref="org.sakaiproject.email.api.EmailService" />
-		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.service.EmailTemplateService"/>
+		<property name="emailTemplateService" ref="org.sakaiproject.emailtemplateservice.api.EmailTemplateService"/>
 	</bean>
 	</beans>

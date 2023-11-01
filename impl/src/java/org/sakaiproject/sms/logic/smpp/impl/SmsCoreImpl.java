@@ -72,9 +72,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handle all core logic regarding SMPP gateway communication.
- * 
+ *
  * @author etienne@psybergate.co.za
- * 
+ *
  */
 @Slf4j
 public class SmsCoreImpl implements SmsCore {
@@ -85,7 +85,7 @@ public class SmsCoreImpl implements SmsCore {
 
 
 	@Setter private ExternalLogic externalLogic;
-	@Setter private ExternalEmailLogic externalEmailLogic;	
+	@Setter private ExternalEmailLogic externalEmailLogic;
 	@Setter private NumberRoutingHelper numberRoutingHelper = null;
 	@Setter @Getter private SmsMessageParser smsMessageParser;
 	@Setter @Getter private SmsTaskValidator smsTaskValidator;
@@ -100,7 +100,7 @@ public class SmsCoreImpl implements SmsCore {
 	private final ThreadGroup smsThreadGroup = new ThreadGroup(
 			SmsConstants.SMS_TASK_PROCESSING_THREAD_GROUP_NAME);
 
-	
+
 	public SmsTask calculateEstimatedGroupSize(final SmsTask smsTask) {
 		final Set<SmsMessage> messages = hibernateLogicLocator
 				.getExternalLogic().getSakaiGroupMembers(smsTask, true);
@@ -108,7 +108,7 @@ public class SmsCoreImpl implements SmsCore {
 		// iterate through messages and calculate total cost
 		double credits = 0;
 		int routable = 0;
-		
+
 		for (SmsMessage message : messages) {
 			if (numberRoutingHelper.getRoutingInfo(message)) {
 				credits += message.getCredits();
@@ -120,15 +120,15 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setCreditEstimate(credits);
 		smsTask.setCreditCost(hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getCreditCost());
-		
+
 		return smsTask;
 	}
 
 	/**
 	 * Thread to handle all processing of tasks.
-	 * 
+	 *
 	 * @author void
-	 * 
+	 *
 	 */
 	private class ProcessThread implements Runnable {
 
@@ -158,7 +158,7 @@ public class SmsCoreImpl implements SmsCore {
 	/**
 	 * Method sets the sms Messages on the task and calculates the actual group
 	 * size.
-	 * 
+	 *
 	 * @param smsTask
 	 * @return
 	 */
@@ -305,7 +305,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (!SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING.equals(smsTask.getMessageTypeId())) {
 			smsTask.setMessageTypeId(SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING);
 		}
-		
+
 		final Set<SmsMessage> smsMessages = (Set<SmsMessage>) ((HashSet<SmsMessage>) smsTask
 				.getSmsMessages()).clone();
 
@@ -333,7 +333,7 @@ public class SmsCoreImpl implements SmsCore {
 			Calendar cal = Calendar.getInstance();
 			smsTask.setDateToSend(cal.getTime());
 		}
-		
+
 		// Set DateToExpire to getMaxTimeToLive if it's not set in the UI
 		smsTask.setMaxTimeToLive(siteConfig.getSmsTaskMaxLifeTime());
 		if (smsTask.getDateToExpire() == null) {
@@ -347,7 +347,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		// Sanitize the character set in the message body
 		smsTask.setMessageBody(SmsMessageUtil.sanitizeMessageBody(smsTask.getMessageBody()));
-		
+
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.addAll(smsTaskValidator.validateInsertTask(smsTask));
 		if (!errors.isEmpty()) {
@@ -364,7 +364,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		// we set the date again due to time lapse between getPreliminaryTask
 		// and insert task into the database
-		
+
 		smsTask.setDateCreated(DateUtil.getCurrentDate());
 		errors.clear();
 		smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_BUSY);
@@ -372,7 +372,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		externalLogic.postEvent(ExternalLogic.SMS_EVENT_TASK_CREATE,
 				"/sms-task/" + smsTask.getId(), smsTask.getSakaiSiteId());
-		
+
 		if (!smsBilling.reserveCredits(smsTask)) {
 			ArrayList<String> insufficientCredit = new ArrayList<String>();
 			insufficientCredit.add(ValidationConstants.INSUFFICIENT_CREDIT
@@ -426,7 +426,7 @@ public class SmsCoreImpl implements SmsCore {
 			}
 
 			// Deliver in real time if possible, otherwise queue for the scheduler
-			
+
 			if (externalLogic.isNodeBindToGateway() &&
 			  smsTask.getDateToSend().getTime() <= System.currentTimeMillis()) {
 				tryProcessTaskRealTime(smsTask);
@@ -446,26 +446,26 @@ public class SmsCoreImpl implements SmsCore {
 
 		String smsMessagebody = inMessage.getSmsMessagebody();
 		String mobileNumber = inMessage.getMobileNumber();
-		
-		
+
+
 		// Allocate the cost of incoming messages, default to admin account
 
 		double routingCredits = numberRoutingHelper.getIncomingMessageCost(inMessage.getSmscId());
-		String defaultBillingSite = SmsConstants.SAKAI_SMS_ADMIN_SITE;		
-		
+		String defaultBillingSite = SmsConstants.SAKAI_SMS_ADMIN_SITE;
+
 		String smsMessageReplyBody = "";
-				
+
 		ParsedMessage parsedMessage = getSmsIncomingLogicManager().process(smsMessagebody, mobileNumber);
-		
+
 		if (parsedMessage == null) {
 			// We don't ever expect a null return value here
 			log.error("Error parsing incoming message from " + mobileNumber);
 
 			billIncomingMessage(routingCredits, defaultBillingSite, null, null, null);
-			return;		
+			return;
 		}
 
-		
+
 		// Check for empty reply body
 		if (parsedMessage.getBodyReply() == null
 			|| parsedMessage.getBodyReply().equals(
@@ -475,9 +475,9 @@ public class SmsCoreImpl implements SmsCore {
 			billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(), null, parsedMessage.getAccountId());
 			return;
 		}
-		
+
 		smsMessageReplyBody = parsedMessage.getBodyReply();
-			
+
 		log.debug((parsedMessage.getCommand() != null ? "Command "
 					+ parsedMessage.getCommand() : "System")
 					+ " answered back with: " + smsMessageReplyBody);
@@ -490,17 +490,17 @@ public class SmsCoreImpl implements SmsCore {
 		if (!configSite.isReceiveIncomingEnabled()) {
 			LOG.info("Receiving of Mobile Originating messages is disabled for site:"
 							+ configSite.getSakaiSiteId());
-			
+
 			// Bill default site rather than this site
 			billIncomingMessage(routingCredits, defaultBillingAccount, null, null);
 			return;
 		}
 		*/
-		
+
 		SmsMessage smsMessage = new SmsMessage(mobileNumber);
 
 		SmsTask smsTask = getPreliminaryMOTask(smsMessage.getMobileNumber(),
-				new Date(), parsedMessage.getSite() == null ? defaultBillingSite : parsedMessage.getSite(), 
+				new Date(), parsedMessage.getSite() == null ? defaultBillingSite : parsedMessage.getSite(),
 				null, SmsConstants.DEFAULT_MO_SENDER_USERNAME);
 
 		if (smsTask == null) {
@@ -521,9 +521,9 @@ public class SmsCoreImpl implements SmsCore {
 		smsTask.setSmsMessagesOnTask(smsMessages);
 
 		// Send reply
-		
+
 		SmsTask outTask = null;
-		
+
 		try {
 			outTask = insertTask(smsTask);
 		} catch (SmsTaskValidationException e) {
@@ -533,17 +533,17 @@ public class SmsCoreImpl implements SmsCore {
 		} catch (SmsSendDisabledException e) {
 			log.error(getExceptionStackTraceAsString(e), e);
 		}
-		
+
 		billIncomingMessage(routingCredits, defaultBillingSite, parsedMessage.getSite(),
 				outTask != null ? outTask.getId() : null, parsedMessage.getAccountId());
-		
+
 		return;
 	}
 
 	private void billIncomingMessage(double credits, String defaultSiteId, String parsedSiteId, Long taskId, Long accountId) {
 
 		if ((defaultSiteId == null && parsedSiteId == null) || (credits == 0)) {
-			// nothing to do 
+			// nothing to do
 			return;
 		}
 		SmsAccount account = null;
@@ -553,10 +553,10 @@ public class SmsCoreImpl implements SmsCore {
 			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(
 				parsedSiteId != null ? parsedSiteId : defaultSiteId, null);
 		}
-		
-		
+
+
 		if (account != null) {
-			smsBilling.debitIncomingMessage(account, credits, taskId);	
+			smsBilling.debitIncomingMessage(account, credits, taskId);
 		} else {
 			account = hibernateLogicLocator.getSmsAccountLogic().getSmsAccount(defaultSiteId, null);
 			if (account != null) {
@@ -565,10 +565,10 @@ public class SmsCoreImpl implements SmsCore {
 				log.warn("Unable to debit cost of incoming message");
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	public void processNextTask() {
 		synchronized (this) {
 			if (externalMessageSending == null && !externalLogic.isNodeBindToGateway()) {
@@ -587,7 +587,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void processSOTasks() {
 		synchronized (this) {
-			
+
 			if (externalMessageSending == null && !externalLogic.isNodeBindToGateway()) {
 				return;
 			}
@@ -596,28 +596,28 @@ public class SmsCoreImpl implements SmsCore {
 			.getNextSmsTask();
 			while (smsTask != null) {
 				processTaskInThread(smsTask, smsThreadGroup);
-				
+
 				smsTask = hibernateLogicLocator.getSmsTaskLogic()
 				.getNextSmsTask();
 			}
 		}
 	}
-	
-	
+
+
 	public void processTask(SmsTask smsTask) {
 
 		if (!SmsConst_DeliveryStatus.STATUS_BUSY.equals(smsTask.getStatusCode())) {
-			throw new IllegalStateException("Task " + smsTask.getId() + 
+			throw new IllegalStateException("Task " + smsTask.getId() +
 					" handed to processTask() but is not in BUSY state");
 		}
 
 		// Has the task expired ?
-		
+
 		if (smsTask.getDateToExpire().before(new Date())) {
 
-			log.info("Task expired: id = " + 
+			log.info("Task expired: id = " +
 					smsTask.getId() + " expiry time " + smsTask.getDateToExpire());
-			
+
 			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
 					smsTask.getId(),
 					SmsConst_DeliveryStatus.STATUS_PENDING,
@@ -641,7 +641,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (smsTask.getAttemptCount() >= systemConfig.getSmsRetryMaxCount()) {
 
-			log.info("Task exceeded retry count: id = " + 
+			log.info("Task exceeded retry count: id = " +
 					smsTask.getId() + " attempts = " + smsTask.getAttemptCount());
 
 			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
@@ -653,14 +653,14 @@ public class SmsCoreImpl implements SmsCore {
 			smsTask.setFailReason(MessageCatalog.getMessage(
 					"messages.taskRetryFailure", String
 							.valueOf(systemConfig.getSmsRetryMaxCount())));
-			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);				
+			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 			smsBilling.cancelPendingRequest(smsTask.getId());
 			sendEmailNotification(smsTask,
 					SmsConstants.TASK_NOTIFICATION_FAILED);
-			
+
 			return;
 		}
-			
+
 		// Send the task's messages
 
 		log.info("Processing task: " + smsTask.getId());
@@ -669,28 +669,28 @@ public class SmsCoreImpl implements SmsCore {
 		Transaction tx = null;
 
 		try {
-			
+
 			// Expand and persist the message set if this is the first time round
-			
+
 			if ((!smsTask.getMessageTypeId().equals(
-					SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING) 
+					SmsConstants.MESSAGE_TYPE_MOBILE_ORIGINATING)
 					&& smsTask.getGroupSizeActual() == null)) {
 				Set<SmsMessage> messages = calculateActualGroupSize(smsTask);
-				
+
 				// Persist message set
 				for (SmsMessage message : messages) {
 					hibernateLogicLocator.getSmsMessageLogic()
 							.persistSmsMessage(message);
 				}
-				
+
 				smsTask.setGroupSizeActual(messages.size());
 				hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-				
+
 				smsTask.setSmsMessages(messages);
 			}
 
 			// Do the actual sending to the gateway
-			
+
 			Set<SmsMessage> messageList = new HashSet<SmsMessage>(
 							hibernateLogicLocator
 									.getSmsMessageLogic()
@@ -699,7 +699,7 @@ public class SmsCoreImpl implements SmsCore {
 											SmsConst_DeliveryStatus.STATUS_PENDING));
 
 			String submissionStatus = null;
-			
+
 			//if set use an external service
 			if (externalMessageSending != null) {
 				submissionStatus = externalMessageSending.sendMessagesToService(messageList);
@@ -712,7 +712,7 @@ public class SmsCoreImpl implements SmsCore {
 			int sent = 0;
 			int errors = 0;
 			int delivered = 0;
-			
+
 			for (SmsMessage sentMessage : messageList) {
 				if (SmsConst_DeliveryStatus.STATUS_SENT.equals(sentMessage.getStatusCode())) {
 					credits += sentMessage.getCredits();
@@ -724,56 +724,56 @@ public class SmsCoreImpl implements SmsCore {
 					credits += sentMessage.getCredits();
 					delivered++;
 				}
-				
+
 				if (SmsConst_DeliveryStatus.STATUS_ERROR.equals(sentMessage.getStatusCode())) {
 					errors++;
 				}
 			}
-			
-			// Lock and update the task 
-			
+
+			// Lock and update the task
+
 			session = getHibernateLogicLocator().getSmsTaskLogic().getNewHibernateSession();
 			tx = session.beginTransaction();
 
 			smsTask = (SmsTask) session.get(SmsTask.class, smsTask.getId(), LockMode.UPGRADE);
-			
+
 			smsTask.setStatusCode(submissionStatus);
 			smsTask.setDateProcessed(new Date());
-			
+
 			smsTask.setCreditsActual(smsTask.getCreditsActual() + credits);
 			smsTask.setMessagesProcessed(smsTask.getMessagesProcessed() + sent + errors);
 
 			smsTask.setMessagesDelivered(delivered);
-			
+
 			if (SmsConst_DeliveryStatus.STATUS_INCOMPLETE.equals(smsTask.getStatusCode()) ||
 					SmsConst_DeliveryStatus.STATUS_RETRY.equals(smsTask.getStatusCode())) {
-				
+
 				// Reschedule for later delivery if necessary
 				smsTask.setAttemptCount((smsTask.getAttemptCount()) + 1);
 				smsTask.setNextRetryTime(getNextRetryTime(smsTask.getAttemptCount()));
-				
+
 			}
-			
+
 			session.update(smsTask);
 			tx.commit();
 			session.close();
-			
+
 		} catch (Exception e) {
-			
+
 			log.error(getExceptionStackTraceAsString(e), e);
-			
+
 			if (tx != null) {
 				tx.rollback();
 			}
 			if (session != null) {
 				session.close();
 			}
-			
+
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_FAIL);
 			smsTask.setFailReason(e.toString());
 			smsBilling.settleCreditDifference(smsTask, smsTask.getCreditEstimate(), 0);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
-			
+
 			sendEmailNotification(smsTask,
 					SmsConstants.TASK_NOTIFICATION_EXCEPTION,
 					getExceptionStackTraceAsString(e));
@@ -787,13 +787,13 @@ public class SmsCoreImpl implements SmsCore {
 		exception.printStackTrace(new PrintWriter(stringWriter));
 		return stringWriter.toString();
 	}
-	
+
 	public void processTimedOutDeliveryReports() {
-		
+
 		// TODO - SENT messages are billed upfront. If there's no billing
 		// change from the lack of a delivery report, then this state
 		// transition is not really meaningful.
-		
+
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
 			.getOrCreateSystemSmsConfig();
 
@@ -801,7 +801,7 @@ public class SmsCoreImpl implements SmsCore {
 		cal.add(Calendar.SECOND, -1 * systemConfig.getDelReportTimeoutDuration());
 
 		log.debug("Timing out SENT messages older than " + cal.getTime());
-		
+
 		List<SmsMessage> smsMessages = hibernateLogicLocator
 				.getSmsMessageLogic().getSmsMessagesForTimeout(cal.getTime());
 
@@ -838,12 +838,12 @@ public class SmsCoreImpl implements SmsCore {
 					if (tx != null && tx.isActive()) {
 						tx.rollback();
 					}
-				}	
-				
+				}
+
 			} // for
-					
+
 			session.close();
-			
+
 		} // if
 
 	}
@@ -852,12 +852,12 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 *            the sms task
 	 * @param taskMessageType
 	 *            the task message type
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	private boolean sendEmailNotification(SmsTask smsTask,
@@ -867,7 +867,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	/**
 	 * Send a email notification out.
-	 * 
+	 *
 	 * @param smsTask
 	 * @param taskMessageType
 	 * @param additionInformation
@@ -925,7 +925,7 @@ public class SmsCoreImpl implements SmsCore {
 		// get number format for default locale
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(1);
-		
+
 		String creditsAvailable = nf.format(credits);
 		String creditsRequired = "";
 		creditsRequired = nf.format(smsTask.getCreditEstimate());
@@ -934,102 +934,102 @@ public class SmsCoreImpl implements SmsCore {
 		ownerToAddress = hibernateLogicLocator.getExternalLogic()
 				.getSakaiEmailAddressForUserId(smsTask.getSenderUserId());
 
-		
-		
+
+
 		// Email address for the Account
 		String notiUser = account.getNotificationUserId();
 		if (notiUser != null) {
 			notiToAddress = externalLogic.getSakaiEmailAddressForUserId(notiUser);
 		}
-			
-		
+
+
 
 		// TODO - Use the EmailTemplateService to construct message bodies
 
-		Map<String, String> repValues = new HashMap<String, String>();
+		Map<String, Object> repValues = new HashMap<String, Object>();
 		repValues.put("taskId", smsTask.getId().toString());
-		
-		
+
+
 		String templateKey = null;
-		
+
 		if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_STARTED)) {
-			
+
 			repValues.put("creditsRequired", creditsRequired);
 			repValues.put("creditsAvailable", creditsAvailable);
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_STARTED;
-			
+
 		} else if (taskMessageType.equals(SmsConstants.TASK_NOTIFICATION_SENT)) {
-			
+
 			repValues.put("messagesProcessed", Integer.valueOf(smsTask.getMessagesProcessed()).toString());
 			repValues.put("messagesDelivered", Integer.valueOf(smsTask.getMessagesDelivered()).toString());
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_SENT;
-			
+
 			} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_EXCEPTION)) {
-			
-			
+
+
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_EXCEPTION;
 			repValues.put("moreInfo", additionInformation);
-			
+
 		} else if (taskMessageType
 				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED)) {
-			
-			
+
+
 			repValues.put("creditsAvailable", creditsAvailable);
 			repValues.put("overDraftLimit", String.valueOf(account.getOverdraftLimit()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_OVER_QUOTA;
-			
+
 		} else if (taskMessageType
 				.equals(SmsConstants.ACCOUNT_OVERDRAFT_LIMIT_EXCEEDED_MO)) {
-			
-			
+
+
 			repValues.put("creditsAvailable", String.valueOf(account.getCredits()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_OVER_QUOTA_MO;
-			
+
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_EXPIRED)) {
-			
-			
+
+
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_EXPIRED;
-			
+
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_COMPLETED)) {
-			
+
 			repValues.put("messagesProccessed", String.valueOf(smsTask.getMessagesProcessed()));
 			repValues.put("messagesDelivered", String.valueOf(smsTask.getMessagesDelivered()));
-			
+
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_COMPLETED;
-			
+
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_ABORTED)) {
-			
-			
+
+
 			repValues.put("SenderName", smsTask.getSenderUserName());
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_ABORTED;
-			
+
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_NOTIFICATION_FAILED)) {
-			
-			
+
+
 			repValues.put("maxTried", String.valueOf(configSystem.getSmsRetryMaxCount()));
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_FAILED;
-			
-			
-			
+
+
+
 
 		} else if (taskMessageType
 				.equals(SmsConstants.TASK_INSUFFICIENT_CREDITS)) {
-			
-			
+
+
 			repValues.put("required", String.valueOf(smsTask.getCreditCost()));
 			repValues.put("available", String
 					.valueOf(account.getOverdraftLimit()
 							+ account.getCredits()));
-		
+
 			templateKey = ExternalEmailLogic.TEMPLATE_TASK_INSUFICIENT_CREDITS;
 
 		}
@@ -1038,7 +1038,7 @@ public class SmsCoreImpl implements SmsCore {
 
 
 		if (notiToAddress != null && notiToAddress.length() > 0) {
-		 					
+
 			List<String> toList = new ArrayList<String>();
 			toList.add(notiToAddress);
 			externalEmailLogic.sendEmailTemplate(null, toList, templateKey, repValues);
@@ -1046,7 +1046,7 @@ public class SmsCoreImpl implements SmsCore {
 
 		if (ownerToAddress != null && ownerToAddress.length() > 0
 				&& !ownerToAddress.equals(notiToAddress)) {
-			
+
 			List<String> toList = new ArrayList<String>();
 			toList.add(ownerToAddress);
 			externalEmailLogic.sendEmailTemplate(null, toList, templateKey, repValues);
@@ -1057,7 +1057,7 @@ public class SmsCoreImpl implements SmsCore {
 
 	public void tryProcessTaskRealTime(SmsTask smsTask) {
 
-		log.debug("Processing task in realtime: task id = " + smsTask.getId());			
+		log.debug("Processing task in realtime: task id = " + smsTask.getId());
 		processTaskInThread(smsTask, smsThreadGroup);
 	}
 
@@ -1086,16 +1086,16 @@ public class SmsCoreImpl implements SmsCore {
 
 				if (smsTask.getStatusCode().equals(
 						SmsConst_DeliveryStatus.STATUS_SENT)) {
-					
+
 					log.debug("Marking task as completed: taskId = "
 							+ smsTask.getId() + " its status was "
 							+ smsTask.getStatusCode());
-					
+
 					//check external messages
 					if (externalMessageSending != null) {
 						List<SmsMessage> messages = hibernateLogicLocator.getSmsMessageLogic().getSmsMessagesWithStatus(task.getId(), SmsConst_DeliveryStatus.STATUS_SENT);
 						externalMessageSending.updateMessageStatuses(messages);
-						
+
 						//we need to check the message stats
 						int delivered = smsTask.getMessagesDelivered();
 						for (int q=0; q < messages.size(); q++) {
@@ -1107,21 +1107,21 @@ public class SmsCoreImpl implements SmsCore {
 						}
 						smsTask.setMessagesDelivered(delivered);
 					}
-					
+
 					// We need to get these values inside the transaction
 					double creditEstimate = smsTask.getCreditEstimate();
 					double actualCreditsUsed = smsTask.getCreditsActual();
-						
+
 					smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_TASK_COMPLETED);
 					smsTask.setBilledCredits(actualCreditsUsed);
 					session.update(smsTask);
 					tx.commit();
-					
+
 					if (creditEstimate != actualCreditsUsed) {
 						smsBilling.settleCreditDifference(smsTask, creditEstimate, actualCreditsUsed);
 					}
 					checkOverdraft(smsTask);
-					
+
 					if (smsTask.getMessageTypeId().equals(
 							SmsConstants.MESSAGE_TYPE_SYSTEM_ORIGINATING)) {
 						sendEmailNotification(smsTask,
@@ -1141,7 +1141,7 @@ public class SmsCoreImpl implements SmsCore {
 							}
 						}
 					}
-					
+
 				} else {
 					tx.rollback();
 				}
@@ -1154,20 +1154,20 @@ public class SmsCoreImpl implements SmsCore {
 			} finally {
 				if (session != null) {
 					session.close();
-				}				
+				}
 			}
 		}
 	}
 
 	public void adjustLateDeliveryBilling() {
-	
+
 		List<SmsTask> smsTasks = hibernateLogicLocator.getSmsTaskLogic()
 		.getTasksWithLateBilling();
 
 		if (smsTasks != null && !smsTasks.isEmpty()) {
 
 			log.debug("Adjusting billing for late deliveries for " + smsTasks.size() + " tasks");
-			
+
 			for (SmsTask task : smsTasks) {
 
 				Session session = null;
@@ -1207,7 +1207,7 @@ public class SmsCoreImpl implements SmsCore {
 				} finally {
 					if (session != null) {
 						session.close();
-					}				
+					}
 				}
 			}
 		}
@@ -1231,7 +1231,7 @@ public class SmsCoreImpl implements SmsCore {
 		if (smsTask == null) {
 			throw new SmsTaskNotFoundException();
 		}
-		
+
 		if (smsTask.getStatusCode().equals(
 				SmsConst_DeliveryStatus.STATUS_PENDING)) {
 
@@ -1241,7 +1241,7 @@ public class SmsCoreImpl implements SmsCore {
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(smsTask);
 
 			smsBilling.cancelPendingRequest(smsTaskID);
-			
+
 			// If it really is pending, there won't be any messages, but
 			// keep this for future ref for more general abort code.
 			hibernateLogicLocator.getSmsMessageLogic().updateStatusForMessages(
@@ -1251,7 +1251,7 @@ public class SmsCoreImpl implements SmsCore {
 			sendEmailNotification(smsTask,
 					SmsConstants.TASK_NOTIFICATION_ABORTED);
 		}
-	
+
 	}
 
 	public void processMOTasks() {
@@ -1264,7 +1264,7 @@ public class SmsCoreImpl implements SmsCore {
 		Session session = null;
 		Transaction tx = null;
 		if (moTasks != null) {
-			
+
 				for (SmsTask smsTask : moTasks) {
 				try {
 					session = getHibernateLogicLocator().getSmsTaskLogic()
@@ -1293,7 +1293,7 @@ public class SmsCoreImpl implements SmsCore {
 					tx.commit();
 					session.close();
 					processTaskInThread(smsTask, smsThreadGroup);
-				
+
 			} catch (HibernateException e) {
 				log.error("Error processing MO Message: ", e);
 				if (tx != null) {
@@ -1312,7 +1312,7 @@ public class SmsCoreImpl implements SmsCore {
 				+ threadGroup.activeCount());
 		int maxThreadCount = hibernateLogicLocator.getSmsConfigLogic()
 				.getOrCreateSystemSmsConfig().getMaxActiveThreads();
-		if ((threadGroup.activeCount() < maxThreadCount)) {	
+		if ((threadGroup.activeCount() < maxThreadCount)) {
 			new ProcessThread(smsTask, threadGroup);
 		} else {
 			smsTask.setStatusCode(SmsConst_DeliveryStatus.STATUS_RETRY);
@@ -1322,8 +1322,8 @@ public class SmsCoreImpl implements SmsCore {
 		}
 
 	}
-	
-	
+
+
 	private Date getNextRetryTime(Integer retryCount) {
 
 		SmsConfig systemConfig = hibernateLogicLocator.getSmsConfigLogic()
@@ -1353,11 +1353,11 @@ public class SmsCoreImpl implements SmsCore {
 		} else if (retryCount > 59) {
 			//with default settings this will be 7680s (128m)
 			offset = offset * 64;
-		} 
+		}
 
 
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.SECOND, offset); 
+		cal.add(Calendar.SECOND, offset);
 		return new Date();
 	}
 
@@ -1366,12 +1366,12 @@ public class SmsCoreImpl implements SmsCore {
 			return;
 		}
 		log.info("updateExternalMessageStatuses()");
-		
+
 		//we need all tasks in progress
 		SearchFilterBean searchBean  = new SearchFilterBean();
 		searchBean.setStatus(SmsConst_DeliveryStatus.STATUS_SENT);
 
-		
+
 		List<SmsTask> tasks = hibernateLogicLocator.getSmsTaskLogic().getTasksNotComplete();
 		log.info("got a list of " + tasks.size() + " tasks");
 		for (int i =0; i < tasks.size(); i++) {
@@ -1387,7 +1387,7 @@ public class SmsCoreImpl implements SmsCore {
 					delivered++;
 				}
 			}
-			
+
 			task.setMessagesDelivered(delivered);
 			hibernateLogicLocator.getSmsTaskLogic().persistSmsTask(task);
 		}

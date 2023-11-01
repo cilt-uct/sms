@@ -6,13 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.validator.routines.EmailValidator;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.EmailService;
-import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
+import org.sakaiproject.emailtemplateservice.api.EmailTemplateService;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 
-
 	/*
 	 * Setters and injected services
 	 */
 	@Setter private EmailService emailService;
 	@Setter private ServerConfigurationService serverConfigurationService = null;
-	@Setter private EmailTemplateService emailTemplateService;	
+	@Setter private EmailTemplateService emailTemplateService;
 
 	public void init() {
 		log.info("init()");
@@ -42,13 +41,12 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		templatePaths.add(FILE_TEMPLATE_TASK_FAILED);
 		templatePaths.add(FILE_TEMPLATE_TASK_INSUFICIENT_CREDITS);
 		emailTemplateService.processEmailTemplates(templatePaths);
-
 	}
 
 	/*
-	 * 
+	 *
 	 * Actual methods
-	 * 
+	 *
 	 */
 	public boolean sendEmail(String toAddress, String subject,
 			String body) {
@@ -59,9 +57,6 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		sendEmails(from, new String[] { toAddress }, subject, body);
 		return true;
 	}
-
-
-
 
 	/**
 	 * @see ExternalLogic#sendEmails(String, String[], String, String)
@@ -84,7 +79,6 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		}
 
 		return sendEmails(fromAddress, toEmails, subject, message);
-
 	}
 
 	/**
@@ -130,13 +124,9 @@ public class ExternalEmailLogicImpl implements ExternalEmailLogic {
 		// return ((String[]) toEmails.toArray());
 	}
 
-	public void sendEmailTemplate(String from, List<String> to, String templateKey,
-			Map<String, String>replacementValues) {
+	public void sendEmailTemplate(String from, List<String> userRefsTo, String templateKey, Map<String, Object> replacementValues) {
 		if (emailTemplateService == null) return;
-		emailTemplateService.sendRenderedMessages(templateKey, to, replacementValues, from , null);
-
+		emailTemplateService.sendRenderedMessages(templateKey, userRefsTo, replacementValues, from , null);
 	}
-
-
 
 }
