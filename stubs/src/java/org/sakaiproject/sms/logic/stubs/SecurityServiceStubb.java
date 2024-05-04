@@ -102,7 +102,7 @@ public class SecurityServiceStubb implements SecurityService {
 		return false;
 	}
 
-        public boolean isUserRoleSwapped() throws IdUnusedException {
+        public boolean isUserRoleSwapped() {
                 // TODO Auto-generated method stub
                 return false;
         }

@@ -220,5 +220,20 @@ public class ServerConfigurationServiceStubb implements ServerConfigurationServi
 		return 0;
 	}
 
+	public String getSmtpPort() {
+		return null;
+	}
+
+	public String getSmtpFrom() {
+		return null;
+	}
+
+	public String getSmtpServer() {
+		return null;
+	}
+
+
+
+
 
 }

@@ -300,4 +300,8 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 			return false;
 		}
 
+	public boolean isRoleViewType(String role) {
+		return false;
+	}
+
 }
