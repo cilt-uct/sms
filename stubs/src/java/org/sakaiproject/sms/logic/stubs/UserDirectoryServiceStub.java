@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
 
@@ -302,6 +303,10 @@ public class UserDirectoryServiceStub implements UserDirectoryService {
 
 	public boolean isRoleViewType(String role) {
 		return false;
+	}
+
+	public Optional<User> getOptionalUser(String userId) {
+		return Optional.empty();
 	}
 
 }
